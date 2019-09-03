@@ -1,0 +1,68 @@
+
+
+
+/////////
+
+
+<table class="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                    <th style="width: 10px;">Ace</th>
+                                    
+                                    <th style="width: 10px;">Letter Dated</th>
+                                    
+                                    <th style="width: 10px;">Date Dispatched</th>
+                                    <th style="width: 10px;">Payment In Respect Of</th>
+                                    
+                                    <th style="width: 10px;">Amount Due(SDR)</th>
+                                    
+                                    <th style="width: 10px;">Total</th>
+                                    
+                                    <th style="width: 100%;">Comments</th>
+                                
+                                </tr>
+                                                                </thead>
+
+<tbody>
+                                     
+                                      @foreach($VerificationLetters as $VerificationLetter)
+                                        <tr>
+                                            <td>
+                                            
+                                              {{$VerificationLetter->ace->name}}
+                                           
+                                           </td>
+
+                                            <td>
+                                                 {{-- @foreach($VerificationLetter->ace->name)
+                                                    <p>{{$VerificationLetter->letter_dated}}</p>
+                                                    @endforeach --}}
+                                            </td>
+
+                                             <td></td>
+
+                                            <td></td>
+
+                                            <td></td>
+                                             <td></td>
+                                             
+                                             <td></td>
+                                             
+                                             
+                                          
+                                            
+                                        </tr>
+                                    @endforeach
+
+                                         
+
+                                         
+
+
+
+
+                                                
+                                     
+                                </tbody>
+
+                            </table>
