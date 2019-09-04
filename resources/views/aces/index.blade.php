@@ -97,13 +97,15 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group{{ $errors->has('field') ? ' form-control-warning' : '' }}">
-                                            <label for="field">{{__('Thematic Discipline')}} <span class="required">*</span></label>
+                                            <label for="field">{{__('Field of Study')}} <span class="required">*</span></label>
                                             <select class="form-control" required name="field" id="field">
                                                 <option value="">--Choose--</option>
                                                 <option value="Agriculture">Agriculture</option>
                                                 <option value="Health">Health</option>
                                                 <option value="STEM">STEM</option>
-                                            </select>
+                                                <option value="Education">Education</option>
+                                                <option value="Applied Soc. Sc.">Applied Soc. Sc.</option>
+                                              </select>
                                             @if ($errors->has('field'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('field') }}</small>
@@ -144,11 +146,10 @@
                                             </select>
                                             @if ($errors->has('university'))
                                                 <p class="text-right">
-<<<<<<< HEAD
+
                                      <small class="warning text-muted">{{ $errors->first('email') }}</small>
-=======
                                                     <small class="warning text-muted">{{ $errors->first('university') }}</small>
->>>>>>> de8d3201ee66581af513efe94b1f177efc88c105
+
                                                 </p>
                                             @endif
                                         </div>
@@ -228,6 +229,84 @@
                                             @endif
                                         </div>
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('requirement') ? ' form-control-warning' : '' }}">
+                                            <label for="requirement" > Requirement</label>
+                                            <input type="text" name="requirement" placeholder="requirement" class="form-control"  value="{{ old('requirement') }}" id="requirement">
+                                        @if ($errors->has('requirement'))
+                                            <p class="text-right">
+                                                <small class="warning text-muted">{{ $errors->first('requirement') }}</small>
+                                            </p>
+                                        @endif
+
+                                    </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('signature') ? ' form-control-warning' : '' }}">
+                                            <label for="signature">Signature/Submission Date</label>
+                                            <input type="text" name="signature" placeholder="signature" class="form-control"  value="{{ old('signature') }}" id="signature">
+                                            @if ($errors->has('signature'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('signature') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('web_link') ? ' form-control-warning' : '' }}">
+                                            <label for="weblink">Web Link</label>
+                                            <input type="text" name="web_link" placeholder="weblink" class="form-control"  value="{{ old('web_link') }}" id="weblink">
+                                            @if ($errors->has('web_link'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('web_link') }}</small>
+                                                </p>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('ace_type') ? ' form-control-warning' : '' }}">
+                                            <label for="ace_type">Type of Centres</label>
+                                            <select class="form-control" required name="ace_type" id="ace_type">
+                                                <option value="">--Choose--</option>
+                                                <option value="engineering">Colleges of Engineering </option>
+                                                <option value="emerging">Emerging Centre</option>
+                                                <option value="ACE">ACE</option>
+                                            </select>
+                                            @if ($errors->has('ace_type'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('ace_type') }}</small>
+                                                </p>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('finalised') ? ' form-control-warning' : '' }}">
+                                            <label for="finalised">Finalised</label>
+                                            <input type="text" name="finalised" placeholder="finalised" class="form-control"  value="{{ old('finalised') }}" id="finalised">
+                                            @if ($errors->has('finalised'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('finalised') }}</small>
+                                                </p>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('comments') ? ' form-control-warning' : '' }}">
+                                            <label for="comments">Comments</label>
+                                            <input type="text" name="comments" placeholder="comments" class="form-control"  value="{{ old('comments') }}" id="comments">
+                                            @if ($errors->has('comments'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('comments') }}</small>
+                                                </p>
+                                            @endif
+
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>

@@ -29,7 +29,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(session()->has('default_project')) {
+//        if(session()->has('default_project')) {
             if (Auth::user()->ability('webmaster', 'admin-dashboard')){
                 $reports = Report::get()->count();
                 if (Auth::user()->hasRole('webmaster')){
@@ -43,9 +43,9 @@ class HomeController extends Controller
                 return view('admin-home', compact('users','reports','new_reports','institutions'));
             }else{
                 return redirect()->route('report_submission.reports');
-            }
-        } else {
-            return view('project-options');
+//            }
+//        } else {
+//            return view('project-options');
         }
     }
 

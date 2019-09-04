@@ -35,7 +35,12 @@ class AcesController extends Controller {
 		return view('aces.index', compact('aces', 'universities', 'courses', 'currency'));
 	}
 
-	public function create(Request $request) {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function create(Request $request) {
 //        return $request->all();
 		$this->validate($request, [
 			'name' => 'required|string|min:3|unique:aces,name',
@@ -53,6 +58,12 @@ class AcesController extends Controller {
 			'courses' => 'required|array|min:1',
 			'courses.*' => 'required|integer|min:1',
 			'position' => 'nullable|string|min:3',
+            'requirement' => 'nullable|string|min:3',
+            'signature' => 'nullable|string|min:3',
+            'web_link' => 'nullable|string|min:3',
+            'ace_type' => 'required|string|min:2',
+            'finalised' => 'nullable|string|min:3',
+            'comments' => 'nullable|string|min:3',
 		]);
 //        return $request->all();
 
@@ -70,6 +81,12 @@ class AcesController extends Controller {
 		$addAce->person_email = $request->contact_email;
 		$addAce->person_number = $request->contact_person_phone;
 		$addAce->position = $request->position;
+        $addAce->requirement = $request->requirement;
+        $addAce->signature = $request->signature;
+        $addAce->web_link = $request->web_link;
+        $addAce->ace_type = $request->ace_type;
+        $addAce->finalised = $request->finalised;
+        $addAce->comments = $request->comments;
 		$addAce->save();
 
 		foreach ($request->courses as $key => $course_id) {
@@ -129,6 +146,12 @@ class AcesController extends Controller {
 			'contact_email' => 'nullable|string|email|min:3',
 			'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
 			'position' => 'nullable|string|min:3',
+            'requirement' => 'nullable|string|min:3',
+            'signature' => 'nullable|string|min:3',
+            'web_link' => 'nullable|string|min:3',
+            'ace_type' =>'required|string|min:2',
+            'finalised' => 'nullable|string|min:3',
+            'comments' => 'nullable|string|min:3',
 		]);
 
 		$addAce = Ace::find($id);
@@ -145,6 +168,12 @@ class AcesController extends Controller {
 		$addAce->person_email = $request->contact_email;
 		$addAce->person_number = $request->contact_person_phone;
 		$addAce->position = $request->position;
+        $addAce->requirement = $request->requirement;
+        $addAce->signature = $request->signature;
+        $addAce->web_link = $request->web_link;
+        $addAce->ace_type = $request->ace_type;
+        $addAce->finalised = $request->finalised;
+        $addAce->comments = $request->comments;
 		$addAce->save();
 		AceCourse::where('ace_id', '=', $id)->delete();
 		foreach ($request->courses as $key => $course_id) {
