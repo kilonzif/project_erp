@@ -8,7 +8,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Ace extends Model implements Auditable {
 	use \OwenIt\Auditing\Auditable;
 
-	protected $fillable = ['name', 'acronym', 'institution_id', 'contact', 'email', 'course', 'contact_person', 'person_number', 'person_email', 'position', 'active', 'requirement','signature','web_link','ace_type','finalised','comments'];
+	protected $fillable = ['name', 'acronym', 'institution_id', 'contact', 'email', 'course', 'contact_person', 'person_number', 'person_email', 'position', 'active','ace_type'];
 
 	public function university() {
 		return $this->belongsTo('App\Institution', 'institution_id');
@@ -53,5 +53,11 @@ class Ace extends Model implements Auditable {
 	public function verificationLetters() {
 		return $this->hasMany('App\VerificationLetter');
 	}
+
+    public function indicator_one(){
+	    return $this->belongsTo('App\IndicatorOne');
+    }
+
+
 
 }

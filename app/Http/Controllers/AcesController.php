@@ -12,11 +12,14 @@ use App\AceIndicatorsTargetYear;
 use App\Classes\ToastNotification;
 use App\Course;
 use App\Currency;
+use App\Indicator;
+use App\IndicatorOne;
 use App\Institution;
 use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use vendor\project\StatusTest;
 
 class AcesController extends Controller {
 	//
@@ -25,69 +28,148 @@ class AcesController extends Controller {
 		$this->middleware('auth');
 	}
 
+
 	public function index() {
 
 		$aces = Ace::orderBy('name', 'ASC')->get();
 		$courses = Course::orderBy('name', 'ASC')->get();
 		$currency = Currency::orderBy('name', 'ASC')->get();
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
-//        return $aces->university->name;
-		return view('aces.index', compact('aces', 'universities', 'courses', 'currency'));
+		$requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
+		return view('aces.index', compact('aces', 'universities', 'courses', 'currency','requirements'));
 	}
+
+
+
+
+
 
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 //        return $request->all();
-		$this->validate($request, [
-			'name' => 'required|string|min:3|unique:aces,name',
-			'contact' => 'required|numeric|digits_between:10,17',
-			'email' => 'required|string|email|min:3',
-			'university' => 'required|integer|min:1',
-			'field' => 'required|string',
-			'active' => 'nullable|boolean',
-			'currency' => 'required|numeric',
-			'dlr' => 'required|numeric|min:0',
-			'acronym' => 'required|string|min:2',
-			'contact_name' => 'nullable|string|min:3',
-			'contact_email' => 'nullable|string|email|min:3',
-			'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
-			'courses' => 'required|array|min:1',
-			'courses.*' => 'required|integer|min:1',
-			'position' => 'nullable|string|min:3',
-            'requirement' => 'nullable|string|min:3',
-            'signature' => 'nullable|string|min:3',
-            'web_link' => 'nullable|string|min:3',
+        $this->validate($request, [
+            'name' => 'required|string|min:3|unique:aces,name',
+            'contact' => 'required|numeric|digits_between:10,17',
+            'email' => 'required|string|email|min:3',
+            'university' => 'required|integer|min:1',
+            'field' => 'required|string',
+            'active' => 'nullable|boolean',
+            'currency' => 'required|numeric',
+            'dlr' => 'required|numeric|min:0',
+            'acronym' => 'required|string|min:2',
+            'contact_name' => 'nullable|string|min:3',
+            'contact_email' => 'nullable|string|email|min:3',
+            'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
+            'courses' => 'required|array|min:1',
+            'courses.*' => 'required|integer|min:1',
+            'position' => 'nullable|string|min:3',
             'ace_type' => 'required|string|min:2',
-            'finalised' => 'nullable|string|min:3',
-            'comments' => 'nullable|string|min:3',
-		]);
+//            'requirement' => 'nullable|string|min:3',
+//            'submission_date' => 'required|date|min:4',
+//            'file_name' => 'required|string|min:3',
+//            'url' => 'required|string|min:3',
+//            'web_link' => 'required|string|min:3',
+//            'finalised' => 'required|string|min:3',
+//            'comments' => 'required|text|min:3',
+        ]);
 //        return $request->all();
 
-		$addAce = new Ace();
-		$addAce->name = $request->name;
-		$addAce->acronym = $request->acronym;
-		$addAce->field = $request->field;
-		$addAce->contact = $request->contact;
-		$addAce->currency_id = $request->currency;
-		$addAce->email = $request->email;
-		$addAce->dlr = $request->dlr;
-		$addAce->institution_id = $request->university;
-		$addAce->active = $request->active;
-		$addAce->contact_person = $request->contact_name;
-		$addAce->person_email = $request->contact_email;
-		$addAce->person_number = $request->contact_person_phone;
-		$addAce->position = $request->position;
-        $addAce->requirement = $request->requirement;
-        $addAce->signature = $request->signature;
-        $addAce->web_link = $request->web_link;
+        $addAce = new Ace();
+        $addAce->name = $request->name;
+        $addAce->acronym = $request->acronym;
+        $addAce->field = $request->field;
+        $addAce->contact = $request->contact;
+        $addAce->currency_id = $request->currency;
+        $addAce->email = $request->email;
+        $addAce->dlr = $request->dlr;
+        $addAce->institution_id = $request->university;
+        $addAce->active = $request->active;
+        $addAce->contact_person = $request->contact_name;
+        $addAce->person_email = $request->contact_email;
+        $addAce->person_number = $request->contact_person_phone;
+        $addAce->position = $request->position;
         $addAce->ace_type = $request->ace_type;
-        $addAce->finalised = $request->finalised;
-        $addAce->comments = $request->comments;
-		$addAce->save();
+
+        $requirement = $request->requirement;
+        $submission_date = $request->submission_date;
+        $file_name = $request->file_name;
+        $url = $request->url;
+        $web_link = $request->web_link;
+        $finalised = $request->finalised;
+        $comments = $request->comments;
+        $addAce->save();
+        if (isset($addAce->id)) {
+            $aceId = $addAce->id;
+//            dd($submission_date);
+//        return print_r($requirement);
+        foreach ($requirement as $key => $req) {
+            $addIndicatorOne = new IndicatorOne();
+            $addIndicatorOne->aceId = $aceId;
+            $addIndicatorOne->requirement = $requirement[$key];
+            $addIndicatorOne->submission_date = $submission_date[$key];
+            $addIndicatorOne->file_name = $file_name[$key];
+            $addIndicatorOne->url = $url[$key];
+            $addIndicatorOne->web_link = $web_link[$key];
+            $addIndicatorOne->finalised = $request['finalised'.$key];
+            $addIndicatorOne->comments = $comments[$key];
+
+
+            $addIndicatorOne->save();
+//                        dd($addIndicatorOne);
+        }
+
+    }
+
+
+//        dd($addIndicatorOne);
+////        foreach($req as $key => $value) {
+////            $addIndicatorOne=new IndicatorOne();
+////            $addIndicatorOne->requirement =$request->requirement;
+////            dd($addIndicatorOne);
+////        }
+
+
+
+
+
+//		if(isset($AddAce->id)){
+////	            protected $fillable = ['aceId','requirement','submission_date','file_name','url','web_link','finalised','comments']
+//            $req = $request->input('req');
+//
+//            foreach($req as $key => $value){
+//                $AddIndicatorOne=new IndicatorOne();
+//                $AddIndicatorOne->$aceId=$AddAce->id;
+//                dd($AddIndicatorOne->$aceId);
+//                if(!empty($request->input('requirement.'.$key))) {
+//                    if($request->input('requirement.'.$key)) {
+//                        $indi = Indicator::find($request->input('requirement.'.$key));
+//                    } else {
+//                        $indi = new Indicator();
+//                    }
+//
+//                    $indi->requirement = $request->input('requirement.'.$key);
+//                    $indi->submission_date = $request->input('submission_date.'.$key);
+//                    $indi->file_name = $request->input('file_name.'.$key);
+//                    $indi->url = $request->input('url.'.$key);
+//                    $indi->web_link = $request->input('web_link.'.$key);
+//                    $indi->finalised = $request->input('finalised.'.$key);
+//                    $indi->comments = $request->input('comments.'.$key);
+//
+//                    dd($indi);
+//
+//
+//
+//                }
+//            }
+//
+//
+//
+//        }
 
 		foreach ($request->courses as $key => $course_id) {
 			$ace_course = new AceCourse();

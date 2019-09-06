@@ -73,5 +73,16 @@ class Indicator extends Model
         }else{
             return $indicator->parent_id;
         }
+
+
     }
+    public function scopeActiveIndicator($query){
+        return $query->where('status',1);
+    }
+
+    public function scopeParentIndicator($query,$parent_id){
+        return $query->where('parent_id',$parent_id);
+    }
+
+
 }
