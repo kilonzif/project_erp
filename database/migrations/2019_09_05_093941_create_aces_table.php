@@ -17,7 +17,7 @@ class CreateAcesTable extends Migration
     public function up()
     {
         Schema::create('aces', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('name');
             $table->string('acronym');
             $table->unsignedInteger('institution_id');
@@ -32,12 +32,7 @@ class CreateAcesTable extends Migration
             $table->string('person_email');
             $table->string('position');
             $table->tinyInteger('active')->default('1');
-            $table->string('requirement');
-            $table->string('signature');
-            $table->string('web_link');
             $table->string('ace_type');
-            $table->string('finalised');
-            $table->string('comments');
             $table->timestamps();
         });
     }

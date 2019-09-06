@@ -202,7 +202,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div style="margin-top: 2rem;" class="col-md-4">
+                                    <div style="margin-top: 2rem;" class="col-md-2">
                                         <div class="form-group">
                                             <div class="skin skin-square">
                                                 <input type="radio" name="active" value="1" checked id="active">
@@ -210,59 +210,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div style="margin-top: 2rem;" class="col-md-4">
+                                    <div style="margin-top: 2rem;" class="col-md-2">
                                         <div class="form-group">
                                             <div class="skin skin-square">
                                                 <input type="radio" name="active" value="0" id="inactive">
                                                 <label for="inactive" class="">Inactive</label>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('position') ? ' form-control-warning' : '' }}">
-                                            <label for="position">Contact Person's Position</label>
-                                            <input type="text" name="position" placeholder="Position" class="form-control" value="{{ old('position') }}" id="position">
-                                            @if ($errors->has('position'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('position') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('requirement') ? ' form-control-warning' : '' }}">
-                                            <label for="requirement" > Requirement</label>
-                                            <input type="text" name="requirement" placeholder="requirement" class="form-control"  value="{{ old('requirement') }}" id="requirement">
-                                        @if ($errors->has('requirement'))
-                                            <p class="text-right">
-                                                <small class="warning text-muted">{{ $errors->first('requirement') }}</small>
-                                            </p>
-                                        @endif
-
-                                    </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('signature') ? ' form-control-warning' : '' }}">
-                                            <label for="signature">Signature/Submission Date</label>
-                                            <input type="text" name="signature" placeholder="signature" class="form-control"  value="{{ old('signature') }}" id="signature">
-                                            @if ($errors->has('signature'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('signature') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('web_link') ? ' form-control-warning' : '' }}">
-                                            <label for="weblink">Web Link</label>
-                                            <input type="text" name="web_link" placeholder="weblink" class="form-control"  value="{{ old('web_link') }}" id="weblink">
-                                            @if ($errors->has('web_link'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('web_link') }}</small>
-                                                </p>
-                                            @endif
-
                                         </div>
                                     </div>
                                     <div class="col-md-4">
@@ -283,35 +236,97 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('finalised') ? ' form-control-warning' : '' }}">
-                                            <label for="finalised">Finalised</label>
-                                            <input type="text" name="finalised" placeholder="finalised" class="form-control"  value="{{ old('finalised') }}" id="finalised">
-                                            @if ($errors->has('finalised'))
+                                        <div class="form-group{{ $errors->has('position') ? ' form-control-warning' : '' }}">
+                                            <label for="position">Contact Person's Position</label>
+                                            <input type="text" name="position" placeholder="Position" class="form-control" value="{{ old('position') }}" id="position">
+                                            @if ($errors->has('position'))
                                                 <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('finalised') }}</small>
+                                                    <small class="warning text-muted">{{ $errors->first('position') }}</small>
                                                 </p>
                                             @endif
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('comments') ? ' form-control-warning' : '' }}">
-                                            <label for="comments">Comments</label>
-                                            <input type="text" name="comments" placeholder="comments" class="form-control"  value="{{ old('comments') }}" id="comments">
-                                            @if ($errors->has('comments'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('comments') }}</small>
-                                                </p>
-                                            @endif
-
                                         </div>
                                     </div>
 
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
-                                        Save</button>
-                                </div>
+                                    <div class="card" id="action-card" style="width: 100%">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Indicator 1(Institution Readiness)</h4>
+                                            <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                                            <div class="heading-elements">
+                                                <ul class="list-inline mb-0">
+                                                    <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="card-content collapse show">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    {{ csrf_field() }}
+                                                @foreach($requirements as $key=>$req)
+                                                    <div class="col-md-6">
+                                                        <h5>{{$req}}</h5>
+                                                        <input type="hidden" name="requirement[]" value="{{$req}}" >
+                                                        <div class="form-group">
+                                                            <label>Finalised</label>
+                                                            <div class="skin skin-square">
+                                                                <label for="finalised" class="">Yes</label>
+                                                                <input type="radio" name="{{'finalised'.$key}}" value="1"  id="finalised">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="skin skin-square">
+                                                                <label for="finalised" class="">NO</label>
+                                                                <input type="radio" name="{{'finalised'.$key}}" value="1"  id="finalised">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Submission Date:</label>
+                                                            <input type="date" name="submission_date[]"  id="submission_date" value="{{old('submission_date1')}}">
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label>File Upload:</label>
+                                                            <input type="file" id="file_name[]" name="file_name[]" value="">
+                                                        </div>
+                                                        <div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">
+                                                            <label>URL:</label>
+                                                            <input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url[]') }}" id="url">
+                                                            @if ($errors->has('url[]'))
+                                                                <p class="text-right">
+                                                                    <small class="warning text-muted">{{ $errors->first('url[]') }}</small>
+                                                                </p>
+                                                            @endif
+
+                                                        </div>
+                                                        <div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">
+                                                            <label for="web_link1">Web Link</label>
+                                                            <input type="text" name="web_link[]" placeholder="web_link" class="form-control"  value="{{ old('web_link[]') }}" id="web_link1">
+                                                            @if ($errors->has('web_link[]'))
+                                                                <p class="text-right">
+                                                                    <small class="warning text-muted">{{ $errors->first('web_link[]') }}</small>
+                                                                </p>
+                                                            @endif
+                                                        </div>
+                                                        <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
+                                                            <label for="comments1">Comments</label>
+                                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments[]') }}" id="comments1">
+                                                            @if ($errors->has('comments[]'))
+                                                                <p class="text-right">
+                                                                    <small class="warning text-muted">{{ $errors->first('comments[]') }}</small>
+                                                                </p>
+                                                            @endif
+
+                                                        </div>
+                                                    </div>
+                                                      @endforeach
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                                Save</button>
+                                        </div>
+                                    </div>
                             </form>
                         </div>
                     </div>

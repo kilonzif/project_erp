@@ -36,4 +36,8 @@ class SubIndicator extends Model
     {
         return $this->hasMany('App\Specific');
     }
+
+    public function getIndicatorChildren(){
+
+            }
 }
