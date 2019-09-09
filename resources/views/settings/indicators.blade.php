@@ -106,16 +106,16 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="project">Project <span class="required">*</span></label>
-                                            <select name="project" id="project" class=" form-control" style="width: 100%;">
-                                                {{--<option value="">Select Project</option>--}}
-                                                @foreach($projects as $project)
-                                                    <option value="{{$project->id}}">{{$project->title}}</option>
+                                            <label for="project">Parent Indicator</label>
+                                            <select name="parentIndicator" id="parentIndicator" class=" form-control" style="width: 100%;">
+                                                <option value="0">NONE</option>
+                                                @foreach($indicators as $indicator)
+                                                    <option value="{{$indicator->id}}">{{$indicator->title}}</option>
                                                 @endforeach
                                             </select>
-                                            @if ($errors->has('project'))
+                                            @if ($errors->has('parentIndicator'))
                                                 <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('project') }}</small>
+                                                    <small class="warning text-muted">{{ $errors->first('parentIndicator') }}</small>
                                                 </p>
                                             @endif
                                         </div>
@@ -167,22 +167,22 @@
                                 @php
                                     $count = 0;
                                 @endphp
-                                    @foreach($indicators as $indicator)
+                                    @foreach($parentIndicators as $pi)
                                         @php
                                             $count += 1;
                                         @endphp
                                         <tr>
-                                            <td>{{$indicator->identifier}}</td>
-                                            <td>{{$indicator->title}}</td>
+                                            <td>{{$pi->identifier}}</td>
+                                            <td>{{$pi->title}}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                    <a href="{{route('indicator.config',[$indicator->id])}}" class="btn btn-s btn-dark" data-toggle="tooltip" data-placement="top" title="Configure Indicator"><i class="ft-settings"></i></a></a>
-                                                    <a href="#indicator-card" onclick="edit_indicator({{$indicator->id}})" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Indicator"><i class="ft-edit-3"></i></a></a>
+                                                    <a href="{{route('indicator.config',[$pi->id])}}" class="btn btn-s btn-dark" data-toggle="tooltip" data-placement="top" title="Configure Indicator"><i class="ft-settings"></i></a></a>
+                                                    <a href="#indicator-card" onclick="edit_indicator({{$pi->id}})" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Indicator"><i class="ft-edit-3"></i></a></a>
                                                     {{--<a href="#" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Indicator Status"><i class="ft-times"></i></a></a>--}}
-                                                    <a class="dropdow-item btn {{($indicator->status == 0)?'btn-success' : 'btn-danger'}} btn-s" href="#"
-                                                       data-toggle="tooltip" data-placement="top" title="{{($indicator->status == 0)?'Activate Indicator' : 'Deactivate Indicator'}}"
+                                                    <a class="dropdow-item btn {{($pi->status == 0)?'btn-success' : 'btn-danger'}} btn-s" href="#"
+                                                       data-toggle="tooltip" data-placement="top" title="{{($pi->status == 0)?'Activate Indicator' : 'Deactivate Indicator'}}"
                                                        onclick="event.preventDefault(); document.getElementById('delete-indicator-{{$count}}').submit();">
-                                                        @if($indicator->status == 0)
+                                                        @if($pi->status == 0)
                                                             <i class="ft-check"></i>
                                                         @else
                                                             <i class="ft-x"></i>
@@ -191,7 +191,7 @@
                                                 </div>
                                                 <form id="delete-indicator-{{$count}}" action="{{ route('indicator.activate',[\Illuminate\Support\Facades\Crypt::encrypt($indicator->id)]) }}" method="POST" style="display: none;">
                                                     @csrf {{method_field('DELETE')}}
-                                                    <input type="hidden" name="id" value="{{\Illuminate\Support\Facades\Crypt::encrypt($indicator->id)}}">
+                                                    <input type="hidden" name="id" value="{{\Illuminate\Support\Facades\Crypt::encrypt($pi->id)}}">
                                                 </form>
                                             </td>
                                         </tr>

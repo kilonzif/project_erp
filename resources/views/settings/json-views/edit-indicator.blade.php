@@ -77,16 +77,16 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="project">Project <span class="required">*</span></label>
-                        <select name="project" id="project" class="select2 form-control" style="width: 100%;">
-                            <option value="">Select Project</option>
-                            @foreach($projects as $project)
-                                <option @if($indicator->project_id == $project->id) selected @endif value="{{$project->id}}">{{$project->title}}</option>
+                        <label for="project">Parent Indicator</label>
+                        <select name="parentIndicator" id="parentIndicator" class=" form-control" style="width: 100%;">
+                            <option @if($indicator->isparent == 0) selected @endif value="0">NONE</option>
+                            @foreach($indicators as $activeIndicator)
+                                <option @if($indicator->parent_id == $activeIndicator->id) selected @endif value="{{$activeIndicator->id}}">{{$activeIndicator->title}}</option>
                             @endforeach
                         </select>
-                        @if ($errors->has('project'))
+                        @if ($errors->has('parentIndicator'))
                             <p class="text-right">
-                                <small class="warning text-muted">{{ $errors->first('project') }}</small>
+                                <small class="warning text-muted">{{ $errors->first('parentIndicator') }}</small>
                             </p>
                         @endif
                     </div>

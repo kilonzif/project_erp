@@ -32,11 +32,13 @@
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">
+                                @ability('webmaster|super-admin|admin', 'submit-report')
                                 <li>
                                     <a href="{{route('report_submission.add')}}" class="btn btn-secondary" aria-label="Previous">
                                         New Report Submission
                                     </a>
                                 </li>
+                                @endability
                             </ul>
                         </div>
                     </div>

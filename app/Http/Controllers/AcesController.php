@@ -19,7 +19,11 @@ use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use vendor\project\StatusTest;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+
 
 class AcesController extends Controller {
 	//
@@ -78,7 +82,7 @@ class AcesController extends Controller {
 //            'comments' => 'required|text|min:3',
         ]);
 //        return $request->all();
-
+        DB::beginTransaction();
         $addAce = new Ace();
         $addAce->name = $request->name;
         $addAce->acronym = $request->acronym;
@@ -98,78 +102,43 @@ class AcesController extends Controller {
         $requirement = $request->requirement;
         $submission_date = $request->submission_date;
         $file_name = $request->file_name;
+
         $url = $request->url;
         $web_link = $request->web_link;
         $finalised = $request->finalised;
         $comments = $request->comments;
-        $addAce->save();
+        $folder_name='public/indicator1/'.$addAce->name;
+
+
+
+        $saveAce=$addAce->save();
         if (isset($addAce->id)) {
             $aceId = $addAce->id;
-//            dd($submission_date);
-//        return print_r($requirement);
         foreach ($requirement as $key => $req) {
             $addIndicatorOne = new IndicatorOne();
             $addIndicatorOne->aceId = $aceId;
             $addIndicatorOne->requirement = $requirement[$key];
             $addIndicatorOne->submission_date = $submission_date[$key];
-            $addIndicatorOne->file_name = $file_name[$key];
+            $file = $request->file('file_name')[$key];
+
+            $extension = $file->getClientOriginalExtension();
+            Storage::disk('public')->put($file->getClientOriginalName(),  File::get($file));
+            $addIndicatorOne->file_name = $file_name[$key] ->getClientOriginalName();
             $addIndicatorOne->url = $url[$key];
             $addIndicatorOne->web_link = $web_link[$key];
             $addIndicatorOne->finalised = $request['finalised'.$key];
             $addIndicatorOne->comments = $comments[$key];
 
 
-            $addIndicatorOne->save();
-//                        dd($addIndicatorOne);
+            $saveIndicator=$addIndicatorOne->save();
+
         }
 
     }
 
 
-//        dd($addIndicatorOne);
-////        foreach($req as $key => $value) {
-////            $addIndicatorOne=new IndicatorOne();
-////            $addIndicatorOne->requirement =$request->requirement;
-////            dd($addIndicatorOne);
-////        }
+            DB::commit();
 
-
-
-
-
-//		if(isset($AddAce->id)){
-////	            protected $fillable = ['aceId','requirement','submission_date','file_name','url','web_link','finalised','comments']
-//            $req = $request->input('req');
-//
-//            foreach($req as $key => $value){
-//                $AddIndicatorOne=new IndicatorOne();
-//                $AddIndicatorOne->$aceId=$AddAce->id;
-//                dd($AddIndicatorOne->$aceId);
-//                if(!empty($request->input('requirement.'.$key))) {
-//                    if($request->input('requirement.'.$key)) {
-//                        $indi = Indicator::find($request->input('requirement.'.$key));
-//                    } else {
-//                        $indi = new Indicator();
-//                    }
-//
-//                    $indi->requirement = $request->input('requirement.'.$key);
-//                    $indi->submission_date = $request->input('submission_date.'.$key);
-//                    $indi->file_name = $request->input('file_name.'.$key);
-//                    $indi->url = $request->input('url.'.$key);
-//                    $indi->web_link = $request->input('web_link.'.$key);
-//                    $indi->finalised = $request->input('finalised.'.$key);
-//                    $indi->comments = $request->input('comments.'.$key);
-//
-//                    dd($indi);
-//
-//
-//
-//                }
-//            }
-//
-//
-//
-//        }
 
 		foreach ($request->courses as $key => $course_id) {
 			$ace_course = new AceCourse();

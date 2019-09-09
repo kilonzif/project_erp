@@ -79,7 +79,8 @@ class SettingsController extends Controller
             ->orderBy('order_no','asc')
             ->get();
         $projects = Project::get();
-        return view('settings.indicators', compact('indicators','projects'));
+        $parentIndicators=Indicator::where('isparent','=',1)->get();
+        return view('settings.indicators', compact('indicators','parentIndicators','projects'));
     }
 
     /**
@@ -116,8 +117,12 @@ class SettingsController extends Controller
     public function edit_indicator(Request $request)
     {
         $indicator = Indicator::find($request->id);
+        $indicators = Indicator::where('parent_id','=', 0)
+//            ->orderBy('identifier','asc')
+            ->orderBy('order_no','asc')
+            ->get();
         $projects = Project::get();
-        $view = view('settings.json-views.edit-indicator', compact('indicator','projects'))->render();
+        $view = view('settings.json-views.edit-indicator', compact('indicator','indicators','projects'))->render();
         return response()->json(['theView'=>$view]);
     }
 
@@ -135,8 +140,7 @@ class SettingsController extends Controller
             'unit_of_measure' => 'required|string|min:5',
             'order_no' => 'required|numeric|min:1',
             'on_report' => 'required|numeric|min:0',
-            'upload' => 'nullable|numeric|max:1',
-            'project' => 'required|numeric|min:1'
+            'upload' => 'nullable|numeric|max:1'
         ]);
 
         Indicator::create([
@@ -144,9 +148,10 @@ class SettingsController extends Controller
             'order_no' => $request->order_no,
             'identifier' => $request->identifier,
             'unit_measure' => $request->unit_of_measure,
-            'project_id' => $request->project,
+            'parent_id' => $request->parentIndicator,
             'show_on_report' => $request->on_report,
-            'upload' => $request->upload
+            'upload' => $request->upload,
+            'isparent'=>1
         ]);
         notify(new ToastNotification('Successful!', 'Indicator Added!', 'success'));
         return back();
@@ -168,17 +173,22 @@ class SettingsController extends Controller
             'order_no' => 'required|numeric|min:1',
             'on_report' => 'required|numeric|min:0',
             'upload' => 'nullable|numeric|max:1',
-            'project' => 'required|numeric|min:1'
+            'parentIndicator'=>'required'
         ]);
 
+//        dd($request->all());
+
+
         Indicator::where('id','=', $request->id)->update([
+
             'title' => $request->title,
             'order_no' => $request->order_no,
             'identifier' => $request->identifier,
             'unit_measure' => $request->unit_of_measure,
-            'project_id' => $request->project,
+            'parent_id' => $request->parentIndicator,
             'show_on_report' => $request->on_report,
-            'upload' => $request->upload
+            'upload' => $request->upload,
+            'isparent'=>1
         ]);
         notify(new ToastNotification('Successful!', 'Indicator Updated!', 'success'));
         return back();

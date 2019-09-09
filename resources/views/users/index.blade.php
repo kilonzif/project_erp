@@ -46,7 +46,7 @@
                         </div>
                         <div class="card-content collapse show">
                             <div class="card-body card-dashboard">
-                                <form method="POST" action="{{ route('user-management.user.save_user') }}">
+                                <form method="POST" action="{{ route('user-management.user.save_user') }}" enctype="multipart/form-data">
                                     @csrf
                                     <div class="row">
                                         <div class="col-md-6">

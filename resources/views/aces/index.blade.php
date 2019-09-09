@@ -39,7 +39,7 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <form id="add-form" action="{{route('user-management.aces.create')}}" method="post">
+                            <form id="add-form" action="{{route('user-management.aces.create')}}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div id="hidden-input"></div>
                                 <div class="row">
