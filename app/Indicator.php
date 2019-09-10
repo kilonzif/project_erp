@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Builder;
 class Indicator extends Model
 {
 
-    protected $fillable = ['title','identifier','order_no','unit_measure','parent_id',
-        'unit_measure_id','status','upload','show_on_report','isparent'];
+    protected $fillable = ['title','identifier','order_no','project_id','unit_measure','parent_id',
+        'unit_measure_id','status','upload','show_on_report','is_parent'];
+
 
     protected static function boot()
     {

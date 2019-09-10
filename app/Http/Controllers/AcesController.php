@@ -168,7 +168,12 @@ class AcesController extends Controller {
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
 		$ace_courses = AceCourse::where('ace_id', '=', $id)->pluck('course_id')->toArray();
 
-		$view = view('aces.edit-view', compact('ace', 'universities', 'courses', 'ace_courses', 'currency'))->render();
+		$indicator_ones=IndicatorOne::where('aceId','=',$request->id)->get();
+        $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
+
+
+
+		$view = view('aces.edit-view', compact('ace', 'universities', 'courses', 'ace_courses', 'currency','requirements','indicator_ones'))->render();
 		return response()->json(['theView' => $view, 'courses' => $courses, 'ace' => $ace]);
 	}
 

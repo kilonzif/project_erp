@@ -203,15 +203,19 @@
                                     @php
                                         $count += 1;
                                     @endphp
+                                    {{--@if(!$sub_indicator->unit_measure->id)--}}
+                                        {{--{{$sub_indicator->unit_measure->id=0}}--}}
+                                        {{--onclick="edit_uom({{$sub_indicator->unit_measure->id}})"--}}
                                     <tr>
                                         <td>{{$sub_indicator->order_no}}</td>
-                                        <td>
-                                            {{$sub_indicator->title}} <br>
-                                            @if($sub_indicator->unit_measure)<a href="#unit_measure_box" onclick="edit_uom({{$sub_indicator->unit_measure->id}})"
-                                               data-toggle="tooltip" data-placement="top" title="Click to edit">
-                                                <span class="font-small-2 teal">{{$sub_indicator->unit_measure->title}}</span>
-                                            </a>@endif
-                                        </td>
+                                        <td>{{$sub_indicator->title}}</td>
+                                        {{--<td>--}}
+                                            {{--{{$sub_indicator->title}} <br>--}}
+                                            {{--@if($sub_indicator->unit_measure)<a href="#unit_measure_box"--}}
+                                               {{--data-toggle="tooltip" data-placement="top" title="Click to edit">--}}
+                                                {{--<span class="font-small-2 teal">{{$sub_indicator->unit_measure->title}}</span>--}}
+                                            {{--</a>@endif--}}
+                                        {{--</td>--}}
                                         <td>
                                             <input  onchange="changeStatus(document.getElementById('delete-indicator-{{$count}}').submit())"
                                                     type="checkbox" id="active{{$sub_indicator->id}}"
@@ -238,6 +242,7 @@
                                             </form>
                                         </td>
                                     </tr>
+                                        {{--@endif--}}
                                 @endforeach
                                 </tbody>
                             </table>

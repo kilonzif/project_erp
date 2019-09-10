@@ -79,7 +79,7 @@ class SettingsController extends Controller
             ->orderBy('order_no','asc')
             ->get();
         $projects = Project::get();
-        $parentIndicators=Indicator::where('isparent','=',1)->get();
+        $parentIndicators=Indicator::where('is_parent','=',1)->get();
         return view('settings.indicators', compact('indicators','parentIndicators','projects'));
     }
 
@@ -151,7 +151,7 @@ class SettingsController extends Controller
             'parent_id' => $request->parentIndicator,
             'show_on_report' => $request->on_report,
             'upload' => $request->upload,
-            'isparent'=>1
+            'is_parent'=>1
         ]);
         notify(new ToastNotification('Successful!', 'Indicator Added!', 'success'));
         return back();
@@ -188,7 +188,7 @@ class SettingsController extends Controller
             'parent_id' => $request->parentIndicator,
             'show_on_report' => $request->on_report,
             'upload' => $request->upload,
-            'isparent'=>1
+            'is_parent'=>1
         ]);
         notify(new ToastNotification('Successful!', 'Indicator Updated!', 'success'));
         return back();
@@ -202,8 +202,9 @@ class SettingsController extends Controller
     public function config_indicator($id)
     {
         $indicator = Indicator::find($id);
-        $sub_indicators = Indicator::where('parent_id','=',$indicator->id)->orderBy('parent_id','asc')->orderBy('order_no','asc')->get();
+        $sub_indicators = Indicator::where('parent_id','=',$indicator->id)->where('is_parent','!=',1)->orderBy('order_no','asc')->get();
         $uoms = UnitMeasure::where('indicator_id','=',$indicator->id)->orderBy('order_no','asc')->get();
+
         return view('settings.indicator_config',compact('indicator','sub_indicators','uoms'));
     }
 
@@ -244,6 +245,9 @@ class SettingsController extends Controller
         ]);
         try{
             $parent = Indicator::find($request->indicator);
+//            if($request->uom_id==""){
+//                $request->uom_id=0;
+//            }
 
             Indicator::create([
                 'title' => $request->title,
@@ -307,7 +311,8 @@ class SettingsController extends Controller
         Indicator::where('id','=', $request->id)->update([
             'title' => $request->title,
             'order_no' => $request->order,
-            'unit_measure_id' => $request->uom_id
+            'unit_measure_id' => $request->uom_id,
+            'is_parent'=>0
         ]);
         notify(new ToastNotification('Successful!', 'Sub-Indicator updated!', 'success'));
         return back();
