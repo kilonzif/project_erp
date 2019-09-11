@@ -21,8 +21,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use vendor\project\StatusTest;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
+//use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Facades\File;
+use File;
+
 
 
 class AcesController extends Controller {
@@ -82,6 +84,7 @@ class AcesController extends Controller {
 //            'comments' => 'required|text|min:3',
         ]);
 //        return $request->all();
+
         DB::beginTransaction();
         $addAce = new Ace();
         $addAce->name = $request->name;
@@ -98,31 +101,28 @@ class AcesController extends Controller {
         $addAce->person_number = $request->contact_person_phone;
         $addAce->position = $request->position;
         $addAce->ace_type = $request->ace_type;
-
         $requirement = $request->requirement;
         $submission_date = $request->submission_date;
         $file_name = $request->file_name;
-
         $url = $request->url;
         $web_link = $request->web_link;
         $finalised = $request->finalised;
         $comments = $request->comments;
-        $folder_name='public/indicator1/'.$addAce->name;
-
-
-
         $saveAce=$addAce->save();
+
         if (isset($addAce->id)) {
             $aceId = $addAce->id;
+            $destinationPath = base_path().'/public/indicator1/'.$addAce->name; // upload path
         foreach ($requirement as $key => $req) {
             $addIndicatorOne = new IndicatorOne();
             $addIndicatorOne->aceId = $aceId;
             $addIndicatorOne->requirement = $requirement[$key];
+
             $addIndicatorOne->submission_date = $submission_date[$key];
             $file = $request->file('file_name')[$key];
 
             $extension = $file->getClientOriginalExtension();
-            Storage::disk('public')->put($file->getClientOriginalName(),  File::get($file));
+            $file->move($destinationPath,$file->getClientOriginalName());
             $addIndicatorOne->file_name = $file_name[$key] ->getClientOriginalName();
             $addIndicatorOne->url = $url[$key];
             $addIndicatorOne->web_link = $web_link[$key];
@@ -168,13 +168,18 @@ class AcesController extends Controller {
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
 		$ace_courses = AceCourse::where('ace_id', '=', $id)->pluck('course_id')->toArray();
 
-		$indicator_ones=IndicatorOne::where('aceId','=',$request->id)->get();
+//		$indicator_ones=IndicatorOne::where('aceId','=',$id)->pluck('id')->toArray();
+        $indicator_ones=IndicatorOne::where('aceId', '=', $id)->get();
+
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
+
+//        $indicator_ones=Indicator::activeIndicator()->parentIndicator(1)->get();
+
 
 
 
 		$view = view('aces.edit-view', compact('ace', 'universities', 'courses', 'ace_courses', 'currency','requirements','indicator_ones'))->render();
-		return response()->json(['theView' => $view, 'courses' => $courses, 'ace' => $ace]);
+		return response()->json(['theView' => $view, 'courses' => $courses, 'ace' => $ace, 'indicator_ones'=>$indicator_ones]);
 	}
 
 	/**
@@ -183,7 +188,9 @@ class AcesController extends Controller {
 	 */
 	public function update_ace(Request $request) {
 
-//        return $request->all();
+
+
+        DB::beginTransaction();
 		$id = Crypt::decrypt($request->id);
 		$this->validate($request, [
 			'id' => 'required|string|min:100',
@@ -202,12 +209,7 @@ class AcesController extends Controller {
 			'contact_email' => 'nullable|string|email|min:3',
 			'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
 			'position' => 'nullable|string|min:3',
-            'requirement' => 'nullable|string|min:3',
-            'signature' => 'nullable|string|min:3',
-            'web_link' => 'nullable|string|min:3',
             'ace_type' =>'required|string|min:2',
-            'finalised' => 'nullable|string|min:3',
-            'comments' => 'nullable|string|min:3',
 		]);
 
 		$addAce = Ace::find($id);
@@ -224,13 +226,64 @@ class AcesController extends Controller {
 		$addAce->person_email = $request->contact_email;
 		$addAce->person_number = $request->contact_person_phone;
 		$addAce->position = $request->position;
-        $addAce->requirement = $request->requirement;
-        $addAce->signature = $request->signature;
-        $addAce->web_link = $request->web_link;
         $addAce->ace_type = $request->ace_type;
-        $addAce->finalised = $request->finalised;
-        $addAce->comments = $request->comments;
+        $requirement = $request->requirement;
+        $submission_date = $request->submission_date;
+
+
+        $oldIndicator=IndicatorOne::where('aceId', '=', $id)->get();
+        $url = $request->url;
+        $web_link = $request->web_link;
+        $finalised = $request->finalised;
+        $comments = $request->comments;
 		$addAce->save();
+        if (isset($addAce->id)) {
+            $aceId = $addAce->id;
+            $destinationPath = base_path().'/public/indicator1/'.$addAce->name; // upload path
+            foreach ($oldIndicator as $key => $req) {
+                $updateIndicatorOne = IndicatorOne::find($req->id);
+                $updateind['requirement'] = $requirement[$key];
+                $updateind['submission_date'] = $submission_date[$key];
+                if($request->has('file_name')) {
+                    $file_name = $request->file_name;
+                    if (isset($request->file('file_name')[$key])) {
+
+                        if ($request->file('file_name')[$key] == "") {
+                            $updateind['file_name'] = $req->file_name;
+                        } else {
+                            $file = $request->file('file_name')[$key];
+                            $extension = $file->getClientOriginalExtension();
+
+                            $updateind['file_name'] = $file->getClientOriginalName();
+                        }
+                    } else {
+                        $updateind['file_name'] = $req->file_name;
+                    }
+                }else{
+                    $updateind['file_name'] = $req->file_name;
+                }
+                $files[] = $updateind['file_name']." ".$req->id;
+
+
+
+                $updateind['url'] = $url[$key];
+                $updateind['web_link'] = $web_link[$key];
+                $updateind['finalised'] = $request['finalised'.$key];
+                $updateind['comments'] = $comments[$key];
+                $files[] = $updateind;
+
+                $saveIndicator = $updateIndicatorOne->update($updateind);
+
+            }
+
+        }
+
+
+        DB::commit();
+
+
+
+
 		AceCourse::where('ace_id', '=', $id)->delete();
 		foreach ($request->courses as $key => $course_id) {
 			$ace_course = new AceCourse();
