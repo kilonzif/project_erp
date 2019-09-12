@@ -161,7 +161,7 @@
                                 </div>
                             </div>
                             @php
-                                $indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);
+                                //$indicators = $project->indicators->where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1);
                             @endphp
                             @foreach($indicators as $indicator)
                                 <div class="card mb-1">
@@ -192,9 +192,9 @@
                                                         @foreach($sub_indicators as $sub_indicator)
                                                             <tr>
                                                                 <td>{{$sub_indicator->title}} <span class="required">*</span></label>
-                                                                    @if($sub_indicator->unit_measure)
-                                                                        <br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>
-                                                                    @endif
+                                                                    {{--@if($sub_indicator->unit_measure)--}}
+                                                                        {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
+                                                                    {{--@endif--}}
                                                                 </td>
                                                                 <td style="width: 200px">
                                                                     <div class="form-grou{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}">

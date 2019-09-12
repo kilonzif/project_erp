@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class IndicatorsGeneratorController extends Controller
 {
-    //
     public function __construct()
     {
         $this->middleware('auth');
@@ -20,15 +19,13 @@ class IndicatorsGeneratorController extends Controller
     public function index()
     {
         $fields = DB::connection('mongodb')->collection('indicator_form')->get();
-//        return $fields;
         return view('settings.indicator-form.index',compact('fields'));
     }
 
     public function create()
     {
-        $indicators = Indicator::where('parent_id','=', 0)->where('status','=', 1)->get();
+        $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->get();
         $projects = Project::where('status','=', 1)->get();
-//        return $projects->indicators;
         return view('settings.indicator-form.form-creator', compact('indicators','projects'));
     }
 
@@ -53,17 +50,14 @@ class IndicatorsGeneratorController extends Controller
         }else{
             notify(new ToastNotification('Sorry!', 'Something went wrong. Could not submit!', 'danger'));
             return back();
-//            return response()->json(['message'=>"Sorry, something went wrong!",'data'=>$values]);
         }
     }
 
     public function edit($id)
     {
-        $indicators = Indicator::where('parent_id','=', 0)->where('status','=', 1)->get();
+        $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->get();
         $projects = Project::where('status','=', 1)->get();
-//        $form = DB::connection('mongodb')->collection('indicator_form')->insert($values);
         $form = IndicatorForm::find($id);
-//        return $form;
         return view('settings.indicator-form.form-edit', compact('indicators','projects','form'));
     }
 
@@ -88,7 +82,6 @@ class IndicatorsGeneratorController extends Controller
         }else{
             notify(new ToastNotification('Sorry!', 'Update Failed!', 'danger'));
             return back();
-//            return response()->json(['message'=>"Sorry, something went wrong!",'data'=>$values]);
         }
     }
 }
