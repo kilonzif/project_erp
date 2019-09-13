@@ -75,16 +75,8 @@ class AcesController extends Controller {
             'courses.*' => 'required|integer|min:1',
             'position' => 'nullable|string|min:3',
             'ace_type' => 'required|string|min:2',
-//            'requirement' => 'nullable|string|min:3',
-//            'submission_date' => 'required|date|min:4',
-//            'file_name' => 'required|string|min:3',
-//            'url' => 'required|string|min:3',
-//            'web_link' => 'required|string|min:3',
-//            'finalised' => 'required|string|min:3',
-//            'comments' => 'required|text|min:3',
-        ]);
-//        return $request->all();
 
+]);
         DB::beginTransaction();
         $addAce = new Ace();
         $addAce->name = $request->name;
