@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Ace;
 use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
+use App\Indicator;
 use App\Project;
 use App\Report;
 use App\ReportIndicatorsStatus;
@@ -54,14 +55,16 @@ class ReportFormController extends Controller {
 	 */
 	public function add_report() {
 		$me = new CommonFunctions();
+//		dd($me->isSubmissionOpen());
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
+		$indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->orderBy('identifier','asc')->get();
 		$aces = Ace::where('active', '=', 1)->get();
 		$ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 
 		if ($project) {
-			return view('report-form.new', compact('project', 'aces', 'me', 'ace_officers'));
+			return view('report-form.new', compact('project', 'aces', 'me', 'ace_officers','indicators'));
 		} else {
 			notify(new ToastNotification('Notice!', 'Please add the project first!', 'warning'));
 			return back();
