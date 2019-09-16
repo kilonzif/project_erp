@@ -79,13 +79,16 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     //ACEs Routes
     Route::get('aces', 'AcesController@index')->name('aces');
     Route::post('ace/create', 'AcesController@create')->name('aces.create');
+    Route::post('ace/add_indicator1', 'AcesController@add_indicator1')->name('aces.add_indicator1');
     Route::get('aces/json-view', 'AcesController@edit_view')->name('ace.edit');
     Route::post('ace/update', 'AcesController@update_ace')->name('ace.update');
     Route::get('aces/{id}', 'AcesController@ace_page')->name('aces.profile');
     Route::get('ace/{id}/baselines', 'AcesController@baselines')->name('ace.baselines');
+    Route::get('ace/{id}/indicator_one', 'AcesController@indicator_one')->name('ace.indicator_one');
     Route::get('ace/{id}/targets/{year_id?}', 'AcesController@target_values')->name('ace.targets');
     Route::post('ace/{id}/baselines/save', 'AcesController@baselines_save')->name('ace.baselines.save');
     Route::post('ace/{id}/targets/save/{year_id?}', 'AcesController@targets_save')->name('ace.targets.save');
+    Route::post('ace/{id}/indicator_one/save', 'AcesController@indicator_one_save')->name('ace.indicator_one.save');
 
     //Institutions Routes
     Route::get('institutions', 'InstitutionsController@index')->name('institutions');

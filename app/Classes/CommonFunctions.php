@@ -199,4 +199,42 @@ class CommonFunctions {
 			return $theQuery;
 		}
 	}
+
+
+	public function getRequirementLabels( $code=null)
+    {
+        $requirement_labels = [
+
+            'THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS' => [
+                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+            ],
+
+        'IMPLEMENTATION PLAN'=>[
+        'submission_date' => TRUE, 'file1' => TRUE, 'file2' => TRUE, 'comments' => FALSE, 'url' => FALSE
+        ],
+            'PROCEDURES MANUALS'=>[
+                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+            ],
+            'PROJECT MANAGEMENT CERTIFICATION'=>[
+                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+            ],
+            'STUDENT HANDBOOK (INCLUDES SCHOLARSHIP AND ANTI-SEXUAL HARASSMENT POLICIES)'=>[
+                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => TRUE
+            ],
+            'PROJECT WEBSITE'=>[
+                'submission_date' => TRUE, 'file1' => FALSE, 'file2' => FALSE, 'comments' => TRUE, 'url' => TRUE
+            ],
+            'SECTORAL ADVISORY BOARD'=>[
+                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+            ]
+        ];
+
+        if ($code == null) {
+            return $requirement_labels;
+        } else {
+            return $requirement_labels[$code];
+        }
+        }
+
+
 }

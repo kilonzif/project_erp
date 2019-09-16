@@ -25,23 +25,22 @@
     </div>
 
     <div class="content-body">
-        <h4 class="card-title">Add ACEs</h4>
-        <form id="add-form" action="{{route('user-management.aces.create')}}" method="post" enctype="multipart/form-data">
-            @csrf
-            <div class="row">
-                <div class="col-12">
-                    <div class="card" id="action-card">
-                        <div class="card-header">
-                            <h4 class="card-title">ACE Details</h4>
-                            <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                            <div class="heading-elements">
-                                <ul class="list-inline mb-0">
-                                    <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                </ul>
-                            </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card" id="action-card">
+                    <div class="card-header">
+                        <h4 class="card-title">Add ACEs</h4>
+                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            <ul class="list-inline mb-0">
+                                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                            </ul>
                         </div>
-                        <div class="card-content collapse show">
-                            <div class="card-body">
+                    </div>
+                    <div class="card-content collapse show">
+                        <div class="card-body">
+                            <form id="add-form" action="{{route('user-management.aces.create')}}" method="post" enctype="multipart/form-data">
+                                @csrf
                                 <div id="hidden-input"></div>
                                 <div class="row">
                                     <div class="col-md-8">
@@ -127,7 +126,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group{{ $errors->has('contact_name') ? ' form-control-warning' : '' }}">
-                                            <label for="contact_name">Contact Person Name</label>
+                                            <label for="contact_name">Center Leader's Name</label>
                                             <input type="text" required min="2" name="contact_name" placeholder="Contact Person Name" class="form-control" value="{{ old('contact_name') }}" id="contact_name">
                                             @if ($errors->has('contact_name'))
                                                 <p class="text-right">
@@ -168,7 +167,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group{{ $errors->has('contact_person_phone') ? ' form-control-warning' : '' }}">
-                                            <label for="contact">Contact Person's Number</label>
+                                            <label for="contact">Center Leader's Number</label>
                                             <input type="text" name="contact_person_phone" placeholder="Phone Number" class="form-control" value="{{ old('contact_person_phone') }}" id="contact_person_phone">
                                             @if ($errors->has('contact_person_phone'))
                                                 <p class="text-right">
@@ -177,24 +176,9 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        <div class="form-group{{ $errors->has('courses') ? ' form-control-warning' : '' }}">
-                                            <label for="courses">Programmes <span class="required">*</span></label>
-                                            <select name="courses[]" id="courses" class="select2 form-control" multiple style="width: 100%">
-                                                @foreach($courses as $course)
-                                                    <option value="{{$course->id}}">{{$course->name}}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('courses'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('courses') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
                                     <div class="col-md-4">
                                         <div class="form-group{{ $errors->has('contact_email') ? ' form-control-warning' : '' }}">
-                                            <label for="contact_email">Contact Person Email</label>
+                                            <label for="contact_email">Center Leader's Email</label>
                                             <input type="email" placeholder="Contact Person Email" min="6" name="contact_email" class="form-control" value="{{ old('contact_email') }}" id="contact_email">
                                             @if ($errors->has('contact_email'))
                                                 <p class="text-right">
@@ -238,7 +222,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group{{ $errors->has('position') ? ' form-control-warning' : '' }}">
-                                            <label for="position">Contact Person's Position</label>
+                                            <label for="position">Center Leader's Position</label>
                                             <input type="text" name="position" placeholder="Position" class="form-control" value="{{ old('position') }}" id="position">
                                             @if ($errors->has('position'))
                                                 <p class="text-right">
@@ -247,117 +231,18 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+
+
+                                        <div class="form-group">
+                                            <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                                Save</button>
+                                        </div>
+                                    </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <h4 class="card-title">INDICATOR 1(INSTITUTION READINESS)</h4>
-            {{ csrf_field() }}
-            @foreach($requirements as $key=>$req)
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card" id="action-card">
-                            <div class="card-header">
-                                <h4 class="card-title">{{$req}}</h4>
-                                <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                                <div class="heading-elements">
-                                    <ul class="list-inline mb-0">
-                                        <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="card-content collapse show">
-                                <div class="card-body">
-                                <input type="hidden" name="requirement[]" value="{{$req}}" >
-                                <div class="row">
-                                    <div style="margin-top: 2rem;" class="col-md-1">
-                                        <div class="form-group">
-                                            <label>Finalised</label>
-                                        </div>
-                                    </div>
-                                    <div style="margin-top: 2rem;" class="col-md-1">
-                                        <div class="form-group">
-                                            <div class="skin skin-square">
-                                                <label for="finalised" class="">Yes</label>
-                                                <input type="radio" name="{{'finalised'.$key}}" value="1"  id="finalised">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div style="margin-top: 2rem;" class="col-md-1">
-                                        <div class="form-group">
-                                            <div class="skin skin-square">
-                                                <label for="finalised" class="">NO</label>
-                                                <input type="radio" name="{{'finalised'.$key}}" value="0"  id="finalised">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label>Submission Date:</label>
-                                            <input type="date" class="form-control" name="submission_date[]"  id="submission_date" value="{{old('submission_date1[]')}}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>File Upload:</label>
-                                            <input type="file" class="form-control" id="file_name[]" name="file_name[]" value="{{old('file_name')}}">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">
-                                            <label>URL:</label>
-                                            <input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url[]') }}" id="url">
-                                            @if ($errors->has('url[]'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('url[]') }}</small>
-                                                </p>
-                                            @endif
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">
-                                            <label for="web_link1">Web Link</label>
-                                            <input type="text" name="web_link[]" placeholder="web_link" class="form-control"  value="{{ old('web_link[]') }}" id="web_link1">
-                                            @if ($errors->has('web_link[]'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('web_link[]') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
-                                            <label for="comments1">Comments</label>
-                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments[]') }}" id="comments1">
-                                            @if ($errors->has('comments[]'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('comments[]') }}</small>
-                                                </p>
-                                            @endif
-
-                                        </div>
-                                    </div>
-                                </div>
-                                {{--<hr>--}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
-                            Save</button>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -393,12 +278,12 @@
                                                 <td>{{$ace->contact}}</td>
                                                 <td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <a class="btn btn-primary square" href="{{route('user-management.aces.profile',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                                            <i class="icon-eye"></i>
-                                                        </a>
-                                                        <a class="btn btn-secondary square" href="#action-card" onclick="editAce('{{\Illuminate\Support\Facades\Crypt::encrypt($ace->id)}}')">
-                                                            <i class="icon-pencil"></i>
-                                                        </a>
+                                                    <a class="btn btn-primary square" href="{{route('user-management.aces.profile',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
+                                                        <i class="icon-eye"></i>
+                                                    </a>
+                                                    <a class="btn btn-secondary square" href="#action-card" onclick="editAce('{{\Illuminate\Support\Facades\Crypt::encrypt($ace->id)}}')">
+                                                        <i class="icon-pencil"></i>
+                                                    </a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -416,6 +301,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 @push('vendor-script')
@@ -485,7 +371,7 @@
             function changeFile(key) {
                 $('#'+key).show();
             }
-
+            
         </script>
 
 @endpush

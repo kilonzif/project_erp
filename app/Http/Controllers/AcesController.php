@@ -9,6 +9,7 @@ use App\Aceemail;
 use App\AceIndicatorsBaseline;
 use App\AceIndicatorsTarget;
 use App\AceIndicatorsTargetYear;
+use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Course;
 use App\Currency;
@@ -36,18 +37,12 @@ class AcesController extends Controller {
 
 
 	public function index() {
-
 		$aces = Ace::orderBy('name', 'ASC')->get();
 		$courses = Course::orderBy('name', 'ASC')->get();
 		$currency = Currency::orderBy('name', 'ASC')->get();
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
-		$requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
-		return view('aces.index', compact('aces', 'universities', 'courses', 'currency','requirements'));
+		return view('aces.index', compact('aces', 'universities', 'courses', 'currency'));
 	}
-
-
-
-
 
 
     /**
@@ -57,8 +52,8 @@ class AcesController extends Controller {
      */
     public function create(Request $request)
     {
-//        return $request->all();
-        $this->validate($request, [
+//        dd($request->all());
+            $this->validate($request, [
             'name' => 'required|string|min:3|unique:aces,name',
             'contact' => 'required|numeric|digits_between:10,17',
             'email' => 'required|string|email|min:3',
@@ -71,14 +66,14 @@ class AcesController extends Controller {
             'contact_name' => 'nullable|string|min:3',
             'contact_email' => 'nullable|string|email|min:3',
             'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
-            'courses' => 'required|array|min:1',
-            'courses.*' => 'required|integer|min:1',
             'position' => 'nullable|string|min:3',
             'ace_type' => 'required|string|min:2',
 
 ]);
-        DB::beginTransaction();
+
+
         $addAce = new Ace();
+
         $addAce->name = $request->name;
         $addAce->acronym = $request->acronym;
         $addAce->field = $request->field;
@@ -93,51 +88,43 @@ class AcesController extends Controller {
         $addAce->person_number = $request->contact_person_phone;
         $addAce->position = $request->position;
         $addAce->ace_type = $request->ace_type;
-        $requirement = $request->requirement;
-        $submission_date = $request->submission_date;
-        $file_name = $request->file_name;
-        $url = $request->url;
-        $web_link = $request->web_link;
-        $finalised = $request->finalised;
-        $comments = $request->comments;
-        $saveAce=$addAce->save();
-
-        if (isset($addAce->id)) {
-            $aceId = $addAce->id;
-            $destinationPath = base_path().'/public/indicator1/'.$addAce->name; // upload path
-        foreach ($requirement as $key => $req) {
-            $addIndicatorOne = new IndicatorOne();
-            $addIndicatorOne->aceId = $aceId;
-            $addIndicatorOne->requirement = $requirement[$key];
-
-            $addIndicatorOne->submission_date = $submission_date[$key];
-            $file = $request->file('file_name')[$key];
-
-            $extension = $file->getClientOriginalExtension();
-            $file->move($destinationPath,$file->getClientOriginalName());
-            $addIndicatorOne->file_name = $file_name[$key] ->getClientOriginalName();
-            $addIndicatorOne->url = $url[$key];
-            $addIndicatorOne->web_link = $web_link[$key];
-            $addIndicatorOne->finalised = $request['finalised'.$key];
-            $addIndicatorOne->comments = $comments[$key];
 
 
-            $saveIndicator=$addIndicatorOne->save();
+        $addAce->save();
 
-        }
+//        if (isset($addAce->id)) {
+//            $aceId = $addAce->id;
+//            $destinationPath = base_path().'/public/indicator1/'.$addAce->name; // upload path
+//        foreach ($requirement as $key => $req) {
+//            $addIndicatorOne = new IndicatorOne();
+//            $addIndicatorOne->aceId = $aceId;
+//            $addIndicatorOne->requirement = $requirement[$key];
+//
+//            $addIndicatorOne->submission_date = $submission_date[$key];
+//            $file = $request->file('file_name')[$key];
+//
+//            $extension = $file->getClientOriginalExtension();
+//            $file->move($destinationPath,$file->getClientOriginalName());
+//            $addIndicatorOne->file_name = $file_name[$key] ->getClientOriginalName();
+//            $addIndicatorOne->url = $url[$key];
+//            $addIndicatorOne->web_link = $web_link[$key];
+//            $addIndicatorOne->finalised = $request['finalised'.$key];
+//            $addIndicatorOne->comments = $comments[$key];
+//
+//
+//            $saveIndicator=$addIndicatorOne->save();
+//
+//        }
+//
+//    }            DB::commit();
 
-    }
 
-
-            DB::commit();
-
-
-		foreach ($request->courses as $key => $course_id) {
-			$ace_course = new AceCourse();
-			$ace_course->ace_id = $addAce->id;
-			$ace_course->course_id = $course_id;
-			$ace_course->save();
-		}
+//		foreach ($request->courses as $key => $course_id) {
+//			$ace_course = new AceCourse();
+//			$ace_course->ace_id = $addAce->id;
+//			$ace_course->course_id = $course_id;
+//			$ace_course->save();
+//		}
 		if (isset($addAce->id)) {
 			notify(new ToastNotification('Successful!', 'New ACE Added', 'success'));
 			return redirect()->route('user-management.aces.profile', [Crypt::encrypt($addAce->id)]);
@@ -147,21 +134,79 @@ class AcesController extends Controller {
 		}
 	}
 
+    public function indicator_one($id) {
+        $ace_id = Crypt::decrypt($id);
+
+        $ace = Ace::find($ace_id);
+        $all_aces = Ace::get();
+        $requirements = array();
+        $getRequirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
+//        $getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->pluck('baseline', 'indicator_id');
+        if ($getRequirements->isNotEmpty()) {
+            $requirements = $getRequirements;
+        }
+        $indicatorOne = new CommonFunctions();
+        $labels=$indicatorOne->getRequirementLabels(null);
+        $indicator_ones=IndicatorOne::where('ace_id', '=', $id)->get();
+
+        return view('aces.indicator-one', compact('ace','all_aces','requirements','indicator_ones','labels'));
+    }
+
+    public  function indicator_one_save(Request $request, $id)
+    {
+
+        $ace_id = Crypt::decrypt($id);
+        $requirement = $request->requirement;
+        foreach ($requirement as $key => $req){
+            $addIndicatorOne = new IndicatorOne();
+            $submission_date = $request->submission_date[$key];
+            $file_one = $request->file_one[$key];
+            $file_two = $request->file_two[$key];
+            $url = $request->url[$key];
+            $comments = $request->comments[$key];
+            $destinationPath = base_path() . '/public/indicator1/'; // upload path
+            $addIndicatorOne->ace_id= $ace_id;
+            $addIndicatorOne->requirement = $requirement[$key];
+            $addIndicatorOne->submission_date = $submission_date;
+            $file1 = $request->file('file_one');
+            $file2 = $request->file('file_two');
+            if(isset($file1)||isset($file_two)){
+                $file1->move($destinationPath, $file1->getClientOriginalName());
+                $file2->move($destinationPath, $file2->getClientOriginalName());
+                $addIndicatorOne->file_one = $file_one->getClientOriginalName();
+                $addIndicatorOne->file_two = $file_two->getClientOriginalName();
+            }
+            $addIndicatorOne->url = $url;
+            $addIndicatorOne->comments = $comments;
+//         dd($addIndicatorOne);
+            $addIndicatorOne->save();
+        }
+
+        if (isset($addIndicatorOne->id)) {
+            notify(new ToastNotification('Successful!', 'Indicator 1 Requirement Added', 'success'));
+            return back();
+        } else {
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+
+    }
 	/**
 	 * @param Request $request
 	 * @return \Illuminate\Http\JsonResponse
 	 * @throws \Throwable
 	 */
 	public function edit_view(Request $request) {
+
 		$id = Crypt::decrypt($request->id);
 		$ace = Ace::find($id);
-		$courses = Course::orderBy('name', 'ASC')->get();
+//		$courses = Course::orderBy('name', 'ASC')->get();
 		$currency = Currency::orderBy('name', 'ASC')->get();
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
-		$ace_courses = AceCourse::where('ace_id', '=', $id)->pluck('course_id')->toArray();
+//		$ace_courses = AceCourse::where('ace_id', '=', $id)->pluck('course_id')->toArray();
 
 //		$indicator_ones=IndicatorOne::where('aceId','=',$id)->pluck('id')->toArray();
-        $indicator_ones=IndicatorOne::where('aceId', '=', $id)->get();
+        $indicator_ones=IndicatorOne::where('ace_id', '=', $id)->get();
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
@@ -170,8 +215,8 @@ class AcesController extends Controller {
 
 
 
-		$view = view('aces.edit-view', compact('ace', 'universities', 'courses', 'ace_courses', 'currency','requirements','indicator_ones'))->render();
-		return response()->json(['theView' => $view, 'courses' => $courses, 'ace' => $ace, 'indicator_ones'=>$indicator_ones]);
+		$view = view('aces.edit-view', compact('ace', 'universities','currency','requirements','indicator_ones'))->render();
+		return response()->json(['theView' => $view, 'ace' => $ace, 'indicator_ones'=>$indicator_ones]);
 	}
 
 	/**
@@ -179,10 +224,6 @@ class AcesController extends Controller {
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function update_ace(Request $request) {
-
-
-
-        DB::beginTransaction();
 		$id = Crypt::decrypt($request->id);
 		$this->validate($request, [
 			'id' => 'required|string|min:100',
@@ -195,16 +236,14 @@ class AcesController extends Controller {
 			'university' => 'required|integer|min:1',
 			'active' => 'nullable|boolean',
 			'acronym' => 'required|string|min:2',
-			'courses' => 'required|array|min:1',
-			'courses.*' => 'required|integer|min:1',
 			'contact_name' => 'nullable|string|min:3',
 			'contact_email' => 'nullable|string|email|min:3',
 			'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
 			'position' => 'nullable|string|min:3',
             'ace_type' =>'required|string|min:2',
 		]);
-
 		$addAce = Ace::find($id);
+//		dd($addAce);
 		$addAce->name = $request->name;
 		$addAce->acronym = $request->acronym;
 		$addAce->contact = $request->contact;
@@ -219,70 +258,70 @@ class AcesController extends Controller {
 		$addAce->person_number = $request->contact_person_phone;
 		$addAce->position = $request->position;
         $addAce->ace_type = $request->ace_type;
-        $requirement = $request->requirement;
-        $submission_date = $request->submission_date;
+        $addAce->save();
+//        $submission_date = $request->submission_date;
 
 
-        $oldIndicator=IndicatorOne::where('aceId', '=', $id)->get();
-        $url = $request->url;
-        $web_link = $request->web_link;
-        $finalised = $request->finalised;
-        $comments = $request->comments;
-		$addAce->save();
-        if (isset($addAce->id)) {
-            $aceId = $addAce->id;
-            $destinationPath = base_path().'/public/indicator1/'.$addAce->name; // upload path
-            foreach ($oldIndicator as $key => $req) {
-                $updateIndicatorOne = IndicatorOne::find($req->id);
-                $updateind['requirement'] = $requirement[$key];
-                $updateind['submission_date'] = $submission_date[$key];
-                if($request->has('file_name')) {
-                    $file_name = $request->file_name;
-                    if (isset($request->file('file_name')[$key])) {
+//        $oldIndicator=IndicatorOne::where('aceId', '=', $id)->get();
+//        $url = $request->url;
+//        $web_link = $request->web_link;
+//        $finalised = $request->finalised;
+//        $comments = $request->comments;
+//		$addAce->save();
+//        if (isset($addAce->id)) {
+//            $aceId = $addAce->id;
+//            $destinationPath = base_path().'/public/indicator1/'.$addAce->name; // upload path
+//            foreach ($oldIndicator as $key => $req) {
+//                $updateIndicatorOne = IndicatorOne::find($req->id);
+////                $updateind['requirement'] = $requirement[$key];
+//                $updateind['submission_date'] = $submission_date[$key];
+//                if($request->has('file_name')) {
+//                    $file_name = $request->file_name;
+//                    if (isset($request->file('file_name')[$key])) {
+//
+//                        if ($request->file('file_name')[$key] == "") {
+//                            $updateind['file_name'] = $req->file_name;
+//                        } else {
+//                            $file = $request->file('file_name')[$key];
+//                            $extension = $file->getClientOriginalExtension();
+//
+//                            $updateind['file_name'] = $file->getClientOriginalName();
+//                        }
+//                    } else {
+//                        $updateind['file_name'] = $req->file_name;
+//                    }
+//                }else{
+//                    $updateind['file_name'] = $req->file_name;
+//                }
+//                $files[] = $updateind['file_name']." ".$req->id;
+//
+//
+//
+//                $updateind['url'] = $url[$key];
+//                $updateind['web_link'] = $web_link[$key];
+//                $updateind['finalised'] = $request['finalised'.$key];
+//                $updateind['comments'] = $comments[$key];
+//                $files[] = $updateind;
+//
+//                $saveIndicator = $updateIndicatorOne->update($updateind);
+//
+//            }
+//
+//        }
+//
+//
+//        DB::commit();
+//
 
-                        if ($request->file('file_name')[$key] == "") {
-                            $updateind['file_name'] = $req->file_name;
-                        } else {
-                            $file = $request->file('file_name')[$key];
-                            $extension = $file->getClientOriginalExtension();
-
-                            $updateind['file_name'] = $file->getClientOriginalName();
-                        }
-                    } else {
-                        $updateind['file_name'] = $req->file_name;
-                    }
-                }else{
-                    $updateind['file_name'] = $req->file_name;
-                }
-                $files[] = $updateind['file_name']." ".$req->id;
-
-
-
-                $updateind['url'] = $url[$key];
-                $updateind['web_link'] = $web_link[$key];
-                $updateind['finalised'] = $request['finalised'.$key];
-                $updateind['comments'] = $comments[$key];
-                $files[] = $updateind;
-
-                $saveIndicator = $updateIndicatorOne->update($updateind);
-
-            }
-
-        }
-
-
-        DB::commit();
-
-
-
-
-		AceCourse::where('ace_id', '=', $id)->delete();
-		foreach ($request->courses as $key => $course_id) {
-			$ace_course = new AceCourse();
-			$ace_course->ace_id = $addAce->id;
-			$ace_course->course_id = $course_id;
-			$ace_course->save();
-		}
+//
+//
+//		AceCourse::where('ace_id', '=', $id)->delete();
+//		foreach ($request->courses as $key => $course_id) {
+//			$ace_course = new AceCourse();
+//			$ace_course->ace_id = $addAce->id;
+//			$ace_course->course_id = $course_id;
+//			$ace_course->save();
+//		}
 		notify(new ToastNotification('Successful!', 'ACE Updated!', 'success'));
 		return back();
 	}
@@ -294,12 +333,14 @@ class AcesController extends Controller {
 		$dlr_unit_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('unit_cost','ace_dlr_indicator_id');
 		$dlr_max_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('max_cost','ace_dlr_indicator_id');
 		$ace_dlrs = AceDlrIndicator::where('parent_id', '=', 0)->orderBy('order', 'asc')->get();
+
 		$target_years = $ace->target_years;
 
 		$aceemails = Aceemail::where('ace_id', '=', $id)->orderBy('email', 'asc')->get();
+        $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
 		return view('aces.profile', compact('ace','dlr_unit_costs', 'target_years',
-            'ace_dlrs', 'aceemails', 'dlr_max_costs'));
+            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
 	}
 
 	public function baselines($id) {

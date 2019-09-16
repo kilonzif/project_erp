@@ -64,12 +64,23 @@
                             </table>
 
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 text-left">
+                                    <a class="btn btn-secondary square ml-3" href="{{route('user-management.ace.indicator_one',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
+                                        <i class="ft-plus-circle"></i>Institutional Readiness (Indicator 1)
+                                    </a>
+                                </div>
+                                <div class="col-md-3 text-right">
+                                    <a class="btn btn-primary square ml-3"href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
+                                        <i class="ft-plus-circle"></i>Programmes
+                                    </a>
+                                </div>
+                                <div class="col-md-3 text-right">
                                     <a class="btn btn-primary square"href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
                                         Indicator Baselines
                                     </a>
                                 </div>
-                                <div class="col-md-3 text-right">
+
+                                <div class="col-md-3 text-left">
                                     <a class="btn btn-secondary square ml-3" href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
                                        <i class="ft-plus-circle"></i> New Targets
                                     </a>
@@ -111,6 +122,10 @@
                 </div>
             </div>
         </div>
+
+
+
+
 
         <div class="row">
             <div class="col-md-12">

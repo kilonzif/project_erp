@@ -15,15 +15,14 @@ class CreateIndicatorOneTable extends Migration
     {
         Schema::create('indicator_one', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->Integer('aceId')->unsigned();
-            $table->foreign('aceId')->references('id')->on('aces')->onDelete('cascade');
+            $table->Integer('ace_id')->unsigned();
+            $table->foreign('ace_id')->references('id')->on('aces')->onDelete('cascade');
             $table->string('requirement');
-            $table->timestamp('submission_date');
-            $table->string('file_name');
-            $table->string('url');
-            $table->string('web_link');
-            $table->boolean('finalised');
-            $table->text('comments');
+            $table->date('submission_date');
+            $table->string('file_one')->nullable();
+            $table->string('file_two')->nullable();
+            $table->string('url')->nullable();
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }

@@ -9,7 +9,7 @@
 </div>
 <div class="card-content collapse show">
     <div class="card-body">
-        <form id="add-form" action="{{route('user-management.ace.update')}}" method="post" enctype="multipart/form-data">
+        <form id="edit-form" action="{{route('user-management.ace.update')}}" method="post" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="id" value="{{\Illuminate\Support\Facades\Crypt::encrypt($ace->id)}}">
             <div class="row">
@@ -149,21 +149,6 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-md-8">
-                    <div class="form-group{{ $errors->has('courses') ? ' form-control-warning' : '' }}">
-                        <label for="courses">Programmes <span class="required">*</span></label>
-                        <select name="courses[]" id="courses" class="select2 form-control" multiple style="width: 100%">
-                            @foreach($courses as $course)
-                                <option {{(in_array($course->id,$ace_courses))?"selected" : ""}} value="{{$course->id}}">{{$course->name}}</option>
-                            @endforeach
-                        </select>
-                        @if ($errors->has('courses'))
-                            <p class="text-right">
-                                <small class="warning text-muted">{{ $errors->first('courses') }}</small>
-                            </p>
-                        @endif
-                    </div>
-                </div>
                 <div class="col-md-4">
                     <div class="form-group{{ $errors->has('contact_email') ? ' form-control-warning' : '' }}">
                         <label for="contact_email">Contact Person Email</label>
@@ -222,76 +207,76 @@
                     </div>
                 </div>
 
-                    <div class="col-md-12">
-                        <h4 class="card-title">Indicator 1(Institution Readiness)</h4>
-                    </div>
-                @foreach($indicator_ones as $key=>$indicator_one)
-                    <div class="col-md-6">
-                        <h4>{{$indicator_one->requirement}}</h4>
-                        <input type="hidden" name="requirement[]" value="{{ old('requirement')?old('requirement'):$indicator_one->requirement}}">
-                        <div class="form-group">
-                            <label>Finalised</label>
-                            <div class="skin skin-square">
-                                <label for="finalised" class="">Yes</label>
-                                <input type="radio" name="{{'finalised'.$key}}" value="1"  {{($indicator_one->finalised == 1)?"checked":""}} id="finalised">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="skin skin-square">
-                                <label for="finalised" class="">NO</label>
-                                <input type="radio" name="{{'finalised'.$key}}" value="1" {{($indicator_one->finalised == 0)?"checked":""}}  id="finalised">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                        <label>Submission Date:</label>
+                    {{--<div class="col-md-12">--}}
+                        {{--<h4 class="card-title">Indicator 1(Institution Readiness)</h4>--}}
+                    {{--</div>--}}
+                {{--@foreach($indicator_ones as $key=>$indicator_one)--}}
+                    {{--<div class="col-md-6">--}}
+                        {{--<h4>{{$indicator_one->requirement}}</h4>--}}
+                        {{--<input type="hidden" name="requirement[]" value="{{ old('requirement')?old('requirement'):$indicator_one->requirement}}">--}}
+                        {{--<div class="form-group">--}}
+                            {{--<label>Finalised</label>--}}
+                            {{--<div class="skin skin-square">--}}
+                                {{--<label for="finalised" class="">Yes</label>--}}
+                                {{--<input type="radio" name="{{'finalised'.$key}}" value="1"  {{($indicator_one->finalised == 1)?"checked":""}} id="finalised">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                            {{--<div class="skin skin-square">--}}
+                                {{--<label for="finalised" class="">NO</label>--}}
+                                {{--<input type="radio" name="{{'finalised'.$key}}" value="1" {{($indicator_one->finalised == 0)?"checked":""}}  id="finalised">--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                        {{--<label>Submission Date:</label>--}}
                             {{--<input type="text" value="{{ old('submission_date')?old('submission_date'):$indicator_one->submission_date}}">--}}
-                        <input type="date" class="form-control" name="submission_date[]"  id="submission_date" value="{{ old('submission_date')?old('submission_date'):$indicator_one->submission_date}}">
-                        </div>
-                        @if(!$indicator_one->file_name)
-                            <div class="form-group">
-                                <label>File Upload:</label>
-                                <input type="file" class="form-control" name="file_name[]" placeholder="{{$indicator_one->file_name}}" value="{{ old('file_name')?old('file_name'):$indicator_one->file_name}}">
-                            </div>
+                        {{--<input type="date" class="form-control" name="submission_date[]"  id="submission_date" value="{{ old('submission_date')?old('submission_date'):$indicator_one->submission_date}}">--}}
+                        {{--</div>--}}
+                        {{--@if(!$indicator_one->file_name)--}}
+                            {{--<div class="form-group">--}}
+                                {{--<label>File Upload:</label>--}}
+                                {{--<input type="file" class="form-control" name="file_name[]" placeholder="{{$indicator_one->file_name}}" value="{{ old('file_name')?old('file_name'):$indicator_one->file_name}}">--}}
+                            {{--</div>--}}
 
-                            @else
-                            <div class="form-group">
-                                <label>File uploaded:  {{$indicator_one->file_name}}</label>
-                                <img src=""  id="preview"/>
-                                 <input type="file" id="filename{{$key}}" name="file_name[]"  class="form-control" style="display:none"/>
-                                <a href="javascript:;" onclick="changeFile('filename{{$key}}')">Change</a>
-                            </div>
+                            {{--@else--}}
+                            {{--<div class="form-group">--}}
+                                {{--<label>File uploaded:  {{$indicator_one->file_name}}</label>--}}
+                                {{--<img src=""  id="preview"/>--}}
+                                 {{--<input type="file" id="filename{{$key}}" name="file_name[]"  class="form-control" style="display:none"/>--}}
+                                {{--<a href="javascript:;" onclick="changeFile('filename{{$key}}')">Change</a>--}}
+                            {{--</div>--}}
 
-                        @endif
+                        {{--@endif--}}
 
-                        <div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">
-                        <label>URL:</label>
-                        <input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url')?old('url'):$indicator_one->url}}" id="url">
-                        @if ($errors->has('url[]'))
-                        <p class="text-right">
-                        <small class="warning text-muted">{{ $errors->first('url[]') }}</small>
-                        </p>
-                        @endif
-                        </div>
-                        <div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">
-                            <label for="web_link1">Web Link</label>
-                            <input type="text" name="web_link[]" placeholder="web_link" class="form-control"  value="{{ old('web_link')?old('web_link'):$indicator_one->web_link}}" id="web_link1">
-                            @if ($errors->has('web_link[]'))
-                            <p class="text-right">
-                            <small class="warning text-muted">{{ $errors->first('web_link[]') }}</small>
-                            </p>
-                            @endif
-                        </div>
-                        <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
-                            <label for="comments1">Comments</label>
-                            <input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments')?old('comments'):$indicator_one->comments}}" id="comments1">
-                            @if ($errors->has('comments[]'))
-                            <p class="text-right">
-                            <small class="warning text-muted">{{ $errors->first('comments[]') }}</small>
-                            </p>
-                            @endif
-                        </div>
-                    </div>
-                    @endforeach
+                        {{--<div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">--}}
+                        {{--<label>URL:</label>--}}
+                        {{--<input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url')?old('url'):$indicator_one->url}}" id="url">--}}
+                        {{--@if ($errors->has('url[]'))--}}
+                        {{--<p class="text-right">--}}
+                        {{--<small class="warning text-muted">{{ $errors->first('url[]') }}</small>--}}
+                        {{--</p>--}}
+                        {{--@endif--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group{{ $errors->has('web_link[]') ? ' form-control-warning' : '' }}">--}}
+                            {{--<label for="web_link1">Web Link</label>--}}
+                            {{--<input type="text" name="web_link[]" placeholder="web_link" class="form-control"  value="{{ old('web_link')?old('web_link'):$indicator_one->web_link}}" id="web_link1">--}}
+                            {{--@if ($errors->has('web_link[]'))--}}
+                            {{--<p class="text-right">--}}
+                            {{--<small class="warning text-muted">{{ $errors->first('web_link[]') }}</small>--}}
+                            {{--</p>--}}
+                            {{--@endif--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">--}}
+                            {{--<label for="comments1">Comments</label>--}}
+                            {{--<input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments')?old('comments'):$indicator_one->comments}}" id="comments1">--}}
+                            {{--@if ($errors->has('comments[]'))--}}
+                            {{--<p class="text-right">--}}
+                            {{--<small class="warning text-muted">{{ $errors->first('comments[]') }}</small>--}}
+                            {{--</p>--}}
+                            {{--@endif--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                    {{--@endforeach--}}
 
             </div>
             <div class="form-group">
