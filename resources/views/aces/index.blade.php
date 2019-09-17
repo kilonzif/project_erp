@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group{{ $errors->has('dlr') ? ' form-control-warning' : '' }}">
-                                            <label for="dlr">DLR Amount <span class="required">*</span></label>
+                                            <label for="dlr">Grant Amount <span class="required">*</span></label>
                                             <input type="number" required placeholder="DLR Amount" min="0" name="dlr" class="form-control"
                                                    value="{{ old('dlr') }}" id="dlr" style="text-align: right;">
                                             @if ($errors->has('dlr'))
@@ -77,7 +77,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
                                             <label for="field">{{__('Currency')}} <span class="required">*</span></label>
                                             <select class="form-control" required name="currency" id="currency">
@@ -95,7 +95,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <div class="form-group{{ $errors->has('field') ? ' form-control-warning' : '' }}">
                                             <label for="field">{{__('Field of Study')}} <span class="required">*</span></label>
                                             <select class="form-control" required name="field" id="field">
@@ -125,14 +125,20 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('contact_name') ? ' form-control-warning' : '' }}">
-                                            <label for="contact_name">Center Leader's Name</label>
-                                            <input type="text" required min="2" name="contact_name" placeholder="Contact Person Name" class="form-control" value="{{ old('contact_name') }}" id="contact_name">
-                                            @if ($errors->has('contact_name'))
+                                        <div class="form-group{{ $errors->has('ace_type') ? ' form-control-warning' : '' }}">
+                                            <label for="ace_type">Type of Centres</label>
+                                            <select class="form-control" required name="ace_type" id="ace_type">
+                                                <option value="">--Choose--</option>
+                                                <option value="engineering">Colleges of Engineering </option>
+                                                <option value="emerging">Emerging Centre</option>
+                                                <option value="ACE">ACE</option>
+                                            </select>
+                                            @if ($errors->has('ace_type'))
                                                 <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('contact_name') }}</small>
+                                                    <small class="warning text-muted">{{ $errors->first('ace_type') }}</small>
                                                 </p>
                                             @endif
+
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -147,7 +153,7 @@
                                             @if ($errors->has('university'))
                                                 <p class="text-right">
 
-                                     <small class="warning text-muted">{{ $errors->first('email') }}</small>
+                                                    <small class="warning text-muted">{{ $errors->first('email') }}</small>
                                                     <small class="warning text-muted">{{ $errors->first('university') }}</small>
 
                                                 </p>
@@ -161,28 +167,6 @@
                                             @if ($errors->has('contact'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('contact') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('contact_person_phone') ? ' form-control-warning' : '' }}">
-                                            <label for="contact">Center Leader's Number</label>
-                                            <input type="text" name="contact_person_phone" placeholder="Phone Number" class="form-control" value="{{ old('contact_person_phone') }}" id="contact_person_phone">
-                                            @if ($errors->has('contact_person_phone'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('contact_person_phone') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('contact_email') ? ' form-control-warning' : '' }}">
-                                            <label for="contact_email">Center Leader's Email</label>
-                                            <input type="email" placeholder="Contact Person Email" min="6" name="contact_email" class="form-control" value="{{ old('contact_email') }}" id="contact_email">
-                                            @if ($errors->has('contact_email'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('contact_email') }}</small>
                                                 </p>
                                             @endif
                                         </div>
@@ -203,41 +187,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('ace_type') ? ' form-control-warning' : '' }}">
-                                            <label for="ace_type">Type of Centres</label>
-                                            <select class="form-control" required name="ace_type" id="ace_type">
-                                                <option value="">--Choose--</option>
-                                                <option value="engineering">Colleges of Engineering </option>
-                                                <option value="emerging">Emerging Centre</option>
-                                                <option value="ACE">ACE</option>
-                                            </select>
-                                            @if ($errors->has('ace_type'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('ace_type') }}</small>
-                                                </p>
-                                            @endif
-
-                                        </div>
+                                    <div class="form-group col-12">
+                                        <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                            Save</button>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('position') ? ' form-control-warning' : '' }}">
-                                            <label for="position">Center Leader's Position</label>
-                                            <input type="text" name="position" placeholder="Position" class="form-control" value="{{ old('position') }}" id="position">
-                                            @if ($errors->has('position'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('position') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                    </div>
-
-
-                                        <div class="form-group">
-                                            <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
-                                                Save</button>
-                                        </div>
-                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
