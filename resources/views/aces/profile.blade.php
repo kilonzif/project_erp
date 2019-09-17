@@ -70,11 +70,6 @@
                                     </a>
                                 </div>
                                 <div class="col-md-3 text-right">
-                                    <a class="btn btn-primary square ml-3"href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                        <i class="ft-plus-circle"></i>Programmes
-                                    </a>
-                                </div>
-                                <div class="col-md-3 text-right">
                                     <a class="btn btn-primary square"href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
                                         Indicator Baselines
                                     </a>
@@ -167,7 +162,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
-                        Mailing List
+                        Contact Group
                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">
@@ -181,15 +176,44 @@
                                 @csrf
                                 <div class="form-body">
                                     <div class="row">
-
                                         <div class="col-md-6">
                                             <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
-                                            <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
+                                            <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
-                                                <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="email" class="form-control" value="{{ old('email') }}" id="email">
-                                                @if ($errors->has('email'))
+                                                <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
+                                                @if ($errors->has('mailing_name'))
                                                     <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('email') }}</small>
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group{{ $errors->has('mailing_title') ? ' form-control-warning' : '' }}">
+                                                <label for="mailing_title">Position <span class="required">*</span></label>
+                                                <select class="form-control" name="mailing_title">
+                                                    <option value="">Select Title</option>
+                                                    <option value="finance">Finance Officer</option>
+                                                    <option value="procument">Procument Officer</option>
+                                                    <option value="M & E">M & E</option>
+                                                    <option value="deputy center leader">Deputy Center Leader</option>
+                                                    <option value="Focal Person">Focal Person</option>
+                                                    <option value="PS Member">PS Member</option>
+                                                    <option value="Center Leader">Center Leader</option>
+                                                </select>
+                                                @if ($errors->has('mailing_title'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_title') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
+                                                @if ($errors->has('mailing_email'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
                                                     </p>
                                                 @endif
                                             </div>
@@ -206,31 +230,22 @@
                             <table class="table table-striped table-bordered all_indicators">
                                 <thead>
                                 <tr>
-                                    {{--<th style="width: 30px;">No.</th>--}}
-                                    {{--                                     <th > Name</th>
-                                     --}}<th style="">Email</th>
-
+                                    <th> Name</th>
+                                    <th>Email</th>
+                                    <th>Title</th>
                                     <th style="width: 100px;">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($aceemails as $aceemail)
                                     <tr>
-                                        {{--                                             <td>{{$aceemail->ace->name}}</td>
-                                         --}}                                            <td>{{$aceemail->email}}</td>
-
+                                        <td>{{$aceemail->contact_name}}</td>
+                                        <td>{{$aceemail->contact_title}}</td>
+                                         <td>{{$aceemail->email}}</td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
-                                                <a href="{{ route('settings.mailinglist.delete',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Email"><i class="ft-trash-2"></i></a></a>
-                                                {{-- <a class="dropdow-item btn {{($user->status == 0)?'btn-success' : 'btn-danger'}} btn-s" href="#"
-                                                   onclick="event.preventDefault();
-                                                           document.getElementById('delete-form-{{$count}}').submit();">
-                                                    @if($user->status == 0)
-                                                        {{ __('Activate') }}
-                                                    @else
-                                                        {{ __('Deactivate') }}
-                                                    @endif
-                                                </a> --}}
+                                                <a href="{{ route('settings.mailinglist.delete',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Contact"><i class="ft-trash-2"></i></a></a>
+                                                <a href="{{ route('settings.mailinglist.edit',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-primary" data-toggle="tooltip" data-placement="top" title="Edit Contact"><i class="ft-edit-2"></i></a></a>
                                             </div>
                                         </td>
                                     </tr>

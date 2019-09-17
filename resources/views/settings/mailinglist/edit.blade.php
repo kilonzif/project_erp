@@ -41,7 +41,7 @@
     <div class="content-body">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title" id="basic-layout-form">Edit Email</h4>
+                <h4 class="card-title" id="basic-layout-form">Edit Contact</h4>
                 <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                 <div class="heading-elements">
                     <ul class="list-inline mb-0">
@@ -55,44 +55,44 @@
         <form class="form" action="{{route('settings.mailinglist.update',['id' => $aceemails->id])}}" method="post">
                         @csrf
                         <div class="form-body">
+
                             <div class="row">
+                                <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
                                 <div class="col-md-6">
-                                    
-                                <div class="form-group">
-                                    <label for="ace_id">Aces <span class="required">*</span></label>
-                                    <select name="ace_id" id="ace_id" class=" form-control" required>   
-                                        
-                                        <option value="">Select ACE</option>
-                                        @foreach($aces as $ace)
-                                            <option @if($aceemails->ace_id == $ace->id) selected="selected" @endif value="{{$ace->id}}" >  
-                                                {{$ace->name}}  
-                                            </option>
-                                        @endforeach
+                                    <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
+                                        <label for="mailing_name">Name <span class="required">*</span></label>
+                                        <input type="text"  required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ $aceemails->contact_name }}" id="mailing_name">
+                                        @if ($errors->has('mailing_name'))
+                                            <p class="text-right">
+                                                <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="mailing_title">Title <span class="required">*</span></label>
+                                    <select class="form-control" name="mailing_title" >
+                                        <option value="">Select Title</option>
+                                        <option {{($aceemails->contact_title=='finance') ? "selected":""}} value="finance">Finance Officer</option>
+                                        <option {{($aceemails->contact_title=='procument') ? "selected":""}} value="procument">Procument Officer</option>
+                                        <option {{ ($aceemails->contact_title=="M & E")  ? "selected":""}}  value="M & E">M & E</option>
+                                        <option {{($aceemails->contact_title=="deputy center leader")  ? "selected":""}}  value="deputy center leader">Deputy Center Leader</option>
+                                        <option {{($aceemails->contact_title=="Focal Person")  ? "selected":""}} value="Focal Person">Focal Person</option>
+                                        <option {{($aceemails->contact_title == "PS Member") ? "selected":""}}  value="PS Member">PS Member</option>
+                                        <option {{($aceemails->contact_title == "Center Leader")  ? "selected":""}}  value="Center Leader">Center Leader</option>
                                     </select>
-                                    @if ($errors->has('ace_id'))
-                                        <p class="text-right">
-                                            <small class="warning text-muted">{{ $errors->first('ace_id') }}</small>
-                                        </p>
-                                    @endif
                                 </div>
-
-                                </div>
-
 
                               <div class="col-md-6">
-                                   
-
-                                    <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
+                                    <div class="form-group{{ $errors->has('mailing_email') ? ' form-control-warning' : '' }}">
                                             <label for="email">Email <span class="required">*</span></label>
-                                            <input type="email" required placeholder="Email Address" min="2" name="email" class="form-control" value="{{ $aceemails->email }}" id="email">
-                                            @if ($errors->has('email'))
+                                            <input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ $aceemails->email }}" id="mailing_email">
+                                            @if ($errors->has('mailing_email'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('email') }}</small>
                                                 </p>
                                             @endif
                                         </div>
-
-
                                 </div>
 
                             </div>

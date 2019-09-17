@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Aceemail extends Model
 {
-	    protected $fillable = ['ace_id','name','email'];
+	    protected $fillable = ['ace_id','contact_name','contact_title','email'];
 
 	    protected $table = 'aceemails';
 
