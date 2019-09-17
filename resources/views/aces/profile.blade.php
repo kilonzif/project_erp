@@ -122,32 +122,15 @@
                     </h6>
                     <div class="card-content collapse">
                         <div class="card-body table-responsive">
-                            <form action="{{route('settings.course.add')}}" method="post">
+                            <form action="{{route('user-management.ace.add_courses',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="name">Course Name <span class="required"></span> </label>
-                                            <textarea class="form-control" placeholder="course names" name="ace_programmes[]"></textarea>
-                                            {{--<input type="text" min="3" placeholder="name" value="{{ old('name') }}" name="name" class="form-control" id="name">--}}
-                                            {{--@if ($errors->has('name'))--}}
-                                                {{--<p class="text-right">--}}
-                                                    {{--<small class="warning text-muted">{{ $errors->first('name') }}</small>--}}
-                                                {{--</p>--}}
-                                            {{--@endif--}}
+                                            <label for="name">Course Names <span class="required"></span> </label>
+                                            <textarea class="form-control" placeholder="course names" name="ace_programmes"></textarea>
                                         </div>
                                     </div>
-                                    {{--<div class="col-md-4">--}}
-                                    {{--<div class="form-group">--}}
-                                    {{--<label for="code">Code</label>--}}
-                                    {{--<input type="text" min="3" placeholder="Code" value="{{ old('code') }}" name="code" class="form-control" id="code">--}}
-                                    {{--@if ($errors->has('code'))--}}
-                                    {{--<p class="text-right">--}}
-                                    {{--<small class="warning text-muted">{{ $errors->first('code') }}</small>--}}
-                                    {{--</p>--}}
-                                    {{--@endif--}}
-                                    {{--</div>--}}
-                                    {{--</div>--}}
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
@@ -155,27 +138,23 @@
                                 </div>
                             </form>
                             <br>
-                            <table class="table table-striped table-bordered all_programmes">
-                                <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th style="width: 50px;">Edit</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {{--@foreach($courses as $course)--}}
-                                    <tr>
-                                        {{--<td>{{$indicator->number}}</td>--}}
-                                        {{--<td>{{$course->name}}</td>--}}
-                                        <td>..course name..</td>
-                                        <td>
-                                            <a href="#course-card" onclick="edit_course()" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top"
-                                               title="Edit Programme"><i class="ft-edit-3"></i></a></a>
-                                        </td>
-                                    </tr>
-                                {{--@endforeach--}}
-                                </tbody>
-                            </table>
+                                @php
+                                $allcourses=explode(';',$ace->programmes);
+                                $count=0;
+                                @endphp
+
+                                @foreach($allcourses as $course)
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
+                                        <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"  data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
+                                            <span class="fa fa-remove"></span>
+                                        </a>
+                                    </div>
+                                    @php
+                                    $count+=1;
+                                    @endphp
+                                @endforeach
                         </div>
                     </div>
                 </div>
@@ -373,5 +352,26 @@
         });
         // Currency in USD
         $('.currency-inputmask').inputmask("{{$ace->currency->symbol}} 99999999");
+
+
+        $("#removeCourse").click(function(){
+            var id = $(this).data("course");
+            var token = $("meta[name='csrf-token']").attr("content");
+
+            $.ajax(
+                {
+                    url: "users/"+id,
+                    type: 'DELETE',
+                    data: {
+                        "id": id,
+                        "_token": token,
+                    },
+                    success: function (){
+                        console.log("it Works");
+                    }
+                });
+
+        });
     </script>
+
 @endpush

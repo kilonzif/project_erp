@@ -79,7 +79,8 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     //ACEs Routes
     Route::get('aces', 'AcesController@index')->name('aces');
     Route::post('ace/create', 'AcesController@create')->name('aces.create');
-    Route::post('ace/add_indicator1', 'AcesController@add_indicator1')->name('aces.add_indicator1');
+    Route::post('ace/{id}/add-courses','AcesController@add_courses')->name('ace.add_courses');
+    Route::get('ace/{id}/delete-course/{course}','AcesController@delete_course')->name('ace.delete_course');
     Route::get('aces/json-view', 'AcesController@edit_view')->name('ace.edit');
     Route::post('ace/update', 'AcesController@update_ace')->name('ace.update');
     Route::get('aces/{id}', 'AcesController@ace_page')->name('aces.profile');
