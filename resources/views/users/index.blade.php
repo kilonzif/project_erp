@@ -181,16 +181,23 @@
                                     @foreach($users as $user)
                                         @php
                                             $count += 1;
+                                            $institution = "-";
+                                            if (isset($user->ace)){
+                                                $institution = $user->ace_->name;
+                                            }elseif (isset($user->institution)){
+                                                $institution = $user->institution_->name;
+                                            }
                                         @endphp
                                         <tr>
                                             <td>{{$user->name}}</td>
                                             <td>{{$user->email}}</td>
                                             <td>
-                                                @isset($user->ace_->acronym)
-                                                    {{$user->ace_->acronym}}
-                                                @else
-                                                    -
-                                                @endisset
+                                                {{$institution}}
+                                                {{--@isset($user->ace)--}}
+                                                    {{--{{$user->ace}}--}}
+                                                {{--@else--}}
+                                                    {{-----}}
+                                                {{--@endisset--}}
                                             </td>
                                             <td>{{date('M d, Y',strtotime($user->created_at))}}</td>
                                             <td>

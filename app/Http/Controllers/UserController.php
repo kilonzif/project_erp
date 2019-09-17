@@ -42,8 +42,12 @@ class UserController extends Controller
         //The ACES represent GROUPS
         $aces = Ace::where('active','=',1)->orderBy('name', 'ASC')->get();
         $institutions = Institution::where('university','=',0)->where('active','=',1)->orderBy('name', 'ASC')->get();
-        return view('users.index', compact('users','roles','institutions','aces'));
+
+        $institution_name=Institution::where('id','=',$institutions)->orderBy('name', 'ASC')->pluck('name');
+//        dd($institution_name);
+        return view('users.index', compact('users','roles','institutions','aces','institution_name'));
     }
+
 
     /**
      * User create view
@@ -140,6 +144,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->email),
             'phone' => $request->phone,
+            'status' => 1,
             'institution' => $request->institution,
             'ace' => $request->ace,
             'remember_token' => substr(Crypt::encrypt($request->email),0,30),
