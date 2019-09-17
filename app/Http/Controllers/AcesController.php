@@ -38,10 +38,9 @@ class AcesController extends Controller {
 
 	public function index() {
 		$aces = Ace::orderBy('name', 'ASC')->get();
-		$courses = Course::orderBy('name', 'ASC')->get();
 		$currency = Currency::orderBy('name', 'ASC')->get();
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
-		return view('aces.index', compact('aces', 'universities', 'courses', 'currency'));
+		return view('aces.index', compact('aces', 'universities','currency'));
 	}
 
 
@@ -168,12 +167,14 @@ class AcesController extends Controller {
             $addIndicatorOne->ace_id= $ace_id;
             $addIndicatorOne->requirement = $requirement[$key];
             $addIndicatorOne->submission_date = $submission_date;
-            $file1 = $request->file('file_one');
-            $file2 = $request->file('file_two');
-            if(isset($file1)||isset($file_two)){
+            $file1 = $request->file('file_one')[$key];
+            $file2 = $request->file('file_two')[$key];
+            if(isset($file1)){
                 $file1->move($destinationPath, $file1->getClientOriginalName());
-                $file2->move($destinationPath, $file2->getClientOriginalName());
                 $addIndicatorOne->file_one = $file_one->getClientOriginalName();
+            }
+            if (isset($file2)){
+                $file2->move($destinationPath, $file2->getClientOriginalName());
                 $addIndicatorOne->file_two = $file_two->getClientOriginalName();
             }
             $addIndicatorOne->url = $url;

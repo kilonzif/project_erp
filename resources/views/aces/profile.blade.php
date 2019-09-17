@@ -82,26 +82,11 @@
 
                                 <div class="col-md-3 text-left">
                                     <a class="btn btn-secondary square ml-3" href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                       <i class="ft-plus-circle"></i> New Targets
+                                        <i class="ft-plus-circle"></i> New Targets
                                     </a>
                                 </div>
                                 @if($target_years->isNotEmpty())
                                     <div class="col-md-6">
-{{--                                        <form action="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}"></form>--}}
-                                        {{--<fieldset>--}}
-                                            {{--<div class="input-group">--}}
-                                                {{--<select name="period" id="period" class="form-control">--}}
-                                                    {{--@foreach($target_years as $target_year)--}}
-                                                        {{--<option value="{{$target_year->id}}">--}}
-                                                            {{--{{date('F Y',strtotime($target_year->start_period))." - ".date('F Y',strtotime($target_year->end_period))}}--}}
-                                                        {{--</option>--}}
-                                                    {{--@endforeach--}}
-                                                {{--</select>--}}
-                                                {{--<div class="input-group-append" id="button-addon4">--}}
-                                                    {{--<button class="btn btn-primary" type="button"><i class="ft-crosshair"></i> Open Target Values</button>--}}
-                                                {{--</div>--}}
-                                            {{--</div>--}}
-                                        {{--</fieldset>--}}
                                         <div class="btn-group mr-1 mb-1">
                                             <button type="button" class="btn bg-warning bg-darken-4 btn-min-width dropdown-toggle white" data-toggle="dropdown"
                                                     aria-haspopup="true" aria-expanded="false"><i class="ft-crosshair"></i>  Select Target Year</button>
@@ -123,7 +108,79 @@
             </div>
         </div>
 
-
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
+                        Programmes
+                        <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            <ul class="list-inline mb-0">
+                                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
+                            </ul>
+                        </div>
+                    </h6>
+                    <div class="card-content collapse">
+                        <div class="card-body table-responsive">
+                            <form action="{{route('settings.course.add')}}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="name">Course Name <span class="required"></span> </label>
+                                            <textarea class="form-control" placeholder="course names" name="ace_programmes[]"></textarea>
+                                            {{--<input type="text" min="3" placeholder="name" value="{{ old('name') }}" name="name" class="form-control" id="name">--}}
+                                            {{--@if ($errors->has('name'))--}}
+                                                {{--<p class="text-right">--}}
+                                                    {{--<small class="warning text-muted">{{ $errors->first('name') }}</small>--}}
+                                                {{--</p>--}}
+                                            {{--@endif--}}
+                                        </div>
+                                    </div>
+                                    {{--<div class="col-md-4">--}}
+                                    {{--<div class="form-group">--}}
+                                    {{--<label for="code">Code</label>--}}
+                                    {{--<input type="text" min="3" placeholder="Code" value="{{ old('code') }}" name="code" class="form-control" id="code">--}}
+                                    {{--@if ($errors->has('code'))--}}
+                                    {{--<p class="text-right">--}}
+                                    {{--<small class="warning text-muted">{{ $errors->first('code') }}</small>--}}
+                                    {{--</p>--}}
+                                    {{--@endif--}}
+                                    {{--</div>--}}
+                                    {{--</div>--}}
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                        Save</button>
+                                </div>
+                            </form>
+                            <br>
+                            <table class="table table-striped table-bordered all_programmes">
+                                <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th style="width: 50px;">Edit</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{--@foreach($courses as $course)--}}
+                                    <tr>
+                                        {{--<td>{{$indicator->number}}</td>--}}
+                                        {{--<td>{{$course->name}}</td>--}}
+                                        <td>..course name..</td>
+                                        <td>
+                                            <a href="#course-card" onclick="edit_course()" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top"
+                                               title="Edit Programme"><i class="ft-edit-3"></i></a></a>
+                                        </td>
+                                    </tr>
+                                {{--@endforeach--}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
@@ -140,122 +197,73 @@
                         </div>
                     </h6>
                     <div class="card-content collapse">
-                <div class="card-body table-responsive">
-                   {{--  <h5>
-                        <small>
-                            <span class="text-secondary text-bold-500">Unit of Measure:</span>
-                            Number (Indicator Definition: Count of regional students in specific ACE courses)
-                        </small>
-                    </h5> --}}
+                        <div class="card-body table-responsive">
+                            <form class="form" action="{{route('settings.mailinglist.save')}}" method="post">
+                                @csrf
+                                <div class="form-body">
+                                    <div class="row">
 
+                                        <div class="col-md-6">
+                                            <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
+                                            <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
 
-
-                    <form class="form" action="{{route('settings.mailinglist.save')}}" method="post">
-                        @csrf
-                        <div class="form-body">
-                            <div class="row">
-
-                              <div class="col-md-6">
-                                <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
-                                    <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
-
-                                            <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="email" class="form-control" value="{{ old('email') }}" id="email">
-                                            @if ($errors->has('email'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('email') }}</small>
-                                                </p>
-                                            @endif
+                                                <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="email" class="form-control" value="{{ old('email') }}" id="email">
+                                                @if ($errors->has('email'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('email') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-primary" style="margin-top: 1.9rem">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 1.9rem">
-                                Submit
-                            </button>
-                            </div>
-                            </div>
-                        </div>
-
-
-                        <div class="">
-
-                        </div>
-                    </form>
-
-<br>
-
-
-       <table class="table table-striped table-bordered all_indicators">
+                            </form>
+                            <br>
+                            <table class="table table-striped table-bordered all_indicators">
                                 <thead>
                                 <tr>
                                     {{--<th style="width: 30px;">No.</th>--}}
-{{--                                     <th > Name</th>
- --}}                                    <th style="">Email</th>
+                                    {{--                                     <th > Name</th>
+                                     --}}<th style="">Email</th>
 
                                     <th style="width: 100px;">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($aceemails as $aceemail)
-                                        <tr>
-{{--                                             <td>{{$aceemail->ace->name}}</td>
- --}}                                            <td>{{$aceemail->email}}</td>
+                                @foreach($aceemails as $aceemail)
+                                    <tr>
+                                        {{--                                             <td>{{$aceemail->ace->name}}</td>
+                                         --}}                                            <td>{{$aceemail->email}}</td>
 
-                                            <td>
-                                                <div class="btn-group" role="group" aria-label="Basic example">
-                                                    <a href="{{ route('settings.mailinglist.delete',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Email"><i class="ft-trash-2"></i></a></a>
-                                                    {{-- <a class="dropdow-item btn {{($user->status == 0)?'btn-success' : 'btn-danger'}} btn-s" href="#"
-                                                       onclick="event.preventDefault();
-                                                               document.getElementById('delete-form-{{$count}}').submit();">
-                                                        @if($user->status == 0)
-                                                            {{ __('Activate') }}
-                                                        @else
-                                                            {{ __('Deactivate') }}
-                                                        @endif
-                                                    </a> --}}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                                <a href="{{ route('settings.mailinglist.delete',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Email"><i class="ft-trash-2"></i></a></a>
+                                                {{-- <a class="dropdow-item btn {{($user->status == 0)?'btn-success' : 'btn-danger'}} btn-s" href="#"
+                                                   onclick="event.preventDefault();
+                                                           document.getElementById('delete-form-{{$count}}').submit();">
+                                                    @if($user->status == 0)
+                                                        {{ __('Activate') }}
+                                                    @else
+                                                        {{ __('Deactivate') }}
+                                                    @endif
+                                                </a> --}}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 </tbody>
                             </table>
-                </div>
-            </div>
-
-
-
-
-
-
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-
-{{--
- <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="card-title">                        Mailing List
-</h6>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="card-content collapse show">
-                        <div class="card-body">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>  --}}
 
 
         <div class="row">
@@ -269,80 +277,80 @@
 
             @if($ace_dlrs->count() > 0)
                 @foreach($ace_dlrs as $ace_dlr)
-                <div class="col-md-6">
-                    <div class="card">
-                        <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
-                            {{$ace_dlr->indicator_title}}
-                            <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                            <div class="heading-elements">
-                                <ul class="list-inline mb-0">
-                                    <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                </ul>
-                            </div>
-                        </h6>
-                        <div class="card-content collapse show">
-                            <div class="card-body table-responsive">
-                                <form action="{{route('settings.save_dlr_indicators_cost',[$ace->id])}}" method="post">
-                                    @csrf
-                                    <input type="hidden" name="parent_id" value="{{$ace_dlr->id}}">
-                                    <div class="row">
-                                        <label class="col-md-7" style="padding-top: 0.9rem;">Maximum SDR per DLR</label>
-                                        <div class="col-md-5">
-                                            <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="number" class="form-control" name="max"
-                                                       value="{{isset($dlr_max_costs[$ace_dlr->id])?$dlr_max_costs[$ace_dlr->id]:0}}">
-                                                <div class="form-control-position">
-                                                    <span class="symbol">{{$ace->currency->symbol}}</span>
-                                                </div>
-                                            </fieldset>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
+                                {{$ace_dlr->indicator_title}}
+                                <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                                <div class="heading-elements">
+                                    <ul class="list-inline mb-0">
+                                        <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                    </ul>
+                                </div>
+                            </h6>
+                            <div class="card-content collapse show">
+                                <div class="card-body table-responsive">
+                                    <form action="{{route('settings.save_dlr_indicators_cost',[$ace->id])}}" method="post">
+                                        @csrf
+                                        <input type="hidden" name="parent_id" value="{{$ace_dlr->id}}">
+                                        <div class="row">
+                                            <label class="col-md-7" style="padding-top: 0.9rem;">Maximum SDR per DLR</label>
+                                            <div class="col-md-5">
+                                                <fieldset class="form-group position-relative has-icon-left">
+                                                    <input type="number" class="form-control" name="max"
+                                                           value="{{isset($dlr_max_costs[$ace_dlr->id])?$dlr_max_costs[$ace_dlr->id]:0}}">
+                                                    <div class="form-control-position">
+                                                        <span class="symbol">{{$ace->currency->symbol}}</span>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
                                         </div>
-                                    </div>
-        {{--                            @if($unit > $max)--}}
+                                        {{--                            @if($unit > $max)--}}
                                         {{--<p class="text-right">--}}
-                                            {{--<small class="danger text-muted">The Unit Cost is more than the Maximum</small>--}}
+                                        {{--<small class="danger text-muted">The Unit Cost is more than the Maximum</small>--}}
                                         {{--</p>--}}
-                                    {{--@endif--}}
+                                        {{--@endif--}}
 
-                                    @if($ace_dlr->indicators->count() > 0)
-                                    <table class="table table-striped table-bordered">
-                                        <tr>
-                                            <th>DLR Indicators</th>
-                                            <th style="width: 200px;">Cost per Unit (SDR)</th>
-                                            {{--<th style="width: 200px;">Maximum SDR per DLR</th>--}}
-                                        </tr>
-                                        @php
-                                            $sub_indicators = $ace_dlr->indicators->where('status','=',1);
-                                        @endphp
-                                        @foreach($sub_indicators as $sub_indicator)
-                                            @php
-                                                $unit = 0;
-                                                    if(isset($dlr_unit_costs[$sub_indicator->id])){
-                                                        $unit = $dlr_unit_costs[$sub_indicator->id];
-                                                    }
-                                            @endphp
-                                            <tr>
-                                                <td>{{$sub_indicator->indicator_title}}</td>
-                                                <td>
-                                                    <fieldset class="form-group position-relative has-icon-left mb-0">
-                                                        <input type="number" class="form-control" id="single_{{$sub_indicator->id}}"
-                                                               value="{{$unit}}" name="single[{{$sub_indicator->id}}]">
-                                                        <div class="form-control-position">
-                                                            <span class="symbol">{{$ace->currency->symbol}}</span>
-                                                        </div>
-                                                    </fieldset>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
+                                        @if($ace_dlr->indicators->count() > 0)
+                                            <table class="table table-striped table-bordered">
+                                                <tr>
+                                                    <th>DLR Indicators</th>
+                                                    <th style="width: 200px;">Cost per Unit (SDR)</th>
+                                                    {{--<th style="width: 200px;">Maximum SDR per DLR</th>--}}
+                                                </tr>
+                                                @php
+                                                    $sub_indicators = $ace_dlr->indicators->where('status','=',1);
+                                                @endphp
+                                                @foreach($sub_indicators as $sub_indicator)
+                                                    @php
+                                                        $unit = 0;
+                                                            if(isset($dlr_unit_costs[$sub_indicator->id])){
+                                                                $unit = $dlr_unit_costs[$sub_indicator->id];
+                                                            }
+                                                    @endphp
+                                                    <tr>
+                                                        <td>{{$sub_indicator->indicator_title}}</td>
+                                                        <td>
+                                                            <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                                <input type="number" class="form-control" id="single_{{$sub_indicator->id}}"
+                                                                       value="{{$unit}}" name="single[{{$sub_indicator->id}}]">
+                                                                <div class="form-control-position">
+                                                                    <span class="symbol">{{$ace->currency->symbol}}</span>
+                                                                </div>
+                                                            </fieldset>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </table>
                                         @endif
-                                    <div class="text-right">
-                                        <button type="submit" class="btn btn-secondary square">Save</button>
-                                    </div>
-                                </form>
+                                        <div class="text-right">
+                                            <button type="submit" class="btn btn-secondary square">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 @endforeach
             @endif
         </div>
