@@ -13,6 +13,15 @@
             </li>
             @endability
 
+            @ability('webmaster|super-admin|admin', 'admin-dashboard')
+            <li class="nav-item {{isRouteActive('analytics.index')}}">
+                <a href="{{route('analytics.index')}}"><i class="ft-pie-chart"></i>
+                    <span class="menu-title" data-i18n="">{{__('Analytics')}}</span>
+                    {{--<span class="badge badge badge-pill badge-info float-right">3.0</span>--}}
+                </a>
+            </li>
+            @endability
+
             @ability('webmaster|super-admin|admin', 'calendar')
             <li class="nav-item {{isRouteActive('calendar')}}">
                 <a href="{{route('calendar')}}"><i class="ft-calendar"></i>

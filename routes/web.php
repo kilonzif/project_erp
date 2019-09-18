@@ -61,7 +61,7 @@ Route::get('/calendar', 'HomeController@calendar')->name('calendar');
 //Route::get('/reports', 'ReportsController@index')->name('reports');
 
 Route::prefix('analytics')->name('analytics.')->group(function () {
-    Route::get('/', 'AnalyticsController@index')->name('analytics');
+    Route::get('/', 'AnalyticsController@index')->name('index');
     Route::get('/get-data-gender', 'AnalyticsController@getGenderDistribution')->name('getGenderDistribution');
 });
 

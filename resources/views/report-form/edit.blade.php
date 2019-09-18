@@ -125,6 +125,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div>
+
+                            <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
+                                <i class="ft-upload"></i> Upload Indicators</a>
+                        </div>
                         {{--@php--}}
                             {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
                         {{--@endphp--}}
