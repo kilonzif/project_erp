@@ -105,7 +105,7 @@ class ReportFormController extends Controller {
                 $report = new Report();
                 $report->project_id = $project_id;
                 $report->ace_id = $ace_id;
-                $report->status = 1;
+                $report->status = 99;
                 $report->start_date = $request->start;
                 $report->end_date = $request->end;
                 $report->submission_date = $submission_date;
@@ -119,7 +119,7 @@ class ReportFormController extends Controller {
 
                 ReportStatusTracker::create([
                     'report_id' => $report->id,
-                    'status_code' => 1,
+                    'status_code' => 99,
                 ]);
                 notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
 //            });

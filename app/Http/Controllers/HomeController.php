@@ -55,11 +55,11 @@ class HomeController extends Controller
     public function calendar()
     {
         if (Auth::user()->hasRole('webmaster|super-admin|admin|manager')){
-            $reports = Report::where('status', '=',1)->where('indicator_id',3)->get(['id','updated_at','ace_id','status']);
+            $reports = Report::where('status', '=',1)->get(['id','updated_at','ace_id','status']);
         }else{
             $reports = Report::where('status', '=',1)->where('user_id', '=',Auth::id())->get(['id','updated_at','ace_id','status']);
         }
 
-        return view('calendar',compact('reports','calendar'));
+        return view('calendar',compact('reports'));
     }
 }
