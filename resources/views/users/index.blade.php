@@ -193,11 +193,6 @@
                                             <td>{{$user->email}}</td>
                                             <td>
                                                 {{$institution}}
-                                                {{--@isset($user->ace)--}}
-                                                    {{--{{$user->ace}}--}}
-                                                {{--@else--}}
-                                                    {{-----}}
-                                                {{--@endisset--}}
                                             </td>
                                             <td>{{date('M d, Y',strtotime($user->created_at))}}</td>
                                             <td>
@@ -254,15 +249,19 @@
         $('#users-table').dataTable();
 
         function changeOnRole(){
-            var e = document.getElementById("role");
-            var role = e.options[e.selectedIndex].value;
+            let e = document.getElementById("role");
+            let role = e.options[e.selectedIndex].value;
             if(role == 3){
                 $('#institution_toggle').css("display", "none");
+                $('#institution').prop("disabled", true);
                 $('#ace_toggle').css("display", "block");
+                $('#ace').prop("disabled", false);
             }
             else{
                 $('#institution_toggle').css("display", "block");
+                $('#institution').prop("disabled", false);
                 $('#ace_toggle').css("display", "none");
+                $('#ace').prop("disabled", true);
             }
         }
 

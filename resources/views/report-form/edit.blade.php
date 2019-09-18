@@ -125,9 +125,10 @@
                                 </div>
                             </div>
                         </div>
-                        @php
-                            $indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);
-                        @endphp
+                        {{--@php--}}
+                            {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
+                        {{--@endphp--}}
+{{--                        @if(false)--}}
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
                                 <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
@@ -146,7 +147,7 @@
                                         <h5>
                                             <small>
                                                 <span class="text-secondary text-bold-500">Unit of Measure:</span>
-                                                {{$indicator->unit_measure}}
+{{--                                                {{$indicator->unit_measure}}--}}
                                             </small>
                                         </h5>
                                         <table class="table table-bordered table-striped">
@@ -157,9 +158,9 @@
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     <tr>
                                                         <td>{{$sub_indicator->title}} <span class="required">*</span>
-                                                            @if($sub_indicator->unit_measure)
-                                                                <br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>
-                                                            @endif
+                                                            {{--@if($sub_indicator->unit_measure)--}}
+                                                                {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
+                                                            {{--@endif--}}
                                                         </td>
                                                         <td style="width: 200px">
                                                             <div class="form-grou{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}">
@@ -230,11 +231,13 @@
                                 </div>
                             </div>
                         @endforeach
+                        {{--@endif--}}
                         <div class="row">
                             <div class="col-md-8">
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
                                 <button type="submit" name="save" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
-                                <button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>
+                                <button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit</button>
+                                {{--<button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>--}}
                             </div>
                             <div class="col-md-1">
 

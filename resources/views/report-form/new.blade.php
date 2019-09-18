@@ -66,9 +66,9 @@
                                     Report Information
                                     <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                                     <div class="heading-elements">
-                                        <ul class="list-inline mb-0">
-                                            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                        </ul>
+                                        {{--<ul class="list-inline mb-0">--}}
+                                            {{--<li><a data-action="collapse"><i class="ft-minus"></i></a></li>--}}
+                                        {{--</ul>--}}
                                     </div>
                                 </h6>
                                 <div class="card-content collapse show">
@@ -163,6 +163,7 @@
                             @php
                                 //$indicators = $project->indicators->where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1);
                             @endphp
+                            @if(false)
                             @foreach($indicators as $indicator)
                                 <div class="card mb-1">
                                     <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
@@ -241,11 +242,12 @@
                                     </div>
                                 </div>
                             @endforeach
+                            @endif
                             <div class="row">
                                 <div class="col-md-8">
                                     <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
-                                    <button type="submit" name="save" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and Continue</button>
-                                    <button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>
+                                    <button type="submit" name="save" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Proceed to Indicators</button>
+                                    {{--<button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>--}}
                                 </div>
                                 <div class="col-md-1">
 

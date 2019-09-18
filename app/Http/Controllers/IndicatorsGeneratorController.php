@@ -37,9 +37,9 @@ class IndicatorsGeneratorController extends Controller
         }
 
         $request->fields = $theFields;
-        $values['indicator'] = $request->indicator;
-        $values['project'] = $request->project;
-        $values['start_row'] = $request->start_row;
+        $values['indicator'] = (integer)$request->indicator;
+        $values['project'] = (integer)$request->project;
+        $values['start_row'] = (integer)$request->start_row;
         $values['fields'] = $request->fields;
 
         $row = DB::connection('mongodb')->collection('indicator_form')->insert($values);
@@ -69,9 +69,9 @@ class IndicatorsGeneratorController extends Controller
         }
 
         $request->fields = $theFields;
-        $values['indicator'] = $request->indicator;
-        $values['project'] = $request->project;
-        $values['start_row'] = $request->start_row;
+        $values['indicator'] = (integer)$request->indicator;
+        $values['project'] = (integer)$request->project;
+        $values['start_row'] = (integer)$request->start_row;
         $values['fields'] = $request->fields;
 
         $row = DB::connection('mongodb')->collection('indicator_form')->where('_id', $id)->update($values);

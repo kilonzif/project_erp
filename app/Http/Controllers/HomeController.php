@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Indicator3;
+use App\IndicatorDetails;
 use App\Institution;
 use App\Report;
 use App\Role;
@@ -9,6 +11,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -52,7 +55,7 @@ class HomeController extends Controller
     public function calendar()
     {
         if (Auth::user()->hasRole('webmaster|super-admin|admin|manager')){
-            $reports = Report::where('status', '=',1)->get(['id','updated_at','ace_id','status']);
+            $reports = Report::where('status', '=',1)->where('indicator_id',3)->get(['id','updated_at','ace_id','status']);
         }else{
             $reports = Report::where('status', '=',1)->where('user_id', '=',Auth::id())->get(['id','updated_at','ace_id','status']);
         }

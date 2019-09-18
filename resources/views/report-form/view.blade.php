@@ -183,9 +183,9 @@
                                                     @else
                                                         <tr>
                                                             <td>{{$sub_indicator->title}}
-                                                                @if($sub_indicator->unit_measure)
-                                                                    <br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>
-                                                                @endif
+                                                                {{--@if($sub_indicator->unit_measure)--}}
+                                                                    {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
+                                                                {{--@endif--}}
                                                             </td>
                                                             <td style="width: 200px">
                                                                 <input type="text" disabled="disabled" readonly class="form-control" value="N/A">

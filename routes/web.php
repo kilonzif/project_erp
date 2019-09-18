@@ -60,6 +60,12 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/calendar', 'HomeController@calendar')->name('calendar');
 //Route::get('/reports', 'ReportsController@index')->name('reports');
 
+Route::prefix('analytics')->name('analytics.')->group(function () {
+    Route::get('/', 'AnalyticsController@index')->name('analytics');
+    Route::get('/get-data-gender', 'AnalyticsController@getGenderDistribution')->name('getGenderDistribution');
+});
+
+
 Route::prefix('user-management')->name('user-management.')->group(function () {
 
     //Users Routes

@@ -71,10 +71,62 @@ class ReportFormController extends Controller {
 		}
 	}
 
-	/**
-	 *Save new report
-	 */
+    /**
+     * Save new report
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
 	public function save_report(Request $request) {
+
+            $this->validate($request, [
+                'project_id' => 'required|string|min:100',
+                'start' => 'required|string|date',
+                'end' => 'required|string|date',
+                'submission_date' => 'nullable|string|date',
+            ]);
+//            $move_to_indicators = false;
+            $report_id = null;
+
+//            DB::transaction(function () use ($request,$report_id) {
+
+                if (isset($request->ace_officer)) {
+                    $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
+                } else {
+                    $ace_id = Auth::user()->ace;
+                }
+
+                $submission_date = $request->submission_date;
+                if ($submission_date == null) {
+                    $submission_date = date('Y-m-d');
+                }
+
+                $project_id = Crypt::decrypt($request->project_id);
+                $report = new Report();
+                $report->project_id = $project_id;
+                $report->ace_id = $ace_id;
+                $report->status = 1;
+                $report->start_date = $request->start;
+                $report->end_date = $request->end;
+                $report->submission_date = $submission_date;
+                if (isset($request->ace_officer)) {
+                    $report->user_id = Crypt::decrypt($request->ace_officer);
+                } else {
+                    $report->user_id = Auth::id();
+                }
+                $report->save();
+                $report_id = $report->id;
+
+                ReportStatusTracker::create([
+                    'report_id' => $report->id,
+                    'status_code' => 1,
+                ]);
+                notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
+//            });
+            return redirect()->route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report_id)]);
+    }
+
+	public function save_report_old(Request $request) {
 		if (isset($request->ace_officer)) {
 			$ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
 		} else {
@@ -310,7 +362,7 @@ class ReportFormController extends Controller {
 
             $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
             $aces = Ace::where('active', '=', 1)->get();
-            return view('report-form.view', compact('project', 'report', 'aces', 'values', 'ace_officers'));
+            return view('report-form.view', compact('project', 'report', 'aces', 'values'));
 
 		}else{
             notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
@@ -344,12 +396,13 @@ class ReportFormController extends Controller {
 
 	}
 
-	/**
-	 * @param Request $request
-	 * @param $report_id
-	 * @param $indicator_id
-	 * @return array
-	 */
+    /**
+     * @param Request $request
+     * @param $report_id
+     * @param $indicator_id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
 	public function indicators_status_save(Request $request, $report_id, $indicator_id) {
 		$this->validate($request, [
 			'status_label' => 'required|numeric',
@@ -414,18 +467,19 @@ class ReportFormController extends Controller {
         }
 		$values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
 //        return $values;
-		$ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
+        $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->orderBy('identifier','asc')->get();
+        $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
-		return view('report-form.edit', compact('project', 'report', 'aces', 'values', 'ace_officers'));
+		return view('report-form.edit', compact('project', 'report', 'aces', 'values', 'ace_officers', 'indicators'));
 	}
 
-	/**
-	 * Update report
-	 * @param Request $request
-	 * @return \Illuminate\Http\RedirectResponse
-	 */
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
 	public function update_report(Request $request) {
 		if (isset($request->submit)) {
 			DB::transaction(function () use ($request) {

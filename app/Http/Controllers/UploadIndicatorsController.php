@@ -28,13 +28,16 @@ class UploadIndicatorsController extends Controller
         $d_report_id = Crypt::decrypt($report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
         $report = Report::find($d_report_id);
+//        dd($report);
         if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return back();
         }
         $ace = $report->ace;
-        $indicators = Indicator::where('parent_id','=', 0)->get();
-        return view('report-form.uploads', compact('indicators','indicator_id','d_report_id','report_id','indicator_details','indicatorID','ace'));
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)->where('upload','=', 1)
+            ->orderBy('identifier','asc')->get();
+        return view('report-form.uploads', compact('indicators','d_report_id','report_id','indicator_details','indicatorID','ace'));
     }
 
     public function downloadIndicators()
@@ -52,6 +55,7 @@ class UploadIndicatorsController extends Controller
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')->where('indicator','=',$indicator_details->indicator_id)->pluck('fields');
 
         $headers = array();
+//        dd($getHeaders);
 
         for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
             $headers[] = $getHeaders[0][$a]['label'];
@@ -69,7 +73,7 @@ class UploadIndicatorsController extends Controller
         //row headers
 //        $headers = array();
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')
-            ->where('indicator','=',$request->id)->pluck('fields');
+            ->where('indicator','=',(integer)$request->id)->pluck('fields');
 
 //        if ($getHeaders){
 //            for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
@@ -79,8 +83,9 @@ class UploadIndicatorsController extends Controller
 //        }else{
 //            $headers = [];
 //        }
+//        dd($request->id);
 
-        $excel_upload = ExcelUpload::where('indicator_id','=',$request->id)->first();
+        $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->first();
         $theView = view('report-form.field-list', compact('getHeaders','excel_upload'))->render();
         return response()->json(['theView'=>$theView]);
     }
@@ -96,7 +101,7 @@ class UploadIndicatorsController extends Controller
         //Get the start row of data inputs for the upload
         $data_start = DB::connection('mongodb')
             ->collection('indicator_form')
-            ->where('indicator','=',$request->indicator)
+            ->where('indicator','=',(integer)$request->indicator)
             ->pluck('start_row')->first();
 
         //Assign 3 which is row 3 if no data is found
@@ -104,17 +109,21 @@ class UploadIndicatorsController extends Controller
             $data_start = 3;//The row number the data input starts
         }
         $upload_values = array(); //An array to holds the upload cells values
-        $upload_values['report_id'] = Crypt::decrypt($request->report_id);
-        $upload_values['indicator_id'] = $request->indicator;
+        $upload_values['report_id'] = (integer)Crypt::decrypt($request->report_id);
+        $upload_values['indicator_id'] = (integer)$request->indicator;
         $upload_values['created_at'] = date('Y-m-d H:i:s');
         $upload_values['updated_at'] = date('Y-m-d H:i:s');
+
+        $indicator_details = array(); //An array to holds the indicator details
+        $report_id = (integer)Crypt::decrypt($request->report_id);
+        $indicator_details['report_id'] = (integer)$report_id;
 
         //row headers
         $headers = array();
         $error = $success = "";
         $getHeaders = DB::connection('mongodb')
             ->collection('indicator_form')
-            ->where('indicator','=',$request->indicator)
+            ->where('indicator','=',(integer)$request->indicator)
             ->pluck('fields');
         if (sizeof($getHeaders) < 1){
             notify(new ToastNotification('Sorry!','This indicator is not available for uploads yet.','info'));
@@ -139,28 +148,40 @@ class UploadIndicatorsController extends Controller
                 $highestRow = $worksheet->getHighestRow(); // e.g. 10
                 $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+//                dd("Column: ".$highestColumnIndex." <br> Row:".$highestRow);
 
                 //Checks if the total columns equals the total columns required
                 if ($highestColumnIndex <> sizeof($headers)){
-                    $error = "There is a mismatch in the fields required for this indicator or the total number of fields for this indicator is not equal to that of the uploaded file.";
+                    $error = "There is a mismatch in the fields required for this indicator or the total number of fields 
+                    for this indicator is not equal to that of the uploaded file.";
                     notify(new ToastNotification('Upload Error!', $error, 'warning'));
                     return back();
                 }
 
+                $table_name = "indicator_".$request->indicator;
+
                 //Loops through the excel sheet to get the values;
-                for ($row = $data_start; $row <= $highestRow; ++$row) {
+                DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
+                for ($row = $data_start; $row <= $highestRow; $row++) {
 
                     echo PHP_EOL;
 
-                    for ($col = 1; $col <= $highestColumnIndex; ++$col) {
+                    for ($col = 1; $col <= $highestColumnIndex; $col++) {
                         $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
 //                        if ($value == null or $value == " "){
 //                            break;
 //                        }
                         $line = $row - $data_start;
                         $upload_values['data'][$line][$headers[$col-1]] = $value;
+                        $indicator_details[$headers[$col-1]] = $value;
                         echo  PHP_EOL;
+
+//                        DB::connection('mongodb')
+//                            ->collection("$table_name")
+//                            ->where('_id', $indicator_item->_id)
+//                            ->update($indicator_details);
                     }
+                    DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
                     echo PHP_EOL;
                 }//end of loop
@@ -170,12 +191,17 @@ class UploadIndicatorsController extends Controller
                     ->collection('indicator_form_details')
                     ->where('report_id','=', $upload_values['report_id'])->where('indicator_id','=', $upload_values['indicator_id'])->first();
                 $item = (object)$row;
+//                $indicator_table = DB::connection('mongodb')
+//                    ->collection("$table_name")
+//                    ->where('report_id','=', $indicator_details['report_id'])->first();
+//                $indicator_item = (object)$indicator_table;
 
                 if ($row){
                     DB::connection('mongodb')
                         ->collection('indicator_form_details')
                         ->where('_id', $item->_id)
                         ->update($upload_values);
+
                     $success = "The upload was successful.";
                     notify(new ToastNotification('Successful', $success, 'success'));
                     return back();
@@ -184,6 +210,7 @@ class UploadIndicatorsController extends Controller
                     $insert = DB::connection('mongodb')
                         ->collection('indicator_form_details')
                         ->insert($upload_values);
+
                     if ($insert){
                         $success = "The upload was successful.";
                         notify(new ToastNotification('Successful', $success, 'success'));
