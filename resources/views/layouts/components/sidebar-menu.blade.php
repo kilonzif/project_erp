@@ -119,11 +119,11 @@
                     </li>
                     @endability
 
-                    @ability('webmaster|super-admin', 'add-courses')
-                    <li class="{{isRouteActive('settings.courses')}}">
-                        <a class="menu-item" href="{{route('settings.courses')}}">{{__('Programmes')}}</a>
-                    </li>
-                    @endability
+                    {{--@ability('webmaster|super-admin', 'add-courses')--}}
+                    {{--<li class="{{isRouteActive('settings.courses')}}">--}}
+                        {{--<a class="menu-item" href="{{route('settings.courses')}}">{{__('Programmes')}}</a>--}}
+                    {{--</li>--}}
+                    {{--@endability--}}
 
                     @ability('webmaster|super-admin', 'app-settings')
                     <li class="{{isRouteActive('settings.app_settings')}}">

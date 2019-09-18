@@ -38,10 +38,9 @@ class AcesController extends Controller {
 
 	public function index() {
 		$aces = Ace::orderBy('name', 'ASC')->get();
-		$courses = Course::orderBy('name', 'ASC')->get();
 		$currency = Currency::orderBy('name', 'ASC')->get();
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
-		return view('aces.index', compact('aces', 'universities', 'courses', 'currency'));
+		return view('aces.index', compact('aces', 'universities','currency'));
 	}
 
 
@@ -62,17 +61,12 @@ class AcesController extends Controller {
             'currency' => 'required|numeric',
             'dlr' => 'required|numeric|min:0',
             'acronym' => 'required|string|min:2',
-//            'contact_name' => 'nullable|string|min:3',
-//            'contact_email' => 'nullable|string|email|min:3',
-//            'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
-//            'position' => 'nullable|string|min:3',
             'ace_type' => 'required|string|min:2',
 
 ]);
 
 
         $addAce = new Ace();
-
         $addAce->name = $request->name;
         $addAce->acronym = $request->acronym;
         $addAce->field = $request->field;
@@ -82,10 +76,6 @@ class AcesController extends Controller {
         $addAce->dlr = $request->dlr;
         $addAce->institution_id = $request->university;
         $addAce->active = $request->active;
-//        $addAce->contact_person = $request->contact_name;
-//        $addAce->person_email = $request->contact_email;
-//        $addAce->person_number = $request->contact_person_phone;
-//        $addAce->position = $request->position;
         $addAce->ace_type = $request->ace_type;
 
 
@@ -99,6 +89,40 @@ class AcesController extends Controller {
 			return back();
 		}
 	}
+	public function add_courses(Request $request,$id){
+        $ace_id = Crypt::decrypt($id);
+        $ace=Ace::find($ace_id);
+        $ace->programmes.=";".$request->ace_programmes;
+        $ace->save();
+        if($ace->save()){
+            notify(new ToastNotification('Successful!', 'Courses ACE Added', 'success'));
+            return back();
+        }else{
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+    }
+    public function delete_course($aceId,$course){
+         $ace_id = Crypt::decrypt($aceId);
+         $ace = Ace::find($ace_id);
+         $all_programmes = explode(';',$ace->programmes);
+
+        $key = array_search($course, $all_programmes);
+        if (false !== $key) {
+            unset($all_programmes[$key]);
+        }
+       $ace->programmes = implode(";",$all_programmes);
+        $ace->save();
+        if($ace->save()){
+            notify(new ToastNotification('Successful!', 'Course Removed', 'success'));
+            return back();
+        }else{
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+
+
+    }
 
     public function indicator_one($id) {
         $ace_id = Crypt::decrypt($id);
@@ -107,7 +131,6 @@ class AcesController extends Controller {
         $all_aces = Ace::get();
         $requirements = array();
         $getRequirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
-//        $getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->pluck('baseline', 'indicator_id');
         if ($getRequirements->isNotEmpty()) {
             $requirements = $getRequirements;
         }
@@ -134,17 +157,18 @@ class AcesController extends Controller {
             $addIndicatorOne->ace_id= $ace_id;
             $addIndicatorOne->requirement = $requirement[$key];
             $addIndicatorOne->submission_date = $submission_date;
-            $file1 = $request->file('file_one');
-            $file2 = $request->file('file_two');
-            if(isset($file1)||isset($file_two)){
+            $file1 = $request->file('file_one')[$key];
+            $file2 = $request->file('file_two')[$key];
+            if(isset($file1)){
                 $file1->move($destinationPath, $file1->getClientOriginalName());
-                $file2->move($destinationPath, $file2->getClientOriginalName());
                 $addIndicatorOne->file_one = $file_one->getClientOriginalName();
+            }
+            if (isset($file2)){
+                $file2->move($destinationPath, $file2->getClientOriginalName());
                 $addIndicatorOne->file_two = $file_two->getClientOriginalName();
             }
             $addIndicatorOne->url = $url;
             $addIndicatorOne->comments = $comments;
-//         dd($addIndicatorOne);
             $addIndicatorOne->save();
         }
 
@@ -272,10 +296,6 @@ class AcesController extends Controller {
 					'baseline' => $baseline,
 					'user_id' => Auth::id(),
 				]);
-//        return $getBaseline;
-				//                $getBaseline->baseline = $baseline;
-				//                $getBaseline->user_id = Auth::id();
-				//                $getBaseline->save();
 			}
 			notify(new ToastNotification('Successful', 'Baselines have been updated.', 'success'));
 		} else {
@@ -337,8 +357,6 @@ class AcesController extends Controller {
 
 			notify(new ToastNotification('Successful', 'Indicator Targets added.', 'success'));
 		}
-
-//        return $request->all();
 		return back();
 	}
 }

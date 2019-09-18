@@ -339,8 +339,6 @@ class SettingsController extends Controller
         return back();
     }
 
-    ///////////////////////////////////////////////////////////////////////
-
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
@@ -392,6 +390,7 @@ class SettingsController extends Controller
     public function mailing_list(){
         $aces = Ace::all();
         $aceemails= Aceemail::all();
+
         return view('settings.mailinglist',compact('aces','aceemails'));
     }
 
@@ -400,20 +399,20 @@ class SettingsController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function save_mailing_list(Request $request){
-
         $this->validate($request,[
             'ace_id' => 'required|string|min:1',
-
-            'email' => 'required|string|min:1',
-
-        ]);
+            'mailing_name' => 'required|string|min:1',
+            'mailing_title' => 'required|string|min:1',
+            'mailing_email' => 'required|string|min:1',
+   ]);
 
         Aceemail::create([
             'ace_id' => $request->ace_id,
-            'email' => $request->email
-
+            'contact_name' => $request->mailing_name,
+            'contact_title' => $request->mailing_title,
+            'email' => $request->mailing_email
         ]);
-        notify(new ToastNotification('Successful!', 'Email Added!', 'success'));
+        notify(new ToastNotification('Successful!', 'Contact Person Added!', 'success'));
         return back();
     }
 
@@ -424,8 +423,9 @@ class SettingsController extends Controller
     public function edit_mailinglist($id){
         $aceemail_id = Crypt::decrypt($id);
         $aceemails = Aceemail::find($aceemail_id);
-        $aces = Ace::all();
-        return view('settings.mailinglist.edit', compact('aceemails','aces'));
+        $ace = Ace::find($aceemails->ace_id);
+
+        return view('settings.mailinglist.edit', compact('aceemails','ace'));
     }
 
     /**
@@ -435,23 +435,17 @@ class SettingsController extends Controller
      */
     public function update_mailinglist(Request $request,$id){
 
-
-        $this->validate($request,[
-
-            'ace_id' => 'required|numeric|min:1',
-            'email' => 'required|string|email|min:3'
-
-        ]);
-
         $aceemails = Aceemail::find($id);
 
-        $aceemails->ace_id =$request->ace_id;
-        $aceemails->email=$request->email;
+        $aceemails->ace_id =$aceemails->ace_id;
+        $aceemails->contact_name =$request->mailing_name;
+        $aceemails->contact_title =$request->mailing_title;
+        $aceemails->email=$request->mailing_email;
 
         $aceemails->save();
 
-        notify(new ToastNotification('Successful!', ' Email Edited!', 'success'));
-        return redirect()->route('settings.mailinglist');
+        notify(new ToastNotification('Successful!', ' Contact Updated!', 'success'));
+        return redirect()->route('user-management.aces.profile',[\Illuminate\Support\Facades\Crypt::encrypt($aceemails->ace_id)]);
     }
 
     /**
