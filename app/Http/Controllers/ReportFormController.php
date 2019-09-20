@@ -6,6 +6,7 @@ use App\Ace;
 use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Indicator;
+use App\Indicator3;
 use App\Project;
 use App\Report;
 use App\ReportIndicatorsStatus;
@@ -55,7 +56,6 @@ class ReportFormController extends Controller {
 	 */
 	public function add_report() {
 		$me = new CommonFunctions();
-//		dd($me->isSubmissionOpen());
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->orderBy('identifier','asc')->get();
 		$aces = Ace::where('active', '=', 1)->get();
@@ -85,7 +85,6 @@ class ReportFormController extends Controller {
                 'end' => 'required|string|date',
                 'submission_date' => 'nullable|string|date',
             ]);
-//            $move_to_indicators = false;
             $report_id = null;
 
 //            DB::transaction(function () use ($request,$report_id) {
@@ -358,11 +357,16 @@ class ReportFormController extends Controller {
 		$id = Crypt::decrypt($id);
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$report = Report::find($id);
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)
+            ->where('show_on_report','=', 1)
+            ->orderBy('identifier','asc')
+            ->get();
 		if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
 
             $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
             $aces = Ace::where('active', '=', 1)->get();
-            return view('report-form.view', compact('project', 'report', 'aces', 'values'));
+            return view('report-form.view', compact('project', 'report', 'aces', 'values', 'indicators'));
 
 		}else{
             notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
@@ -382,11 +386,21 @@ class ReportFormController extends Controller {
 		$current_status = ReportIndicatorsStatus::where('report_id', '=', $id)->orderBy('status_date', 'desc')->get();
 		$status_history = ReportIndicatorsStatus::where('report_id', '=', $id)->get();
 		$all_status = new CommonFunctions();
+
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)
+            ->where('show_on_report','=', 1)
+            ->orderBy('identifier','asc')
+            ->get();
 		$aces = Ace::where('active', '=', 1)->get();
 		return view('report-form.report-indicator-status', compact('project', 'report', 'aces',
-			'current_status', 'all_status', 'status_history'));
+			'current_status', 'all_status', 'status_history','indicators'));
 	}
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
 	public function delete($id) {
 		$id = Crypt::decrypt($id);
 		Report::destroy($id);
@@ -420,6 +434,13 @@ class ReportFormController extends Controller {
 		notify(new ToastNotification('Successful!', 'Report Indicator Changed.', 'success'));
 		return back();
 	}
+
+    /**
+     * @param Request $request
+     * @param $report_id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
 	public function report_status_save(Request $request, $report_id) {
 		$this->validate($request, [
 			'status_label' => 'required|numeric',
@@ -457,7 +478,6 @@ class ReportFormController extends Controller {
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
 	public function edit_report($id) {
-//        return $id;
 		$id = Crypt::decrypt($id);
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$report = Report::find($id);
@@ -466,13 +486,23 @@ class ReportFormController extends Controller {
             return redirect()->route('report_submission.reports');
         }
 		$values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
-//        return $values;
-        $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->orderBy('identifier','asc')->get();
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)
+            ->where('show_on_report','=', 1)
+            ->orderBy('identifier','asc')
+            ->get();
+
+        //Get the aggregated result for Indicator 3
+        $result = $this->generateAggregatedIndicator3Results($id);
+        $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
+//        dd($indicator_5_2);
+
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
-		return view('report-form.edit', compact('project', 'report', 'aces', 'values', 'ace_officers', 'indicators'));
+		return view('report-form.edit', compact('project', 'report', 'aces', 'values', 'ace_officers',
+            'indicators','result','indicator_5_2'));
 	}
 
     /**
@@ -481,6 +511,7 @@ class ReportFormController extends Controller {
      * @throws \Illuminate\Validation\ValidationException
      */
 	public function update_report(Request $request) {
+
 		if (isset($request->submit)) {
 			DB::transaction(function () use ($request) {
 				$this->validate($request, [
@@ -506,17 +537,22 @@ class ReportFormController extends Controller {
 				}
 				$report->save();
 
-				foreach ($request->indicators as $indicator => $value) {
-					ReportValue::where('report_id', '=', $report_id)
-						->where('indicator_id', '=', $indicator)
-						->update(['value' => $value]);
-				}
+                foreach ($request->indicators as $indicator => $value) {
+
+                    ReportValue::updateOrCreate([
+                        'report_id' => $report_id,
+                        'indicator_id' => $indicator,
+                    ], [
+                        'value' => $value,
+                    ]);
+                }
 
 				ReportIndicatorsStatus::where('report_id', '=', $report_id)->update(['status' => 1]);
 				ReportStatusTracker::where('report_id', '=', $report_id)->update(['status_code' => 1]);
 				notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
 			});
-			return redirect()->route('report_submission.upload_indicator', [$request->report_id]);
+//			return redirect()->route('report_submission.upload_indicator', [$request->report_id]);
+            return redirect()->route('report_submission.reports');
 		}
 		else {
 			$this->validate($request, [
@@ -530,7 +566,7 @@ class ReportFormController extends Controller {
 				$report = Report::find($report_id);
 				$report->start_date = $request->start;
 				$report->end_date = $request->end;
-				$report->status = 0;
+                $report->status = 99;
 				if (isset($request->ace_officer)) {
 					$ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
 					$report->user_id = Crypt::decrypt($request->ace_officer);
@@ -550,14 +586,35 @@ class ReportFormController extends Controller {
 						'value' => $value,
 					]);
 				}
+                $parent_indicators = Indicator::where('is_parent','=', 1)
+                    ->where('project_id','=', 1)
+                    ->where('status','=', 1)
+                    ->where('show_on_report','=', 1)
+                    ->orderBy('identifier','asc')
+                    ->get();
+
+                foreach ($parent_indicators as $parent_indicator) {
+                    ReportIndicatorsStatus::updateOrCreate([
+                        'report_id' => $report->id,
+                        'indicator_id' => $parent_indicator->id,
+                    ], [
+                        'status' => 99,
+                    ]);
+                }
+
+                ReportStatusTracker::updateOrCreate([
+                    'report_id' => $report->id,
+                    'status_code' => 99,
+                ]);
 
 				notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
 			});
-            if (isset($request->toIndicators)){
-                return redirect()->route('report_submission.upload_indicator',$request->report_id);
+            if (isset($request->continue)){
+//                return redirect()->route('report_submission.upload_indicator',$request->report_id);
+                return redirect()->route('report_submission.reports');
             }
 
-			return redirect()->route('report_submission.reports');
+			return back();
 		}
 	}
 
@@ -586,5 +643,98 @@ class ReportFormController extends Controller {
 		}
 
 		return response()->json(['message' => $message, 'note' => $note, 'btnclass' => $btnclass, 'status' => $status]);
+	}
+
+    /**
+     * Generate Aggregated results for Indicator 3
+     * @param $report_id
+     * @return array
+     */
+    public function generateAggregatedIndicator3Results($report_id)
+    {
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)
+            ->where('show_on_report','=', 1)
+            ->where('parent_id','=', 3)
+            ->orderBy('identifier','asc')
+            ->get();
+
+        $filters = ["Ph.D","M.Sc","B.Sc","Short"];
+        $indicator_3_values = array();
+
+        foreach ($indicators as $key=>$indicator) {
+            $national_and_men = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "M")
+                        ->orWhere('gender','=', "Male");
+                })
+                ->where('regional-status','=', "National");
+            $national_and_women = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "F")
+                        ->orWhere('gender','=', "Female");
+                })
+                ->where('regional-status','=', "National");
+            $regional_and_men = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where('regional-status','=', "Regional")
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "M")
+                        ->orWhere('gender','=', "Male");
+                });
+            $regional_and_women = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where('regional-status','=', "Regional")
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "F")
+                        ->orWhere('gender','=', "Female");
+                });
+
+            $identifier = $indicator->identifier;
+            $filter_value = $filters[$key];
+
+            $indicator_3_values["$identifier"]["national_and_men"] = $national_and_men->where("programmeoption","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["national_and_women"] = $national_and_women->where("programmeoption","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["regional_and_men"] = $regional_and_men->where("programmeoption","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["regional_and_women"] = $regional_and_women->where("programmeoption","like","%$filter_value%")->count();
+        }
+
+        return $indicator_3_values;
+
+	}
+
+    public function generateAggregatedIndicator52Results($report_id)
+    {
+        $indicator_5_2_values = array();
+
+        $indicator_5_2_values['national']= DB::connection('mongodb')
+            ->collection('indicator_11')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('nationality','=', "National")
+                    ->orWhere('nationality','=', "national");
+            })->count();
+
+        $indicator_5_2_values['regional'] = DB::connection('mongodb')
+            ->collection('indicator_11')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('nationality','=', "Regional")
+                    ->orWhere('nationality','=', "regional");
+            })->count();
+
+        return $indicator_5_2_values;
 	}
 }

@@ -114,9 +114,9 @@
                             </div>
                         </div>
                     </div>
-                    @php
-                        $indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);
-                    @endphp
+                    {{--@php--}}
+                        {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
+                    {{--@endphp--}}
                     <div id="indicators-form">
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
