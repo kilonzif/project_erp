@@ -43,12 +43,7 @@ class ReportFormController extends Controller {
 	 *Shows all the reports (Archives)
 	 */
 	public function archive() {
-//        if (Auth::user()->hasRole('webmaster|admin|super-admin')){
-		$ace_reports = Report::get();
-//        }else{
-		//            $ace_reports = Report::where('user_id','=', Auth::id())->get();
-		//        }
-		//        return view('report-form.archive', compact('ace_reports'));
+
 	}
 
 	/**
@@ -718,7 +713,7 @@ class ReportFormController extends Controller {
         $indicator_5_2_values = array();
 
         $indicator_5_2_values['national']= DB::connection('mongodb')
-            ->collection('indicator_11')
+            ->collection('indicator_5.2')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
@@ -727,7 +722,7 @@ class ReportFormController extends Controller {
             })->count();
 
         $indicator_5_2_values['regional'] = DB::connection('mongodb')
-            ->collection('indicator_11')
+            ->collection('indicator_5.2')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {

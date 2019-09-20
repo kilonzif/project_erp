@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -98,6 +99,9 @@ class UploadIndicatorsController extends Controller
             'upload_file'=>'required|file|mimes:xls,xlsx',
         ]);
 
+        $indicator_info = Indicator::find($request->indicator);
+//        dd($indicator_info);
+
         //Get the start row of data inputs for the upload
         $data_start = DB::connection('mongodb')
             ->collection('indicator_form')
@@ -158,7 +162,7 @@ class UploadIndicatorsController extends Controller
                     return back();
                 }
 
-                $table_name = "indicator_".$request->indicator;
+                $table_name = Str::snake("indicator_".$indicator_info->identifier);
 
                 //Loops through the excel sheet to get the values;
                 DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();

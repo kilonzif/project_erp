@@ -26,14 +26,14 @@
                         </div>
                     </div>
                     <div class="card-content collapse show">
-                        <div class="card-body">
+                        <div class="card-body load-area">
 
                             {{--<form action="#">--}}
                                 <div class="form-group row">
                                     <div class="col-5">
-                                        <label for="start">Start</label>
+                                        <label for="start_date">Start</label>
                                         <div class="input-group">
-                                            <input type="text" name="start" class="form-control singledate" value="">
+                                            <input type="text" name="start" id="start_date" class="form-control singledate" value="">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">
                                                   <span class="fa fa-calendar"></span>
@@ -42,9 +42,9 @@
                                         </div>
                                     </div>
                                     <div class="col-5">
-                                        <label for="start">End</label>
+                                        <label for="end_date">End</label>
                                         <div class="input-group">
-                                            <input type="text" name="end" class="form-control singledate" value="">
+                                            <input type="text" name="end" id="end_date" class="form-control singledate" value="">
                                             <div class="input-group-append">
                                                 <span class="input-group-text">
                                                   <span class="fa fa-calendar"></span>
@@ -115,6 +115,10 @@
 
         //Script for Cumulative PDO
         function showCumulativePDO() {
+            let block_ele = $(this).closest('.load-area');
+            let start_date = $("#start_date").val();
+            let end_date = $("#end_date").val();
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-Token': $('meta[name=_token]').attr('content')
@@ -123,18 +127,30 @@
             $.ajax({
                 type: "GET",
                 url: "{{route('analytics.getCumulativePDO')}}",
-                // data: {the_date: the_date},
+                data: {start_date: start_date,end_date: end_date},
                 beforeSend: function () {
-                    $("#preloader").fadeIn();
+
+                    // $(block_ele).block({
+                    //     message: '<span class="semibold"> Please wait...</span>',
+                    //     overlayCSS: {
+                    //         backgroundColor: '#fff',
+                    //         opacity: 0.8,
+                    //         cursor: 'wait'
+                    //     },
+                    //     css: {
+                    //         border: 0,
+                    //         padding: 0,
+                    //         backgroundColor: 'transparent'
+                    //     }
+                    // });
                 },
                 success: function (data) {
-                    // console.log(data)
                     $("#showPDOTable").html(data.the_view);
                 },
                 complete: function () {
-
+                    $(block_ele).unblock();
                 },
-                error: function () {
+                error: function (data) {
                     console.log(data)
                 }
             })

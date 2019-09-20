@@ -245,6 +245,7 @@ class AcesController extends Controller {
 		$ace_dlrs = AceDlrIndicator::where('parent_id', '=', 0)->orderBy('order', 'asc')->get();
 
 		$target_years = $ace->target_years;
+//		dd($target_years);
 
 		$aceemails = Aceemail::where('ace_id', '=', $id)->orderBy('email', 'asc')->get();
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
@@ -275,6 +276,7 @@ class AcesController extends Controller {
 		$all_aces = Ace::get();
 		$project = Project::find(1);
 		$values = array();
+        $getYear = null;
 		if ($year_id != null) {
 			$getYear = AceIndicatorsTargetYear::find($year_id);
 			$getTargets = AceIndicatorsTarget::where('target_year_id', '=', $year_id)->pluck('target', 'indicator_id');

@@ -86,5 +86,6 @@
         @component('layouts.components.toast-notification')
         @endcomponent
     @endif
+    {{--<script src="{{asset('js/scripts.js')}}" type="text/javascript"></script>--}}
 </body>
 </html>

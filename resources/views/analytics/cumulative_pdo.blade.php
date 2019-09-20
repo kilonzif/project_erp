@@ -3,7 +3,7 @@
         <thead>
         <tr>
             <th>Disbursement-linked Indicators <br>(DLIs)</th>
-            <th>Jan – Dec 2018 <br>Actual Results</th>
+            <th>{{date("M",strtotime($start_date))." - ".date("M Y",strtotime($end_date))}} <br>Actual Results</th>
             <th>Project Cumulative Results</th>
             <th>End Target PAD</th>
             <th>Status of Project End Targets</th>
@@ -15,14 +15,14 @@
             </tr>
             <tr>
                 <td><strong>Total Students</strong></td>
-                <td></td>
+                <td>{{$total_students}}</td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><strong>Regional Students</strong></td>
-                <td></td>
+                <td>{{$regional_students}}</td>
                 <td></td>
                 <td></td>
                 <td></td>
