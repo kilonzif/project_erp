@@ -59,7 +59,7 @@ class AcesController extends Controller {
             'field' => 'required|string',
             'active' => 'nullable|boolean',
             'currency' => 'required|numeric',
-            'dlr' => 'required|numeric|min:0',
+            'dlr' => 'nullable|numeric|min:0',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
 
@@ -124,55 +124,118 @@ class AcesController extends Controller {
 
     }
 
-    public function indicator_one($id) {
+    public function indicator_one($id)
+    {
         $ace_id = Crypt::decrypt($id);
 
         $ace = Ace::find($ace_id);
         $all_aces = Ace::get();
-        $requirements = array();
-        $getRequirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
-        if ($getRequirements->isNotEmpty()) {
-            $requirements = $getRequirements;
-        }
-        $indicatorOne = new CommonFunctions();
-        $labels=$indicatorOne->getRequirementLabels(null);
-        $indicator_ones=IndicatorOne::where('ace_id', '=', $id)->get();
+        $getRequirements = Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
+            $indicatorOne = new CommonFunctions();
+            $labels = $indicatorOne->getRequirementLabels(null);
+            $indicator_ones =IndicatorOne::where('ace_id', '=', $ace_id)->get()->groupBy('requirement')->toArray();
 
-        return view('aces.indicator-one', compact('ace','all_aces','requirements','indicator_ones','labels'));
+
+//            dd($indicator_ones->groupBy('requirement'));
+//            dd($indicator_ones);
+            return view('aces.indicator-one', compact('ace', 'all_aces', 'indicator_ones','labels'));
+
     }
 
     public  function indicator_one_save(Request $request, $id)
     {
-
         $ace_id = Crypt::decrypt($id);
+        $oldIndicator=IndicatorOne::find($ace_id);
+//        dd(empty($oldIndicator));
         $requirement = $request->requirement;
-        foreach ($requirement as $key => $req){
-            $addIndicatorOne = new IndicatorOne();
-            $submission_date = $request->submission_date[$key];
-            $file_one = $request->file_one[$key];
-            $file_two = $request->file_two[$key];
-            $url = $request->url[$key];
-            $comments = $request->comments[$key];
-            $destinationPath = base_path() . '/public/indicator1/'; // upload path
-            $addIndicatorOne->ace_id= $ace_id;
-            $addIndicatorOne->requirement = $requirement[$key];
-            $addIndicatorOne->submission_date = $submission_date;
-            $file1 = $request->file('file_one')[$key];
-            $file2 = $request->file('file_two')[$key];
-            if(isset($file1)){
-                $file1->move($destinationPath, $file1->getClientOriginalName());
-                $addIndicatorOne->file_one = $file_one->getClientOriginalName();
+        $submission_date = $request->submission_date;
+        $file_one=$request->file_one;
+        $file_two = $request -> file_two;
+        $url = $request -> url;
+        $comments = $request -> comments;
+        $destinationPath = base_path() . '/public/indicator1/'; // upload path
+        if(!empty($oldIndicator)) {
+            $get_oldIndicator = IndicatorOne::where('ace_id', '=', $ace_id)->get();
+            foreach ($oldIndicator as $key => $req) {
+                $updateIndicatorOne = IndicatorOne::find($req->id);
+                $updateind['requirement'] = $requirement[$key];
+                $updateind['submission_date'] = $submission_date[$key];
+                if ($request->has('file_one')) {
+                    $file_one = $request->file_one;
+                    if (isset($request->file('file_one')[$key])) {
+                        if ($request->file('file_one')[$key] == "") {
+                            $updateind['file_one'] = $req->file_one;
+                        } else {
+                            $file = $request->file('file_one')[$key];
+                            $extension = $file->getClientOriginalExtension();
+
+                            $updateind['file_one'] = $file->getClientOriginalName();
+                        }
+                    } else {
+                        $updateind['file_one'] = $req->file_one;
+                    }
+                } else {
+                    $updateind['file_one'] = $req->file_one;
+                }
+                if ($request->has('file_two')) {
+                    $file_two = $request->file_one;
+                    if (isset($request->file('file_two')[$key])) {
+
+                        if ($request->file('file_two')[$key] == "") {
+                            $updateind['file_two'] = $req->file_one;
+                        } else {
+                            $file = $request->file('file_two')[$key];
+                            $extension = $file->getClientOriginalExtension();
+
+                            $updateind['file_two'] = $file->getClientOriginalName();
+                        }
+                    } else {
+                        $updateind['file_two'] = $req->file_two;
+                    }
+                } else {
+                    $updateind['file_two'] = $req->file_two;
+                }
+                $files[] = $updateind['file_one'] . " " . $req->id;
+                $files[] = $updateind['file_two'] . " " . $req->id;
+                $updateind['url'] = $url[$key];
+                $updateind['comments'] = $comments[$key];
+                $files[] = $updateind;
+
+                $saveIndicator = $updateIndicatorOne->update($updateind);
+
+
             }
-            if (isset($file2)){
-                $file2->move($destinationPath, $file2->getClientOriginalName());
-                $addIndicatorOne->file_two = $file_two->getClientOriginalName();
+        }
+        else {
+            $requirement = $request->requirement;
+            foreach ($requirement as $key => $req) {
+                $addIndicatorOne = new IndicatorOne();
+                $submission_date = $request->submission_date[$key];
+                $file_one = $request->file_one[$key];
+                $file_two = $request->file_two[$key];
+                $url = $request->url[$key];
+                $comments = $request->comments[$key];
+                $addIndicatorOne->ace_id = $ace_id;
+                $addIndicatorOne->requirement = $requirement[$key];
+                $addIndicatorOne->submission_date = $submission_date;
+                $file1 = $request->file('file_one')[$key];
+                $file2 = $request->file('file_two')[$key];
+                if (isset($file1)) {
+                    $file1->move($destinationPath, $file1->getClientOriginalName());
+                    $addIndicatorOne->file_one = $file_one->getClientOriginalName();
+                }
+                if (isset($file2)) {
+                    $file2->move($destinationPath, $file2->getClientOriginalName());
+                    $addIndicatorOne->file_two = $file_two->getClientOriginalName();
+                }
+                $addIndicatorOne->url = $url;
+                $addIndicatorOne->comments = $comments;
+                $saveIndicator=$addIndicatorOne->save();
             }
-            $addIndicatorOne->url = $url;
-            $addIndicatorOne->comments = $comments;
-            $addIndicatorOne->save();
         }
 
-        if (isset($addIndicatorOne->id)) {
+
+        if (isset($saveIndicator)) {
             notify(new ToastNotification('Successful!', 'Indicator 1 Requirement Added', 'success'));
             return back();
         } else {
@@ -212,7 +275,7 @@ class AcesController extends Controller {
 			'email' => 'required|string|email|min:3',
 			'field' => 'required|string',
 			'currency' => 'required|numeric',
-			'dlr' => 'required|numeric|min:0',
+			'dlr' => 'nullable|numeric|min:0',
 			'university' => 'required|integer|min:1',
 			'active' => 'nullable|boolean',
 			'acronym' => 'required|string|min:2',

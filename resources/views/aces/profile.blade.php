@@ -57,43 +57,28 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong><br>{{$ace->email}}</td>
-                                    <td><strong>Contact Person</strong><br>{{$ace->contact_person ." - ".$ace->person_number.
-                                    " - ".$ace->person_email." - ".$ace->position}}</td>
+                                    <td><strong>Grant Amount</strong><br>{{$ace->dlr}}</td>
                                     <td><strong>Field</strong><br>{{$ace->field}}</td>
                                 </tr>
                             </table>
 
-                            <div class="row">
-                                <div class="col-md-3 text-left">
-                                    <a class="btn btn-secondary square ml-3" href="{{route('user-management.ace.indicator_one',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                        <i class="ft-plus-circle"></i>Institutional Readiness (Indicator 1)
-                                    </a>
-                                </div>
-                                <div class="col-md-3 text-right">
-                                    <a class="btn btn-primary square"href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                        Indicator Baselines
-                                    </a>
+                            <div class="form-group">
+                                <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.indicator_one',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">Institutional Readiness</a>
+                                <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" role="button">Indicator Baselines</a>
+                                <a class="btn btn-primary btn-min-width mr-1 mb-1"href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}"> <i class="ft-plus-circle"></i> New Targets</a>
+                                @if($target_years->isNotEmpty())
+                                <div class="btn-group mr-1 mb-1">
+                                    <button type="button" class="btn bg-warning bg-darken-4 btn-min-width dropdown-toggle white" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false"><i class="ft-crosshair"></i>  Select Target Year</button>
+                                    <div class="dropdown-menu">
+                                        @foreach($target_years as $target_year)
+                                            <a class="dropdown-item" href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$target_year->id])}}">
+                                            {{date('F Y',strtotime($target_year->start_period))." - ".date('F Y',strtotime($target_year->end_period))}}
+                                            </a>
+                                        @endforeach
+                                    </div>
                                 </div>
 
-                                <div class="col-md-3 text-left">
-                                    <a class="btn btn-secondary square ml-3" href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                        <i class="ft-plus-circle"></i> New Targets
-                                    </a>
-                                </div>
-                                @if($target_years->isNotEmpty())
-                                    <div class="col-md-6">
-                                        <div class="btn-group mr-1 mb-1">
-                                            <button type="button" class="btn bg-warning bg-darken-4 btn-min-width dropdown-toggle white" data-toggle="dropdown"
-                                                    aria-haspopup="true" aria-expanded="false"><i class="ft-crosshair"></i>  Select Target Year</button>
-                                            <div class="dropdown-menu">
-                                                @foreach($target_years as $target_year)
-                                                    <a class="dropdown-item" href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$target_year->id])}}">
-                                                        {{date('F Y',strtotime($target_year->start_period))." - ".date('F Y',strtotime($target_year->end_period))}}
-                                                    </a>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
                                 @endif
                             </div>
 
@@ -135,20 +120,19 @@
                             <br>
                                 @php
                                 $allcourses=explode(';',$ace->programmes);
-                                $count=0;
+
                                 @endphp
 
                                 @foreach($allcourses as $course)
-
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
-                                        <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"  data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
-                                            <span class="fa fa-remove"></span>
-                                        </a>
-                                    </div>
-                                    @php
-                                    $count+=1;
-                                    @endphp
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
+                                    <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"  data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
+                                        <span class="fa fa-remove"></span>
+                                    </a>
+                                </div>
+                                {{--@php--}}
+                                    {{--$count+=1;--}}
+                                {{--@endphp--}}
                                 @endforeach
                         </div>
                     </div>
@@ -193,17 +177,29 @@
                                                 <label for="mailing_title">Position <span class="required">*</span></label>
                                                 <select class="form-control" name="mailing_title">
                                                     <option value="">Select Title</option>
-                                                    <option value="finance">Finance Officer</option>
-                                                    <option value="procument">Procument Officer</option>
-                                                    <option value="M & E">M & E</option>
-                                                    <option value="deputy center leader">Deputy Center Leader</option>
-                                                    <option value="Focal Person">Focal Person</option>
-                                                    <option value="PS Member">PS Member</option>
                                                     <option value="Center Leader">Center Leader</option>
+                                                    <option value="Deputy Center Leader">Deputy Center Leader</option>
+                                                    <option value="Finance Officer">Finance Officer</option>
+                                                    <option value="Focal Person">Focal Person</option>
+                                                    <option value="M&E">M&E</option>
+                                                    <option value="Procument Officer">Procument Officer</option>
+                                                    <option value="PSC Member">PSC Member</option>
+                                                    <option value="Vice Chancellor">Vice Chancellor</option>
                                                 </select>
                                                 @if ($errors->has('mailing_title'))
                                                     <p class="text-right">
                                                         <small class="warning text-muted">{{ $errors->first('mailing_title') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Phone <span class="required">*</span></label><input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
+                                                @if ($errors->has('mailing_phone'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
                                                     </p>
                                                 @endif
                                             </div>
@@ -232,6 +228,7 @@
                                 <tr>
                                     <th> Name</th>
                                     <th>Email</th>
+                                    <th>Phone</th>
                                     <th>Title</th>
                                     <th style="width: 100px;">Action</th>
                                 </tr>
@@ -241,6 +238,7 @@
                                     <tr>
                                         <td>{{$aceemail->contact_name}}</td>
                                         <td>{{$aceemail->contact_title}}</td>
+                                        <td>{{$aceemail->contact_phone}}</td>
                                          <td>{{$aceemail->email}}</td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">

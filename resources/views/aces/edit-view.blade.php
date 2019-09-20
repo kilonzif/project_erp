@@ -39,8 +39,8 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-group{{ $errors->has('dlr') ? ' form-control-warning' : '' }}">
-                        <label for="dlr">Grant Amount <span class="required">*</span></label>
-                        <input type="text" required placeholder="DLR Amount" step="0.10" min="0" name="dlr" class="form-control"
+                        <label for="dlr">Grant Amount </label>
+                        <input type="text"  placeholder="DLR Amount" step="0.10" min="0" name="dlr" class="form-control"
                                value="{{ old('dlr')?old('dlr'):$ace->dlr }}" id="dlr" style="text-align: right;">
                         @if ($errors->has('dlr'))
                             <p class="text-right">
