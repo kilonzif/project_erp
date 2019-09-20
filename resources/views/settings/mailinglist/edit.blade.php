@@ -73,14 +73,27 @@
                                     <label for="mailing_title">Title <span class="required">*</span></label>
                                     <select class="form-control" name="mailing_title" >
                                         <option value="">Select Title</option>
-                                        <option {{($aceemails->contact_title=='finance') ? "selected":""}} value="finance">Finance Officer</option>
-                                        <option {{($aceemails->contact_title=='procument') ? "selected":""}} value="procument">Procument Officer</option>
-                                        <option {{ ($aceemails->contact_title=="M & E")  ? "selected":""}}  value="M & E">M & E</option>
-                                        <option {{($aceemails->contact_title=="deputy center leader")  ? "selected":""}}  value="deputy center leader">Deputy Center Leader</option>
-                                        <option {{($aceemails->contact_title=="Focal Person")  ? "selected":""}} value="Focal Person">Focal Person</option>
-                                        <option {{($aceemails->contact_title == "PS Member") ? "selected":""}}  value="PS Member">PS Member</option>
-                                        <option {{($aceemails->contact_title == "Center Leader")  ? "selected":""}}  value="Center Leader">Center Leader</option>
+                                        <option {{($aceemails->contact_title == 'Center Leader')  ? "selected":""}}  value="Center Leader">Center Leader</option>
+                                        <option {{($aceemails->contact_title=='Deputy Center Leader')  ? "selected":""}}  value="Deputy Center Leader">Deputy Center Leader</option>
+                                        <option {{($aceemails->contact_title=='Finance Officer') ? "selected":""}} value="Finance Officer">Finance Officer</option>
+                                        <option {{($aceemails->contact_title=='Focal Person')  ? "selected":""}} value="Focal Person">Focal Person</option>
+                                        <option {{($aceemails->contact_title=='Procument Officer') ? "selected":""}} value="Procument Officer">Procument Officer</option>
+                                        <option {{ ($aceemails->contact_title=='M & E')  ? "selected":""}}  value="M & E">M & E</option>
+                                        <option {{($aceemails->contact_title == 'PSC Member') ? "selected":""}}  value="PSC Member">PSC Member</option>Vi
+                                        <option {{($aceemails->contact_title == 'Vice Chancellor') ? "selected":""}} value="Vice Chancellor">Vice Chancellor</option>
+
                                     </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
+                                        <label for="mailing_phone">Phone Number <span class="required">*</span></label>
+                                        <input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ $aceemails->contact_phone }}" id="mailing_phone">
+                                        @if ($errors->has('mailing_email'))
+                                            <p class="text-right">
+                                                <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
+                                            </p>
+                                        @endif
+                                    </div>
                                 </div>
 
                               <div class="col-md-6">

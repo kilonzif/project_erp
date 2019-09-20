@@ -78,7 +78,31 @@
 
                 <div class="row">
                     <div class="col-12">
+                        {{--@php--}}
+                        {{--if(!empty($indicator_ones)){--}}
+                         {{--if(sizeof($indicator_ones)!=sizeof($labels)){--}}
+                         {{--dd($labels);--}}
+
+                        {{--}--}}
+                        {{--dd("jhjhdf");--}}
+                        {{--}            --}}
+                        {{--@endphp--}}
+                        {{--@if(!empty($indicator_ones))--}}
+                            {{--@foreach($labels as $key=>$currentRequirement)--}}
+                                {{--@foreach($indicator_ones as $i)--}}
+
+                                {{--@endforeach--}}
+                            {{--@endforeach--}}
+
                         @foreach($labels as $key=>$currentRequirement)
+                                    @php
+                                    try{
+                                        $values=($indicator_ones[$key]);
+                                    }catch (Exception $E){
+                                        $values=[];
+                                  }
+
+                                    @endphp
 
                             <div class="card" id="action-card">
                                 <div class="card-header">
@@ -98,27 +122,27 @@
                                             <input type="hidden" name="requirement[]" value="{{$key}}" >
                                             <div class="row">
 
-                                                @if($labels[$key]['submission_date'] == true)
+                                                @if($labels[$key]['submission_date'])
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label>Submission Date:</label>
-                                                            <input type="date" class="form-control" name="submission_date[]"  id="submission_date" value="{{old('submission_date1[]')}}">
+                                                            <input type="date" class="form-control" name="submission_date[]"  id="submission_date" value="{{old('submission_date1[]',empty($values[0]['submission_date'])?"":$values[0]['submission_date'])}}">
                                                         </div>
                                                     </div>
                                                 @endif
-                                                @if($labels[$key]['file1'] == true)
+                                                @if($labels[$key]['file1'])
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label>File 1 Upload:</label>
-                                                            <input type="file" class="form-control" name="file_one[]" value="{{old('file_one')}}">
+                                                            <input type="file" class="form-control" name="file_one[]" value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
                                                         </div>
                                                     </div>
                                                 @endif
-                                                @if($labels[$key]['file2'] == true)
+                                                @if($labels[$key]['file2'])
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label>File 1 Upload:</label>
-                                                            <input type="file" class="form-control" id="file_two[]" name="file_two[]" value="{{old('file_two')}}">
+                                                            <input type="file" class="form-control" id="file_two[]" name="file_two[]" value="{{old('file_two',empty($values[0]['file_two'])?"":$values[0]['file_two'])}}">
                                                         </div>
                                                     </div>
                                                 @endif
@@ -126,7 +150,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group{{ $errors->has('url[]') ? ' form-control-warning' : '' }}">
                                                             <label>URL:</label>
-                                                            <input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url')}}" id="url">
+                                                            <input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url',empty($values[0]['url'])?"":$values[0]['url'])}}" id="url">
                                                             @if ($errors->has('url[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('url[]') }}</small>
@@ -136,11 +160,11 @@
                                                         </div>
                                                     </div>
                                                 @endif
-                                                @if($labels[$key]['comments'] == true)
+                                                @if($labels[$key]['comments'])
                                                     <div class="col-md-12">
                                                         <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
                                                             <label for="comments1">Comments</label>
-                                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments')}}" id="comments1">
+                                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments',empty($values[0]['comments'])?"":$values[0]['comments'])}}" id="comments1">
                                                             @if ($errors->has('comments[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('comments[]') }}</small>

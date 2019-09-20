@@ -29,10 +29,6 @@ class InstitutionsController extends Controller
             'email' => 'nullable|string|min:3',
             'country' => 'required|integer|min:1',
             'is_uni' => 'nullable|boolean',
-            'contact_name' => 'nullable|string|min:3',
-            'contact_email' => 'nullable|string|email|min:3',
-            'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
-            'position' => 'nullable|string|min:3',
         ]);
 
         $addInstitution = new Institution();
@@ -41,10 +37,6 @@ class InstitutionsController extends Controller
         $addInstitution->email = $request->email;
         $addInstitution->country_id = $request->country;
         $addInstitution->university = $request->is_uni;
-        $addInstitution->contact_person = $request->contact_name;
-        $addInstitution->person_email = $request->contact_email;
-        $addInstitution->person_number = $request->contact_person_phone;
-        $addInstitution->position = $request->position;
         $addInstitution->save();
         notify(new ToastNotification('Successful!', 'New Institution Added', 'success'));
         return back();
@@ -65,10 +57,6 @@ class InstitutionsController extends Controller
             'email' => 'nullable|string|min:3',
             'country' => 'required|integer|min:1',
             'is_uni' => 'nullable|boolean',
-            'contact_name' => 'nullable|string|min:3',
-            'contact_email' => 'nullable|string|email|min:3',
-            'contact_person_phone' => 'nullable|numeric|digits_between:10,20',
-            'position' => 'nullable|string|min:3',
         ]);
 //        return $request->all();
 
@@ -78,10 +66,6 @@ class InstitutionsController extends Controller
         $addInstitution->email = $request->email;
         $addInstitution->country_id = $request->country;
         $addInstitution->university = $request->is_uni;
-        $addInstitution->contact_person = $request->contact_name;
-        $addInstitution->person_email = $request->contact_email;
-        $addInstitution->person_number = $request->contact_person_phone;
-        $addInstitution->position = $request->position;
         $addInstitution->save();
         notify(new ToastNotification('Successful!', 'Institution Updated', 'success'));
         return back();

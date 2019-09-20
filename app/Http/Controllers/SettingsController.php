@@ -403,6 +403,7 @@ class SettingsController extends Controller
             'ace_id' => 'required|string|min:1',
             'mailing_name' => 'required|string|min:1',
             'mailing_title' => 'required|string|min:1',
+            'mailing_phone' => 'required'|'string'|'min:10',
             'mailing_email' => 'required|string|min:1',
    ]);
 
@@ -410,6 +411,7 @@ class SettingsController extends Controller
             'ace_id' => $request->ace_id,
             'contact_name' => $request->mailing_name,
             'contact_title' => $request->mailing_title,
+            'contact_phone' => $request->mailing_phone,
             'email' => $request->mailing_email
         ]);
         notify(new ToastNotification('Successful!', 'Contact Person Added!', 'success'));
@@ -440,6 +442,7 @@ class SettingsController extends Controller
         $aceemails->ace_id =$aceemails->ace_id;
         $aceemails->contact_name =$request->mailing_name;
         $aceemails->contact_title =$request->mailing_title;
+        $aceemails->contact_phone = $request->mailing_phone;
         $aceemails->email=$request->mailing_email;
 
         $aceemails->save();

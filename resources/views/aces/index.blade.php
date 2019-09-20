@@ -67,8 +67,8 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group{{ $errors->has('dlr') ? ' form-control-warning' : '' }}">
-                                            <label for="dlr">Grant Amount <span class="required">*</span></label>
-                                            <input type="number" required placeholder="DLR Amount" min="0" name="dlr" class="form-control"
+                                            <label for="dlr">Grant Amount </label>
+                                            <input type="number" placeholder="DLR Amount" min="0" name="dlr" class="form-control"
                                                    value="{{ old('dlr') }}" id="dlr" style="text-align: right;">
                                             @if ($errors->has('dlr'))
                                                 <p class="text-right">
@@ -126,7 +126,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group{{ $errors->has('ace_type') ? ' form-control-warning' : '' }}">
-                                            <label for="ace_type">Type of Centres</label>
+                                            <label for="ace_type">Type of Centres<span class="required">*</span></label>
                                             <select class="form-control" required name="ace_type" id="ace_type">
                                                 <option value="">--Choose--</option>
                                                 <option value="engineering">Colleges of Engineering </option>
