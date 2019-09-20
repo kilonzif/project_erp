@@ -132,9 +132,9 @@
                             </div>
                         </div>
                     </div>
-                    @php
-                        $indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);
-                    @endphp
+                    {{--@php--}}
+                        {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
+                    {{--@endphp--}}
                     <div id="indicators-form">
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
@@ -157,12 +157,14 @@
                                                 {{$indicator->unit_measure}}
                                             </small>
                                         </h5>
+                                        @role('webmaster|super-admin|admin')
                                         @if($indicator->IsUploadable($indicator->id))
                                         <a class="btn btn-dark square text-left mr-3 mb-sm-1"
                                            href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$indicator->id])}}">
                                             <i class="ft-upload mr-sm-1"></i>{{__('Upload details')}}
                                         </a>
                                         @endif
+                                        @endrole
                                         <table class="table table-bordered table-striped">
                                             @if($indicator->indicators->count() > 0)
                                                 @php

@@ -134,6 +134,7 @@
                             {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
                         {{--@endphp--}}
 {{--                        @if(false)--}}
+
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
                                 <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
@@ -159,6 +160,10 @@
                                             @if($indicator->indicators->count() > 0)
                                                 @php
                                                     $sub_indicators = $indicator->indicators->where('status','=',1);
+                                                    $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
+                                                    $indicator_5_2_filter = ['national','regional'];
+                                                    $indicator_identifier = (string)$indicator->identifier;
+                                                    $counter = 0;
                                                 @endphp
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     <tr>
@@ -170,7 +175,16 @@
                                                         <td style="width: 200px">
                                                             <div class="form-grou{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}">
 
-                                                                @if(isset($values[$sub_indicator->id]))
+                                                                @if($indicator->parent_id == 3)
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$result[$indicator_identifier][$filter_index[$counter]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+
+                                                                @elseif($indicator->identifier == "5.2")
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$indicator_5_2[$indicator_5_2_filter[$counter]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                @elseif(isset($values[$sub_indicator->id]))
                                                                     <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}" placeholder="Eg. 1"
                                                                            value="{{old('indicators.'.$sub_indicator->id)?old('indicators.'.$sub_indicator->id):$values[$sub_indicator->id]}}"
@@ -190,6 +204,10 @@
                                                             </div>
                                                         </td>
                                                     </tr>
+
+                                                    @php
+                                                        $counter += 1;
+                                                    @endphp
                                                 @endforeach
                                             @else
                                                     <tr>
@@ -240,8 +258,8 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
-                                <button type="submit" name="save" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
-                                <button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit</button>
+                                <button type="submit" name="continue" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
+                                <button type="submit" name="save" value="save" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Save</button>
                                 {{--<button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>--}}
                             </div>
                             <div class="col-md-1">

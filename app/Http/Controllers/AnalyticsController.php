@@ -34,4 +34,10 @@ class AnalyticsController extends Controller
 
         return response()->json(['male'=>$males,'female'=>$females]);
     }
+
+    public function getCumulativePDO(Request $request)
+    {
+        $the_view = view('analytics.cumulative_pdo')->render();
+        return response()->json(['the_view'=>$the_view]);
+    }
 }
