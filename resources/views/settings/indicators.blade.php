@@ -128,6 +128,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                                <input type="checkbox" class="custom-control-input" checked value="1" name="set_target" id="set_target">
+                                                <label class="custom-control-label" for="set_target">Set Target</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>

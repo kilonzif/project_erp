@@ -140,7 +140,8 @@ class SettingsController extends Controller
             'unit_of_measure' => 'required|string|min:5',
             'order_no' => 'required|numeric|min:1',
             'on_report' => 'required|numeric|min:0',
-            'upload' => 'nullable|numeric|max:1'
+            'upload' => 'nullable|numeric|max:1',
+            'set_target' => 'nullable|numeric|max;1'
         ]);
 
         Indicator::create([
@@ -151,6 +152,7 @@ class SettingsController extends Controller
             'parent_id' => $request->parentIndicator,
             'show_on_report' => $request->on_report,
             'upload' => $request->upload,
+            'set_target' => $request->set_target,
             'is_parent'=>1
         ]);
         notify(new ToastNotification('Successful!', 'Indicator Added!', 'success'));
@@ -173,6 +175,7 @@ class SettingsController extends Controller
             'order_no' => 'required|numeric|min:1',
             'on_report' => 'required|numeric|min:0',
             'upload' => 'nullable|numeric|max:1',
+            'set_target' => 'nullable|numeric|max;1',
             'parentIndicator'=>'required'
         ]);
 
@@ -188,6 +191,7 @@ class SettingsController extends Controller
             'parent_id' => $request->parentIndicator,
             'show_on_report' => $request->on_report,
             'upload' => $request->upload,
+            'set_target' => $request->set_target,
             'is_parent'=>1
         ]);
         notify(new ToastNotification('Successful!', 'Indicator Updated!', 'success'));

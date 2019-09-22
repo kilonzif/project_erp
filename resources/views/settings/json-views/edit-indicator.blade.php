@@ -100,6 +100,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="custom-checkbox">
+                            <input type="checkbox" class="custom-control-input"  @if($indicator->set_target == 1) checked @endif value="1" name="set_target" id="set_target">
+                            <label class="custom-control-label" for="target_settings">Set Target</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
