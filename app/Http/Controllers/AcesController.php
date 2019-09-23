@@ -338,6 +338,11 @@ class AcesController extends Controller {
 		$ace = Ace::find($ace_id);
 		$all_aces = Ace::get();
 		$project = Project::find(1);
+        $indicators = Indicator::where('is_parent','=',1)
+            ->where('status','=',1)
+            ->where('set_target','=',1)
+            ->orderBy('identifier','asc')
+            ->get();
 		$values = array();
         $getYear = null;
 		if ($year_id != null) {
@@ -349,7 +354,8 @@ class AcesController extends Controller {
 			}
 		}
 
-		return view('aces.target_values', compact('ace', 'project', 'all_aces', 'values', 'year_id', 'getYear'));
+		return view('aces.target_values', compact('ace', 'project', 'all_aces', 'values',
+            'year_id', 'getYear', 'indicators'));
 	}
 
 	public function baselines_save(Request $request, $id) {

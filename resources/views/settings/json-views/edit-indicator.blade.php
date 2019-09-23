@@ -104,7 +104,7 @@
                     <div class="form-group">
                         <div class="custom-checkbox">
                             <input type="checkbox" class="custom-control-input"  @if($indicator->set_target == 1) checked @endif value="1" name="set_target" id="set_target">
-                            <label class="custom-control-label" for="target_settings">Set Target</label>
+                            <label class="custom-control-label" for="set_target">Set Target Value</label>
                         </div>
                     </div>
                 </div>

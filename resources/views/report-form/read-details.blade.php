@@ -49,7 +49,6 @@
                                         @foreach($headers as $key=>$header)
                                             <th>{{$header}}</th>
                                         @endforeach
-                                        <th style="width: 50px;">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -57,7 +56,6 @@
                                         $counter = 1;
                                     @endphp
                                     @foreach($indicator_details->data as $indicator_detail)
-                                        {{--{{var_dump($slugs)}}--}}
                                     <tr>
                                         <td>{{$counter++}}</td>
                                         @foreach($slugs as $slug)
@@ -67,27 +65,6 @@
                                                 <td>N/A</td>
                                             @endif
                                         @endforeach
-
-                                    {{--<td>{{$project->title}}</td>--}}
-                                    {{--<td>{{date('M d, Y',strtotime($project->start_date))}}</td>--}}
-                                    {{--<td>{{date('M d, Y',strtotime($project->end_date))}}</td>--}}
-                                    <td>
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                    {{--<a href="{{ route('settings.projects.view', [Crypt::encrypt($project->id)]) }}" class="btn btn-s btn-dark" data-toggle="tooltip" data-placement="top" title="View Project"><i class="ft-eye"></i></a>  </a>--}}
-
-                                    <a href="#" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Indicator Details"><i class="ft-edit-3"></i></a></a>
-                                    {{--<a href="#" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Project"><i class="ft-trash-2"></i></a></a>--}}
-                                    {{--  <a class="dropdow-item btn {{($user->status == 0)?'btn-success' : 'btn-danger'}} btn-s" href="#"--}}
-                                    {{--onclick="event.preventDefault();--}}
-                                    {{--document.getElementById('delete-form-{{$count}}').submit();">--}}
-                                    {{--@if($user->status == 0)--}}
-                                    {{--{{ __('Activate') }}--}}
-                                    {{--@else--}}
-                                    {{--{{ __('Deactivate') }}--}}
-                                    {{--@endif--}}
-                                    {{--</a> --}}
-                                    </div>
-                                    </td>
                                     </tr>
                                     @endforeach
                                     </tbody>
