@@ -141,7 +141,7 @@ class SettingsController extends Controller
             'order_no' => 'required|numeric|min:1',
             'on_report' => 'required|numeric|min:0',
             'upload' => 'nullable|numeric|max:1',
-            'set_target' => 'nullable|numeric|max;1'
+            'set_target' => 'nullable|numeric|max:1'
         ]);
 
         Indicator::create([
