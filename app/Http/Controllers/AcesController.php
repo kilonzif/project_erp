@@ -153,22 +153,13 @@ class AcesController extends Controller {
 
 
         $this->validate($request, [
-            'file_one' => 'sometimes|required|mimes:xls,pdf,docx,|max:10000',
-            'file_two' => 'sometimes|required|mimes:xls,docx,pdf|max:10000',
+//            'file_one' => 'nullable|mimes:xls,pdf,docx,|max:10000',
+//            'file_two' => 'nullable|mimes:xls,docx,pdf|max:10000',
             'url' => 'sometimes|required',
             'submission_date' => 'sometimes|required',
             'comments' => 'sometimes|required',
             ]);
-        $validator = Validator::make(
-            [
-                'file_one'      => $request->file_one,
-                'extension' => strtolower($request->file_one->getClientOriginalExtension()),
-            ],
-            [
-                'file_one'          => 'sometimes|required',
-                'extension'      => 'required|in:doc,csv,xlsx,xls,docx,ppt,pdf,ods,odp',
-            ]
-        );
+//           dd($request->all());
 
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
@@ -198,7 +189,7 @@ class AcesController extends Controller {
             $saveIndicatorOne = IndicatorOne::updateOrCreate(
                 ['ace_id' => $ace_id,'requirement' => $request->requirement[$key]],
                 ['submission_date' => $request->submission_date[$key],
-                'file_one' => $thefile_one,n
+                'file_one' => $thefile_one,
                 'file_two' => $thefile_two,
                 'url' => $request->url[$key],
                 'comments' => $request->comments[$key]]
