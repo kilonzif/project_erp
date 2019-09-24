@@ -208,12 +208,11 @@ class CommonFunctions {
             'THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS' => [
                 'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
             ],
-
         'IMPLEMENTATION PLAN'=>[
         'submission_date' => TRUE, 'file1' => TRUE, 'file2' => TRUE, 'comments' => FALSE, 'url' => FALSE
         ],
             'PROCEDURES MANUALS'=>[
-                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => TRUE, 'comments' => FALSE, 'url' => FALSE
             ],
             'PROJECT MANAGEMENT CERTIFICATION'=>[
                 'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE

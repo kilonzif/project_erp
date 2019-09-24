@@ -142,100 +142,71 @@ class AcesController extends Controller {
 
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public  function indicator_one_save(Request $request, $id)
     {
+
+
+        $this->validate($request, [
+            'file_one' => 'sometimes|required|mimes:xls,pdf,docx,|max:10000',
+            'file_two' => 'sometimes|required|mimes:xls,docx,pdf|max:10000',
+            'url' => 'sometimes|required',
+            'submission_date' => 'sometimes|required',
+            'comments' => 'sometimes|required',
+            ]);
+        $validator = Validator::make(
+            [
+                'file_one'      => $request->file_one,
+                'extension' => strtolower($request->file_one->getClientOriginalExtension()),
+            ],
+            [
+                'file_one'          => 'sometimes|required',
+                'extension'      => 'required|in:doc,csv,xlsx,xls,docx,ppt,pdf,ods,odp',
+            ]
+        );
+
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
-//        dd(empty($oldIndicator));
         $requirement = $request->requirement;
         $submission_date = $request->submission_date;
         $file_one=$request->file_one;
         $file_two = $request -> file_two;
         $url = $request -> url;
         $comments = $request -> comments;
-        $destinationPath = base_path() . '/public/indicator1/'; // upload path
-        if(!empty($oldIndicator)) {
-            $get_oldIndicator = IndicatorOne::where('ace_id', '=', $ace_id)->get();
-            foreach ($oldIndicator as $key => $req) {
-                $updateIndicatorOne = IndicatorOne::find($req->id);
-                $updateind['requirement'] = $requirement[$key];
-                $updateind['submission_date'] = $submission_date[$key];
-                if ($request->has('file_one')) {
-                    $file_one = $request->file_one;
-                    if (isset($request->file('file_one')[$key])) {
-                        if ($request->file('file_one')[$key] == "") {
-                            $updateind['file_one'] = $req->file_one;
-                        } else {
-                            $file = $request->file('file_one')[$key];
-                            $extension = $file->getClientOriginalExtension();
+        $destinationPath = base_path() . '/public/indicator1/';
+        $requirement = $request->requirement;
+        $thefile_one = "";
+        $thefile_two = "";
 
-                            $updateind['file_one'] = $file->getClientOriginalName();
-                        }
-                    } else {
-                        $updateind['file_one'] = $req->file_one;
-                    }
-                } else {
-                    $updateind['file_one'] = $req->file_one;
-                }
-                if ($request->has('file_two')) {
-                    $file_two = $request->file_one;
-                    if (isset($request->file('file_two')[$key])) {
-
-                        if ($request->file('file_two')[$key] == "") {
-                            $updateind['file_two'] = $req->file_one;
-                        } else {
-                            $file = $request->file('file_two')[$key];
-                            $extension = $file->getClientOriginalExtension();
-
-                            $updateind['file_two'] = $file->getClientOriginalName();
-                        }
-                    } else {
-                        $updateind['file_two'] = $req->file_two;
-                    }
-                } else {
-                    $updateind['file_two'] = $req->file_two;
-                }
-                $files[] = $updateind['file_one'] . " " . $req->id;
-                $files[] = $updateind['file_two'] . " " . $req->id;
-                $updateind['url'] = $url[$key];
-                $updateind['comments'] = $comments[$key];
-                $files[] = $updateind;
-
-                $saveIndicator = $updateIndicatorOne->update($updateind);
-
+        foreach ($requirement as $key => $req) {
+            $file1 = $request->file('file_one')[$key];
+            $file2 = $request->file('file_two')[$key];
+            if (isset($file1)) {
+                $file1->move($destinationPath, $file1->getClientOriginalName());
+                $thefile_one=$file_one[$key]->getClientOriginalName();
+            }
+            if (isset($file2)) {
+                $file2->move($destinationPath, $file2->getClientOriginalName());
+                $thefile_two = $file_two[$key]->getClientOriginalName();
 
             }
-        }
-        else {
-            $requirement = $request->requirement;
-            foreach ($requirement as $key => $req) {
-                $addIndicatorOne = new IndicatorOne();
-                $submission_date = $request->submission_date[$key];
-                $file_one = $request->file_one[$key];
-                $file_two = $request->file_two[$key];
-                $url = $request->url[$key];
-                $comments = $request->comments[$key];
-                $addIndicatorOne->ace_id = $ace_id;
-                $addIndicatorOne->requirement = $requirement[$key];
-                $addIndicatorOne->submission_date = $submission_date;
-                $file1 = $request->file('file_one')[$key];
-                $file2 = $request->file('file_two')[$key];
-                if (isset($file1)) {
-                    $file1->move($destinationPath, $file1->getClientOriginalName());
-                    $addIndicatorOne->file_one = $file_one->getClientOriginalName();
-                }
-                if (isset($file2)) {
-                    $file2->move($destinationPath, $file2->getClientOriginalName());
-                    $addIndicatorOne->file_two = $file_two->getClientOriginalName();
-                }
-                $addIndicatorOne->url = $url;
-                $addIndicatorOne->comments = $comments;
-                $saveIndicator=$addIndicatorOne->save();
-            }
+            $saveIndicatorOne = IndicatorOne::updateOrCreate(
+                ['ace_id' => $ace_id,'requirement' => $request->requirement[$key]],
+                ['submission_date' => $request->submission_date[$key],
+                'file_one' => $thefile_one,n
+                'file_two' => $thefile_two,
+                'url' => $request->url[$key],
+                'comments' => $request->comments[$key]]
+            );
+
         }
 
-
-        if (isset($saveIndicator)) {
+        if (isset($saveIndicatorOne)) {
             notify(new ToastNotification('Successful!', 'Indicator 1 Requirement Added', 'success'));
             return back();
         } else {
