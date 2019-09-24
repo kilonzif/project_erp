@@ -401,15 +401,17 @@ class SettingsController extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function save_mailing_list(Request $request){
+
         $this->validate($request,[
             'ace_id' => 'required|string|min:1',
             'mailing_name' => 'required|string|min:1',
             'mailing_title' => 'required|string|min:1',
-            'mailing_phone' => 'required'|'string'|'min:10',
+            'mailing_phone' => 'required|string|min:10',
             'mailing_email' => 'required|string|min:1',
-   ]);
+        ]);
 
         Aceemail::create([
             'ace_id' => $request->ace_id,
@@ -462,8 +464,12 @@ class SettingsController extends Controller
     public function   destroy_mailinglist($id){
 
         $aceemail_id = Crypt::decrypt($id);
-//        $aceemails = Aceemail::destroy($aceemail_id);
-        notify(new ToastNotification('Successful!', '  deleted!', 'success'));
+        if (Aceemail::destroy($aceemail_id)){
+            notify(new ToastNotification('Successful!', '  deleted!', 'success'));
+        } else {
+            notify(new ToastNotification('Sorry!', 'Something went wrong. Please try again', 'warning'));
+        }
+
         return redirect()->back();
     }
 
