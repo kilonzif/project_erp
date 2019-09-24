@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <td><strong>Internships</strong></td>
-                <td></td>
+                <td>{{$total_internships}}</td>
                 <td></td>
                 <td></td>
                 <td></td>

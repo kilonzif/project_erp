@@ -77,7 +77,7 @@
                                             <input type="file" style="padding: 8px;" required class="form-control" name="upload_file" id="upload_file">
                                             @if ($errors->has('upload_file'))
                                                 <p class="text-right mb-0">
-                                                    <small class="warning text-muted" id="file-error">{{ $errors->first('upload_file') }}</small>
+                                                    <small class="danger text-muted" id="file-error">{{ $errors->first('upload_file') }}</small>
                                                 </p>
                                             @endif
                                         </fieldset>

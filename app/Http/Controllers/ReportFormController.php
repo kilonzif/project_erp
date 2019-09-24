@@ -357,11 +357,17 @@ class ReportFormController extends Controller {
             ->where('show_on_report','=', 1)
             ->orderBy('identifier','asc')
             ->get();
+
 		if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
+
+            //Get the aggregated result for Indicator 3
+            $result = $this->generateAggregatedIndicator3Results($id);
+            $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
 
             $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
             $aces = Ace::where('active', '=', 1)->get();
-            return view('report-form.view', compact('project', 'report', 'aces', 'values', 'indicators'));
+            return view('report-form.view', compact('project', 'report', 'aces', 'values', 'indicators'
+                , 'result', 'indicator_5_2'));
 
 		}else{
             notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
@@ -490,7 +496,6 @@ class ReportFormController extends Controller {
         //Get the aggregated result for Indicator 3
         $result = $this->generateAggregatedIndicator3Results($id);
         $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
-//        dd($indicator_5_2);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')

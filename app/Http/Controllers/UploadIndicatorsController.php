@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Integer;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -100,7 +101,6 @@ class UploadIndicatorsController extends Controller
         ]);
 
         $indicator_info = Indicator::find($request->indicator);
-//        dd($indicator_info);
 
         //Get the start row of data inputs for the upload
         $data_start = DB::connection('mongodb')
@@ -150,12 +150,15 @@ class UploadIndicatorsController extends Controller
 
                 // Get the highest row and column numbers referenced in the worksheet
                 $highestRow = $worksheet->getHighestRow(); // e.g. 10
+                $highestRow = (integer)$highestRow; // e.g. 10
                 $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+                $highestColumnIndex = (integer)$highestColumnIndex; // e.g. 5
 //                dd("Column: ".$highestColumnIndex." <br> Row:".$highestRow);
 
                 //Checks if the total columns equals the total columns required
                 if ($highestColumnIndex <> sizeof($headers)){
+//                    dd($highestColumnIndex." ".sizeof($headers));
                     $error = "There is a mismatch in the fields required for this indicator or the total number of fields 
                     for this indicator is not equal to that of the uploaded file.";
                     notify(new ToastNotification('Upload Error!', $error, 'warning'));
@@ -163,6 +166,7 @@ class UploadIndicatorsController extends Controller
                 }
 
                 $table_name = Str::snake("indicator_".$indicator_info->identifier);
+//                dd($table_name);
 
                 //Loops through the excel sheet to get the values;
                 DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
@@ -226,10 +230,13 @@ class UploadIndicatorsController extends Controller
                     }
                 }
             }else{
+//                dd($headers);
                 $error = "The upload supports only xlsx or xls files!";
                 notify(new ToastNotification('Upload Error!', $error, 'warning'));
             }
         }
+//        dd("herer");
+
         return back()->withInput(['error'=>$error,'success'=>$success]);
     }
 }

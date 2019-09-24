@@ -169,6 +169,10 @@
                                             @if($indicator->indicators->count() > 0)
                                                 @php
                                                     $sub_indicators = $indicator->indicators->where('status','=',1);
+                                                    $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
+                                                    $indicator_5_2_filter = ['national','regional'];
+                                                    $indicator_identifier = (string)$indicator->identifier;
+                                                    $counter = 0;
                                                 @endphp
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     @if(isset($values[$sub_indicator->id]))

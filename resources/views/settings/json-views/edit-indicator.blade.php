@@ -102,9 +102,9 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <div class="custom-checkbox">
+                        <div class="d-inline-block custom-control custom-checkbox mr-1">
                             <input type="checkbox" class="custom-control-input"  @if($indicator->set_target == 1) checked @endif value="1" name="set_target" id="set_target">
-                            <label class="custom-control-label" for="set_target">Set Target Value</label>
+                            <label class="custom-control-label" for="set_target"> Set Target Value</label>
                         </div>
                     </div>
                 </div>

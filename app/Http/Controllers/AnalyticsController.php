@@ -46,10 +46,25 @@ class AnalyticsController extends Controller
             ->where("end_date", "<=", $end_date)
             ->pluck("id");
 
-        $total_students = DB::connection('mongodb')->collection('indicator_3')->whereIn('report_id',$report_ids)->count();
-        $regional_students = DB::connection('mongodb')->collection('indicator_3')->where('regional-status','=', 'Regional')->orWhere('regional-status','=', 'regional')->count();
+//        $regional = substr('Regional', 0, 1);
+
+        $total_students = DB::connection('mongodb')->collection('indicator_3')
+            ->whereIn('report_id',$report_ids)
+            ->count();
+        $regional_students = DB::connection('mongodb')->collection('indicator_3')
+            ->whereIn('report_id',$report_ids)
+            ->where(function($query)
+            {
+                $query->where('regional-status','like', "R%")
+                    ->orWhere('regional-status','like', "r%");
+            })
+            ->count();
+        $total_internships = DB::connection('mongodb')->collection('indicator_5.2')
+            ->whereIn('report_id',$report_ids)
+            ->count();
 //        $total_students = DB::connection('mongodb')->collection('indicator_3')->where('gender',"=","M")->orWhere('gender',"=","Male")->count();
-        $the_view = view('analytics.cumulative_pdo', compact('start_date','end_date', 'total_students', 'regional_students'))->render();
+        $the_view = view('analytics.cumulative_pdo', compact('start_date','end_date', 'total_students',
+            'regional_students','total_internships'))->render();
         return response()->json(['the_view'=>$the_view,'$reports'=>$report_ids]);
     }
 }

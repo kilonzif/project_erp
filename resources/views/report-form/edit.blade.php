@@ -48,22 +48,6 @@
                                 <div class="card-body">
                                     <div class="row">
                                         @if (\Auth::user()->hasRole('webmaster|super-admin'))
-                                            {{--<div class="col-md-8">--}}
-                                                {{--<div class="form-group">--}}
-                                                    {{--<label for="submission_period">Select Ace <span class="required">*</span></label>--}}
-                                                    {{--<select name="ace_id" class="form-control select2" id="ace_id" required>--}}
-                                                        {{--<option value="">Select Ace</option>--}}
-                                                        {{--@foreach($aces as $ace)--}}
-                                                            {{--<option @if($ace->id == $report->ace_id) selected="selected" @endif value="{{\Illuminate\Support\Facades\Crypt::encrypt($ace->id)}}">{{$ace->name}}</option>--}}
-                                                        {{--@endforeach--}}
-                                                    {{--</select>--}}
-                                                    {{--@if ($errors->has('ace_id'))--}}
-                                                        {{--<p class="text-right">--}}
-                                                            {{--<small class="warning text-muted">{{ $errors->first('ace_id') }}</small>--}}
-                                                        {{--</p>--}}
-                                                    {{--@endif--}}
-                                                {{--</div>--}}
-                                            {{--</div>--}}
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="ace_officer">Select ACE Officer <span class="required">*</span></label>
@@ -80,8 +64,6 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                        {{--@else--}}
-                                            {{--<input type="hidden" name="ace_id" value="{{\Illuminate\Support\Facades\Crypt::encrypt($report->ace_id)}}">--}}
                                         @endif
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -126,15 +108,8 @@
                             </div>
                         </div>
                         <div>
-
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
                                 <i class="ft-upload"></i> Upload Indicators</a>
-                        </div>
-                        {{--@php--}}
-                            {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
-                        {{--@endphp--}}
-{{--                        @if(false)--}}
-
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
                                 <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
@@ -164,6 +139,7 @@
                                                     $indicator_5_2_filter = ['national','regional'];
                                                     $indicator_identifier = (string)$indicator->identifier;
                                                     $counter = 0;
+                                                //dd($sub_indicators);
                                                 @endphp
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     <tr>
@@ -254,7 +230,6 @@
                                 </div>
                             </div>
                         @endforeach
-                        {{--@endif--}}
                         <div class="row">
                             <div class="col-md-8">
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
