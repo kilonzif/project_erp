@@ -129,10 +129,10 @@
                                                                     {{$values[0]['file_one']}}
                                                                 </a>
                                                             @endisset
-                                                            {{--<a href="#" onclick="changeFile(filename{{$key[0]}})">Change</a>--}}
-                                                            {{--@else--}}
-                                                            <input type="file" class="form-control" name="file_one[]" id="filename{{$key[0]}}" value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
-                                                            {{--@endisset--}}
+                                                            <input type="file" class="form-control" name="file_one[]" required  id="filename{{$key[0]}}"
+                                                                   @if($labels[$key]['file1']['required']) required @endif
+                                                                   value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
+
                                                             @if ($errors->has('file_one[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('file_one[]') }}</small>
@@ -144,9 +144,11 @@
                                                 @endif
                                                 @if($labels[$key]['file2'])
                                                     <div class="col-md-6">
-                                                        <div class="form-group {{ $errors->has('file_one[]')? 'form-control-warning':'' }}">
+                                                        <div class="form-group {{ $errors->has('file_two[]')? 'form-control-warning':'' }}">
                                                             @if($key=="PROCEDURES MANUALS")<label>Procedure Manual<span class="required">*</span></label>@else<label>File 2 Upload<span class="required">*</span></label>@endif
-                                                            <input type="file" class="form-control" id="file_two[]" name="file_two[]" value="{{old('file_two',empty($values[0]['file_two'])?"":$values[0]['file_two'])}}">
+                                                            <input type="file" class="form-control" required id="file_two[]"
+                                                                   @if($labels[$key]['file2']['required']) required @endif
+                                                                   name="file_two[]" value="{{old('file_two',empty($values[0]['file_two'])?"":$values[0]['file_two'])}}">
                                                             @if ($errors->has('file_two[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('file_two[]') }}</small>
@@ -159,7 +161,9 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group{{ $errors->has('url[]') ? ' form-control-warning' : '' }}">
                                                             <label>URL<span class="required">*</span></label>
-                                                            <input type="text" name="url[]" placeholder="url" class="form-control"  value="{{ old('url',empty($values[0]['url'])?"":$values[0]['url'])}}" id="url">
+                                                            <input type="text" name="url[]" required placeholder="url" class="form-control"
+                                                                   @if($labels[$key]['url']['required']) required @endif
+                                                                   value="{{ old('url',empty($values[0]['url'])?"":$values[0]['url'])}}" id="url">
                                                             @if ($errors->has('url[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('url[]') }}</small>
@@ -173,7 +177,9 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
                                                             <label for="comments1">Comments<span class="required">*</span></label>
-                                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"  value="{{ old('comments',empty($values[0]['comments'])?"":$values[0]['comments'])}}" id="comments1">
+                                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"
+                                                                   @if($labels[$key]['comments']['required']) required @endif
+                                                                   value="{{ old('comments',empty($values[0]['comments'])?"":$values[0]['comments'])}}" id="comments1">
                                                             @if ($errors->has('comments[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('comments[]') }}</small>
