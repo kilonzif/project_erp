@@ -75,7 +75,7 @@ class UploadIndicatorsController extends Controller
         //row headers
 //        $headers = array();
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')
-            ->where('indicator','=',(integer)$request->id)->pluck('fields');
+            ->where('indicator','=',(integer)$request->id)->orderBy('order','asc')->pluck('fields');
 
 //        if ($getHeaders){
 //            for ($a = 0; $a < sizeof($getHeaders[0]); $a++){

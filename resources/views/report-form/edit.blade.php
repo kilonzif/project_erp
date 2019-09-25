@@ -110,6 +110,7 @@
                         <div>
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
                                 <i class="ft-upload"></i> Upload Indicators</a>
+                        </div>
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
                                 <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
@@ -137,6 +138,7 @@
                                                     $sub_indicators = $indicator->indicators->where('status','=',1);
                                                     $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
                                                     $indicator_5_2_filter = ['national','regional'];
+                                                    $indicator_4_1_filter = ['international','national','gap-assessment','regional','self-evaluation','course'];
                                                     $indicator_identifier = (string)$indicator->identifier;
                                                     $counter = 0;
                                                 //dd($sub_indicators);
@@ -155,7 +157,10 @@
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$result[$indicator_identifier][$filter_index[$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-
+                                                                @elseif($indicator->identifier == "4.1")
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$indicator_4_1[$indicator_4_1_filter[$counter]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
                                                                 @elseif($indicator->identifier == "5.2")
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$indicator_5_2[$indicator_5_2_filter[$counter]]}}"
@@ -186,44 +191,44 @@
                                                     @endphp
                                                 @endforeach
                                             @else
-                                                    <tr>
-                                                        <td colspan="2">
-                                                            <div class="form-grou{{ $errors->has('indicators.'.$indicator->id) ? ' form-control-warning' : '' }}">
-                                                                @if ($indicator->identifier == 11)
-                                                                    @if(isset($values[$indicator->id]))
-                                                                        <select name="indicators[{{$indicator->id}}]" id="indicator_{{$indicator->id}}"
-                                                                                class="form-control">
-                                                                            <option @if($values[$indicator->id] == '0') selected @endif value="0">No</option>
-                                                                            <option @if($values[$indicator->id] == '1') selected @endif value="1">Yes</option>
-                                                                        </select>
-                                                                    @else
-                                                                        <select name="indicators[{{$indicator->id}}]" id="indicator_{{$indicator->id}}"
-                                                                                class="form-control">
-                                                                            <option value="0">No</option>
-                                                                            <option value="1">Yes</option>
-                                                                        </select>
-                                                                    @endif
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <div class="form-grou{{ $errors->has('indicators.'.$indicator->id) ? ' form-control-warning' : '' }}">
+                                                            @if ($indicator->identifier == 11)
+                                                                @if(isset($values[$indicator->id]))
+                                                                    <select name="indicators[{{$indicator->id}}]" id="indicator_{{$indicator->id}}"
+                                                                            class="form-control">
+                                                                        <option @if($values[$indicator->id] == '0') selected @endif value="0">No</option>
+                                                                        <option @if($values[$indicator->id] == '1') selected @endif value="1">Yes</option>
+                                                                    </select>
                                                                 @else
-                                                                    @if(isset($values[$indicator->id]))
-                                                                        <input type="number" step="0.01" min="0" id="indicator_{{$indicator->id}}" name="indicators[{{$indicator->id}}]"
-                                                                               value="{{old('indicators.'.$indicator->id)?old('indicators.'.$indicator->id):$values[$indicator->id]}}"
-                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$indicator->id) ? ' is-invalid' : '' }}"
-                                                                               placeholder="Eg. 1">
-                                                                    @else
-                                                                        <input type="number" step="0.01" min="0" id="indicator_{{$indicator->id}}" name="indicators[{{$indicator->id}}]"
-                                                                               value="{{old('indicators.'.$indicator->id)?old('indicators.'.$indicator->id): ''}}"
-                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$indicator->id) ? ' is-invalid' : '' }}"
-                                                                               placeholder="Eg. 1">
-                                                                    @endif
-                                                                    @if ($errors->has('indicators.'.$indicator->id))
-                                                                        <p class="text-right mb-0">
-                                                                            <small class="warning text-muted">{{ $errors->first('indicators.'.$indicator->id) }}</small>
-                                                                        </p>
-                                                                    @endif
+                                                                    <select name="indicators[{{$indicator->id}}]" id="indicator_{{$indicator->id}}"
+                                                                            class="form-control">
+                                                                        <option value="0">No</option>
+                                                                        <option value="1">Yes</option>
+                                                                    </select>
                                                                 @endif
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            @else
+                                                                @if(isset($values[$indicator->id]))
+                                                                    <input type="number" step="0.01" min="0" id="indicator_{{$indicator->id}}" name="indicators[{{$indicator->id}}]"
+                                                                           value="{{old('indicators.'.$indicator->id)?old('indicators.'.$indicator->id):$values[$indicator->id]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$indicator->id) ? ' is-invalid' : '' }}"
+                                                                           placeholder="Eg. 1">
+                                                                @else
+                                                                    <input type="number" step="0.01" min="0" id="indicator_{{$indicator->id}}" name="indicators[{{$indicator->id}}]"
+                                                                           value="{{old('indicators.'.$indicator->id)?old('indicators.'.$indicator->id): ''}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$indicator->id) ? ' is-invalid' : '' }}"
+                                                                           placeholder="Eg. 1">
+                                                                @endif
+                                                                @if ($errors->has('indicators.'.$indicator->id))
+                                                                    <p class="text-right mb-0">
+                                                                        <small class="warning text-muted">{{ $errors->first('indicators.'.$indicator->id) }}</small>
+                                                                    </p>
+                                                                @endif
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             @endif
                                         </table>
                                     </div>

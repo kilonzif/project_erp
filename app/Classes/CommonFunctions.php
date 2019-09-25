@@ -206,25 +206,74 @@ class CommonFunctions {
         $requirement_labels = [
 
             'THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS' => [
-                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => TRUE,
+                'file2' => FALSE,
+                'comments' => FALSE,
+                'url' => FALSE
             ],
-        'IMPLEMENTATION PLAN'=>[
-        'submission_date' => TRUE, 'file1' => TRUE, 'file2' => TRUE, 'comments' => FALSE, 'url' => FALSE
-        ],
+            'IMPLEMENTATION PLAN'=>[
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => TRUE,
+                'file2' => TRUE,
+                'comments' => FALSE,
+                'url' => FALSE
+            ],
             'PROCEDURES MANUALS'=>[
-                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => TRUE, 'comments' => FALSE, 'url' => FALSE
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => TRUE,
+                'file2' => TRUE,
+                'comments' => FALSE,
+                'url' => FALSE
             ],
             'PROJECT MANAGEMENT CERTIFICATION'=>[
-                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => TRUE,
+                'file2' => FALSE,
+                'comments' => FALSE,
+                'url' => FALSE
             ],
             'STUDENT HANDBOOK (INCLUDES SCHOLARSHIP AND ANTI-SEXUAL HARASSMENT POLICIES)'=>[
-                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => TRUE
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => TRUE,
+                'file2' => FALSE,
+                'comments' => FALSE,
+                'url' => TRUE
             ],
             'PROJECT WEBSITE'=>[
-                'submission_date' => TRUE, 'file1' => FALSE, 'file2' => FALSE, 'comments' => TRUE, 'url' => TRUE
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => FALSE,
+                'file2' => FALSE,
+                'comments' => TRUE,
+                'url' => TRUE
             ],
             'SECTORAL ADVISORY BOARD'=>[
-                'submission_date' => TRUE, 'file1' => TRUE, 'file2' => FALSE, 'comments' => FALSE, 'url' => FALSE
+                'submission_date' => [
+                    'show'  =>  true,
+                    'required'  =>  true,
+                ],
+                'file1' => TRUE,
+                'file2' => FALSE,
+                'comments' => FALSE,
+                'url' => FALSE
             ]
         ];
 

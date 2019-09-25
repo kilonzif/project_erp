@@ -363,11 +363,12 @@ class ReportFormController extends Controller {
             //Get the aggregated result for Indicator 3
             $result = $this->generateAggregatedIndicator3Results($id);
             $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
+            $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
 
             $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
             $aces = Ace::where('active', '=', 1)->get();
             return view('report-form.view', compact('project', 'report', 'aces', 'values', 'indicators'
-                , 'result', 'indicator_5_2'));
+                , 'result', 'indicator_5_2','indicator_4_1'));
 
 		}else{
             notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
@@ -496,13 +497,14 @@ class ReportFormController extends Controller {
         //Get the aggregated result for Indicator 3
         $result = $this->generateAggregatedIndicator3Results($id);
         $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
+        $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
 		return view('report-form.edit', compact('project', 'report', 'aces', 'values', 'ace_officers',
-            'indicators','result','indicator_5_2'));
+            'indicators','result','indicator_5_2','indicator_4_1'));
 	}
 
     /**
@@ -659,7 +661,7 @@ class ReportFormController extends Controller {
             ->orderBy('identifier','asc')
             ->get();
 
-        $filters = ["Ph.D","M.Sc","B.Sc","Short"];
+        $filters = ["PhD","MSc","BSc","Course"];
         $indicator_3_values = array();
 
         foreach ($indicators as $key=>$indicator) {
@@ -671,7 +673,12 @@ class ReportFormController extends Controller {
                     $query->where('gender','=', "M")
                         ->orWhere('gender','=', "Male");
                 })
-                ->where('regional-status','=', "National");
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "National")
+                        ->orWhere('regional-status','like', "Nat%");
+                });
+//                ->where('regional-status','=', "National");
             $national_and_women = DB::connection('mongodb')
                 ->collection('indicator_3')
                 ->where('report_id','=', $report_id)
@@ -680,11 +687,21 @@ class ReportFormController extends Controller {
                     $query->where('gender','=', "F")
                         ->orWhere('gender','=', "Female");
                 })
-                ->where('regional-status','=', "National");
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "National")
+                        ->orWhere('regional-status','like', "Nat%");
+                });
+//                ->where('regional-status','=', "National");
             $regional_and_men = DB::connection('mongodb')
                 ->collection('indicator_3')
                 ->where('report_id','=', $report_id)
-                ->where('regional-status','=', "Regional")
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "Regional")
+                        ->orWhere('regional-status','like', "Reg%");
+                })
+//                ->where('regional-status','=', "Regional")
                 ->where(function($query)
                 {
                     $query->where('gender','=', "M")
@@ -693,7 +710,12 @@ class ReportFormController extends Controller {
             $regional_and_women = DB::connection('mongodb')
                 ->collection('indicator_3')
                 ->where('report_id','=', $report_id)
-                ->where('regional-status','=', "Regional")
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "Regional")
+                        ->orWhere('regional-status','like', "Reg%");
+                })
+//                ->where('regional-status','=', "Regional")
                 ->where(function($query)
                 {
                     $query->where('gender','=', "F")
@@ -703,10 +725,10 @@ class ReportFormController extends Controller {
             $identifier = $indicator->identifier;
             $filter_value = $filters[$key];
 
-            $indicator_3_values["$identifier"]["national_and_men"] = $national_and_men->where("programmeoption","like","%$filter_value%")->count();
-            $indicator_3_values["$identifier"]["national_and_women"] = $national_and_women->where("programmeoption","like","%$filter_value%")->count();
-            $indicator_3_values["$identifier"]["regional_and_men"] = $regional_and_men->where("programmeoption","like","%$filter_value%")->count();
-            $indicator_3_values["$identifier"]["regional_and_women"] = $regional_and_women->where("programmeoption","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["national_and_men"] = $national_and_men->where("level","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["national_and_women"] = $national_and_women->where("level","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["regional_and_men"] = $regional_and_men->where("level","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["regional_and_women"] = $regional_and_women->where("level","like","%$filter_value%")->count();
         }
 
         return $indicator_3_values;
@@ -736,5 +758,78 @@ class ReportFormController extends Controller {
             })->count();
 
         return $indicator_5_2_values;
+	}
+
+    public function generateAggregatedIndicator41Results($report_id)
+    {
+        $indicator_4_1_values = array();
+
+        $indicator_4_1_values['national']= DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "National")
+                    ->orWhere('type-of-accreditation2','=', "national")
+                    ->orWhere('type-of-accreditation2','like', "nat%")
+                    ->orWhere('type-of-accreditation2','like', "Nat%");
+            })->count();
+
+        $indicator_4_1_values['regional'] = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "Regional")
+                    ->orWhere('type-of-accreditation2','=', "regional")
+                    ->orWhere('type-of-accreditation2','like', "reg%")
+                    ->orWhere('type-of-accreditation2','like', "Reg%");
+            })->count();
+
+        $indicator_4_1_values['international'] = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "International")
+                    ->orWhere('type-of-accreditation2','=', "international")
+                    ->orWhere('type-of-accreditation2','like', "int%")
+                    ->orWhere('type-of-accreditation2','like', "Int%");
+            })->count();
+
+        $indicator_4_1_values['gap-assessment'] = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "Gap")
+                    ->orWhere('type-of-accreditation2','=', "gap")
+                    ->orWhere('type-of-accreditation2','like', "gap%")
+                    ->orWhere('type-of-accreditation2','like', "Gap%");
+            })->count();
+
+        $indicator_4_1_values['self-evaluation'] = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "Self Fvaluation")
+                    ->orWhere('type-of-accreditation2','=', "self evaluation")
+                    ->orWhere('type-of-accreditation2','like', "self%")
+                    ->orWhere('type-of-accreditation2','like', "Self%");
+            })->count();
+
+        $indicator_4_1_values['course'] = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "New Course")
+                    ->orWhere('type-of-accreditation2','=', "new course")
+                    ->orWhere('type-of-accreditation2','like', "new%")
+                    ->orWhere('type-of-accreditation2','like', "New%");
+            })->count();
+
+        return $indicator_4_1_values;
 	}
 }

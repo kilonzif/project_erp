@@ -153,13 +153,12 @@ class AcesController extends Controller {
 
 
         $this->validate($request, [
-//            'file_one' => 'nullable|mimes:xls,pdf,docx,|max:10000',
-//            'file_two' => 'nullable|mimes:xls,docx,pdf|max:10000',
+            'file_one.*' => 'nullable|file|mimes:xls,pdf,docx|max:10000',
+            'file_two.*' => 'nullable|mimes:xls,docx,pdf|max:10000',
             'url' => 'sometimes|required',
             'submission_date' => 'sometimes|required',
             'comments' => 'sometimes|required',
-            ]);
-//           dd($request->all());
+        ]);
 
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
