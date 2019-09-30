@@ -182,8 +182,11 @@
                                                     <option value="Finance Officer">Finance Officer</option>
                                                     <option value="Focal Person">Focal Person</option>
                                                     <option value="M&E">M&E</option>
+                                                    <option value="Primary Expert">Primary Expert</option>
                                                     <option value="Procument Officer">Procument Officer</option>
+                                                    <option value="Project / Program Manager">Project / Program Manager</option>
                                                     <option value="PSC Member">PSC Member</option>
+                                                    <option value="Secondary Expert">Secondary Expert</option>
                                                     <option value="Vice Chancellor">Vice Chancellor</option>
                                                 </select>
                                                 @if ($errors->has('mailing_title'))

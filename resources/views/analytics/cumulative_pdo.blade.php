@@ -16,35 +16,35 @@
             <tr>
                 <td><strong>Total Students</strong></td>
                 <td>{{$total_students}}</td>
-                <td></td>
+                <td>{{$cum_total_students}}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><strong>Regional Students</strong></td>
                 <td>{{$regional_students}}</td>
-                <td></td>
+                <td>{{$cum_regional_students}}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><strong>Accreditation</strong></td>
-                <td></td>
-                <td></td>
+                <td>{{$total_accreditation}}</td>
+                <td>{{$cum_total_accreditation}}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><strong>Internships</strong></td>
                 <td>{{$total_internships}}</td>
-                <td></td>
+                <td>{{$cum_total_internships}}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><strong>External Revenue</strong></td>
-                <td></td>
-                <td></td>
+                <td>{{$external_revenue}}</td>
+                <td>{{$cum_external_revenue}}</td>
                 <td></td>
                 <td></td>
             </tr>

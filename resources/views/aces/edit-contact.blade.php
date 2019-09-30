@@ -36,9 +36,12 @@
                                 <option {{($aceemails->contact_title=='Deputy Center Leader')  ? "selected":""}}  value="Deputy Center Leader">Deputy Center Leader</option>
                                 <option {{($aceemails->contact_title=='Finance Officer') ? "selected":""}} value="Finance Officer">Finance Officer</option>
                                 <option {{($aceemails->contact_title=='Focal Person')  ? "selected":""}} value="Focal Person">Focal Person</option>
-                                <option {{($aceemails->contact_title=='Procument Officer') ? "selected":""}} value="Procument Officer">Procument Officer</option>
                                 <option {{ ($aceemails->contact_title=='M & E')  ? "selected":""}}  value="M & E">M & E</option>
-                                <option {{($aceemails->contact_title == 'PSC Member') ? "selected":""}}  value="PSC Member">PSC Member</option>Vi
+                                <option {{($aceemails->contact_title=='Primary Expert') ? "selected":""}} value="Primary Expert">Primary Expert</option>
+                                <option {{($aceemails->contact_title=='Procument Officer') ? "selected":""}} value="Procument Officer">Procument Officer</option>
+                                <option {{($aceemails->contact_title=='Project / Program Manager') ? "selected":""}} value="Project / Program Manager">Project / Program Manager</option>
+                                <option {{($aceemails->contact_title == 'PSC Member') ? "selected":""}}  value="PSC Member">PSC Member</option>
+                                <option {{($aceemails->contact_title == 'Secondary Expert') ? "selected":""}} value="Secondary Expert">Secondary Expert</option>
                                 <option {{($aceemails->contact_title == 'Vice Chancellor') ? "selected":""}} value="Vice Chancellor">Vice Chancellor</option>
 
                             </select>
