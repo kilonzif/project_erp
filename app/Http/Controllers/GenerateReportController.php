@@ -158,7 +158,7 @@ class GenerateReportController extends Controller {
 			return $this->generalspreadsheet($report_values, $baseline_values, $target_values, $reports, $project);
 		}
 
-		return view('generate-report.general-report-table',
+		return view('generate-report.general-f-table',
 			compact('project', 'report_values', 'start', 'end', 'baseline_values', 'target_values', 'export', 'reports'));
 	}
 

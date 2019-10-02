@@ -10,6 +10,30 @@
         </tr>
         </thead>
         <tbody>
+        @php
+            $result="ACHIEVED";
+            if($target_values_total_students > $cum_total_students){
+                $res=($target_values_total_students-$cum_total_students)/$target_values_total_students*100;
+                $result=$res.'%';
+            }
+            $result2="ACHIEVED";
+             if($accreditation_target > $cum_total_accreditation){
+                $res2=($accreditation_target-$cum_total_accreditation)/$accreditation_target*100;
+                $result2=$res2.'%';
+            }
+             $result3="ACHIEVED";
+             if($internship_target > $cum_total_internships){
+                $res3=($internship_target-$cum_total_internships)/$internship_target*100;
+                $result3=$res3.'%';
+            }
+             $result4="ACHIEVED";
+             if($external_revenue_target > $cum_external_revenue){
+                $res4=($external_revenue_target-$cum_external_revenue)/$external_revenue_target*100;
+                $result4=$res4.'%';
+            }
+
+        @endphp
+
             <tr>
                 <td colspan="5" class="text-center"><strong>PROJECT DEVELOPMENT OBJECTIVES (PDO)</strong></td>
             </tr>
@@ -17,36 +41,36 @@
                 <td><strong>Total Students</strong></td>
                 <td>{{$total_students}}</td>
                 <td>{{$cum_total_students}}</td>
-                <td></td>
-                <td></td>
+                <td>{{$target_values_total_students}}</td>
+                <td>{{$result}}</td>
             </tr>
             <tr>
                 <td><strong>Regional Students</strong></td>
                 <td>{{$regional_students}}</td>
                 <td>{{$cum_regional_students}}</td>
-                <td></td>
-                <td></td>
+                <td>-</td>
+                <td>-</td>
             </tr>
             <tr>
                 <td><strong>Accreditation</strong></td>
                 <td>{{$total_accreditation}}</td>
                 <td>{{$cum_total_accreditation}}</td>
-                <td></td>
-                <td></td>
+                <td>{{$accreditation_target}}</td>
+                <td>{{$result2}}</td>
             </tr>
             <tr>
                 <td><strong>Internships</strong></td>
                 <td>{{$total_internships}}</td>
                 <td>{{$cum_total_internships}}</td>
-                <td></td>
-                <td></td>
+                <td>{{$internship_target}}</td>
+                <td>{{$result3}}</td>
             </tr>
             <tr>
                 <td><strong>External Revenue</strong></td>
                 <td>{{$external_revenue}}</td>
                 <td>{{$cum_external_revenue}}</td>
-                <td></td>
-                <td></td>
+                <td>{{$external_revenue_target}}</td>
+                <td>{{$result4}}</td>
             </tr>
             <tr>
                 <td colspan="5" class="text-center"><strong>INTERMEDIATE RESULTS</strong></td>

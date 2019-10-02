@@ -14,7 +14,7 @@
     {{--</div>--}}
     <div class="content-body">
         <div class="row">
-            <div class="col-xl-6 col-lg-12">
+            <div class="col-xl-12 col-lg-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">CUMULATIVE PROJECT PDO RESULTS</h4>
@@ -29,7 +29,19 @@
                         <div class="card-body load-area">
 
                             {{--<form action="#">--}}
+
                                 <div class="form-group row">
+                                    <div class="col-12">
+                                        <label for="ace_id">Select Ace <span class="required">*</span></label>
+                                        <div class="input-group">
+                                        <select multiple name="ace_id[]"  class="form-control select2" id="ace_id" required>
+                                            <option  value="{{$all_ace_ids}}">Select All Aces</option>
+                                            @foreach($aces as $this_ace)
+                                                <option  value="$this_ace->id}}">{{$this_ace->acronym}}</option>
+                                            @endforeach
+                                        </select>
+                                        </div>
+                                    </div>
                                     <div class="col-5">
                                         <label for="start_date">Start</label>
                                         <div class="input-group">
@@ -65,6 +77,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-xl-6 col-lg-12">
                 <div class="card">
                     <div class="card-header">
@@ -72,14 +86,14 @@
                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">
-                                {{--<li><a data-action="collapse"><i class="ft-minus"></i></a></li>--}}
-                                {{--<li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>--}}
-                                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                                {{--<li><a data-action="close"><i class="ft-x"></i></a></li>--}}
+                            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                            <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+                            <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                            <li><a data-action="close"><i class="ft-x"></i></a></li>
                             </ul>
                         </div>
-                    </div>
-                    <div class="card-content collapse show">
+                        </div>
+                        <div class="card-content collapse show">
                         <div class="card-body">
                             <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
                         </div>
@@ -87,6 +101,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 @push('vendor-script')
@@ -119,6 +134,10 @@
             let start_date = $("#start_date").val();
             let end_date = $("#end_date").val();
 
+            let this_ace = $("#ace_id").val();
+
+
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-Token': $('meta[name=_token]').attr('content')
@@ -127,7 +146,8 @@
             $.ajax({
                 type: "GET",
                 url: "{{route('analytics.getCumulativePDO')}}",
-                data: {start_date: start_date,end_date: end_date},
+                data: {start_date: start_date,end_date: end_date,this_ace: this_ace},
+
                 beforeSend: function () {
 
                     // $(block_ele).block({
@@ -143,15 +163,20 @@
                     //         backgroundColor: 'transparent'
                     //     }
                     // });
+
                 },
+
                 success: function (data) {
+
                     $("#showPDOTable").html(data.the_view);
+
+
                 },
                 complete: function () {
                     $(block_ele).unblock();
                 },
                 error: function (data) {
-                    console.log(data)
+                    console.log(data);
                 }
             })
         }
