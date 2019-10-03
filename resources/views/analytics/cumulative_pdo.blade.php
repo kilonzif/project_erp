@@ -31,12 +31,18 @@
                 $res4=($external_revenue_target-$cum_external_revenue)/$external_revenue_target*100;
                 $result4=$res4.'%';
             }
+            $result1="ACHIEVED";
+            if($regional_students_target > $cum_regional_students){
+                    $res1=($regional_students_target-$cum_regional_students)/$regional_students_target*100;
+                    $result1=$res1.'%';
+                }
 
         @endphp
 
             <tr>
                 <td colspan="5" class="text-center"><strong>PROJECT DEVELOPMENT OBJECTIVES (PDO)</strong></td>
             </tr>
+
             <tr>
                 <td><strong>Total Students</strong></td>
                 <td>{{$total_students}}</td>
@@ -48,8 +54,8 @@
                 <td><strong>Regional Students</strong></td>
                 <td>{{$regional_students}}</td>
                 <td>{{$cum_regional_students}}</td>
-                <td>-</td>
-                <td>-</td>
+                <td>{{$regional_students_target}}</td>
+                <td>{{$result1}}</td>
             </tr>
             <tr>
                 <td><strong>Accreditation</strong></td>

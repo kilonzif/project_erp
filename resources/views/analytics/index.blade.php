@@ -7,6 +7,7 @@
 @push('other-styles')
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
 @endpush
 @section('content')
@@ -34,10 +35,10 @@
                                     <div class="col-12">
                                         <label for="ace_id">Select Ace <span class="required">*</span></label>
                                         <div class="input-group">
-                                        <select multiple name="ace_id[]"  class="form-control select2" id="ace_id" required>
+                                        <select  multiple="multiple" name="ace_id"  class="form-control select2" id="ace_id" required>
                                             <option  value="{{$all_ace_ids}}">Select All Aces</option>
                                             @foreach($aces as $this_ace)
-                                                <option  value="$this_ace->id}}">{{$this_ace->acronym}}</option>
+                                                <option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
                                             @endforeach
                                         </select>
                                         </div>
@@ -106,6 +107,7 @@
 @endsection
 @push('vendor-script')
 {{--    <script src="{{asset('vendors/js/charts/echarts/echarts.js')}}" type="text/javascript"></script>--}}
+    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/dateTime/moment-with-locales.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/pickadate/picker.js')}}" type="text/javascript"></script>
@@ -127,6 +129,10 @@
             showGenderDistribution();
             // genderDistribution(40,60)
         });
+        $('.select2').select2({
+            placeholder: "Select Ace",
+            allowClear: true
+        });
 
         //Script for Cumulative PDO
         function showCumulativePDO() {
@@ -134,7 +140,9 @@
             let start_date = $("#start_date").val();
             let end_date = $("#end_date").val();
 
-            let this_ace = $("#ace_id").val();
+            // let this_ace = $("#ace_id").serializeArray();
+            let this_ace=$('#ace_id').val()
+            // alert(this_ace);
 
 
 
