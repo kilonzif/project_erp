@@ -64,6 +64,7 @@ Route::prefix('analytics')->name('analytics.')->group(function () {
     Route::get('/', 'AnalyticsController@index')->name('index');
     Route::get('/get-data-gender', 'AnalyticsController@getGenderDistribution')->name('getGenderDistribution');
     Route::get('/get-cumulative-pdo', 'AnalyticsController@getCumulativePDO')->name('getCumulativePDO');
+    Route::get('/calculate-aggregate','AnalyticsController@calculateAggregate')->name('calculateAggregate');
 });
 
 
