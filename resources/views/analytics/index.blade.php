@@ -152,7 +152,9 @@
                                 </div>
 
                             </div>
-                            <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                            <div class="col-md-12" id="container" style="min-width: 800px; height: 400px; max-width: 600px; margin: 0 auto">
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -270,7 +272,7 @@
                         showAggregateExternalRevenue(data.years, data.target_external_revenue, data.actual_external_revenue);
                     }
                     if (topic_name == "AGGREGATE PROGRAMME ACCREDITATION") {
-                        showAccreditationType(data.years, data.international_accreditation, data.national_accreditation);
+                        showAccreditationType(data.years,data.international_accreditation,data.national_accreditation);
                     }
                     if (topic_name == "Aggregate Student") {
                         graphAggregateStudents(data.years, data.total_students, data.regional_students, data.national_students, data.target_students);
@@ -304,7 +306,7 @@
                 items: [{
                     html: 'Total fruit consumption',
                     style: {
-                        left: '50px',
+                        left: '5px',
                         top: '18px',
                         color: ( // theme
                             Highcharts.defaultOptions.title.style &&
@@ -374,19 +376,21 @@
         // }
 
         function graphAggregateStudents(years,total_students,regional_students,national_students,target_students) {
+            //list of all the categories i need to draw lines for
 
-            Highcharts.chart('container', {
+
+            var charts = new Highcharts.chart('container', {
                 title: {
                     text: 'AGGREGATE STUDENT'
                 },
                 xAxis: {
-                    categories: years
+                    categories: years,
                 },
                 labels: {
                     items: [{
-                        html: years[0] + "-" +years[years.length-1],
+                        html: '',
                         style: {
-                            left: '50px',
+                            left: '5px',
                             top: '18px',
                             color: ( // theme
                                 Highcharts.defaultOptions.title.style &&
@@ -395,19 +399,28 @@
                         }
                     }]
                 },
-                series: [{
-                    type: 'column',
+
+
+                series: [
+                    {
+                        type: 'column',
                     name: 'Total Students',
-                    data: total_students,
-                }, {
-                    type: 'column',
-                    name: 'regional_students',
-                    data: regional_students,
-                }, {
-                    type: 'column',
-                    name: 'national_students',
-                    data: national_students,
-                }, {
+                   data: total_students,
+
+                },
+                    {
+                        type: 'column',
+                        name: 'National Students',
+                        data: national_students,
+
+                    },
+                    {
+                        type: 'column',
+                        name: 'Regional Students',
+                        data: regional_students,
+
+                    },
+                    {
                     type: 'spline',
                     name: 'Target',
                     data: target_students,
@@ -416,11 +429,12 @@
                         lineColor: Highcharts.getOptions().colors[3],
                         fillColor: 'white'
                     }
-                }]
+                }
+                ],
+
 
 
             });
-
         }
 
         function showAccreditationType(years,international_accreditation,national_accreditation) {
@@ -433,9 +447,9 @@
                 },
                 labels: {
                     items: [{
-                        html: years[0] + "-" +years[years.length-1],
+                        html: '',
                         style: {
-                            left: '50px',
+                            left: '5px',
                             top: '18px',
                             color: ( // theme
                                 Highcharts.defaultOptions.title.style &&
@@ -471,7 +485,7 @@
                     items: [{
                         html: years[0] + "-" +years[years.length-1],
                         style: {
-                            left: '50px',
+                            left: '5px',
                             top: '18px',
                             color: ( // theme
                                 Highcharts.defaultOptions.title.style &&
@@ -518,7 +532,7 @@
                 complete: function () {
 
                 },
-                error: function () {
+                error: function (data) {
                     console.log(data);
                 }
             });
