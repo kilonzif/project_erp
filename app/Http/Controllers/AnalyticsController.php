@@ -147,6 +147,7 @@ class AnalyticsController extends Controller
         $national_accreditation=[];
         $national_students = []; $regional_students = []; $total_students = [];
         $target_students=[];
+        $total_enrolled=[];
 
         foreach ($years as $key=>$this_year) {
             $regional_students[$key] = DB::connection('mongodb')->collection('indicator_3')
@@ -194,37 +195,40 @@ class AnalyticsController extends Controller
 
 
 
-            $actual_external_revenue[] = DB::connection('mongodb')->collection('indicator_5.1')
+            $actual_external_revenue[$key] = DB::connection('mongodb')->collection('indicator_5.1')
                 ->count();
 
             $external_revenue_indicator = DB::table('indicators')->where('identifier', '=', '5.1')
                 ->value('id');
-            $er_tv=AceIndicatorsTarget::get_target_value($start_year,$end_year,$selected_ace,$external_revenue_indicator);
-            $target_external_revenue []= (integer)$er_tv;
+            $er_tv=AceIndicatorsTarget::get_target_by_year($start_year,$end_year,$selected_ace,$external_revenue_indicator);
+            $target_external_revenue [$key]= (integer)$er_tv;
 
 
 //            course
-            $phd_students [] = DB::connection('mongodb')->collection('indicator_3')
+            $phd_students [$key] = DB::connection('mongodb')->collection('indicator_3')
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('level', 'like', "phD%")
                         ->orWhere('level', 'like', "PHD%");
                 })
                 ->count();
-            $masters_students [] = DB::connection('mongodb')->collection('indicator_3')
+            $masters_students [$key] = DB::connection('mongodb')->collection('indicator_3')
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('level', 'like', "M%")
                         ->orWhere('level', 'like', "m%");
                 })
                 ->count();
-            $prof_students [] = DB::connection('mongodb')->collection('indicator_3')
+            $prof_students [$key] = DB::connection('mongodb')->collection('indicator_3')
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('level', 'like', "prof%")
                         ->orWhere('level', 'like', "Pro%");
                 })
                 ->count();
+
+
+            $total_enrolled[$key]=$masters_students [$key]+$prof_students [$key]+$phd_students [$key] ;
 
 
 
@@ -245,7 +249,7 @@ class AnalyticsController extends Controller
             'years'=>$years,'actual_external_revenue'=>$actual_external_revenue,'target_external_revenue'=>$target_external_revenue,
             'international_accreditation'=>$international_accreditation,'national_accreditation'=>$national_accreditation,
             'total_students'=>$total_students,'regional_students'=>$regional_students,
-            'national_students'=>$national_students,'target_students'=>$target_students,
+            'national_students'=>$national_students,'target_students'=>$target_students,'total_enrolled'=>$total_enrolled,
             'phd_students'=>$phd_students,'masters_students'=>$masters_students,'prof_students'=>$prof_students
         ]);
     }

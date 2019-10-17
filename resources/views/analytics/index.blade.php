@@ -152,7 +152,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-12" id="container" style="min-width: 800px; height: 400px; max-width: 600px; margin: 0 auto">
+                            <div class="row" id="container" style="min-width: 800px; height: 400px; max-width: 600px; margin: 0 auto">
 
                             </div>
                         </div>
@@ -278,7 +278,7 @@
                         graphAggregateStudents(data.years, data.total_students, data.regional_students, data.national_students, data.target_students);
                     }
                     if (topic_name === "STUDENT ENROLLMENT") {
-                        getStudentEnrolment(data.years,data.total_students, data.phd_students, data.masters_students, data.prof_students);
+                        getStudentEnrolment(data.years,data.total_enrolled, data.phd_students, data.masters_students, data.prof_students);
                     }
                 },
                 complete: function () {
@@ -294,17 +294,17 @@
 
 
 
-    function getStudentEnrolment(years,total_students,phd_students,masters_students,prof_students){
+    function getStudentEnrolment(years,total_enrolled,phd_students,masters_students,prof_students){
         Highcharts.chart('container', {
             title: {
-                text: 'Combination chart'
+                text: 'Student Enrolment'
             },
             xAxis: {
                 categories: years
             },
             labels: {
                 items: [{
-                    html: 'Total fruit consumption',
+                    html: '',
                     style: {
                         left: '5px',
                         top: '18px',
@@ -330,7 +330,7 @@
             }, {
                 type: 'column',
                 name: 'Total Students',
-                data: total_students,
+                data: total_enrolled,
             }]
         });
     }
