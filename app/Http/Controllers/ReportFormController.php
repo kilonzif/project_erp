@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ace;
+use App\AceComment;
 use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Indicator;
@@ -38,6 +39,7 @@ class ReportFormController extends Controller {
 		}
 		return view('report-form.index', compact('ace_reports', 'me'));
 	}
+
 
 	/**
 	 *Shows all the reports (Archives)
@@ -844,4 +846,67 @@ class ReportFormController extends Controller {
 
         return $indicator_4_1_values;
 	}
+
+
+	public function showComments()
+    {
+        if (Auth::user()->hasRole('webmaster|ace-officer')) {
+            $comments = AceComment::get();
+        }
+        $user_id = Auth::user()->id;
+        foreach ($comments as $comment){
+            list($ace_officer,$ace_name) = AceComment::getCommentDetails($comment->user_id);
+        }
+        return view('report-form.ace-comment', compact('user_id','comments','ace_officer','ace_name'));
+    }
+
+    public function saveComment(Request $request){
+//        dd($request->all());
+        $ace_comment_object = new AceComment();
+        if(isset($request->ace_comment)){
+            $ace_comment_object->user_id=$request->user_id;
+            $ace_comment_object->comments=$request->ace_comment;
+        }
+        $ace_comment_object->save();
+
+        if($ace_comment_object->save()){
+            notify(new ToastNotification('Successful!', 'Comment/Feedback Added', 'success'));
+            return back();
+        }else{
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+    }
+
+    public function deleteComment($id){
+        $comment_id = Crypt::decrypt($id);
+        AceComment::destroy($comment_id);
+
+        notify(new ToastNotification('Successful!', 'Comment Deleted!', 'success'));
+        return back();
+    }
+
+    public function editComment(Request $request){
+        $id = Crypt::decrypt($request->id);
+        $comment = AceComment::find($id);
+        $user_id = Auth::user()->id;
+        $view = view('report-form.ace-comment-edit', compact('comment','user_id'))->render();
+        return response()->json(['theView'=>$view]);
+    }
+
+    public function updateComment(Request $request){
+        $id = Crypt::decrypt($request->id);
+        $comment = AceComment::find($id);
+
+        $comment->update([
+            'user_id' => $request->user_id,
+            'comments' => $request->ace_comment,
+        ]);
+        notify(new ToastNotification('Successful!', 'comment Updated!', 'success'));
+        return back();
+    }
+
+
+
+
 }

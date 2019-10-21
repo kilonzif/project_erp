@@ -304,10 +304,18 @@ Route::name('report_generation.')->group(function () {
 
 });
 
+Route::get('comment-feedback','ReportFormController@showComments')->name('comment_feedback');
+Route::post('save_comment_feedback','ReportFormController@saveComment')->name('save_comment_feedback');
+Route::get('edit_report_form_comment','ReportFormController@editComment')->name('report_form_comment.edit');
+Route::get('delete_report_form_comment/{id}','ReportFormController@deleteComment')->name('report_form_comment.delete');
+Route::post('update_report_form_comment}','ReportFormController@updateComment')->name('report_form_comment.update');
+
+
 Route::name('report_submission.')->group(function () {
 
     Route::get('reports-submitted', 'ReportFormController@index')->name('reports');
     Route::get('reports-submitted/delete/{id}', 'ReportFormController@delete')->name('reports.delete');
+
 
     Route::prefix('report-submitted')->group(function () {
 

@@ -56,11 +56,22 @@
                         </a>
                     </li>
                     @endability
+
+                    @ability('webmaster|admin|ace-officer', 'submit-comment|view-report')
+                       <li class="nav-item {{isRouteActive('comment_feedback')}}">
+                           <a href="{{route('comment_feedback')}}" class="menu-item">
+                               Comment/Feedback
+                           </a>
+
+                       </li>
+                    @endability
                     {{--<li class="nav-item {{isRouteActive('report_submission.upload_indicator')}}">--}}
                         {{--<a href="{{route('report_submission.upload_indicator')}}" class="menu-item">--}}
                             {{--<span class="menu-title" data-i18n="">{{__('Upload Indicators')}}</span>--}}
                         {{--</a>--}}
                     {{--</li>--}}
+
+
                 </ul>
             </li>
             @endability
