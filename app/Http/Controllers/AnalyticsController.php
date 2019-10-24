@@ -30,8 +30,16 @@ class AnalyticsController extends Controller
 
         $aces = Ace::all();
         $all_ace_ids = Ace::where('id' ,'>' ,0)->pluck('id');
+        $countries = DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+            ->distinct('countries.id')
+            ->select('countries.*')
+            ->get();
 
-        return view('analytics.index',compact('aces','all_ace_ids'));
+        $fields = ['Agriculture', 'Health', 'STEM','Education','Applied Soc. Sc.'];
+        $type_of_centres = ['Colleges of Engineering','Emerging Centre','ACE'];
+
+        return view('analytics.index',compact('aces','all_ace_ids','countries','fields','type_of_centres'));
     }
 
 
@@ -130,10 +138,10 @@ class AnalyticsController extends Controller
 
         $start_year = date("Y-m-d",strtotime($request->start_year));
         $end_year= date("Y-m-d",strtotime($request->end_year));
-        $selected_ace = $request->selected_ace;
         $years = array();
         $start = date('Y',strtotime($request->start_year));
         $end = date('Y',strtotime($request->end_year));
+        $filter = $request->filter;
         while($start <= $end){
             $years[] = (int)$start;
             $start++;
@@ -144,13 +152,53 @@ class AnalyticsController extends Controller
         $actual_external_revenue=[];
         $target_external_revenue=[];
         $international_accreditation=[];
-        $national_accreditation=[];
+        $national_accreditation =[];
         $national_students = []; $regional_students = []; $total_students = [];
-        $target_students=[];
-        $total_enrolled=[];
+        $target_students = [];
+        $total_enrolled = [];
+        $student_internship = [];
+        $faculty_internship = [];
+        $reports [] = DB::table('reports')
+            ->join('aces', 'reports.ace_id', '=', 'aces.id')
+            ->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+            ->distinct('reports.id')
+            ->select(DB::raw('reports.*,aces.id as aceID, aces.*,aces.ace_type as centre_type, countries.id as countryID,institutions.name as university, countries.*,reports.id'))
+            ->where('reports.start_date', '>=',$start_year)
+            ->where('reports.end_date', '<=', $end_year)
+            ->orderBy('countries.country', 'asc')
+            ->get();
+
+        //Filter by field
+        if ($request->filter == "Field of Study") {
+            //Filter by Field
+            if (isset($request->field)) {
+                if (sizeof($request->field) > 0) {
+                    $reports = $reports->whereIn('field', $request->field);
+                }
+            }
+        }
+        //Filter by Country
+        if ($request->filter == "Countries") {
+            //Filter by Field
+            if (isset($request->country)) {
+                if (sizeof($request->country) > 0) {
+                    $reports = $reports->whereIn('countryID', $request->country);
+                }
+            }
+        }
+        //Filter by Type of Centre
+        if ($request->filter == "Type of Centre") {
+            if (isset($request->typeofcentre)) {
+                if (sizeof($request->typeofcentre) > 0) {
+                    $reports = $reports->whereIn('centre_type', $request->typeofcentre);
+                }
+            }
+        }
 
         foreach ($years as $key=>$this_year) {
             $regional_students[$key] = DB::connection('mongodb')->collection('indicator_3')
+                ->whereIn('report_id', $reports)
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('regional-status', 'like', "R%")
@@ -159,6 +207,7 @@ class AnalyticsController extends Controller
                 ->count();
 
             $national_students[$key]  = DB::connection('mongodb')->collection('indicator_3')
+                ->whereIn('report_id', $reports)
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('regional-status', 'like', "N%")
@@ -168,16 +217,19 @@ class AnalyticsController extends Controller
 
             $total_students[$key] = $national_students[$key] + $regional_students[$key];
 
+
             $indicator_total_students = DB::table('indicators')
                 ->select('id')
                 ->where('title', 'Quantity of students with focus on gender and regionalization')
                 ->value('id');
-            $t_value = AceIndicatorsTarget::get_target_by_year($start_year, $end_year, $selected_ace, 50);
-            $target_students = (integer)$t_value;
+            $t_value = AceIndicatorsTarget::get_target_by_year($start_year, $end_year,50);
+            $target_students [$key]= (integer)$t_value;
+
 
                //AGGREGATE PROGRAMME ACCREDITATION
 
             $national_accreditation [$key]= DB::connection('mongodb')->collection('indicator_7.3')
+                ->whereIn('report_id', $reports)
                 ->where(function ($query) {
                     $query->where('type-of-accreditation2', 'like', "n%")
                         ->orWhere('type-of-accreditation2', 'like', "N%");
@@ -186,6 +238,7 @@ class AnalyticsController extends Controller
                 ->count();
 
             $international_accreditation [$key]= DB::connection('mongodb')->collection('indicator_7.3')
+                ->whereIn('report_id', $reports)
                 ->where(function ($query) {
                     $query->where('type-of-accreditation2', 'like', "International%")
                         ->orWhere('type-of-accreditation2', 'like', "international%");
@@ -193,19 +246,17 @@ class AnalyticsController extends Controller
                 ->where('date-of-accreditation-ddmmyyyy','like',"%$this_year")
                 ->count();
 
-
-
             $actual_external_revenue[$key] = DB::connection('mongodb')->collection('indicator_5.1')
+                ->whereIn('report_id', $reports)
                 ->count();
 
-            $external_revenue_indicator = DB::table('indicators')->where('identifier', '=', '5.1')
+            $external_revenue_indicator = DB::table('indicators')
+                ->where('identifier', '=', '5.1')
                 ->value('id');
-            $er_tv=AceIndicatorsTarget::get_target_by_year($start_year,$end_year,$selected_ace,$external_revenue_indicator);
+            $er_tv=AceIndicatorsTarget::get_target_by_year($start_year,$end_year,$external_revenue_indicator);
             $target_external_revenue [$key]= (integer)$er_tv;
-
-
-//            course
             $phd_students [$key] = DB::connection('mongodb')->collection('indicator_3')
+                ->whereIn('report_id', $reports)
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('level', 'like', "phD%")
@@ -213,6 +264,7 @@ class AnalyticsController extends Controller
                 })
                 ->count();
             $masters_students [$key] = DB::connection('mongodb')->collection('indicator_3')
+                ->whereIn('report_id', $reports)
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('level', 'like', "M%")
@@ -220,6 +272,7 @@ class AnalyticsController extends Controller
                 })
                 ->count();
             $prof_students [$key] = DB::connection('mongodb')->collection('indicator_3')
+                ->whereIn('report_id', $reports)
                 ->where('calender-year-of-enrollment', $this_year)
                 ->where(function ($query) {
                     $query->where('level', 'like', "prof%")
@@ -227,10 +280,24 @@ class AnalyticsController extends Controller
                 })
                 ->count();
 
-
             $total_enrolled[$key]=$masters_students [$key]+$prof_students [$key]+$phd_students [$key] ;
 
+             //Internship
 
+            $student_internship[$key] = DB::connection('mongodb')->collection('indicator_5.2')
+                                     ->whereIn('report_id', $reports)
+                                    ->where(function ($query) {
+                                        $query->where('studentfaculty', 'like', "Student%")
+                                            ->orWhere('studentfaculty', 'like', "stud%");
+                                    })
+                                    ->count();
+            $faculty_internship[$key] = DB::connection('mongodb')->collection('indicator_5.2')
+                                      ->whereIn('report_id', $reports)
+                                        ->where(function ($query) {
+                                            $query->where('studentfaculty', 'like', "F%")
+                                                ->orWhere('studentfaculty', 'like', "f%");
+                                        })
+                                        ->count();
 
 
         }
@@ -244,13 +311,13 @@ class AnalyticsController extends Controller
             $publication_year[]=DB::connection('mongodb')->collection('indicator_4.2')
                 ->select('publication-year');
         }
-
         return response() ->json(['publication_year'=>$publication_year,'research_publication'=>$research_publication,
             'years'=>$years,'actual_external_revenue'=>$actual_external_revenue,'target_external_revenue'=>$target_external_revenue,
             'international_accreditation'=>$international_accreditation,'national_accreditation'=>$national_accreditation,
             'total_students'=>$total_students,'regional_students'=>$regional_students,
             'national_students'=>$national_students,'target_students'=>$target_students,'total_enrolled'=>$total_enrolled,
-            'phd_students'=>$phd_students,'masters_students'=>$masters_students,'prof_students'=>$prof_students
+            'phd_students'=>$phd_students,'masters_students'=>$masters_students,'prof_students'=>$prof_students,
+            'student_internship'=>$student_internship,'faculty_internship'=>$faculty_internship
         ]);
     }
 }

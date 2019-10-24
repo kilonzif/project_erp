@@ -96,7 +96,6 @@
                         </div>
                         <div class="card-content collapse show">
                         <div class="card-body">
-                            <div id="filter">
                                 <div class="form-group row">
                                     <div class="col-6">
                                         <label>Aggregate Topic: </label>
@@ -104,26 +103,27 @@
                                             <option value="">Select aggregate topic</option>
                                             <option value="Aggregate Student">Aggregate Student</option>
                                             <option value="Gender Distribution">Gender Distribution</option>
-                                            <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">AGGREGATE PROGRAMME ACCREDITATION</option>
-                                            <option VALUE="INTERNATIONAL ACCREDITATION">INTERNATIONAL ACCREDITATION</option>
-                                            <option value="AGGREGATE EXTERNAL REVENUE">AGGREGATE EXTERNAL REVENUE</option>
+                                            <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
+                                            <option VALUE="INTERNATIONAL ACCREDITATION">Internationally Accredited Programs</option>
+                                            <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
                                             <option VALUE="ACE Publications in 2017">ACE Publications by Year</option>
-                                            <option value="QUALITY EDUCATION & RESEARCH">QUALITY EDUCATION & RESEARCH</option>
-                                            <option value="STUDENT ENROLLMENT">STUDENT ENROLLMENT</option>
+                                            <option value="QUALITY EDUCATION & RESEARCH">Quality of Education and Research</option>
+                                            <option value="Student Enrollment">Student Enrollment</option>
+                                            <option value="Aggregate Internships/Outreach">Aggregate Internships/Outreach</option>
                                         </select>
                                     </div>
-                                    <div class="col-4">
-                                        <label for="ace_id">Select Ace <span class="required">*</span></label>
-                                        <div class="input-group">
-                                            <select  multiple="multiple" name="selected_ace"  class="form-control select2" id="selected_ace" required>
-                                                <option  value="{{$all_ace_ids}}">Select All Aces</option>
-                                                @foreach($aces as $this_ace)
-                                                    <option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
+                                    {{--<div class="col-4">--}}
+                                        {{--<label for="ace_id">Select Ace <span class="required">*</span></label>--}}
+                                        {{--<div class="input-group">--}}
+                                            {{--<select  multiple="multiple" name="selected_ace"  class="form-control select2" id="selected_ace" required>--}}
+                                                {{--<option  value="{{$all_ace_ids}}">Select All Aces</option>--}}
+                                                {{--@foreach($aces as $this_ace)--}}
+                                                    {{--<option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>--}}
+                                                {{--@endforeach--}}
+                                            {{--</select>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
+                                    <div class="col-3">
                                         <label for="start_year">Start</label>
                                         <div class="input-group">
                                             <input type="text" name="start_year" id="start_year" class="form-control singledate" value="">
@@ -134,7 +134,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-5">
+                                    <div class="col-3">
                                         <label for="end_date">End</label>
                                         <div class="input-group">
                                             <input type="text" name="end_year" id="end_year" class="form-control singledate" value="">
@@ -145,13 +145,73 @@
                                             </div>
                                         </div>
                                     </div>
+                                {{--<div class="form-group row">--}}
+                                    <div class="col-6">
+                                        <label for="filter-by">Filter By</label>
+                                        <div class="input-group">
+                                            <select class="form-control select-lg filter_select" name="filter_by" id="filter_by">
+                                                <option value="" >Add Filter...</option>
+                                                <option value="Countries">Countries</option>
+                                                <option value="Type of Centre">Type of Centre</option>
+                                                <option value="Field of Study">Field of Study</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        {{--<label>Select Filter</label>--}}
+                                        <div class="accordion-icon-rotate left" id="forField" style="display:none">
+                                            <div id="byField_1" class="card-header sm-white bg-gradient-4">
+                                                <a href="#" class="card-title lead gray">Filter By Field of Study</a>
+                                            </div>
+                                                <div class="card-content">
+                                                        @foreach($fields as $key=>$field)
+                                                            <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                                                <input type="checkbox" class="custom-control-input forField" value="{{$field}}" name="field[]" id="field{{$key}}">
+                                                                <label class="custom-control-label" for="field{{$key}}">{{$field}}</label>
+                                                            </div>
+                                                        @endforeach
+                                                </div>
+                                        </div>
+                                        <div class="accordion-icon-rotate left" id="forCountry" style="display:none">
+                                            <div id="byField_2" class="card-header sm-white bg-gradient-4" style="padding: 0.7rem 1.5rem;">
+                                                <a href="#byCountry" aria-expanded="false" aria-controls="byCountry"
+                                                   class="card-title lead gray">Filter By Country</a>
+                                            </div>
+                                            <div id="byCountry" role="tabpanel" aria-labelledby="byCountry" aria-expanded="false">
+                                                <div class="card-content">
+                                                        @foreach($countries as $country)
+                                                            <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                                                <input type="checkbox" class="custom-control-input" value="{{$country->id}}" name="country[]" id="country{{$country->id}}">
+                                                                <label class="custom-control-label" for="country{{$country->id}}">{{$country->country}}</label>
+                                                            </div>
+                                                        @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-icon-rotate left" id="typeofcentre" style="display:none">
+                                            <div id="byField_3" class="card-header sm-white bg-gradient-4" style="padding: 0.7rem 1.5rem;">
+                                                <a href="#typeofcentre" aria-expanded="false" aria-controls="typeofcentre"
+                                                   class="card-title lead gray">Filter By Type of Centre</a>
+                                            </div>
+                                            <div id="typeofcentre" role="tabpanel" aria-labelledby="typeofcentre" aria-expanded="false">
+                                                <div class="card-content">
+                                                        @foreach($type_of_centres as $key=>$centre)
+                                                            <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                                                <input type="checkbox" class="custom-control-input typeofcentre" value="{{$centre}}" name="typeofcentre[]" id="typeofcentre{{$key}}">
+                                                                <label class="custom-control-label" for="typeofcentre{{$key}}">{{$centre}}</label>
+                                                            </div>
+                                                        @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-2">
                                         <button class="btn btn-primary block-custom-message" style="margin-top: 25px;"
-                                                onclick="calculateAggregate()">Calculate</button>
+                                                onclick="calculateAggregate()">Generate</button>
                                     </div>
                                 </div>
 
-                            </div>
+
                             <div class="row" id="container" style="min-width: 800px; height: 400px; max-width: 600px; margin: 0 auto">
 
                             </div>
@@ -190,6 +250,35 @@
         $('.select2').select2({
             placeholder: "Select Ace",
             allowClear: true
+        });
+
+        $(document).ready(function(){
+            $('.filter_select').change(function(){
+                if($(this).val() != ''){
+                    var filter = $('.filter_select').val();
+                    if (filter == 'Field of Study'){
+                        $("#forField").css('display','block');
+                        $("#forCountry").css('display','none');
+                        $("#typeofcentre").css('display','none');
+
+                    }
+                    if (filter == 'Countries'){
+                        $("#forCountry").css('display','block');
+                        $("#forField").css('display','none');
+                        $("#typeofcentre").css('display','none');
+
+                    }
+                    if (filter == 'Type of Centre'){
+                        $("#typeofcentre").css('display','block');
+                        $("#forField").css('display','none');
+                        $("#forCountry").css('display','none');
+                    }
+
+
+
+                }
+
+                });
         });
 
         //Script for Cumulative PDO
@@ -248,6 +337,7 @@
             let start_year = $("#start_year").val();
             let end_year = $("#end_year").val();
             let selected_ace=$('#selected_ace').val();
+            let filter =  $('.filter_select').val();
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-Token': $('meta[name=_token]').attr('content')
@@ -256,7 +346,7 @@
             $.ajax({
                 type: "GET",
                 url:"{{route('analytics.calculateAggregate')}}",
-                data: {start_year: start_year,end_year: end_year,selected_ace: selected_ace,topic_name:topic_name},
+                data: {start_year: start_year,end_year: end_year,selected_ace: selected_ace,topic_name:topic_name,filter:filter},
                 beforeSend: function () {
 
                 },
@@ -277,8 +367,11 @@
                     if (topic_name == "Aggregate Student") {
                         graphAggregateStudents(data.years, data.total_students, data.regional_students, data.national_students, data.target_students);
                     }
-                    if (topic_name === "STUDENT ENROLLMENT") {
+                    if (topic_name === "Student Enrollment") {
                         getStudentEnrolment(data.years,data.total_enrolled, data.phd_students, data.masters_students, data.prof_students);
+                    }
+                    if (topic_name === "Aggregate Internships/Outreach") {
+                        getAggregateInternships(data.years,data.student_internship, data.faculty_internship);
                     }
                 },
                 complete: function () {
@@ -287,6 +380,42 @@
                 error: function () {
                     console.log("error");
                 }
+
+            });
+        }
+
+
+        function  getAggregateInternships(years,student_internship,faculty_internship){
+            Highcharts.chart('container', {
+                title: {
+                    text: 'AGGREGATE INTERNSHIPS'
+                },
+                xAxis: {
+                    categories: years
+                },
+                labels: {
+                    items: [{
+                        html: years[0] + "-" +years[years.length-1],
+                        style: {
+                            left: '5px',
+                            top: '18px',
+                            color: ( // theme
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || 'black'
+                        }
+                    }]
+                },
+                series: [{
+                    type: 'column',
+                    name: 'Student Internships',
+                    data: student_internship,
+                }, {
+                    type: 'column',
+                    name: 'Faculty Internships',
+                    data: faculty_internship,
+                }]
+
 
             });
         }
