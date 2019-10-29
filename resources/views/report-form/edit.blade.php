@@ -139,6 +139,9 @@
                                                     $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
                                                     $indicator_5_2_filter = ['national','regional'];
                                                     $indicator_4_1_filter = ['international','national','gap-assessment','regional','self-evaluation','course'];
+                                                    $indicator_4_2_filter = ['Regional_Collaboration','No_Regional_Collaboration'];
+                                                    $indicator_5_1_filter = ['External_Revenue_National ','External_Revenue_Regional'];
+                                                    $indicator_7_3_filter = ['national','self_evaluation','international'];
                                                     $indicator_identifier = (string)$indicator->identifier;
                                                     $counter = 0;
                                                 //dd($sub_indicators);
@@ -151,7 +154,7 @@
                                                             {{--@endif--}}
                                                         </td>
                                                         <td style="width: 200px">
-                                                            <div class="form-grou{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}">
+                                                            <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}">
 
                                                                 @if($indicator->parent_id == 3)
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
@@ -161,9 +164,21 @@
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$indicator_4_1[$indicator_4_1_filter[$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                {{--@elseif($indicator->identifier == "4.2")--}}
+                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"--}}
+                                                                           {{--value="{{$indicator_4_2[$indicator_4_2_filter[$counter]]}}"--}}
+                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">--}}
+                                                                {{--@elseif($indicator->identifier == "5.1")--}}
+                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"--}}
+                                                                           {{--value="{{$indicator_5_1[$indicator_5_1_filter[$counter]]}}"--}}
+                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">--}}
                                                                 @elseif($indicator->identifier == "5.2")
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$indicator_5_2[$indicator_5_2_filter[$counter]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                @elseif($indicator->identifier == "7.3")
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$indicator_7_3[$indicator_7_3_filter[$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
                                                                 @elseif(isset($values[$sub_indicator->id]))
                                                                     <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
@@ -266,13 +281,6 @@
 
  @comments(['model' =>$report])
                 @endcomments
-
-
-
-
-      
-    
-
    </div>
 </div>
 @endpush

@@ -37,7 +37,7 @@ class Report extends Model {
 		return $query->where('status', '=', 99)->orWhere('status', '=', 1);
 	}
 
-	public function scopeUncompleted($query) {
+	public static function scopeUncompleted($query) {
 		return $query->where('status', '=', 99);
 	}
 

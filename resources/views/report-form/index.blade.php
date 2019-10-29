@@ -24,6 +24,16 @@
         </div>
     </div>
 
+    {{--@php--}}
+    {{--use App\Classes\ToastNotification;--}}
+    {{--while($unsubmitted==True){--}}
+
+        {{--notify(new ToastNotification('warning', 'You have unsubmitted reports!', 'warning'));--}}
+        {{--}--}}
+
+
+    {{--@endphp--}}
+
     <div class="content-body">
         <div class="row">
             <div class="col-12">
@@ -51,7 +61,7 @@
                                         {{--<th>Project Title</th>--}}
                                         <th>ACE</th>
                                         <th width="100px">Reporting Year</th>
-                                        <th width="100px">Submitted On</th>
+                                        <th width="100px">Uploaded On</th>
                                         <th width="100px">Status</th>
                                         <th width="50px">Action</th>
                                     </tr>
@@ -81,9 +91,10 @@
                                                         <a href="#" class="btn btn-s btn-secondary disabled" data-toggle="tooltip" data-placement="top" title="In Review Mode">
                                                             <i class="ft-edit-3"></i></a>
                                                     @endif
+                                                    @if(\Auth::user()->hasRole('webmaster|super-admin'))
                                                         <a href="{{route('report_submission.indicators_status',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                        class="btn btn-s btn-success" data-toggle="tooltip" data-placement="top" title="Report Status"><i class="fa fa-hourglass-start"></i></a>
-                                                    @if(\Auth::user()->hasRole('webmaster|super-admin'))
+                                                    {{--@if(\Auth::user()->hasRole('webmaster|super-admin'))--}}
                                                         <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                        class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
                                                        title="Delete Report"><i class="ft-trash-2"></i></a>

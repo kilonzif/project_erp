@@ -230,12 +230,10 @@ class UploadIndicatorsController extends Controller
                     }
                 }
             }else{
-//                dd($headers);
                 $error = "The upload supports only xlsx or xls files!";
                 notify(new ToastNotification('Upload Error!', $error, 'warning'));
             }
         }
-//        dd("herer");
 
         return back()->withInput(['error'=>$error,'success'=>$success]);
     }
