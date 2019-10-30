@@ -268,6 +268,7 @@
                 @else
                     <h2 class="center">No Indicators available</h2>
                 @endif
+                
             </div>
         </div>
     </div>
@@ -291,12 +292,16 @@
 
 <script type="text/javascript" src="{{ asset("js/scripts/customizer.js") }}"></script>
 <script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
+
 <script type="text/javascript" >
   $('.customizer-toggle').on('click',function(){
         $('.customizer').toggleClass('open');
     });
+
 </script>
 @endpush
 @push('end-script')
 
 @endpush
+
+

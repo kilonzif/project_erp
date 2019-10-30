@@ -37,14 +37,20 @@ class UploadIndicatorsController extends Controller
         }
         $ace = $report->ace;
         $indicators = Indicator::where('is_parent','=', 1)
-            ->where('status','=', 1)->where('upload','=', 1)
+            ->where('status','=', 1)
+            ->where('upload','=', 1)
             ->orderBy('identifier','asc')->get();
         return view('report-form.uploads', compact('indicators','d_report_id','report_id','indicator_details','indicatorID','ace'));
     }
 
     public function downloadIndicators()
     {
-        $indicators = Indicator::where('parent_id','=', 0)->get();
+//        $indicators = Indicator::where('parent_id','=', 1)->get();
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)
+            ->where('upload','=', 1)
+            ->orderBy('identifier','asc')->get();
+
         return view('report-form.download_indicators', compact('indicators'));
     }
 

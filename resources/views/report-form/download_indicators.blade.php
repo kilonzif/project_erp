@@ -40,111 +40,46 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            {{--<h5>Select Indicator</h5>--}}
-                            <form action="{{route('report_submission.save_excel_upload')}}" enctype="multipart/form-data" method="post">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <fieldset class="form-group">
-                                            <label for="basicInputFile">Select Indicator</label>
-                                            <select name="indicator" required class="select form-control" id="indicator" onchange=" loadFields()">
-                                                @foreach($indicators as $indicator)
-                                                    @if($indicator->IsUploadable($indicator->id))
-                                                    <option value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('indicator'))
-                                                <p class="text-right mb-0">
-                                                    <small class="warning text-muted" id="indicator-error">{{ $errors->first('indicator') }}</small>
-                                                </p>
-                                            @endif
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </form>
+                            <table class="table table-bordered table-striped">
+                                <tr>
+                                    <th>Indicator Identifier</th>
+                                    <th>Identifier Name</th>
+                                    <th>Download</th>
+                                </tr>
+
+
+                                @foreach($indicators as $indicator)
+                                    @if($indicator->IsUploadable($indicator->id))
+
+                                        @php
+                                            $excel_upload =\App\ExcelUpload::where('indicator_id','=',(integer)$indicator->id)->first();
+                                        @endphp
+
+
+                                        <tr>
+                                        <td value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</td>
+                                            <td value="{{$indicator->id}}">Indicator {{$indicator->title}}</td>
+                                            <td>
+                                                @if($excel_upload)
+                                                    <a href="{{ route('settings.excelupload.download',  [\Illuminate\Support\Facades\Crypt::encrypt($excel_upload->id)] ) }}"
+                                                       class="btn btn-s btn-outline-secondary mb-2">
+                                                        <i class="fa fa-cloud-download"></i> Download Template
+                                                    </a>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endforeach
+                            </table>
                         </div>
                     </div>
                 </div>
 
             </div>
-            <div class="col-md-12">
-                <div class="card" id="action-loader">
-                    <div class="card-header" style="padding: 10px 20px;">
-                        <h5>Indicator Fields <span class="ml-1 warning">(The fields on the excel sheet must match the fields listed for the selected indicator and in similar order.)</span></h5>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body" id="action-card">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="action-card">
 
         </div>
     </div>
 @endsection
 @push('vendor-script')
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
-@endpush
-@push('end-script')
-    <script>
-        $('document').ready(function () {
-            loadFields();
-        });
-
-        function loadFields() {
-            var selected = $('#indicator').val();
-
-            var path = "{{route('getIndicatorFields')}}"
-            $.ajaxSetup(    {
-                headers: {
-                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
-                }
-            });
-            $.ajax({
-                url: path,
-                type: 'GET',
-                data: {id:selected},
-                beforeSend: function(){
-                    $('#action-loader').block({
-                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
-                        // timeout: 2000, //unblock after 2 seconds
-                        overlayCSS: {
-                            backgroundColor: '#ccc',
-                            opacity: 0.8,
-                            cursor: 'wait'
-                        },
-                        css: {
-                            border: 0,
-                            padding: 0,
-                            backgroundColor: 'transparent'
-                        }
-                    });
-                    $('#action-card').empty();
-                },
-                success: function(data){
-                    console.log(data)
-                    $('#action-card').html(data.theView);
-                },
-                complete:function(){
-                    $('#action-loader').unblock();
-                    $.getScript("http://127.0.0.1:8000/vendors/js/forms/select/select2.full.min.js")
-                }
-                ,
-                error: function (data) {
-                    console.log(data)
-                }
-            });
-        }
-
-        $('.select2').select2({
-            placeholder: "Select Indicator",
-            allowClear: true
-        });
-    </script>
 @endpush

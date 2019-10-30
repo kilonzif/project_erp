@@ -14,11 +14,10 @@ class ExcelUploadController extends Controller
         $this->middleware('auth');
     }
     public function index(){
-        $indicators = Indicator::where('parent_id','=', 0)
+        $indicators = Indicator::where('is_parent','=', 1)
             ->where('status','=', 1)
             ->where('upload','=', 1)
-            ->orderBy('identifier','asc')
-            ->get();
+            ->orderBy('identifier','asc')->get();
          $exceluploads=ExcelUpload::orderBy('indicator_id','asc')->get();
         return view('settings.exceluploads',compact('indicators','exceluploads'));
     }

@@ -28,13 +28,12 @@
     </div>
 
     <div class="content-body">
-        <div class="mb-1">
-            <a class="btn btn-dark square text-left mr-3" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($d_report_id)])}}">
-                <i class="ft-arrow-left mr-sm-1"></i>{{__('Back to Report')}}
-            </a>
-            {{--<a class="btn btn-secondary square text-right" href="{{route('report_submission.edit', [\Illuminate\Support\Facades\Crypt::encrypt($d_report_id)])}}">--}}
-                {{--{{__('Edit Report')}}--}}
-            {{--</a>--}}
+        <div class="mb-1 row ">
+            <div class="col-lg-12 text-right">
+                <a class="btn btn-dark square" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($d_report_id)])}}">
+                    <i class="ft-arrow-right mr-md-2"></i>Preview and Submit Report
+                </a>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-12">
