@@ -112,28 +112,6 @@
                 </div>
             </div>
             <div class="col-md-6">
-                {{--<div class="card">--}}
-                    {{--<div class="card-header">--}}
-                        {{--<h4 class="card-title">Application Name</h4>--}}
-                        {{--<a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>--}}
-                        {{--<div class="heading-elements">--}}
-                            {{--<ul class="list-inline mb-0">--}}
-                                {{--<li><a data-action="collapse"><i class="ft-plus"></i></a></li>--}}
-                            {{--</ul>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                    {{--<div class="card-content collapse" style="">--}}
-                        {{--<div class="card-body">--}}
-                            {{--<p>Oat cake ice cream candy chocolate cake chocolate cake cotton--}}
-                                {{--candy dragée apple pie. Brownie carrot cake candy canes bonbon--}}
-                                {{--fruitcake topping halvah. Cake sweet roll cake cheesecake cookie--}}
-                                {{--chocolate cake liquorice. Apple pie sugar plum powder donut--}}
-                                {{--soufflé.--}}
-                            {{--</p>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-
                 <div class="card" id="deadline-box">
                     <div class="card-content" style="">
                         <div class="card-body">
@@ -179,6 +157,80 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Set Reporting Period</h4>
+                    </div>
+                    <div class="card-content" style="">
+                        <div class="card-body">
+                            <div id="form_template">
+                                <form action="{{route('settings.app_settings.save_reporting_period')}}" method="post">
+                                    <div class="row">
+                                        @csrf
+                                        <div class="col-md-6">
+                                            <label>Starting Period</label>
+                                            <input type="month" id="period_start" name="period_start" min="1900-March" max="today" class="form-control">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label>End</label>
+                                            <input type="month" id="period_start" name="period_end" min="1900-March" max="today"  class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row" style="padding-top: 20px;">
+                                        <div class="col-md-6 offset-md-3" >
+                                            <input type="submit" name="submit" value="Save Reporting Period" class="btn btn-primary mb-2">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            {{--table--}}
+                            <div class="row">
+                                <div class="col-md-8 offset-2">
+                                    <h4 class="mb-lg-3 card-header">Reporting Periods</h4>
+                                    <table class="table table-bordered table-striped">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        @php
+                                            $counter=0;
+                                        @endphp
+                                        @foreach($periods as $period)
+                                            @php
+                                                $counter=$counter+1;
+                                            @endphp
+                                            <tr>
+                                                <td>{{$counter}}</td>
+                                                <td>{{$period->period_start}}</td>
+                                                <td>{{$period->period_end}}</td>
+                                                <td>
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <a href="{{route('settings.app_settings.edit_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Period" >
+                                                            <i class="ft-edit-3"></i></a>
+                                                        {{--<a class="btn btn-secondary square" href="#form_template" onclick="editPeriod('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')">--}}
+                                                        {{--<i class="icon-pencil"></i>--}}
+                                                        {{--</a>--}}
+                                                        <a href="{{route('settings.app_settings.delete_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}"
+                                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Period?');"
+                                                           title="Delete Report"><i class="ft-trash-2"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -187,7 +239,6 @@
     <script src="{{asset('vendors/js/forms/repeater/jquery.repeater.min.js')}}" type="text/javascript"></script>
 @endpush
 @push('end-script')
-    {{--<script src="{{asset('js/scripts/forms/form-repeater.js')}}" type="text/javascript"></script>--}}
     <script>
         (function(window, document, $) {
             'use strict';

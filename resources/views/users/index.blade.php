@@ -1,12 +1,8 @@
 @extends('layouts.user-management')
 @push('vendor-styles')
         <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/toggle/switchery.min.css')}}">--}}
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">--}}
 @endpush
 @push('other-styles')
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/switch.css')}}">--}}
-    {{--    <link rel="stylesheet" type="text/css" href="{{asset('css/core/colors/palette-tooltip.css')}}">--}}
 @endpush
 @section('um-content')
     <div class="content-header row">
@@ -23,11 +19,6 @@
                 </div>
             </div>
         </div>
-        {{--<div class="content-header-right col-md-6 col-12 mb-2">--}}
-            {{--<a class="btn btn-secondary square float-right" href="{{route('user-management.user.create')}}">--}}
-                {{--<i class="icon-user-follow"></i> New User--}}
-            {{--</a>--}}
-        {{--</div>--}}
     </div>
 
     <div class="content-body">

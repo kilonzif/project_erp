@@ -230,18 +230,7 @@
         </div>
     </div>
 
-    @push('side-drawer')
-        <div class="customizer border-left-blue-grey border-left-lighten-4 d-none d-xl-block">
-            <a class="customizer-close" href="#"><i class="ft-x font-medium-3"></i></a>
-            <a class="customizer-toggle bg-danger" href="#" style=" top:12%">
-                <i class="font-medium-3 fa fa-comments white"></i>
-            </a>
-            <div class="customizer-content p-2 ps-container chat-application" >
-                @comments(['model' =>$report])
-                @endcomments
-            </div>
-        </div>
-    @endpush
+
 
 @endsection
 @push('vendor-script')

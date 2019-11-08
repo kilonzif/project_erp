@@ -57,14 +57,6 @@
                     </li>
                     @endability
 
-                    @ability('webmaster|admin|ace-officer', 'submit-comment|view-report')
-                       <li class="nav-item {{isRouteActive('comment_feedback')}}">
-                           <a href="{{route('comment_feedback')}}" class="menu-item">
-                               Comment/Feedback
-                           </a>
-
-                       </li>
-                    @endability
                     {{--<li class="nav-item {{isRouteActive('report_submission.upload_indicator')}}">--}}
                         {{--<a href="{{route('report_submission.upload_indicator')}}" class="menu-item">--}}
                             {{--<span class="menu-title" data-i18n="">{{__('Upload Indicators')}}</span>--}}
@@ -200,6 +192,22 @@
                     </li>
                     @endability
                 </ul>
+            </li>
+            @endability
+
+            @ability('webmaster|super-admin|admin','setup-faq')
+            <li data-menu="" class="{{isRouteActive('faqs')}}">
+                <a class="dropdown-item" href="{{ route('faqs') }}"><i class="ft-message-circle"></i>FAQS
+                    <submenu class="name"></submenu>
+                </a>
+            </li>
+            @endability
+
+            @ability('ace-officer','faq')
+            <li data-menu="" class="{{isRouteActive('read.faqs')}}">
+                <a class="dropdown-item" href="{{ route('read.faqs') }}"><i class="ft-message-circle"></i>FAQS
+                    <submenu class="name"></submenu>
+                </a>
             </li>
             @endability
         </ul>

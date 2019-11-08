@@ -1,14 +1,10 @@
 @extends('layouts.app')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
-
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('other-styles')
-    {{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 @endpush
 @section('content')
-    {{--@php dd(old('indicator.3')) @endphp--}}
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
             <h3 class="content-header-title mb-0">New Report Submission</h3>
@@ -30,31 +26,6 @@
     <div class="content-body">
         <div class="row">
             <div class="col-12">
-                {{--<h3 class="pb-1 pt-1 mt-1 bg-lighten-1 bg-teal white pl-1">{{$project->title}}</h3>--}}
-                {{--<div class="card">--}}
-                    {{--<div class="card-content">--}}
-                        {{--<div class="card-body">--}}
-                            {{--<div class="row custom-dd">--}}
-                                {{--<div class="col-md-4">--}}
-                                    {{--<dt><h6 class="text-bold-500">Grant ID</h6></dt>--}}
-                                    {{--<dd><h6>{{$project->grant_id}}</h6></dd>--}}
-                                    {{--<dt><h6 class="text-bold-500">Total Grant (US$)</h6></dt>--}}
-                                    {{--<dd><h6>{{$project->total_grant}}</h6></dd>--}}
-                                {{--</div>--}}
-                                {{--<div class="col-md-4">--}}
-                                    {{--<dt><h6 class="text-bold-500">Project Start Date</h6></dt>--}}
-                                    {{--<dd><h6>{{$project->start_date}}</h6></dd>--}}
-                                    {{--<dt><h6 class="text-bold-500">Project End Date</h6></dt>--}}
-                                    {{--<dd><h6>{{$project->end_date}}</h6></dd>--}}
-                                {{--</div>--}}
-                                {{--<div class="col-md-4">--}}
-                                    {{--<dt><h6 class="text-bold-500">Project Coordinator</h6></dt>--}}
-                                    {{--<dd><h6>{{$project->project_coordinator}}</h6></dd>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
                 @if($me->isSubmissionOpen())
                     <h5 class="pb-1 pt-1 mt-1 text-danger text-uppercase">All fields marked * are required</h5>
                     @if($project->indicators->count() > 0)
@@ -66,32 +37,13 @@
                                     Report Information
                                     <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                                     <div class="heading-elements">
-                                        {{--<ul class="list-inline mb-0">--}}
-                                            {{--<li><a data-action="collapse"><i class="ft-minus"></i></a></li>--}}
-                                        {{--</ul>--}}
                                     </div>
                                 </h6>
                                 <div class="card-content collapse show">
                                     <div class="card-body">
                                         <div class="row">
                                             @if (\Auth::user()->hasRole('webmaster|super-admin'))
-                                                {{--<div class="col-md-8">--}}
-                                                    {{--<div class="form-group">--}}
-                                                        {{--<label for="ace_id">Select Ace <span class="required">*</span></label>--}}
-                                                        {{--<select name="ace_id" class="form-control select2" id="ace_id" required>--}}
-                                                            {{--<option value="">Select Ace</option>--}}
-                                                            {{--@foreach($aces as $ace)--}}
-                                                                {{--<option {{old('ace_id')? "selected": ''}} value="{{\Illuminate\Support\Facades\Crypt::encrypt($ace->id)}}">{{$ace->name}}</option>--}}
-                                                            {{--@endforeach--}}
-                                                        {{--</select>--}}
-                                                        {{--@if ($errors->has('ace_id'))--}}
-                                                            {{--<p class="text-right">--}}
-                                                                {{--<small class="warning text-muted">{{ $errors->first('ace_id') }}</small>--}}
-                                                            {{--</p>--}}
-                                                        {{--@endif--}}
-                                                    {{--</div>--}}
-                                                {{--</div>--}}
-                                                <div class="col-md-12">
+                                                <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="ace_officer">Select ACE Officer <span class="required">*</span></label>
                                                         <select name="ace_officer" class="form-control select2" id="ace_officer" required>
@@ -107,39 +59,50 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                            {{--@else--}}
-                                                {{--<input type="hidden" name="ace_id" value="{{\Illuminate\Support\Facades\Crypt::encrypt(\Auth::user()->ace)}}">--}}
                                             @endif
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="submission_period">Submission Period (Start Date)<span class="required">*</span></label>
-                                                    <input type="date" required value="{{ old('start')? old('start') : '' }}"
-                                                           name="start" class="form-control" id="start">
-                                                    {{--<div class='input-group'>--}}
-                                                        {{--<input type='text' value="{{old('submission_period')}}" name="submission_period" class="form-control daterange" />--}}
-                                                        {{--<div class="input-group-append">--}}
-                                                            {{--<span class="input-group-text">--}}
-                                                              {{--<span class="fa fa-calendar"></span>--}}
-                                                            {{--</span>--}}
-                                                        {{--</div>--}}
-                                                    {{--</div>--}}
-                                                    @if ($errors->has('submission_period'))
-                                                        <p class="text-right">
-                                                            <small class="warning text-muted">{{ $errors->first('submission_period') }}</small>
-                                                        </p>
-                                                    @endif
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="submission_period">Reporting Period<span class="required">*</span></label>
+                                                        <select class="form-control" name="reporting_period">
+                                                            <option>Select Period</option>
+                                                            @foreach($reporting_periods as $period)
+                                                                @php
+                                                                    $full_period = $period->period_start . " to ". $period->period_end;
+                                                                @endphp
+
+                                                                <option value="{{$period->id}}">{{$full_period}}</option>
+                                                             @endforeach
+                                                        </select>
+                                                        @if ($errors->has('reporting_period'))
+                                                            <p class="text-right">
+                                                                <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>
+                                                            </p>
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="submission_period">Submission Period (End Date) <span class="required">*</span></label>
-                                                <input type="date" required value="{{ old('end')? old('end') : '' }}"
-                                                       name="end" class="form-control" id="end">
-                                                @if ($errors->has('end'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('end') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
+                                            {{--<div class="col-md-4">--}}
+                                                {{--<div class="form-group">--}}
+                                                    {{--<label for="submission_period">Submission Period (Start Date)<span class="required">*</span></label>--}}
+                                                    {{--<input type="date" required value="{{ old('start')? old('start') : '' }}"--}}
+                                                           {{--name="start" class="form-control" id="start">--}}
+                                                    {{--@if ($errors->has('submission_period'))--}}
+                                                        {{--<p class="text-right">--}}
+                                                            {{--<small class="warning text-muted">{{ $errors->first('submission_period') }}</small>--}}
+                                                        {{--</p>--}}
+                                                    {{--@endif--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
+
+                                            {{--<div class="col-md-4">--}}
+                                                {{--<label for="submission_period">Submission Period (End Date) <span class="required">*</span></label>--}}
+                                                {{--<input type="date" required value="{{ old('end')? old('end') : '' }}"--}}
+                                                       {{--name="end" class="form-control" id="end">--}}
+                                                {{--@if ($errors->has('end'))--}}
+                                                    {{--<p class="text-right">--}}
+                                                        {{--<small class="warning text-muted">{{ $errors->first('end') }}</small>--}}
+                                                    {{--</p>--}}
+                                                {{--@endif--}}
+                                            {{--</div>--}}
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="date_submission">Date of Submission <span class="required">*</span></label>
@@ -247,14 +210,10 @@
                                 <div class="col-md-8">
                                     <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
                                     <button type="submit" name="save" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Proceed to Indicators</button>
-                                    {{--<button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>--}}
                                 </div>
                                 <div class="col-md-1">
 
                                 </div>
-                                {{--<div class="col-md-3 text-right">--}}
-                                    {{--<button type="submit" disabled name="submit" value="complete" class="btn btn-success mb-2"> <i class="ft-check-circle"></i> Submit Full Report</button>--}}
-                                {{--</div>--}}
                             </div>
                         </form>
                     @else

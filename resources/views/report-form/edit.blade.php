@@ -107,9 +107,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div style="display: inline; margin-right:10px;">
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
                                 <i class="ft-upload"></i> Upload Indicators</a>
+                            <a  class="pb-1 pt-1 mt-1 text-danger text-uppercase" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" style="margin-left:10px;">Preview and scroll down this page to submit the report</a>
                         </div>
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
@@ -129,7 +130,6 @@
                                         <h5>
                                             <small>
                                                 <span class="text-secondary text-bold-500">Unit of Measure:</span>
-{{--                                                {{$indicator->unit_measure}}--}}
                                             </small>
                                         </h5>
                                         <table class="table table-bordered table-striped">
@@ -251,6 +251,20 @@
                             </div>
                         @endforeach
                         <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card mb-1">
+                                    <div class="card-header p-1 card-head-inverse bg-grey-blue">
+                                        <strong>Challenges faced (if any)</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <textarea class="form-control" placeholder="Comment" name="report_comment">@isset($comment){{$comment->comments}}@endisset</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-8">
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
                                 <button type="submit" name="continue" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
@@ -268,23 +282,11 @@
                 @else
                     <h2 class="center">No Indicators available</h2>
                 @endif
-                
+
             </div>
         </div>
     </div>
-    @push('side-drawer')
-<div class="customizer border-left-blue-grey border-left-lighten-4 d-none d-xl-block">
-   <a class="customizer-close" href="#"><i class="ft-x font-medium-3"></i></a>
-   <a class="customizer-toggle bg-danger" href="#"  style=" top:12%">
-       <i class="font-medium-3 fa fa-comments white"></i>
-   </a>
-   <div class="customizer-content p-2 ps-container chat-application" >
 
- @comments(['model' =>$report])
-                @endcomments
-   </div>
-</div>
-@endpush
 
 @endsection
 @push('vendor-script')
@@ -294,6 +296,7 @@
 <script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
 
 <script type="text/javascript" >
+
   $('.customizer-toggle').on('click',function(){
         $('.customizer').toggleClass('open');
     });

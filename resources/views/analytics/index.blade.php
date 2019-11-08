@@ -102,7 +102,7 @@
                                         <select class="form-control select-lg" name="topic_name" id="topic_name">
                                             <option value="">Select aggregate topic</option>
                                             <option value="Aggregate Student">Aggregate Student</option>
-                                            <option value="Gender Distribution">Gender Distribution</option>
+                                            <option selected value="Gender Distribution">Gender Distribution</option>
                                             <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
                                             <option VALUE="INTERNATIONAL ACCREDITATION">Internationally Accredited Programs</option>
                                             <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
@@ -245,7 +245,6 @@
         });
         $("document").ready(function () {
             showGenderDistribution();
-            // genderDistribution(40,60)
         });
         $('.select2').select2({
             placeholder: "Select Ace",
@@ -355,9 +354,7 @@
                     if (topic_name == "Gender Distribution") {
                         showGenderDistribution();
                     }
-                    if (topic_name == "ACE Publications in 2017") {
-                        showPublications(data.research_publication, data.publication_year);
-                    }
+
                     if (topic_name == "AGGREGATE EXTERNAL REVENUE") {
                         showAggregateExternalRevenue(data.years, data.target_external_revenue, data.actual_external_revenue);
                     }
@@ -675,8 +672,8 @@
                     type: 'pie'
                 },
                 title: {
-                    text: "Age Distribution",
-                    style: {"display": "none"}
+                    text: "Gender Distribution",
+
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

@@ -33,6 +33,11 @@ class Report extends Model {
 		return $this->hasOne('App\ReportStatusTracker');
 	}
 
+
+	public function reporting_period(){
+	    return $this->hasOne('App\ReportingPeriod');
+    }
+
 	public function scopeSubmittedAndUncompleted($query) {
 		return $query->where('status', '=', 99)->orWhere('status', '=', 1);
 	}

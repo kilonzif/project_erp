@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Classes\ToastNotification;
+use App\ReportingPeriod;
 use App\SystemOption;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class ApplicationSettingsController extends Controller
 {
@@ -16,7 +18,9 @@ class ApplicationSettingsController extends Controller
     public function index()
     {
         $apps = SystemOption::all();
-        return view('settings.app.settings', compact('apps'));
+
+        $periods = ReportingPeriod::all();
+        return view('settings.app.settings', compact('apps','periods'));
     }
 
     public function setName(Request $request)
@@ -154,4 +158,89 @@ class ApplicationSettingsController extends Controller
         }
         return back();
     }
+
+    public function saveReportingPeriod(Request $request){
+        $this->validate($request,[
+            'period_start' => 'required|string',
+            'period_end' => 'required|string'
+        ]);
+        $start_monthNum = date("m",strtotime($request->period_start));
+        $start_monthName = date("F", mktime(0, 0, 0, $start_monthNum, 10));
+
+        $start_year = date("Y",strtotime($request->period_start));
+        $start_period = $start_monthName ."-".$start_year;
+
+        $end_monthNum = date("m",strtotime($request->period_end));
+        $end_monthName = date("F", mktime(0, 0, 0, $end_monthNum, 10));
+        $end_year = date("Y",strtotime($request->period_end));
+        $end_period = $end_monthName ."-".$end_year;
+
+        $new_period=new ReportingPeriod();
+        $new_period->period_start = $start_period;
+        $new_period->period_end = $end_period;
+         $saved=$new_period->save();
+        if ($saved){
+            notify(new ToastNotification('Successful', 'Reporting Period Added.', 'success'));
+        }
+        else{
+            notify(new ToastNotification('Error', 'Please try again.', 'error'));
+        }
+        return back();
+
+    }
+
+    public function deleteReportingPeriod($id){
+        $id = Crypt::decrypt($id);
+        ReportingPeriod::destroy($id);
+
+        notify(new ToastNotification('Successful!', 'Reporting Period Deleted!', 'success'));
+        return back();
+    }
+    public function editReportingPeriod($id){
+        $id = Crypt::decrypt($id);
+        $period = ReportingPeriod::find($id);
+        $apps = SystemOption::all();
+        $periods = ReportingPeriod::all();
+        return view('settings.app.edit_reporting_period_view', compact('period','apps','periods'));
+    }
+
+    public function updateReportingPeriod(Request $request){
+        $id = Crypt::decrypt($request->id);
+        $this->validate($request,[
+            'period_start' => 'required|string',
+            'period_end' => 'required|string'
+        ]);
+
+        $start_monthNum = date("m",strtotime($request->period_start));
+        $start_monthName = date("F", mktime(0, 0, 0, $start_monthNum, 10));
+
+        $start_year = date("Y",strtotime($request->period_start));
+        $start_period = $start_monthName ."-".$start_year;
+
+        $end_monthNum = date("m",strtotime($request->period_end));
+        $end_monthName = date("F", mktime(0, 0, 0, $end_monthNum, 10));
+        $end_year = date("Y",strtotime($request->period_end));
+        $end_period = $end_monthName ."-".$end_year;
+
+        $updatePeriod = ReportingPeriod::find($id);
+
+        $updatePeriod->period_start = $start_period;
+        $updatePeriod->period_end = $end_period;
+        $saved=$updatePeriod->save();
+        if ($saved){
+            notify(new ToastNotification('Successful', 'Reporting Period updated.', 'success'));
+            return redirect('/settings/application');
+        }
+        else{
+            notify(new ToastNotification('Error', 'Please try again.', 'error'));
+            return back();
+        }
+
+
+
+
+    }
+
+
+
 }

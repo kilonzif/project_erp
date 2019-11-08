@@ -160,6 +160,15 @@ Route::prefix('settings')->name('settings.')->group(function () {
     Route::post('application/generation_status', 'ApplicationSettingsController@generation_status')->name('app_settings.save_generation_status');
     Route::get('application/change-deadline-status', 'ApplicationSettingsController@changeDeadlineStatus')->name('app_settings.change_deadline_status');
 
+    //reporting period
+
+    Route::post('application/reporting-period', 'ApplicationSettingsController@saveReportingPeriod')->name('app_settings.save_reporting_period');
+    Route::get('reporting-period/delete/{id}', 'ApplicationSettingsController@deleteReportingPeriod')->name('app_settings.delete_reporting_period');
+    Route::get('reporting-period/edit/{id}', 'ApplicationSettingsController@editReportingPeriod')->name('app_settings.edit_reporting_period');
+    Route::post('reporting-period/update/{id}', 'ApplicationSettingsController@updateReportingPeriod')->name('app_settings.update_reporting_period');
+
+
+
     Route::get('projects', 'SettingsController@projects')->name('projects');
     Route::post('projects/save', 'SettingsController@save_project')->name('projects.save');
     Route::get('projects/{id}/edit_project', 'SettingsController@edit_project')->name('projects.edit');
@@ -304,11 +313,6 @@ Route::name('report_generation.')->group(function () {
 
 });
 
-Route::get('comment-feedback','ReportFormController@showComments')->name('comment_feedback');
-Route::post('save_comment_feedback','ReportFormController@saveComment')->name('save_comment_feedback');
-Route::get('edit_report_form_comment','ReportFormController@editComment')->name('report_form_comment.edit');
-Route::get('delete_report_form_comment/{id}','ReportFormController@deleteComment')->name('report_form_comment.delete');
-Route::post('update_report_form_comment}','ReportFormController@updateComment')->name('report_form_comment.update');
 
 
 Route::name('report_submission.')->group(function () {
@@ -344,3 +348,15 @@ Route::name('report_submission.')->group(function () {
     });
 
 });
+
+////FAQs
+Route::group(['prefix' => 'setup', 'middleware' => ['ability:administrator|webmaster,setup-faqs']], function() {
+    Route::get('/faqs', 'FaqsController@index')->name('faqs');
+    Route::get('/faq/new', 'FaqsController@create')->name('faq.new');
+    Route::get('/faq/edit/{id}', 'FaqsController@edit')->name('faq.edit');
+    Route::post('/faq/save', 'FaqsController@save')->name('faq.save');
+    Route::post('/faq/update/{id}', 'FaqsController@update')->name('faq.update');
+    Route::delete('/faq/remove/{id}', 'FaqsController@destroy')->name('faq.delete');
+});
+Route::get('faqs', 'FaqsController@faqs')->name('read.faqs');
+Route::get('download/guidelines', 'FaqsController@getDownload')->name('download_guideline');

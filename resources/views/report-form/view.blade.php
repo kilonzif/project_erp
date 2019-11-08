@@ -240,20 +240,31 @@
                 @endif
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-1">
+                    <h6 class="card-header p-1 card-head-inverse bg-grey-blue" style="border-radius:0">
+                        <strong>Challenges faced(if any)</strong>
+                        <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            <ul class="list-inline mb-0">
+                                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
+                            </ul>
+                        </div>
+                    </h6>
+                    <div class="card-content collapse">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Comment" name="report_comment">@isset($comment){{$comment->comments}}@endisset</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    @push('side-drawer')
-<div class="customizer border-left-blue-grey border-left-lighten-4 d-none d-xl-block">
-   <a class="customizer-close" href="#"><i class="ft-x font-medium-3"></i></a>
-   <a class="customizer-toggle bg-danger" href="#" style=" top:12%">
-       <i class="font-medium-3 fa fa-comments white"></i>
-   </a>
-   <div class="customizer-content p-2 ps-container chat-application" >
 
- @comments(['model' =>$report]) @endcomments
-   </div>
-</div>
-@endpush
 
 @endsection
 @push('vendor-script')
