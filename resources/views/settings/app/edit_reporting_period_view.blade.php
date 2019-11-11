@@ -213,8 +213,6 @@
                                                 <td>{{$period->period_end}}</td>
                                                 <td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                        {{--<a href="{{route('settings.app_settings.edit_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Period" onclick="editPeriod('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')">>--}}
-                                                        {{--<i class="ft-edit-3"></i></a>--}}
                                                         <a class="btn btn-secondary square" href="#form_template" onclick="editPeriod('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')">
                                                             <i class="icon-pencil"></i>
                                                         </a>

@@ -164,20 +164,11 @@ class ApplicationSettingsController extends Controller
             'period_start' => 'required|string',
             'period_end' => 'required|string'
         ]);
-        $start_monthNum = date("m",strtotime($request->period_start));
-        $start_monthName = date("F", mktime(0, 0, 0, $start_monthNum, 10));
 
-        $start_year = date("Y",strtotime($request->period_start));
-        $start_period = $start_monthName ."-".$start_year;
-
-        $end_monthNum = date("m",strtotime($request->period_end));
-        $end_monthName = date("F", mktime(0, 0, 0, $end_monthNum, 10));
-        $end_year = date("Y",strtotime($request->period_end));
-        $end_period = $end_monthName ."-".$end_year;
 
         $new_period=new ReportingPeriod();
-        $new_period->period_start = $start_period;
-        $new_period->period_end = $end_period;
+        $new_period->period_start = $request->period_start;
+        $new_period->period_end = $request->period_end;
          $saved=$new_period->save();
         if ($saved){
             notify(new ToastNotification('Successful', 'Reporting Period Added.', 'success'));
@@ -201,7 +192,7 @@ class ApplicationSettingsController extends Controller
         $period = ReportingPeriod::find($id);
         $apps = SystemOption::all();
         $periods = ReportingPeriod::all();
-        return view('settings.app.edit_reporting_period_view', compact('period','apps','periods'));
+        return view('settings.app.edit_reporting_period_view', compact('period', 'x','y','apps','periods'));
     }
 
     public function updateReportingPeriod(Request $request){
@@ -210,22 +201,10 @@ class ApplicationSettingsController extends Controller
             'period_start' => 'required|string',
             'period_end' => 'required|string'
         ]);
-
-        $start_monthNum = date("m",strtotime($request->period_start));
-        $start_monthName = date("F", mktime(0, 0, 0, $start_monthNum, 10));
-
-        $start_year = date("Y",strtotime($request->period_start));
-        $start_period = $start_monthName ."-".$start_year;
-
-        $end_monthNum = date("m",strtotime($request->period_end));
-        $end_monthName = date("F", mktime(0, 0, 0, $end_monthNum, 10));
-        $end_year = date("Y",strtotime($request->period_end));
-        $end_period = $end_monthName ."-".$end_year;
-
         $updatePeriod = ReportingPeriod::find($id);
 
-        $updatePeriod->period_start = $start_period;
-        $updatePeriod->period_end = $end_period;
+        $updatePeriod->period_start = $request->period_start;
+        $updatePeriod->period_end = $request->period_end;
         $saved=$updatePeriod->save();
         if ($saved){
             notify(new ToastNotification('Successful', 'Reporting Period updated.', 'success'));

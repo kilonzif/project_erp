@@ -71,7 +71,7 @@
                                     @endif
                                     <div class="col-md-4">
                                         <h6>Submission Period (Start Date)</h6>
-                                        <p><strong>{{date('M d, Y', strtotime($report->start_date))}}</strong></p>
+                                        <p><strong>{{$report->reporting_period}}</strong></p>
                                     </div>
                                     <div class="col-md-4">
                                         <h6>Submission Period (End Date)</h6>
@@ -87,7 +87,6 @@
                                       method="post">@csrf
                                     <div class="row">
                                         <div class="col-md-3">
-                                            {{--<h5>Current Status</h5>--}}
                                             {!! $all_status->reportStatusTag($report->status) !!}
                                         </div>
                                         <div class="col-md-4">
@@ -114,9 +113,6 @@
                             </div>
                         </div>
                     </div>
-                    {{--@php--}}
-                        {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
-                    {{--@endphp--}}
                     <div id="indicators-form">
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">

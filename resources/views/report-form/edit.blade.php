@@ -65,29 +65,27 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="submission_period">Submission Period (Start Date)<span class="required">*</span></label>
-                                                <input type="date" required value="{{old('start')?old('start'):$report->start_date}}"
-                                                       name="start" class="form-control" id="start">
-                                                @if ($errors->has('start'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('start') }}</small>
-                                                    </p>
-                                                @endif
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="reporting_period">Reporting Period<span class="required">*</span></label>
+                                                    <select class="form-control" name="reporting_period">
+                                                        <option>Select Period</option>
+                                                        @foreach($reporting_periods as $period)
+                                                            @php
+                                                                $full_period = $period->period_start . " to ". $period->period_end;
+                                                            @endphp
+
+                                                            <option {{($report->reporting_period_id==$period->id)  ? "selected":""}}  value="{{$period->id}}">{{$full_period}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @if ($errors->has('reporting_period'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="submission_period">Submission Period (End Date) <span class="required">*</span></label>
-                                            <input type="date" required value="{{old('end')?old('end'):$report->end_date}}"
-                                                   name="end" class="form-control" id="end">
-                                            @if ($errors->has('end'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('end') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="date_submission">Date of Submission <span class="required">*</span></label>
                                                 @if(\Auth::user()->hasRole('webmaster|super-admin'))
@@ -269,7 +267,6 @@
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
                                 <button type="submit" name="continue" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
                                 <button type="submit" name="save" value="save" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Save</button>
-                                {{--<button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>--}}
                             </div>
                             <div class="col-md-1">
 

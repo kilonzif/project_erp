@@ -59,6 +59,7 @@ class FaqsController extends Controller
     public function edit($id)
     {
         $faq = Faq::find($id);
+
         return view('faqs.edit',compact('faq'));
     }
 
