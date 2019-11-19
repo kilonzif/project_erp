@@ -30,14 +30,16 @@ class ReportFormController extends Controller {
 	 */
 	public function index() {
 		$me = new CommonFunctions();
+        $unsubmitted = False;
 		if(Auth::user()->hasRole('ace-officer')){
 		    $uncompleted = Report::Uncompleted()->where('user_id', '=', Auth::id())->get();
 		    if(!empty($uncompleted)){
 		       $unsubmitted = True;
-            }else{
-                $unsubmitted = False;
-
             }
+//            else{
+//                $unsubmitted = False;
+//
+//            }
         }
 		if (Auth::user()->hasRole('webmaster|super-admin')) {
 			$ace_reports = Report::get();
