@@ -194,15 +194,6 @@ class AnalyticsController extends Controller
                 }
             }
         }
-//        $regional_students = DB::connection('mongodb')->collection('indicator_3')
-//            ->whereIn('report_id', $reports)
-////            ->where('calender-year-of-enrollment', '2016')
-//            ->where(function ($query) {
-//                $query->where('regional-status', 'like', "R%")
-//                    ->orWhere('regional-status', 'like', "r%");
-//            })
-//            ->count();
-//        dd($regional_students);
 
 
         foreach ($years as $key=>$this_year) {
@@ -292,6 +283,7 @@ class AnalyticsController extends Controller
 
             $student_internship[$key] = DB::connection('mongodb')->collection('indicator_5.2')
                                      ->whereIn('report_id', $reports)
+                                    ->where('start-date-ddmmyyyy','=',$this_year)
                                     ->where(function ($query) {
                                         $query->where('studentfaculty', 'like', "Student%")
                                             ->orWhere('studentfaculty', 'like', "stud%");
@@ -303,6 +295,7 @@ class AnalyticsController extends Controller
                                             $query->where('studentfaculty', 'like', "F%")
                                                 ->orWhere('studentfaculty', 'like', "f%");
                                         })
+                                        ->where('start-date-ddmmyyyy','=',$this_year)
                                         ->count();
 
 

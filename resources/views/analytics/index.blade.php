@@ -115,14 +115,14 @@
                                         <select class="form-control select-lg" name="topic_name" id="topic_name">
                                             <option selected disabled>Select aggregate topic</option>
                                             <option value="Aggregate Student">Aggregate Student</option>
-                                            <option selected value="Gender Distribution">Gender Distribution</option>
-                                            <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
-                                            <option VALUE="INTERNATIONAL ACCREDITATION">Internationally Accredited Programs</option>
-                                            <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
-                                            <option VALUE="ACE Publications in 2017">ACE Publications by Year</option>
-                                            <option value="QUALITY EDUCATION & RESEARCH">Quality of Education and Research</option>
                                             <option value="Student Enrollment">Student Enrollment</option>
                                             <option value="Aggregate Internships/Outreach">Aggregate Internships/Outreach</option>
+                                            <option selected value="Gender Distribution">Gender Distribution</option>
+                                            <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
+                                            <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
+                                            {{--<option VALUE="INTERNATIONAL ACCREDITATION">Internationally Accredited Programs</option>--}}
+                                            {{--<option VALUE="ACE Publications in 2017">ACE Publications by Year</option>--}}
+                                            {{--<option value="QUALITY EDUCATION & RESEARCH">Quality of Education and Research</option>--}}
                                         </select>
                                     </div>
                                     <div class="col-6">
@@ -489,46 +489,6 @@
             }]
         });
     }
-
-
-
-        // function showPublications(research_publication,publication_year){
-        //     // Build the chart
-        //     Highcharts.chart('container', {
-        //         chart: {
-        //             plotBackgroundColor: null,
-        //             plotBorderWidth: null,
-        //             plotShadow: false,
-        //             type: 'pie'
-        //         },
-        //         title: {
-        //             text: 'ACE Publications'
-        //         },
-        //         tooltip: {
-        //             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        //         },
-        //         plotOptions: {
-        //             pie: {
-        //                 allowPointSelect: true,
-        //                 cursor: 'pointer',
-        //                 dataLabels: {
-        //                     enabled: false
-        //                 },
-        //                 showInLegend: true
-        //             }
-        //         },
-        //         series: [{
-        //             name: 'publications',
-        //             colorByPoint: true,
-        //             data: [
-        //                 {
-        //                     name: 'publication_year',
-        //                     y: [publication_year],
-        //                 }
-        //             ]
-        //         }]
-        //     });
-        // }
 
         function graphAggregateStudents(years,total_students,regional_students,national_students,target_students) {
 
