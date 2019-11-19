@@ -176,7 +176,7 @@
                                             <div class="form-group{{ $errors->has('mailing_title') ? ' form-control-warning' : '' }}">
                                                 <label for="mailing_title">Position <span class="required">*</span></label>
                                                 <select class="form-control" name="mailing_title">
-                                                    <option value="">Select Title</option>
+                                                    <option value="" selected disabled>Select Title</option>
                                                     <option value="Center Leader">Center Leader</option>
                                                     <option value="Deputy Center Leader">Deputy Center Leader</option>
                                                     <option value="Finance Officer">Finance Officer</option>

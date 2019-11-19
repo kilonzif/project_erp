@@ -160,11 +160,15 @@ class ApplicationSettingsController extends Controller
     }
 
     public function saveReportingPeriod(Request $request){
-        $this->validate($request,[
-            'period_start' => 'required|string',
-            'period_end' => 'required|string'
-        ]);
-
+        if($request->period_end >$request->period_start){
+            $this->validate($request,[
+                'period_start' => 'required|string',
+                'period_end' => 'required|string'
+            ]);
+        }else{
+            notify(new ToastNotification('Error', 'The end date should be greater than start date.', 'error'));
+            return back();
+        }
 
         $new_period=new ReportingPeriod();
         $new_period->period_start = $request->period_start;
@@ -197,10 +201,15 @@ class ApplicationSettingsController extends Controller
 
     public function updateReportingPeriod(Request $request){
         $id = Crypt::decrypt($request->id);
-        $this->validate($request,[
-            'period_start' => 'required|string',
-            'period_end' => 'required|string'
-        ]);
+        if($request->period_end >$request->period_start){
+            $this->validate($request,[
+                'period_start' => 'required|string',
+                'period_end' => 'required|string'
+            ]);
+        }else{
+            notify(new ToastNotification('Error', 'The end date should be greater than start date.', 'error'));
+            return back();
+        }
         $updatePeriod = ReportingPeriod::find($id);
 
         $updatePeriod->period_start = $request->period_start;

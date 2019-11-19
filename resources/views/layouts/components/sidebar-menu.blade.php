@@ -39,7 +39,7 @@
                     @ability('webmaster|super-admin', 'view-report')
                     <li class="nav-item {{isRouteActive('report_submission.reports')}}">
                         <a href="{{route('report_submission.reports')}}" class="menu-item">
-                            <span class="menu-title" data-i18n="">{{__('All Submitted Reports')}}</span>
+                            <span class="menu-title" data-i18n="">{{__('All Reports')}}</span>
                         </a>
                     </li>
                     @endability
@@ -56,12 +56,6 @@
                         </a>
                     </li>
                     @endability
-
-                    {{--<li class="nav-item {{isRouteActive('report_submission.upload_indicator')}}">--}}
-                        {{--<a href="{{route('report_submission.upload_indicator')}}" class="menu-item">--}}
-                            {{--<span class="menu-title" data-i18n="">{{__('Upload Indicators')}}</span>--}}
-                        {{--</a>--}}
-                    {{--</li>--}}
 
 
                 </ul>
@@ -93,11 +87,6 @@
                             <span class="menu-title" data-i18n="">{{__('    Verification Report')}}</span>
                         </a>
                     </li>
-                    {{--<li class="{{isRouteActive('report_generation.verificationletter.generate')}}">--}}
-                        {{--<a href="{{route('report_generation.verificationletter.generate')}}">--}}
-                            {{--<span class="menu-title" data-i18n="">{{__('Verification Letter Log')}}</span>--}}
-                        {{--</a>--}}
-                    {{--</li>--}}
                 </ul>
             </li>
             @endability
@@ -130,13 +119,6 @@
                         <a class="menu-item" href="{{route('settings.excelupload.create')}}">{{__('Upload Templates')}}</a>
                     </li>
                     @endability
-
-                    {{--@ability('webmaster|super-admin', 'add-courses')--}}
-                    {{--<li class="{{isRouteActive('settings.courses')}}">--}}
-                        {{--<a class="menu-item" href="{{route('settings.courses')}}">{{__('Programmes')}}</a>--}}
-                    {{--</li>--}}
-                    {{--@endability--}}
-
                     @ability('webmaster|super-admin', 'app-settings')
                     <li class="{{isRouteActive('settings.app_settings')}}">
                         <a class="menu-item" href="{{route('settings.app_settings')}}">{{__('Application Settings')}}</a>

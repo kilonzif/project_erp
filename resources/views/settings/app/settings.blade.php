@@ -1,6 +1,14 @@
 @extends('layouts.app')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
+    <!-- BEGIN VENDOR CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/dateTime/bootstrap-datetimepicker.min.css"')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/daterange/daterangepicker.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/pickadate/pickadate.css')}}">
+    <!-- END VENDOR CSS-->
+    <!-- BEGIN STACK CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset('css/app.css')}}">
+    <!-- END STACK CSS-->
 @endpush
 @push('other-styles')
 @endpush
@@ -166,15 +174,39 @@
                                 <form action="{{route('settings.app_settings.save_reporting_period')}}" method="post">
                                     <div class="row">
                                         @csrf
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 form-group">
                                             <label>Starting Period</label>
-                                            <input type="month" id="period_start" name="period_start" min="1900-March" max="today" class="form-control">
+                                            <div class="input-group">
+                                                <input type='text' data-date-format="yyyy-mm" name="period_start"  class="form-control pickadate-dropdown" placeholder="Month &amp; Year Dropdown"
+                                                />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                      <span class="fa fa-calendar-o"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
+                                        <div class="col-md-6 form-group">
+                                            <label>Ending Period</label>
+                                            <div class="input-group">
+                                                <input type='month' name="period_end"  class="form-control pickadate-dropdown" placeholder="Month &amp; Year Dropdown"
+                                                />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                      <span class="fa fa-calendar-o"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{--<div class="col-md-6">--}}
+                                            {{--<label>Starting Period</label>--}}
+                                            {{--<input type="month" id="period_start" name="period_start" min="1900-March" max="today" class="form-control datepicker-decades">--}}
+                                        {{--</div>--}}
 
-                                        <div class="col-md-6">
-                                            <label>End</label>
-                                            <input type="month" id="period_start" name="period_end" min="1900-March" max="today"  class="form-control">
-                                        </div>
+                                        {{--<div class="col-md-6">--}}
+                                            {{--<label>End</label>--}}
+                                            {{--<input type="month" id="period_start" name="period_end" min="1900-March" max="today"  class="form-control">--}}
+                                        {{--</div>--}}
                                     </div>
                                     <div class="row" style="padding-top: 20px;">
                                         <div class="col-md-6 offset-md-3" >
@@ -234,9 +266,20 @@
 @push('vendor-script')
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/repeater/jquery.repeater.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/pickers/pickadate/picker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/pickers/pickadate/picker.date.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/pickers/daterange/daterangepicker.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/pickers/pickadate/picker.time.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/pickers/pickadate/legacy.js')}}" type="text/javascript"></script>
+
 @endpush
 @push('end-script')
     <script>
+        // With Select
+        $('.pickadate-dropdown').pickadate({
+            selectMonths: true,
+            selectYears: true
+        });
         (function(window, document, $) {
             'use strict';
 

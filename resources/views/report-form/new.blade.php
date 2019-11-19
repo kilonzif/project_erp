@@ -47,7 +47,7 @@
                                                     <div class="form-group">
                                                         <label for="ace_officer">Select ACE Officer <span class="required">*</span></label>
                                                         <select name="ace_officer" class="form-control select2" id="ace_officer" required>
-                                                            <option value="">Select Officer</option>
+                                                            <option selected disabled>Select Officer</option>
                                                             @foreach($ace_officers as $key=>$ace_officer)
                                                                 <option {{old('ace_officer')? "selected": ''}} value="{{\Illuminate\Support\Facades\Crypt::encrypt($key)}}">{{$ace_officer}}</option>
                                                             @endforeach
@@ -64,10 +64,20 @@
                                                     <div class="form-group">
                                                         <label for="reporting_period">Reporting Period<span class="required">*</span></label>
                                                         <select class="form-control" name="reporting_period">
-                                                            <option>Select Period</option>
+                                                            <option selected disabled>Select Period</option>
                                                             @foreach($reporting_periods as $period)
                                                                 @php
-                                                                    $full_period = $period->period_start . " to ". $period->period_end;
+                                                                    $start_period = date('m-Y',strtotime($period->period_start));
+                                                                    $end_period = date('m-Y',strtotime($period->period_end));
+                                                                    $monthNum1=date('m',strtotime($period->period_start));
+                                                                    $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                                    $year1 = date('Y',strtotime($period->period_start));
+                                                                    $start = $monthName1 .' - '.$year1;
+                                                                    $monthNum2=date('m',strtotime($period->period_end));
+                                                                    $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                                    $year2 = date('Y',strtotime($period->period_end));
+                                                                    $end =$monthName2 .' - '.$year2;
+                                                                    $full_period = $start ."    to  ". $end;
                                                                 @endphp
 
                                                                 <option value="{{$period->id}}">{{$full_period}}</option>

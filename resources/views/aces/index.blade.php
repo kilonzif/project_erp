@@ -81,7 +81,7 @@
                                         <div class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
                                             <label for="field">{{__('Currency')}} <span class="required">*</span></label>
                                             <select class="form-control" required name="currency" id="currency">
-                                                <option value="">--Choose--</option>
+                                                <option value="" selected disabled>--Choose--</option>
                                                 @foreach($currency as $cc)
                                                     <option {{($cc->id == old('currency'))?"selected":""}} value="{{$cc->id}}">
                                                         {{$cc->name.' - '.$cc->symbol}}

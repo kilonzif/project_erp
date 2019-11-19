@@ -2,6 +2,7 @@
 
 namespace App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Laravelista\Comments\Commentable;
 
 class Report extends Model {
@@ -57,4 +58,18 @@ class Report extends Model {
 	public function verificationLetters() {
 		return $this->hasMany('App\VerificationLetter');
 	}
+
+    public static function getReports($start,$end)
+    {
+        $report_ids = DB::table('reports')
+            ->join('reporting_period', 'reporting_period.id', '=', 'reports.reporting_period_id')
+            ->select('reports.id')
+            ->where(function ($query) use ($start, $end) {
+                return $query->where('reporting_period.period_start', '>=', $start)->orWhere('reporting_period.period_end', '<=', $end);
+            })
+            ->pluck('id')
+        ->toArray();
+        return $report_ids;
+    }
+
 }

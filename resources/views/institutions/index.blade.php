@@ -80,7 +80,7 @@
                                         <div class="form-group{{ $errors->has('country') ? ' form-control-warning' : '' }}">
                                             <label for="country">Country <span class="required">*</span></label>
                                             <select class="form-control" required name="country" id="country">
-                                                <option value="">Choose country</option>
+                                                <option selected disabled>Choose country</option>
                                                 @foreach($countries as $country)
                                                     <option value="{{$country->id}}">{{$country->country}}</option>
                                                 @endforeach
