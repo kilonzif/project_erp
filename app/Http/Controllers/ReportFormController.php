@@ -37,6 +37,10 @@ class ReportFormController extends Controller {
 		    if(!empty($notcompleted)){
 		       $notsubmitted = True;
             }
+//            else{
+//                $unsubmitted = False;
+//
+//            }
         }
 		if (Auth::user()->hasRole('webmaster|super-admin')) {
 			$ace_reports = Report::get();
