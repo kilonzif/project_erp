@@ -9,7 +9,10 @@ class AceComment extends Model
 {
     protected $table ="ace_comments";
     public $timestamps = false;
-    protected $fillable = ['user_id','comments'];
+    protected $fillable = ['user_id','report_id','comments'];
+
+
+
     public function user(){
         $this->hasOne('App\User');
     }

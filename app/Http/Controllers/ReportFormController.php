@@ -11,6 +11,7 @@ use App\Indicator3;
 use App\Project;
 use App\Report;
 use App\ReportIndicatorsStatus;
+use App\ReportingPeriod;
 use App\ReportStatusTracker;
 use App\ReportValue;
 use App\User;
@@ -30,11 +31,11 @@ class ReportFormController extends Controller {
 	 */
 	public function index() {
 		$me = new CommonFunctions();
-        $unsubmitted = False;
+        $notsubmitted = False;
 		if(Auth::user()->hasRole('ace-officer')){
-		    $uncompleted = Report::Uncompleted()->where('user_id', '=', Auth::id())->get();
-		    if(!empty($uncompleted)){
-		       $unsubmitted = True;
+		    $notcompleted = Report::Uncompleted()->where('user_id', '=', Auth::id())->get();
+		    if(!empty($notcompleted)){
+		       $notsubmitted = True;
             }
 //            else{
 //                $unsubmitted = False;
@@ -48,7 +49,7 @@ class ReportFormController extends Controller {
 		} else {
 			$ace_reports = Report::SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->get();
 		}
-		return view('report-form.index', compact('ace_reports', 'me','unsubmitted'));
+		return view('report-form.index', compact('ace_reports', 'me','notsubmitted'));
 	}
 
 
@@ -71,8 +72,10 @@ class ReportFormController extends Controller {
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 
+		$reporting_periods = ReportingPeriod::all();
+
 		if ($project) {
-			return view('report-form.new', compact('project', 'aces', 'me', 'ace_officers','indicators'));
+			return view('report-form.new', compact('project', 'aces', 'me', 'ace_officers','indicators','reporting_periods'));
 		} else {
 			notify(new ToastNotification('Notice!', 'Please add the project first!', 'warning'));
 			return back();
@@ -87,10 +90,10 @@ class ReportFormController extends Controller {
      */
 	public function save_report(Request $request) {
 
+
             $this->validate($request, [
                 'project_id' => 'required|string|min:100',
-                'start' => 'required|string|date',
-                'end' => 'required|string|date',
+                'reporting_period' => 'required|string',
                 'submission_date' => 'nullable|string|date',
             ]);
             $report_id = null;
@@ -113,8 +116,7 @@ class ReportFormController extends Controller {
                 $report->project_id = $project_id;
                 $report->ace_id = $ace_id;
                 $report->status = 99;
-                $report->start_date = $request->start;
-                $report->end_date = $request->end;
+                $report->reporting_period_id = $request->reporting_period;
                 $report->submission_date = $submission_date;
                 if (isset($request->ace_officer)) {
                     $report->user_id = Crypt::decrypt($request->ace_officer);
@@ -141,8 +143,7 @@ class ReportFormController extends Controller {
 		}
 		$exist = Report::where('project_id', '=', Crypt::decrypt($request->project_id))
 			->where('ace_id', '=', $ace_id)
-			->where('start_date', '=', $request->start)
-			->where('end_date', '=', $request->end)
+			->where('reporting_period_id', '=', $request->reporting_period)
 			->first();
 		if ($exist) {
 			notify(new ToastNotification('Duplicate', 'The report already exist.', 'error'));
@@ -154,8 +155,7 @@ class ReportFormController extends Controller {
 				'project_id' => 'required|string|min:100',
 				'indicators' => 'required|array|min:1',
 				'indicators.*' => 'required|numeric|min:0',
-				'start' => 'required|string|date',
-				'end' => 'required|string|date',
+				'reporting_period' => 'required|string',
 				'submission_date' => 'nullable|string|date',
 			]);
 
@@ -180,8 +180,8 @@ class ReportFormController extends Controller {
 				$report->project_id = $project_id;
 				$report->ace_id = $ace_id;
 				$report->status = 1;
-				$report->start_date = $request->start;
-				$report->end_date = $request->end;
+				$report->reporting_period_id = $request->reporting_period;
+				$report->editable =False;
 				$report->submission_date = $submission_date;
 				if (isset($request->ace_officer)) {
 					$report->user_id = Crypt::decrypt($request->ace_officer);
@@ -216,8 +216,7 @@ class ReportFormController extends Controller {
 		} else {
 			$this->validate($request, [
 				'project_id' => 'required|string|min:100',
-				'start' => 'required|string|date',
-				'end' => 'required|string|date',
+				'reporting_period_id' => 'required|string',
 				'submission_date' => 'nullable|string|date',
 			]);
 			DB::transaction(function () use ($request) {
@@ -238,8 +237,7 @@ class ReportFormController extends Controller {
 				$report = new Report();
 				$report->project_id = $project_id;
 				$report->ace_id = $ace_id;
-				$report->start_date = $request->start;
-				$report->end_date = $request->end;
+				$report->reporting_period_id = $request->reporting_period;
 				$report->submission_date = $submission_date;
 				$report->status = 99;
 				if (isset($request->ace_officer)) {
@@ -275,8 +273,7 @@ class ReportFormController extends Controller {
             if (isset($request->toIndicators)){
                 $exist = Report::where('project_id', '=', Crypt::decrypt($request->project_id))
                     ->where('ace_id', '=', $ace_id)
-                    ->where('start_date', '=', $request->start)
-                    ->where('end_date', '=', $request->end)
+                    ->where('reporting_period_id', '=', $request->reporting_period)
                     ->first();
                 return redirect()->route('report_submission.upload_indicator',[Crypt::encrypt($exist->id)]);
             }
@@ -291,8 +288,7 @@ class ReportFormController extends Controller {
 		$this->validate($request, [
 			'ace_id' => 'required|string|min:100',
 			'project_id' => 'required|string|min:100',
-			'start' => 'required|string|date',
-			'end' => 'required|string|date',
+			'reporting_period' => 'required|string',
 			'submission_date' => 'nullable|string|date',
 		]);
 		if (isset($request->ace_officer)) {
@@ -302,8 +298,7 @@ class ReportFormController extends Controller {
 		}
 		$exist = Report::where('project_id', '=', Crypt::decrypt($request->project_id))
 			->where('ace_id', '=', $ace_id)
-			->where('start_date', '=', $request->start)
-			->where('end_date', '=', $request->end)
+			->where('reporting_period_id', '=', $request->reporting_period)
 			->first();
 		if ($exist) {
 			notify(new ToastNotification('Duplicate', 'The report already exist.', 'error'));
@@ -323,8 +318,7 @@ class ReportFormController extends Controller {
 		$report = new Report();
 		$report->project_id = $project_id;
 		$report->ace_id = $ace_id;
-		$report->start_date = $request->start;
-		$report->end_date = $request->end;
+		$report->reporting_period_id = $request->reporting_period;
 		$report->submission_date = $submission_date;
 		$report->status = 99;
 		if (isset($request->ace_officer)) {
@@ -365,11 +359,15 @@ class ReportFormController extends Controller {
 		$id = Crypt::decrypt($id);
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$report = Report::find($id);
+        $comment = AceComment::where('report_id',$id)->first();
         $indicators = Indicator::where('is_parent','=', 1)
             ->where('status','=', 1)
             ->where('show_on_report','=', 1)
             ->orderBy('identifier','asc')
             ->get();
+
+        $reporting_period = ReportingPeriod::where('id',$report->reporting_period_id)->first();
+
 
 		if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
 
@@ -381,7 +379,8 @@ class ReportFormController extends Controller {
 
             $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
             $aces = Ace::where('active', '=', 1)->get();
-            return view('report-form.view', compact('project', 'report', 'aces', 'values', 'indicators'
+
+            return view('report-form.view', compact('project', 'report', 'reporting_period','comment','aces', 'values', 'indicators'
                 , 'result', 'indicator_5_2','indicator_4_1','indicator_7_3'));
 
 		}else{
@@ -497,6 +496,7 @@ class ReportFormController extends Controller {
 		$id = Crypt::decrypt($id);
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$report = Report::find($id);
+        $reporting_periods = ReportingPeriod::all();
 		if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return redirect()->route('report_submission.reports');
@@ -507,6 +507,7 @@ class ReportFormController extends Controller {
             ->where('show_on_report','=', 1)
             ->orderBy('identifier','asc')
             ->get();
+        $comment = AceComment::where('report_id',$id)->first();
 
         //Get the aggregated result for Indicator 3
         $result = $this->generateAggregatedIndicator3Results($id);
@@ -518,7 +519,7 @@ class ReportFormController extends Controller {
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
-		return view('report-form.edit', compact('project', 'report', 'aces', 'values', 'ace_officers',
+		return view('report-form.edit', compact('project', 'reporting_periods','report', 'aces','comment','values', 'ace_officers',
             'indicators','result','indicator_5_2','indicator_4_1','indicator_7_3'));
 	}
 
@@ -535,15 +536,13 @@ class ReportFormController extends Controller {
 					'report_id' => 'required|string|min:100',
 					'indicators' => 'required|array|min:1',
 					'indicators.*' => 'required|numeric|min:0',
-					'start' => 'required|string|date',
-					'end' => 'required|string|date',
+					'reporting_period' => 'required|string',
 				]);
 
 				$report_id = Crypt::decrypt($request->report_id);
 
 				$report = Report::find($report_id);
-				$report->start_date = $request->start;
-				$report->end_date = $request->end;
+				$report->reporting_period_id = $request->reporting_period;
 				$report->status = 1;
 				if (isset($request->ace_officer)) {
 					$ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
@@ -566,6 +565,26 @@ class ReportFormController extends Controller {
 
 				ReportIndicatorsStatus::where('report_id', '=', $report_id)->update(['status' => 1]);
 				ReportStatusTracker::where('report_id', '=', $report_id)->update(['status_code' => 1]);
+
+                $user_id = Auth::user()->id;
+                $comment_object = AceComment::where('report_id',$report_id)->first();
+                if(isset($request->report_comment)){
+                    if($comment_object) {
+                        $comment_object->update([
+                            'user_id' => $user_id,
+                            'report_id' => $report_id,
+                            'comments' => $request->report_comment,
+                        ]);
+                    }else{
+                        AceComment::updateorCreate([
+                            'user_id' => $user_id,
+                            'report_id' => $report_id,
+                            'comments' => $request->report_comment,
+                        ]);
+                    }
+
+                }
+
 				notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
 			});
 //			return redirect()->route('report_submission.upload_indicator', [$request->report_id]);
@@ -574,15 +593,12 @@ class ReportFormController extends Controller {
 		else {
 			$this->validate($request, [
 				'report_id' => 'required|string|min:100',
-				'start' => 'required|string|date',
-				'end' => 'required|string|date',
+				'reporting_period' => 'required|string',
 			]);
 			DB::transaction(function () use ($request) {
 				$report_id = Crypt::decrypt($request->report_id);
-
 				$report = Report::find($report_id);
-				$report->start_date = $request->start;
-				$report->end_date = $request->end;
+				$report->reporting_period_id = $request->reporting_period;
                 $report->status = 99;
 				if (isset($request->ace_officer)) {
 					$ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
@@ -623,6 +639,25 @@ class ReportFormController extends Controller {
                     'report_id' => $report->id,
                     'status_code' => 99,
                 ]);
+
+                $user_id = Auth::user()->id;
+                $comment_object = AceComment::where('report_id',$report_id)->first();
+                if(isset($request->report_comment)){
+                    if($comment_object) {
+                        $comment_object->update([
+                            'user_id' => $user_id,
+                            'report_id' => $report_id,
+                            'comments' => $request->report_comment,
+                        ]);
+                    }else{
+                        AceComment::updateorCreate([
+                            'user_id' => $user_id,
+                            'report_id' => $report_id,
+                            'comments' => $request->report_comment,
+                        ]);
+                    }
+
+                }
 
 				notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
 			});
@@ -975,65 +1010,6 @@ class ReportFormController extends Controller {
 
         return $indicator_7_3_values;
     }
-
-	public function showComments()
-    {
-        if (Auth::user()->hasRole('webmaster|ace-officer')) {
-            $comments = AceComment::get();
-        }
-        $user_id = Auth::user()->id;
-        foreach ($comments as $comment){
-            list($ace_officer,$ace_name) = AceComment::getCommentDetails($comment->user_id);
-        }
-        return view('report-form.ace-comment', compact('user_id','comments','ace_officer','ace_name'));
-    }
-
-    public function saveComment(Request $request){
-//        dd($request->all());
-        $ace_comment_object = new AceComment();
-        if(isset($request->ace_comment)){
-            $ace_comment_object->user_id=$request->user_id;
-            $ace_comment_object->comments=$request->ace_comment;
-        }
-        $ace_comment_object->save();
-
-        if($ace_comment_object->save()){
-            notify(new ToastNotification('Successful!', 'Comment/Feedback Added', 'success'));
-            return back();
-        }else{
-            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-            return back();
-        }
-    }
-
-    public function deleteComment($id){
-        $comment_id = Crypt::decrypt($id);
-        AceComment::destroy($comment_id);
-
-        notify(new ToastNotification('Successful!', 'Comment Deleted!', 'success'));
-        return back();
-    }
-
-    public function editComment(Request $request){
-        $id = Crypt::decrypt($request->id);
-        $comment = AceComment::find($id);
-        $user_id = Auth::user()->id;
-        $view = view('report-form.ace-comment-edit', compact('comment','user_id'))->render();
-        return response()->json(['theView'=>$view]);
-    }
-
-    public function updateComment(Request $request){
-        $id = Crypt::decrypt($request->id);
-        $comment = AceComment::find($id);
-
-        $comment->update([
-            'user_id' => $request->user_id,
-            'comments' => $request->ace_comment,
-        ]);
-        notify(new ToastNotification('Successful!', 'comment Updated!', 'success'));
-        return back();
-    }
-
 
 
 

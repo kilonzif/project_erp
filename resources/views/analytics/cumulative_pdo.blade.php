@@ -3,7 +3,7 @@
         <thead>
         <tr>
             <th>Disbursement-linked Indicators <br>(DLIs)</th>
-            <th>{{date("M",strtotime($start_date))." - ".date("M Y",strtotime($end_date))}} <br>Actual Results</th>
+            <th>{{$start_period." - ".$end_period}} <br>Actual Results</th>
             <th>Project Cumulative Results</th>
             <th>End Target PAD</th>
             <th>Status of Project End Targets</th>
@@ -13,28 +13,28 @@
         @php
             $result="ACHIEVED";
             if($target_values_total_students > $cum_total_students){
-                $res=($target_values_total_students-$cum_total_students)/$target_values_total_students*100;
-                $result=$res.'%';
+                $res=$cum_total_students/$target_values_total_students*100;
+                $result=round($res,2).'%';
             }
             $result2="ACHIEVED";
              if($accreditation_target > $cum_total_accreditation){
-                $res2=($accreditation_target-$cum_total_accreditation)/$accreditation_target*100;
-                $result2=$res2.'%';
+                $res2=$cum_total_accreditation/$accreditation_target*100;
+                $result2=round($res2).'%';
             }
              $result3="ACHIEVED";
              if($internship_target > $cum_total_internships){
-                $res3=($internship_target-$cum_total_internships)/$internship_target*100;
-                $result3=$res3.'%';
+                $res3=$cum_total_internships/$internship_target*100;
+                $result3=round($res3,2).'%';
             }
              $result4="ACHIEVED";
              if($external_revenue_target > $cum_external_revenue){
-                $res4=($external_revenue_target-$cum_external_revenue)/$external_revenue_target*100;
-                $result4=$res4.'%';
+                $res4=$cum_external_revenue/$external_revenue_target*100;
+                $result4=round($res4,2).'%';
             }
             $result1="ACHIEVED";
             if($regional_students_target > $cum_regional_students){
-                    $res1=($regional_students_target-$cum_regional_students)/$regional_students_target*100;
-                    $result1=$res1.'%';
+                    $res1=$cum_regional_students/$regional_students_target*100;
+                    $result1=round($res1,2).'%';
                 }
 
         @endphp

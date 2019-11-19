@@ -1,11 +1,8 @@
 @extends('layouts.app')
 @push('vendor-styles')
         <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">--}}
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('other-styles')
-{{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 @endpush
 @section('content')
     <div class="content-header row">
@@ -23,16 +20,6 @@
             </div>
         </div>
     </div>
-
-    {{--@php--}}
-    {{--use App\Classes\ToastNotification;--}}
-    {{--while($unsubmitted==True){--}}
-
-        {{--notify(new ToastNotification('warning', 'You have unsubmitted reports!', 'warning'));--}}
-        {{--}--}}
-
-
-    {{--@endphp--}}
 
     <div class="content-body">
         <div class="row">
@@ -58,7 +45,6 @@
                                 <table class="table table-bordered table-striped mb-0 reports-table">
                                     <thead>
                                     <tr>
-                                        {{--<th>Project Title</th>--}}
                                         <th>ACE</th>
                                         <th width="100px">Reporting Year</th>
                                         <th width="100px">Uploaded On</th>
@@ -69,12 +55,9 @@
                                     <tbody>
                                     @foreach($ace_reports as $report)
                                         <tr>
-                                            {{--<td>{{$report->project->title}}</td>--}}
                                             <td>
                                                 @if($report->ace)
                                                     {{$report->ace->name}} <strong>{{'('.$report->ace->acronym.')'}}</strong>
-                                              {{--@else--}}
-                                                    {{--{{$report->user->institution->acronym}}--}}
                                                 @endif
                                             </td>
                                             <td>{{date('Y', strtotime($report->start_date))}}</td>
@@ -94,7 +77,6 @@
                                                     @if(\Auth::user()->hasRole('webmaster|super-admin'))
                                                         <a href="{{route('report_submission.indicators_status',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                        class="btn btn-s btn-success" data-toggle="tooltip" data-placement="top" title="Report Status"><i class="fa fa-hourglass-start"></i></a>
-                                                    {{--@if(\Auth::user()->hasRole('webmaster|super-admin'))--}}
                                                         <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                        class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
                                                        title="Delete Report"><i class="ft-trash-2"></i></a>
@@ -116,7 +98,6 @@
 @endsection
 @push('vendor-script')
         <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
-    {{--<script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>--}}
 @endpush
 @push('end-script')
     <script>
@@ -124,6 +105,4 @@
             "order": [[ 1, "asc" ]]
         });
     </script>
-
-    {{--<script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>--}}
 @endpush

@@ -35,8 +35,7 @@
                                     <div class="col-12">
                                         <label for="ace_id">Select Ace <span class="required">*</span></label>
                                         <div class="input-group">
-                                        <select  multiple="multiple" name="ace_id"  class="form-control select2" id="ace_id" required>
-                                            <option  value="{{$all_ace_ids}}">Select All Aces</option>
+                                        <select  multiple="multiple" name="ace_id[]"  class="form-control select2" id="ace_id" required>
                                             @foreach($aces as $this_ace)
                                                 <option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
                                             @endforeach
@@ -44,25 +43,39 @@
                                         </div>
                                     </div>
                                     <div class="col-5">
-                                        <label for="start_date">Start</label>
+                                        <label for="start_period">Starting Reporting Period</label>
                                         <div class="input-group">
-                                            <input type="text" name="start" id="start_date" class="form-control singledate" value="">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                  <span class="fa fa-calendar"></span>
-                                                </span>
-                                            </div>
+                                            <select name="start_period"  class="form-control" id="start_period" required>
+                                                <option  selected disabled>Select Start Period</option>
+                                                @foreach($periods as $starting_periods)
+                                                    @php
+                                                        $start_period = date('m-Y',strtotime($starting_periods->period_start));
+                                                        $monthNum1=date('m',strtotime($starting_periods->period_start));
+                                                        $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                        $year1 = date('Y',strtotime($starting_periods->period_start));
+                                                        $start = $monthName1 .' - '.$year1;
+                                                    @endphp
+                                                    <option  value="{{$starting_periods->period_start}}">{{$start}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-5">
                                         <label for="end_date">End</label>
                                         <div class="input-group">
-                                            <input type="text" name="end" id="end_date" class="form-control singledate" value="">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                  <span class="fa fa-calendar"></span>
-                                                </span>
-                                            </div>
+                                            <select name="end_period"  class="form-control" id="end_period" required>
+                                                <option selected disabled>Select End Period</option>
+                                                @foreach($periods as $ending_periods)
+                                                    @php
+                                                        $end_period = date('m-Y',strtotime($ending_periods->period_end));
+                                                        $monthNum2=date('m',strtotime($ending_periods->period_end));
+                                                        $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                        $year2 = date('Y',strtotime($ending_periods->period_end));
+                                                        $end =$monthName2 .' - '.$year2;
+                                                    @endphp
+                                                    <option  value="{{$ending_periods->period_end}}">{{$end}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-2">
@@ -100,9 +113,9 @@
                                     <div class="col-6">
                                         <label>Aggregate Topic: </label>
                                         <select class="form-control select-lg" name="topic_name" id="topic_name">
-                                            <option value="">Select aggregate topic</option>
+                                            <option selected disabled>Select aggregate topic</option>
                                             <option value="Aggregate Student">Aggregate Student</option>
-                                            <option value="Gender Distribution">Gender Distribution</option>
+                                            <option selected value="Gender Distribution">Gender Distribution</option>
                                             <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
                                             <option VALUE="INTERNATIONAL ACCREDITATION">Internationally Accredited Programs</option>
                                             <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
@@ -112,37 +125,50 @@
                                             <option value="Aggregate Internships/Outreach">Aggregate Internships/Outreach</option>
                                         </select>
                                     </div>
-                                    {{--<div class="col-4">--}}
-                                        {{--<label for="ace_id">Select Ace <span class="required">*</span></label>--}}
-                                        {{--<div class="input-group">--}}
-                                            {{--<select  multiple="multiple" name="selected_ace"  class="form-control select2" id="selected_ace" required>--}}
-                                                {{--<option  value="{{$all_ace_ids}}">Select All Aces</option>--}}
-                                                {{--@foreach($aces as $this_ace)--}}
-                                                    {{--<option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>--}}
-                                                {{--@endforeach--}}
-                                            {{--</select>--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
-                                    <div class="col-3">
-                                        <label for="start_year">Start</label>
+                                    <div class="col-6">
+                                        <label for="ace_id">Select Ace <span class="required">*</span></label>
                                         <div class="input-group">
-                                            <input type="text" name="start_year" id="start_year" class="form-control singledate" value="">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                  <span class="fa fa-calendar"></span>
-                                                </span>
-                                            </div>
+                                            <select  multiple="multiple" name="selected_ace[]"  class="form-control select2" id="selected_ace" required>
+                                                @foreach($aces as $this_ace)
+                                                    <option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-6">
+                                        <label for="start_period">Starting Reporting Period</label>
+                                        <div class="input-group">
+                                            <select name="starting_period"  class="form-control" id="starting_period" required>
+                                                <option  selected disabled>Select Start Period</option>
+                                                @foreach($periods as $starting_periods)
+                                                    @php
+                                                        $start_period = date('m-Y',strtotime($starting_periods->period_start));
+                                                        $monthNum1=date('m',strtotime($starting_periods->period_start));
+                                                        $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                        $year1 = date('Y',strtotime($starting_periods->period_start));
+                                                        $start = $monthName1 .' - '.$year1;
+                                                    @endphp
+                                                    <option  value="{{$starting_periods->period_start}}">{{$start}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
                                         <label for="end_date">End</label>
                                         <div class="input-group">
-                                            <input type="text" name="end_year" id="end_year" class="form-control singledate" value="">
-                                            <div class="input-group-append">
-                                                <span class="input-group-text">
-                                                  <span class="fa fa-calendar"></span>
-                                                </span>
-                                            </div>
+                                            <select name="ending_period"  class="form-control" id="ending_period" required>
+                                                <option selected disabled>Select End Period</option>
+                                                @foreach($periods as $ending_periods)
+                                                    @php
+                                                        $end_period = date('m-Y',strtotime($ending_periods->period_end));
+                                                        $monthNum2=date('m',strtotime($ending_periods->period_end));
+                                                        $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                        $year2 = date('Y',strtotime($ending_periods->period_end));
+                                                        $end =$monthName2 .' - '.$year2;
+                                                    @endphp
+                                                    <option  value="{{$ending_periods->period_end}}">{{$end}}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 {{--<div class="form-group row">--}}
@@ -150,7 +176,7 @@
                                         <label for="filter-by">Filter By</label>
                                         <div class="input-group">
                                             <select class="form-control select-lg filter_select" name="filter_by" id="filter_by">
-                                                <option value="" >Add Filter...</option>
+                                                <option value=""  selected disabled>Add Filter...</option>
                                                 <option value="Countries">Countries</option>
                                                 <option value="Type of Centre">Type of Centre</option>
                                                 <option value="Field of Study">Field of Study</option>
@@ -245,7 +271,6 @@
         });
         $("document").ready(function () {
             showGenderDistribution();
-            // genderDistribution(40,60)
         });
         $('.select2').select2({
             placeholder: "Select Ace",
@@ -283,10 +308,12 @@
 
         //Script for Cumulative PDO
         function showCumulativePDO() {
+
             let block_ele = $(this).closest('.load-area');
-            let start_date = $("#start_date").val();
-            let end_date = $("#end_date").val();
+            let start_period = $("#start_period").val();
+            let end_period = $("#end_period").val();
             let this_ace=$('#ace_id').val();
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-Token': $('meta[name=_token]').attr('content')
@@ -295,7 +322,7 @@
             $.ajax({
                 type: "GET",
                 url: "{{route('analytics.getCumulativePDO')}}",
-                data: {start_date: start_date,end_date: end_date,this_ace: this_ace},
+                data: {start_period: start_period,end_period: end_period,this_ace: this_ace},
 
                 beforeSend: function () {
 
@@ -334,10 +361,11 @@
         function  calculateAggregate() {
 
             let topic_name = $("#topic_name").val();
-            let start_year = $("#start_year").val();
-            let end_year = $("#end_year").val();
+            let starting_period = $("#starting_period").val();
+            let ending_period = $("#ending_period").val();
             let selected_ace=$('#selected_ace').val();
             let filter =  $('.filter_select').val();
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-Token': $('meta[name=_token]').attr('content')
@@ -346,7 +374,7 @@
             $.ajax({
                 type: "GET",
                 url:"{{route('analytics.calculateAggregate')}}",
-                data: {start_year: start_year,end_year: end_year,selected_ace: selected_ace,topic_name:topic_name,filter:filter},
+                data: {starting_period: starting_period,ending_period: ending_period,selected_ace: selected_ace,topic_name:topic_name,filter:filter},
                 beforeSend: function () {
 
                 },
@@ -355,9 +383,7 @@
                     if (topic_name == "Gender Distribution") {
                         showGenderDistribution();
                     }
-                    if (topic_name == "ACE Publications in 2017") {
-                        showPublications(data.research_publication, data.publication_year);
-                    }
+
                     if (topic_name == "AGGREGATE EXTERNAL REVENUE") {
                         showAggregateExternalRevenue(data.years, data.target_external_revenue, data.actual_external_revenue);
                     }
@@ -505,8 +531,6 @@
         // }
 
         function graphAggregateStudents(years,total_students,regional_students,national_students,target_students) {
-            //list of all the categories i need to draw lines for
-
 
             var charts = new Highcharts.chart('container', {
                 title: {
@@ -675,8 +699,8 @@
                     type: 'pie'
                 },
                 title: {
-                    text: "Age Distribution",
-                    style: {"display": "none"}
+                    text: "Gender Distribution",
+
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'

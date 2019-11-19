@@ -4,13 +4,11 @@
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/daterange/daterangepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/datetime/bootstrap-datetimepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/pickadate/pickadate.css')}}">
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('other-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/pickers/daterange/daterange.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/components.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/pages/chat-application.css')}}">
-    {{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 @endpush
 
 
@@ -68,13 +66,6 @@
                         @endability
                     </div>
                 </div>
-                {{--<div class="col-md-2 text-right">--}}
-                    {{--<a class="btn btn-secondary square" @if($report->editable == 0) style="display: none;" @endif--}}
-                    {{--id="editable" data-toggle="tooltip" data-placement="top" title="Edit Report"--}}
-                       {{--href="{{route('report_submission.edit', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}">--}}
-                        {{--<i class="ft-edit-2 mr-sm-1"></i>{{__('Edit')}}--}}
-                    {{--</a>--}}
-                {{--</div>--}}
                 @ability('webmaster|super-admin','set-report-mode')
                 <div class="col-md-4 text-right">
                     <span id="reviewMode" class="btn {{($report->editable == 0) ? 'btn-secondary':'btn-primary'}} square"  data-toggle="tooltip" data-placement="top" title="Reports can't be edited in Review Mode."
@@ -117,12 +108,12 @@
                                         </div>
                                     @endif
                                     <div class="col-md-4">
-                                        <h6>Submission Period (Start Date)</h6>
-                                        <p><strong>{{date('M d, Y', strtotime($report->start_date))}}</strong></p>
+                                        <h6>Reporting Period (Start) </h6>
+                                        <p><strong>{{$reporting_period->period_start}}</strong></p>
                                     </div>
                                     <div class="col-md-4">
-                                        <h6>Submission Period (End Date)</h6>
-                                        <p><strong>{{date('M d, Y', strtotime($report->end_date))}}</strong></p>
+                                        <h6>Reporting Period (End)</h6>
+                                        <p><strong>{{$reporting_period->period_end}}</strong></p>
                                     </div>
                                     <div class="col-md-4">
                                         <h6>Date Submitted</h6>
@@ -178,9 +169,6 @@
                                                     @if(isset($values[$sub_indicator->id]))
                                                         <tr>
                                                             <td>{{$sub_indicator->title}}
-                                                                {{--@if($sub_indicator->unit_measure)--}}
-                                                                    {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
-                                                                {{--@endif--}}
                                                             </td>
                                                             <td style="width: 200px">
                                                                 <input type="text" disabled="disabled" readonly class="form-control" value="{{$values[$sub_indicator->id]}}">
@@ -189,9 +177,6 @@
                                                     @else
                                                         <tr>
                                                             <td>{{$sub_indicator->title}}
-                                                                {{--@if($sub_indicator->unit_measure)--}}
-                                                                    {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
-                                                                {{--@endif--}}
                                                             </td>
                                                             <td style="width: 200px">
                                                                 <input type="text" disabled="disabled" readonly class="form-control" value="N/A">
@@ -240,20 +225,31 @@
                 @endif
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-1">
+                    <h6 class="card-header p-1 card-head-inverse bg-grey-blue" style="border-radius:0">
+                        <strong>Challenges faced(if any)</strong>
+                        <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                        <div class="heading-elements">
+                            <ul class="list-inline mb-0">
+                                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
+                            </ul>
+                        </div>
+                    </h6>
+                    <div class="card-content collapse">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Comment" name="report_comment">@isset($comment){{$comment->comments}}@endisset</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    @push('side-drawer')
-<div class="customizer border-left-blue-grey border-left-lighten-4 d-none d-xl-block">
-   <a class="customizer-close" href="#"><i class="ft-x font-medium-3"></i></a>
-   <a class="customizer-toggle bg-danger" href="#" style=" top:12%">
-       <i class="font-medium-3 fa fa-comments white"></i>
-   </a>
-   <div class="customizer-content p-2 ps-container chat-application" >
 
- @comments(['model' =>$report]) @endcomments
-   </div>
-</div>
-@endpush
 
 @endsection
 @push('vendor-script')

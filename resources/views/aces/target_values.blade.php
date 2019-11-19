@@ -55,7 +55,7 @@
                                             <div class="form-group">
                                                 <label for="submission_period">Select Ace <span class="required">*</span></label>
                                                 <select name="ace_id" disabled class="form-control select2" id="ace_id" required>
-                                                    <option value="">Select Ace</option>
+                                                    <option value="" selected disabled>Select Ace</option>
                                                     @foreach($all_aces as $this_ace)
                                                         <option @if($ace->id == $this_ace->id) selected="selected" @endif value="{{\Illuminate\Support\Facades\Crypt::encrypt($this_ace->id)}}">{{$this_ace->name}}</option>
                                                     @endforeach

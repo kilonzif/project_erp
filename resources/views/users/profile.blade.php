@@ -1,8 +1,6 @@
 @extends('layouts.user-management')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/listbox/bootstrap-duallistbox.min.css')}}">
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">--}}
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('end-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/dual-listbox.css')}}">
@@ -258,7 +256,6 @@
 
 @push('vendor-script')
 <script src="{{asset('vendors/js/forms/listbox/jquery.bootstrap-duallistbox.min.js')}}" type="text/javascript"></script>
-{{--<script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>--}}
 @endpush
 @push('end-script')
     <script src="{{asset('js/scripts/forms/listbox/form-duallistbox.js')}}" type="text/javascript"></script>

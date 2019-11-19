@@ -65,29 +65,27 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label for="submission_period">Submission Period (Start Date)<span class="required">*</span></label>
-                                                <input type="date" required value="{{old('start')?old('start'):$report->start_date}}"
-                                                       name="start" class="form-control" id="start">
-                                                @if ($errors->has('start'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('start') }}</small>
-                                                    </p>
-                                                @endif
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="reporting_period">Reporting Period<span class="required">*</span></label>
+                                                    <select class="form-control" name="reporting_period">
+                                                        <option>Select Period</option>
+                                                        @foreach($reporting_periods as $period)
+                                                            @php
+                                                                $full_period = $period->period_start . " to ". $period->period_end;
+                                                            @endphp
+
+                                                            <option {{($report->reporting_period_id==$period->id)  ? "selected":""}}  value="{{$period->id}}">{{$full_period}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @if ($errors->has('reporting_period'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="submission_period">Submission Period (End Date) <span class="required">*</span></label>
-                                            <input type="date" required value="{{old('end')?old('end'):$report->end_date}}"
-                                                   name="end" class="form-control" id="end">
-                                            @if ($errors->has('end'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('end') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="date_submission">Date of Submission <span class="required">*</span></label>
                                                 @if(\Auth::user()->hasRole('webmaster|super-admin'))
@@ -107,9 +105,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div style="display: inline; margin-right:10px;">
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
                                 <i class="ft-upload"></i> Upload Indicators</a>
+                            <a  class="pb-1 pt-1 mt-1 text-danger text-uppercase" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" style="margin-left:10px;">Preview and scroll down this page to submit the report</a>
                         </div>
                         @foreach($indicators as $indicator)
                             <div class="card mb-1">
@@ -129,7 +128,6 @@
                                         <h5>
                                             <small>
                                                 <span class="text-secondary text-bold-500">Unit of Measure:</span>
-{{--                                                {{$indicator->unit_measure}}--}}
                                             </small>
                                         </h5>
                                         <table class="table table-bordered table-striped">
@@ -251,11 +249,24 @@
                             </div>
                         @endforeach
                         <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card mb-1">
+                                    <div class="card-header p-1 card-head-inverse bg-grey-blue">
+                                        <strong>Challenges faced (if any)</strong>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <textarea class="form-control" placeholder="Comment" name="report_comment">@isset($comment){{$comment->comments}}@endisset</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-8">
                                 <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
                                 <button type="submit" name="continue" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
                                 <button type="submit" name="save" value="save" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Save</button>
-                                {{--<button type="submit" name="toIndicators" value="toIndicators" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Submit & Proceed to Indicator Uploads</button>--}}
                             </div>
                             <div class="col-md-1">
 
@@ -268,22 +279,11 @@
                 @else
                     <h2 class="center">No Indicators available</h2>
                 @endif
+
             </div>
         </div>
     </div>
-    @push('side-drawer')
-<div class="customizer border-left-blue-grey border-left-lighten-4 d-none d-xl-block">
-   <a class="customizer-close" href="#"><i class="ft-x font-medium-3"></i></a>
-   <a class="customizer-toggle bg-danger" href="#"  style=" top:12%">
-       <i class="font-medium-3 fa fa-comments white"></i>
-   </a>
-   <div class="customizer-content p-2 ps-container chat-application" >
 
- @comments(['model' =>$report])
-                @endcomments
-   </div>
-</div>
-@endpush
 
 @endsection
 @push('vendor-script')
@@ -291,12 +291,17 @@
 
 <script type="text/javascript" src="{{ asset("js/scripts/customizer.js") }}"></script>
 <script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
+
 <script type="text/javascript" >
+
   $('.customizer-toggle').on('click',function(){
         $('.customizer').toggleClass('open');
     });
+
 </script>
 @endpush
 @push('end-script')
 
 @endpush
+
+
