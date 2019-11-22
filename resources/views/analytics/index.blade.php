@@ -42,45 +42,36 @@
                                         </select>
                                         </div>
                                     </div>
-                                    <div class="col-5">
-                                        <label for="start_period">Starting Reporting Period</label>
-                                        <div class="input-group">
-                                            <select name="start_period"  class="form-control" id="start_period" required>
-                                                <option  selected disabled>Select Start Period</option>
-                                                @foreach($periods as $starting_periods)
-                                                    @php
-                                                        $start_period = date('m-Y',strtotime($starting_periods->period_start));
-                                                        $monthNum1=date('m',strtotime($starting_periods->period_start));
-                                                        $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
-                                                        $year1 = date('Y',strtotime($starting_periods->period_start));
-                                                        $start = $monthName1 .' - '.$year1;
-                                                    @endphp
-                                                    <option  value="{{$starting_periods->period_start}}">{{$start}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    @php
+                                       // dd($periods);
+                                    @endphp
+                                    <div class="col-md-12">
+                                        <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)</label><br>
+                                        @foreach($periods as $key => $this_period)
+                                            @php
+                                                $start_period = date('m-Y',strtotime($this_period->period_start));
+                                                $monthNum1=date('m',strtotime($this_period->period_start));
+                                                $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                $year1 = date('Y',strtotime($this_period->period_start));
+
+                                                $start = $monthName1 .' - '.$year1;
+                                                $monthNum2=date('m',strtotime($this_period->period_end));
+                                                $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                $year2 = date('Y',strtotime($this_period->period_end));
+                                                $end =$monthName2 .' - '.$year2;
+                                                $full_period = $start . "   to    " . $end;
+                                            @endphp
+                                            <div class=" col-md-4 d-inline">
+                                                <div class="d-inline custom-control custom-checkbox">
+                                                    <input type="checkbox" name="this_period[]" value="{{$this_period->id}}" id="this_period">
+                                                    <label for="this_period">{{$full_period}}</label>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                    <div class="col-5">
-                                        <label for="end_date">End</label>
-                                        <div class="input-group">
-                                            <select name="end_period"  class="form-control" id="end_period" required>
-                                                <option selected disabled>Select End Period</option>
-                                                @foreach($periods as $ending_periods)
-                                                    @php
-                                                        $end_period = date('m-Y',strtotime($ending_periods->period_end));
-                                                        $monthNum2=date('m',strtotime($ending_periods->period_end));
-                                                        $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
-                                                        $year2 = date('Y',strtotime($ending_periods->period_end));
-                                                        $end =$monthName2 .' - '.$year2;
-                                                    @endphp
-                                                    <option  value="{{$ending_periods->period_end}}">{{$end}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-2">
+                                    <div class="col-md-4 offset-4">
                                         <button class="btn btn-primary block-custom-message" style="margin-top: 25px;"
-                                                onclick="showCumulativePDO()">Generate</button>
+                                                onclick="showCumulativePDO()">Generate Report</button>
                                     </div>
                                 </div>
                             {{--</form>--}}
@@ -120,9 +111,6 @@
                                             <option selected value="Gender Distribution">Gender Distribution</option>
                                             <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
                                             <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
-                                            {{--<option VALUE="INTERNATIONAL ACCREDITATION">Internationally Accredited Programs</option>--}}
-                                            {{--<option VALUE="ACE Publications in 2017">ACE Publications by Year</option>--}}
-                                            {{--<option value="QUALITY EDUCATION & RESEARCH">Quality of Education and Research</option>--}}
                                         </select>
                                     </div>
                                     <div class="col-6">
@@ -135,43 +123,30 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <label for="start_period">Starting Reporting Period</label>
+                                    <div class="col-12">
+                                        <label for="selected_period" style="margin-top: 1.4rem">Select Reporting Period (s)</label><br>
                                         <div class="input-group">
-                                            <select name="starting_period"  class="form-control" id="starting_period" required>
-                                                <option  selected disabled>Select Start Period</option>
-                                                @foreach($periods as $starting_periods)
+                                            <select  multiple="multiple" name="selected_period[]"  class="form-control select2" id="selected_period" required>
+                                                <option disabled>Select Period</option>
+                                                @foreach($periods as $period)
                                                     @php
-                                                        $start_period = date('m-Y',strtotime($starting_periods->period_start));
-                                                        $monthNum1=date('m',strtotime($starting_periods->period_start));
+                                                        $start_period = date('m-Y',strtotime($period->period_start));
+                                                        $monthNum1=date('m',strtotime($period->period_start));
                                                         $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
-                                                        $year1 = date('Y',strtotime($starting_periods->period_start));
+                                                        $year1 = date('Y',strtotime($period->period_start));
+
                                                         $start = $monthName1 .' - '.$year1;
-                                                    @endphp
-                                                    <option  value="{{$starting_periods->period_start}}">{{$start}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="end_date">End</label>
-                                        <div class="input-group">
-                                            <select name="ending_period"  class="form-control" id="ending_period" required>
-                                                <option selected disabled>Select End Period</option>
-                                                @foreach($periods as $ending_periods)
-                                                    @php
-                                                        $end_period = date('m-Y',strtotime($ending_periods->period_end));
-                                                        $monthNum2=date('m',strtotime($ending_periods->period_end));
+                                                        $monthNum2=date('m',strtotime($period->period_end));
                                                         $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
-                                                        $year2 = date('Y',strtotime($ending_periods->period_end));
+                                                        $year2 = date('Y',strtotime($period->period_end));
                                                         $end =$monthName2 .' - '.$year2;
+                                                        $full_period = $start . "   to    " . $end;
                                                     @endphp
-                                                    <option  value="{{$ending_periods->period_end}}">{{$end}}</option>
+                                                    <option  value="{{$period->id}}">{{$full_period}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                {{--<div class="form-group row">--}}
                                     <div class="col-6">
                                         <label for="filter-by">Filter By</label>
                                         <div class="input-group">
@@ -310,8 +285,8 @@
         function showCumulativePDO() {
 
             let block_ele = $(this).closest('.load-area');
-            let start_period = $("#start_period").val();
-            let end_period = $("#end_period").val();
+            let this_period = $("input[name='this_period[]']:checkbox:checked").map(function () {
+                return $(this).val(); }).get();
             let this_ace=$('#ace_id').val();
 
             $.ajaxSetup({
@@ -322,7 +297,7 @@
             $.ajax({
                 type: "GET",
                 url: "{{route('analytics.getCumulativePDO')}}",
-                data: {start_period: start_period,end_period: end_period,this_ace: this_ace},
+                data: {this_period: this_period,this_ace: this_ace},
 
                 beforeSend: function () {
 
@@ -361,8 +336,7 @@
         function  calculateAggregate() {
 
             let topic_name = $("#topic_name").val();
-            let starting_period = $("#starting_period").val();
-            let ending_period = $("#ending_period").val();
+            let selected_period = $("#selected_period").val();
             let selected_ace=$('#selected_ace').val();
             let filter =  $('.filter_select').val();
 
@@ -374,7 +348,7 @@
             $.ajax({
                 type: "GET",
                 url:"{{route('analytics.calculateAggregate')}}",
-                data: {starting_period: starting_period,ending_period: ending_period,selected_ace: selected_ace,topic_name:topic_name,filter:filter},
+                data: {selected_period: selected_period,selected_ace: selected_ace,topic_name:topic_name,filter:filter},
                 beforeSend: function () {
 
                 },

@@ -1,14 +1,14 @@
 @extends('layouts.app')
+
+
+
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
-    <!-- BEGIN VENDOR CSS-->
-    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/dateTime/bootstrap-datetimepicker.min.css"')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/daterange/daterangepicker.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/pickadate/pickadate.css')}}">
-    <!-- END VENDOR CSS-->
-    <!-- BEGIN STACK CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/datepicker/bootstrap-datepicker.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/css/bootstrap.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/datepicker/datepicker3.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/datepicker/daterangepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/app.css')}}">
-    <!-- END STACK CSS-->
 @endpush
 @push('other-styles')
 @endpush
@@ -31,7 +31,7 @@
 
     <div class="content-body">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <div class="card">
                     <div class="card-content" style="">
                         <div class="card-body">
@@ -115,8 +115,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
                 <div class="card" id="deadline-box">
                     <div class="card-content" style="">
                         <div class="card-body">
@@ -162,8 +160,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Set Reporting Period</h4>
@@ -174,10 +171,10 @@
                                 <form action="{{route('settings.app_settings.save_reporting_period')}}" method="post">
                                     <div class="row">
                                         @csrf
-                                        <div class="col-md-6 form-group">
-                                            <label>Starting Period</label>
+                                        <div class="col-md-5 form-group">
+                                            <label>Starting Period<span class="required">*</span></label>
                                             <div class="input-group">
-                                                <input type='text' data-date-format="yyyy-mm" name="period_start"  class="form-control pickadate-dropdown" placeholder="Month &amp; Year Dropdown"
+                                                <input type='text' name="period_start"  class="form-control datepicker" value="{{ old('period_start') }}" placeholder="Month &amp; Year" required
                                                 />
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">
@@ -186,10 +183,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 form-group">
-                                            <label>Ending Period</label>
+                                        <div class="col-md-5 form-group">
+                                            <label>Ending Period<span class="required">*</span></label>
                                             <div class="input-group">
-                                                <input type='month' name="period_end"  class="form-control pickadate-dropdown" placeholder="Month &amp; Year Dropdown"
+                                                <input type='text' name="period_end" class="form-control datepicker" value="{{ old('period_end') }}" placeholder="Month &amp; Year" required
                                                 />
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">
@@ -198,19 +195,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {{--<div class="col-md-6">--}}
-                                            {{--<label>Starting Period</label>--}}
-                                            {{--<input type="month" id="period_start" name="period_start" min="1900-March" max="today" class="form-control datepicker-decades">--}}
-                                        {{--</div>--}}
-
-                                        {{--<div class="col-md-6">--}}
-                                            {{--<label>End</label>--}}
-                                            {{--<input type="month" id="period_start" name="period_end" min="1900-March" max="today"  class="form-control">--}}
-                                        {{--</div>--}}
-                                    </div>
-                                    <div class="row" style="padding-top: 20px;">
-                                        <div class="col-md-6 offset-md-3" >
-                                            <input type="submit" name="submit" value="Save Reporting Period" class="btn btn-primary mb-2">
+                                        <div class="col-md-2 form-group">
+                                            <button class="btn btn-primary" style="margin-top: 1.7rem;" type="submit"><i class="ft-save"></i> Save</button>
                                         </div>
                                     </div>
                                 </form>
@@ -218,11 +204,10 @@
 
                             {{--table--}}
                             <div class="row">
-                                <div class="col-md-8 offset-2">
-                                    <h4 class="mb-lg-3 card-header">Reporting Periods</h4>
+                                <div class="col-md-12 offset">
                                     <table class="table table-bordered table-striped">
                                         <tr>
-                                            <th>No</th>
+                                            <th style="width: 100px">Reporting Period #</th>
                                             <th>Start</th>
                                             <th>End</th>
                                             <th>Actions</th>
@@ -233,18 +218,25 @@
                                         @foreach($periods as $period)
                                             @php
                                                 $counter=$counter+1;
+                                                $monthNum1=date('m',strtotime($period->period_start));
+                                                $monthName1 = date("F", mktime(0, 0, 0, $monthNum1, 10));
+                                                $year1 = date('Y',strtotime($period->period_start));
+                                                $start = $monthName1 .' - '.$year1;
+
+                                                $monthNum2=date('m',strtotime($period->period_end));
+                                                $monthName2 = date("F", mktime(0, 0, 0, $monthNum2, 10));
+                                                $year2 = date('Y',strtotime($period->period_start));
+                                                $end = $monthName2 .' - '.$year2;
+
                                             @endphp
                                             <tr>
                                                 <td>{{$counter}}</td>
-                                                <td>{{$period->period_start}}</td>
-                                                <td>{{$period->period_end}}</td>
+                                                <td>{{$start}}</td>
+                                                <td>{{$end}}</td>
                                                 <td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <a href="{{route('settings.app_settings.edit_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}" class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Period" >
-                                                            <i class="ft-edit-3"></i></a>
-                                                        {{--<a class="btn btn-secondary square" href="#form_template" onclick="editPeriod('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')">--}}
-                                                        {{--<i class="icon-pencil"></i>--}}
-                                                        {{--</a>--}}
+                                                        <a href="#form_template" onclick="edit_period('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')" class="btn btn-s btn-secondary">
+                                                            <i class="ft-edit"></i></a>
                                                         <a href="{{route('settings.app_settings.delete_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}"
                                                            class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Period?');"
                                                            title="Delete Report"><i class="ft-trash-2"></i></a>
@@ -260,26 +252,73 @@
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 @endsection
+
 @push('vendor-script')
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/repeater/jquery.repeater.min.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendors/js/pickers/pickadate/picker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendors/js/pickers/pickadate/picker.date.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendors/js/pickers/daterange/daterangepicker.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendors/js/pickers/pickadate/picker.time.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendors/js/pickers/pickadate/legacy.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/js/core/libraries/bootstrap.min.js')}}" type="text/javascript"></script>
 
 @endpush
 @push('end-script')
+
+    <script src="{{asset('app-assets/datepicker/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script>
-        // With Select
-        $('.pickadate-dropdown').pickadate({
-            selectMonths: true,
-            selectYears: true
+        $('.datepicker').datepicker({
+            format:"mm-yyyy",
+            startView:"months",
+            minViewMode:"months",
+
         });
+        $('.datepicker').attr('autocomplete', 'off');
+        //Script to call the edit view for period
+        function edit_period(key) {
+
+            var path = "{{route('settings.app_settings.edit_reporting_period')}}";
+            $.ajaxSetup(    {
+                headers: {
+                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
+                }
+            });
+            $.ajax({
+                url: path,
+                type: 'GET',
+                data: {id:key},
+                beforeSend: function(){
+                    $('#form_template').block({
+                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                        overlayCSS: {
+                            backgroundColor: '#ccc',
+                            opacity: 0.8,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });;
+                },
+                success: function(data){
+                    $('#form_template').empty();
+                    $('#form_template').html(data.theView);
+                    // console.log(data)
+                },
+                complete:function(){
+                    $('#form_template').unblock();
+                }
+                ,
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+
+
         (function(window, document, $) {
             'use strict';
 
@@ -350,6 +389,8 @@
                 }
             });
         }
+
+
 
         $('.select2').select2({
             placeholder: "Select Indicator",

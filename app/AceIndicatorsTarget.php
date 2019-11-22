@@ -57,14 +57,7 @@ class AceIndicatorsTarget extends Model
 
 
 
-    public static function get_target_value($start,$end,$ace_id,$indicator_id){
-        $years = array();
-        $start = date('Y',strtotime($start));
-        $end = date('Y',strtotime($end));
-        while($start <= $end){
-            $years[] = (int)$start;
-            $start++;
-        }
+    public static function get_target_value($years_between,$ace_id,$indicator_id){
 
         $target_values = DB::table('ace_indicators_targets')
             ->join('ace_indicators_target_years', 'ace_indicators_targets.target_year_id', '=', 'ace_indicators_target_years.id')
@@ -72,13 +65,11 @@ class AceIndicatorsTarget extends Model
             ->whereIn('ace_indicators_target_years.ace_id', $ace_id)
 //            ->whereIn( DB::raw('YEAR(start_period)'),$years)
             ->whereIn('indicator_id',$indicator_id)
-            ->where(function ($query) use($years){
-                return $query->whereIn( DB::raw('YEAR(start_period)'),$years)
-                    ->WhereIn(DB::raw('YEAR(end_period)'),$years);
+            ->where(function ($query) use($years_between){
+                return $query->whereIn( DB::raw('YEAR(start_period)'),$years_between)
+                    ->WhereIn(DB::raw('YEAR(end_period)'),$years_between);
             })
         ->value('targets');
-//        $querystring = vsprintf(str_replace(['?'], ['\'%s\''], $target_values->toSql()), $target_values->getBindings());
-//        dd($querystring);
         return $target_values;
     }
 

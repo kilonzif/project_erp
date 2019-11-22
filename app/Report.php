@@ -65,7 +65,7 @@ class Report extends Model {
             ->join('reporting_period', 'reporting_period.id', '=', 'reports.reporting_period_id')
             ->select('reports.id')
             ->where(function ($query) use ($start, $end) {
-                return $query->where('reporting_period.period_start', '>=', $start)->orWhere('reporting_period.period_end', '<=', $end);
+                return $query->whereIn('reporting_period.period_start', $start)->orWhereIn('reporting_period.period_end', $end);
             })
             ->pluck('id')
         ->toArray();

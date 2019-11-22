@@ -150,6 +150,7 @@ Route::prefix('settings')->name('settings.')->group(function () {
     Route::get('excelupload', 'ExcelUploadController@index')->name('excelupload.create');
     Route::post('excelupload/save', 'ExcelUploadController@save')->name('excelupload.save');
     Route::get('/excelupload/download/{id}', 'ExcelUploadController@download')->name('excelupload.download');
+    Route::get('/excelupload/download-all','ExcelUploadController@downloadAll')->name('excelupload.download_all');
     Route::get('excelupload/delete/{id}', 'ExcelUploadController@delete')->name('excelupload.delete');
 
     //System Application Route
@@ -164,8 +165,8 @@ Route::prefix('settings')->name('settings.')->group(function () {
 
     Route::post('application/reporting-period', 'ApplicationSettingsController@saveReportingPeriod')->name('app_settings.save_reporting_period');
     Route::get('reporting-period/delete/{id}', 'ApplicationSettingsController@deleteReportingPeriod')->name('app_settings.delete_reporting_period');
-    Route::get('reporting-period/edit/{id}', 'ApplicationSettingsController@editReportingPeriod')->name('app_settings.edit_reporting_period');
-    Route::post('reporting-period/update/{id}', 'ApplicationSettingsController@updateReportingPeriod')->name('app_settings.update_reporting_period');
+    Route::get('reporting-period/edit-view', 'ApplicationSettingsController@editReportingPeriod')->name('app_settings.edit_reporting_period');
+    Route::post('reporting-period/update', 'ApplicationSettingsController@updateReportingPeriod')->name('app_settings.update_reporting_period');
 
 
 

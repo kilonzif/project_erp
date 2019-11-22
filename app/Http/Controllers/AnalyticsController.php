@@ -56,10 +56,20 @@ class AnalyticsController extends Controller
     public function getCumulativePDO(Request $request)
     {
 
-        $start_period = date("Y-m",strtotime($request->start_period."-01"));
-        $end_period = date("Y-m",strtotime($request->end_period."-31"));
         $this_ace=$request->this_ace;
+        $years_between = array();
+        foreach ($request->this_period as $sp){
+            $period = ReportingPeriod::query()->where('id',$sp)->first();
+            $start_year = date('Y',strtotime($period->period_start));
+            $end_year =date('Y',strtotime($period->period_end));
+            while($start_year <= $end_year){
+                $years_between[] = (int)$start_year;
+                $start_year++;
+            }
+            $start_period  []= $period->period_start;
 
+            $end_period[] = $period->period_end;
+        }
 
         $report_ids[]= Report::getReports($start_period,$end_period);
 
@@ -71,7 +81,7 @@ class AnalyticsController extends Controller
         $external_revenue_indicator = $data["revenue_ID"];
         $accreditation_indicator = $data['accreditation_ID'];
 
-        $target_values_total_students = AceIndicatorsTarget::get_target_value($start_period,$end_period,$this_ace,$indicator_total_students);
+        $target_values_total_students = AceIndicatorsTarget::get_target_value($years_between,$this_ace,$indicator_total_students);
 
         $total_students = DB::connection('mongodb')->collection('indicator_3')
             ->whereIn('report_id', $report_ids)
@@ -92,29 +102,29 @@ class AnalyticsController extends Controller
                     ->orWhere('regional-status', 'like', "r%");
             })
             ->count();
-        $regional_students_target=AceIndicatorsTarget::get_target_value($start_period,$end_period,$this_ace,$regional_students_indicator_id);
+        $regional_students_target=AceIndicatorsTarget::get_target_value($years_between,$this_ace,$regional_students_indicator_id);
         $total_internships = DB::connection('mongodb')->collection('indicator_5.2')
             ->whereIn('report_id', $report_ids)
             ->count();
         $cum_total_internships = DB::connection('mongodb')->collection('indicator_5.2')
             ->count();
 
-        $internship_target = AceIndicatorsTarget::get_target_value($start_period,$end_period,$this_ace,$internship_indicator);
+        $internship_target = AceIndicatorsTarget::get_target_value($years_between,$this_ace,$internship_indicator);
         $total_accreditation = DB::connection('mongodb')->collection('indicator_7.3')
             ->whereIn('report_id', $report_ids)
             ->count();
         $cum_total_accreditation = DB::connection('mongodb')->collection('indicator_7.3')
             ->count();
 
-        $accreditation_target = AceIndicatorsTarget::get_target_value($start_period,$end_period,$this_ace,$accreditation_indicator);
+        $accreditation_target = AceIndicatorsTarget::get_target_value($years_between,$this_ace,$accreditation_indicator);
         $external_revenue = DB::connection('mongodb')->collection('indicator_5.1')
             ->whereIn('report_id', $report_ids)
             ->count();
         $cum_external_revenue = DB::connection('mongodb')->collection('indicator_5.1')
             ->count();
 
-        $external_revenue_target = AceIndicatorsTarget::get_target_value($start_period,$end_period,$this_ace,$external_revenue_indicator);
-        $the_view = view('analytics.cumulative_pdo', compact('this_ace','start_period','end_period', 'total_students','cum_total_students',
+        $external_revenue_target = AceIndicatorsTarget::get_target_value($years_between,$this_ace,$external_revenue_indicator);
+        $the_view = view('analytics.cumulative_pdo', compact('this_ace','years_between','start_period','end_period', 'total_students','cum_total_students',
             'regional_students','cum_regional_students','total_internships','cum_total_internships','external_revenue','cum_external_revenue',
             'total_accreditation','cum_total_accreditation',
             'target_values_total_students','internship_target','accreditation_target','external_revenue_target','regional_students_target'))->render();
@@ -123,16 +133,20 @@ class AnalyticsController extends Controller
 
 
     public function calculateAggregate(Request $request){
-        $start_year = date("Y-m-d",strtotime($request->starting_period."-01"));
-        $end_year = date("Y-m-d",strtotime($request->ending_period."-31"));
-        $years = array();
-        $start = date('Y',strtotime($start_year));
-        $end = date('Y',strtotime($end_year));
-        $filter = $request->filter;
-        while($start <= $end){
-            $years[] = (int)$start;
-            $start++;
+        foreach ($request->selected_period as $sp){
+            $period = ReportingPeriod::query()->where('id',$sp)->first();
+            $start_year = date('Y',strtotime($period->period_start));
+            $end_year =date('Y',strtotime($period->period_end));
+            while($start_year <= $end_year){
+                $years[] = (int)$start_year;
+                $start_year++;
+            }
+            $start_period  []= $period->period_start;
+
+            $end_period[] = $period->period_end;
         }
+        $filter = $request->filter;
+
 
         $topic_name = $request->topic_name;
         $publication_year =[];
@@ -146,21 +160,10 @@ class AnalyticsController extends Controller
         $total_enrolled = [];
         $student_internship = [];
         $faculty_internship = [];
-//        $reports [] = DB::table('reports')
-//            ->join('aces', 'reports.ace_id', '=', 'aces.id')
-//            ->join('institutions', 'aces.institution_id', '=', 'institutions.id')
-//            ->join('countries', 'institutions.country_id', '=', 'countries.id')
-//            ->join('reporting_period','reports.reporting_period_id','=','reporting_period.id')
-//            ->distinct('reports.id')
-//            ->select(DB::raw('reports.*,aces.id as aceID, aces.*,aces.ace_type as centre_type, countries.id as countryID,institutions.name as university, countries.*,reports.reporting_period_id,reports.id'))
-//            ->where('reports.start_', '>=',$start_year)
-//            ->where('reports.end_date', '<=', $end_year)
-//            ->orderBy('countries.country', 'asc')
-//            ->get();
 
 
 
-        $reports= Report::getReports($start_year,$end_year);
+        $reports= Report::getReports($start_period,$end_period);
 
         $data = AceIndicatorsTarget::getIndicatorID();
 

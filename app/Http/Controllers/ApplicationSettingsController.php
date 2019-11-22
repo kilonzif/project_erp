@@ -167,20 +167,24 @@ class ApplicationSettingsController extends Controller
             ]);
         }else{
             notify(new ToastNotification('Error', 'The end date should be greater than start date.', 'error'));
-            return back();
+            return back()->withInput();
         }
-
+        $start = '01-'.$request->period_start;
+        $end = '31-'.$request->period_end;
+        $start_period =date('Y-m-d',strtotime($start));
+        $end_period =date('Y-m-d',strtotime($end));
         $new_period=new ReportingPeriod();
-        $new_period->period_start = $request->period_start;
-        $new_period->period_end = $request->period_end;
+        $new_period->period_start = $start_period;
+        $new_period->period_end = $end_period;
          $saved=$new_period->save();
         if ($saved){
             notify(new ToastNotification('Successful', 'Reporting Period Added.', 'success'));
+            return back();
         }
         else{
             notify(new ToastNotification('Error', 'Please try again.', 'error'));
+            return back()->withInput();
         }
-        return back();
 
     }
 
@@ -191,16 +195,25 @@ class ApplicationSettingsController extends Controller
         notify(new ToastNotification('Successful!', 'Reporting Period Deleted!', 'success'));
         return back();
     }
-    public function editReportingPeriod($id){
-        $id = Crypt::decrypt($id);
-        $period = ReportingPeriod::find($id);
-        $apps = SystemOption::all();
-        $periods = ReportingPeriod::all();
-        return view('settings.app.edit_reporting_period_view', compact('period', 'x','y','apps','periods'));
+
+
+    public function editReportingPeriod(Request $request){
+        $id = Crypt::decrypt($request->id);
+
+        $update_this_period = ReportingPeriod::find($id);
+
+        $startdate = explode('-', $update_this_period->period_start);
+        $toupdate_start_period = $startdate[1] .'-'.$startdate[0];
+
+        $enddate = explode('-', $update_this_period->period_end);
+        $toupdate_end_period =  $enddate[1] .'-'.$enddate[0];
+
+        $view = view('settings.app.edit_reporting_period_view', compact('update_this_period','toupdate_start_period','toupdate_end_period'))->render();
+        return response()->json(['theView'=>$view]);
     }
 
+
     public function updateReportingPeriod(Request $request){
-        $id = Crypt::decrypt($request->id);
         if($request->period_end >$request->period_start){
             $this->validate($request,[
                 'period_start' => 'required|string',
@@ -208,23 +221,28 @@ class ApplicationSettingsController extends Controller
             ]);
         }else{
             notify(new ToastNotification('Error', 'The end date should be greater than start date.', 'error'));
-            return back();
+            return back()->withInput();
         }
-        $updatePeriod = ReportingPeriod::find($id);
+        $id = Crypt::decrypt($request->id);
+        $start = '01-'.$request->period_start;
+        $end = '31-'.$request->period_end;
+        $start_period =date('Y-m-d',strtotime($start));
+        $end_period =date('Y-m-d',strtotime($end));
 
-        $updatePeriod->period_start = $request->period_start;
-        $updatePeriod->period_end = $request->period_end;
-        $saved=$updatePeriod->save();
-        if ($saved){
+        $updatePeriod=ReportingPeriod::find($id);
+
+        $updated = $updatePeriod->update([
+            'period_start' => $start_period,
+            'period_end' => $end_period,
+        ]);
+        if ($updated){
             notify(new ToastNotification('Successful', 'Reporting Period updated.', 'success'));
-            return redirect('/settings/application');
-        }
-        else{
-            notify(new ToastNotification('Error', 'Please try again.', 'error'));
             return back();
         }
-
-
+        else {
+            notify(new ToastNotification('Error', 'Please try again.', 'error'));
+            return back()->withInput();
+        }
 
 
     }

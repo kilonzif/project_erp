@@ -10,5 +10,4 @@ class ReportingPeriod extends Model
     protected $table = "reporting_period";
     protected $fillable = ['period_start', 'period_end'];
 
-
 }
