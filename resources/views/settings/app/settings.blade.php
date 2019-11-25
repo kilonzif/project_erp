@@ -115,50 +115,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="card" id="deadline-box">
-                    <div class="card-content" style="">
-                        <div class="card-body">
-                            <h6>Report Submission Activation</h6>
-                            <hr>
-                            <div class="mb-1">
-                                @php
-                                    $action = $apps->where('option_name', '=', 'app_deadline')->pluck('status')->first();
-                                @endphp
-                                @if(isset($action))
-                                    <span title="Click to Open Report Submission" style="display: {{($action == 0)? 'inline-block':'none'}}"
-                                          class="btn btn-success square" onclick="changeSubmisssion(0)" id="open-btn">
-                                        <i class="ft-check"></i> Open Submission
-                                    </span>
-
-                                    <span style="display: {{($action == 1)? 'inline-block':'none'}}" title="Click to Lock Report Submission"
-                                          class="btn btn-danger square text-right" onclick="changeSubmisssion(1)" id="lock-btn">
-                                        <i class="ft-lock"></i> Close Submission
-                                    </span>
-                                    <span class="ml-2" id="deadline-message"></span>
-                                @endif
-                            </div>
-
-                            <form action="{{route('settings.app_settings.save_deadline')}}" method="post">
-                                @csrf
-                                <fieldset>
-                                    <div class="input-group">
-                                        <input type="date" name="deadline" style="color: #d68e2d;"
-                                               value="{{$apps->where('option_name', '=', 'app_deadline')->pluck('display_name')->first()}}"
-                                               class="form-control" placeholder="Date" aria-describedby="button-addon2">
-                                        <div class="input-group-append" id="button-addon2">
-                                            <button class="btn btn-primary square" type="submit"><i class="ft-save"></i> Save</button>
-                                        </div>
-                                    </div>
-                                    @if ($errors->has('deadline'))
-                                        <p class="text-right">
-                                            <small class="warning text-muted">{{ $errors->first('deadline') }}</small>
-                                        </p>
-                                    @endif
-                                </fieldset>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="col-md-7">
                 <div class="card">
@@ -219,14 +175,14 @@
                                             @php
                                                 $counter=$counter+1;
                                                 $monthNum1=date('m',strtotime($period->period_start));
-                                                $monthName1 = date("F", mktime(0, 0, 0, $monthNum1, 10));
+                                                $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
                                                 $year1 = date('Y',strtotime($period->period_start));
-                                                $start = $monthName1 .' - '.$year1;
+                                                $start = $monthName1 .', '.$year1;
 
                                                 $monthNum2=date('m',strtotime($period->period_end));
-                                                $monthName2 = date("F", mktime(0, 0, 0, $monthNum2, 10));
+                                                $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
                                                 $year2 = date('Y',strtotime($period->period_start));
-                                                $end = $monthName2 .' - '.$year2;
+                                                $end = $monthName2 .', '.$year2;
 
                                             @endphp
                                             <tr>

@@ -68,16 +68,21 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="reporting_period">Reporting Period<span class="required">*</span></label>
-                                                    <select class="form-control" name="reporting_period">
-                                                        <option>Select Period</option>
-                                                        @foreach($reporting_periods as $period)
-                                                            @php
-                                                                $full_period = $period->period_start . " to ". $period->period_end;
-                                                            @endphp
-
-                                                            <option {{($report->reporting_period_id==$period->id)  ? "selected":""}}  value="{{$period->id}}">{{$full_period}}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    @php
+                                                        $start_period = date('m-Y',strtotime($reporting_period->period_start));
+                                                        $end_period = date('m-Y',strtotime($reporting_period->period_end));
+                                                        $monthNum1=date('m',strtotime($reporting_period->period_start));
+                                                        $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                        $year1 = date('Y',strtotime($reporting_period->period_start));
+                                                        $start = $monthName1 .', '.$year1;
+                                                        $monthNum2=date('m',strtotime($reporting_period->period_end));
+                                                        $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                        $year2 = date('Y',strtotime($reporting_period->period_end));
+                                                        $end =$monthName2 .', '.$year2;
+                                                        $full_period = $start ."    -  ". $end;
+                                                    @endphp
+                                                    <input type="text" required value="{{ old('reporting_period')? old('reporting_period') : $full_period }}"
+                                                           name="reporting_period" class="form-control" id="reporting_period" disabled>
                                                     @if ($errors->has('reporting_period'))
                                                         <p class="text-right">
                                                             <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>

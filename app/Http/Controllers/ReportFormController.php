@@ -37,10 +37,6 @@ class ReportFormController extends Controller {
 		    if(!empty($notcompleted)){
 		       $notsubmitted = True;
             }
-//            else{
-//                $unsubmitted = False;
-//
-//            }
         }
 		if (Auth::user()->hasRole('webmaster|super-admin')) {
 			$ace_reports = Report::get();
@@ -312,7 +308,7 @@ class ReportFormController extends Controller {
 		if ($submission_date == null) {
 			$submission_date = date('Y-m-d');
 		}
-//        return $submission_date;
+
 		$ace_id = Crypt::decrypt($request->ace_id);
 		$project_id = Crypt::decrypt($request->project_id);
 		$report = new Report();
@@ -496,7 +492,8 @@ class ReportFormController extends Controller {
 		$id = Crypt::decrypt($id);
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$report = Report::find($id);
-        $reporting_periods = ReportingPeriod::all();
+        $reporting_period = ReportingPeriod::find($report->reporting_period_id);
+
 		if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return redirect()->route('report_submission.reports');
@@ -519,7 +516,7 @@ class ReportFormController extends Controller {
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
-		return view('report-form.edit', compact('project', 'reporting_periods','report', 'aces','comment','values', 'ace_officers',
+		return view('report-form.edit', compact('project', 'reporting_period','report', 'aces','comment','values', 'ace_officers',
             'indicators','result','indicator_5_2','indicator_4_1','indicator_7_3'));
 	}
 

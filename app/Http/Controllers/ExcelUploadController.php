@@ -106,7 +106,6 @@ class ExcelUploadController extends Controller
 
             }
         }
-
         $zip = new ZipArchive;
 
         $zipped_file = 'indicatorTemplates.zip';
@@ -119,12 +118,15 @@ class ExcelUploadController extends Controller
         }
         $zip->close();
         $file = response()->download(public_path($zipped_file));
-        if(!$file){
+        if($file){
+            notify(new ToastNotification('Successful!', 'Download successful!', 'success'));
+            return $file;
+        }else{
             notify(new ToastNotification('Sorry!', 'File does not exist!', 'error'));
         }
-        return $file;
-        notify(new ToastNotification('Successful!', 'Download successful!', 'success'));
+
         return redirect()->back();
+
     }
 
 

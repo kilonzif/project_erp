@@ -40,16 +40,13 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="col-md-10 offset-1">
-                                <label class="label-control">Download All</label>
+                                <label class="label-control">Download All the Templates</label>
                                 <div class="form-group">
-                                    <a type="submit" href="{{route('settings.excelupload.download_all')}}"
+                                    <a href="{{route('settings.excelupload.download_all')}}"
                                        class="btn btn-s btn-outline-secondary mb-2">
                                         <i class="fa fa-cloud-download"></i> Download All Templates
                                     </a>
                                 </div>
-
-                            </div>
 
                             <table class="table table-bordered table-striped">
                                 <tr>

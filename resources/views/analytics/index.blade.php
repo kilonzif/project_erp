@@ -42,9 +42,6 @@
                                         </select>
                                         </div>
                                     </div>
-                                    @php
-                                       // dd($periods);
-                                    @endphp
                                     <div class="col-md-12">
                                         <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)</label><br>
                                         @foreach($periods as $key => $this_period)
@@ -54,16 +51,16 @@
                                                 $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
                                                 $year1 = date('Y',strtotime($this_period->period_start));
 
-                                                $start = $monthName1 .' - '.$year1;
+                                                $start = $monthName1 .', '.$year1;
                                                 $monthNum2=date('m',strtotime($this_period->period_end));
                                                 $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
                                                 $year2 = date('Y',strtotime($this_period->period_end));
-                                                $end =$monthName2 .' - '.$year2;
-                                                $full_period = $start . "   to    " . $end;
+                                                $end =$monthName2 .', '.$year2;
+                                                $full_period = $start . "   -    " . $end;
                                             @endphp
                                             <div class=" col-md-4 d-inline">
                                                 <div class="d-inline custom-control custom-checkbox">
-                                                    <input type="checkbox" name="this_period[]" value="{{$this_period->id}}" id="this_period">
+                                                    <input type="checkbox" name="this_period[]" value="{{$this_period->id}}" id="this_period{{$key}}">
                                                     <label for="this_period">{{$full_period}}</label>
                                                 </div>
                                             </div>
@@ -248,7 +245,7 @@
             showGenderDistribution();
         });
         $('.select2').select2({
-            placeholder: "Select Ace",
+            placeholder: "",
             allowClear: true
         });
 

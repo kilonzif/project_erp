@@ -72,12 +72,12 @@
                                                                     $monthNum1=date('m',strtotime($period->period_start));
                                                                     $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
                                                                     $year1 = date('Y',strtotime($period->period_start));
-                                                                    $start = $monthName1 .' - '.$year1;
+                                                                    $start = $monthName1 .', '.$year1;
                                                                     $monthNum2=date('m',strtotime($period->period_end));
                                                                     $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
                                                                     $year2 = date('Y',strtotime($period->period_end));
-                                                                    $end =$monthName2 .' - '.$year2;
-                                                                    $full_period = $start ."    to  ". $end;
+                                                                    $end =$monthName2 .', '.$year2;
+                                                                    $full_period = $start ."    -  ". $end;
                                                                 @endphp
 
                                                                 <option value="{{$period->id}}">{{$full_period}}</option>
@@ -143,9 +143,6 @@
                                                         @foreach($sub_indicators as $sub_indicator)
                                                             <tr>
                                                                 <td>{{$sub_indicator->title}} <span class="required">*</span></label>
-                                                                    {{--@if($sub_indicator->unit_measure)--}}
-                                                                        {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
-                                                                    {{--@endif--}}
                                                                 </td>
                                                                 <td style="width: 200px">
                                                                     <div class="form-grou{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}">
