@@ -3,7 +3,7 @@
         <thead>
         <tr>
             <th>Disbursement-linked Indicators <br>(DLIs)</th>
-            <th>{{$years_between}} <br>Actual Results</th>
+            <th>Years # <br>Actual Results</th>
             <th>Project Cumulative Results</th>
             <th>End Target PAD</th>
             <th>Status of Project End Targets</th>

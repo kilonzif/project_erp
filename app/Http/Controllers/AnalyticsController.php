@@ -55,7 +55,10 @@ class AnalyticsController extends Controller
 
     public function getCumulativePDO(Request $request)
     {
-
+        $this->validate($request, [
+            'this_ace' => 'required|array',
+            'this_period' => 'required|array'
+        ]);
         $this_ace=$request->this_ace;
         $years_between = array();
         foreach ($request->this_period as $sp){
@@ -133,6 +136,11 @@ class AnalyticsController extends Controller
 
 
     public function calculateAggregate(Request $request){
+        $this->validate($request, [
+            'selected_period' => 'required|array',
+            'selected_ace' => 'required|array',
+            'topic_name' => 'required|string'
+        ]);
         foreach ($request->selected_period as $sp){
             $period = ReportingPeriod::query()->where('id',$sp)->first();
             $start_year = date('Y',strtotime($period->period_start));
@@ -160,8 +168,6 @@ class AnalyticsController extends Controller
         $total_enrolled = [];
         $student_internship = [];
         $faculty_internship = [];
-
-
 
         $reports= Report::getReports($start_period,$end_period);
 
@@ -226,7 +232,7 @@ class AnalyticsController extends Controller
 
 
 
-               //AGGREGATE PROGRAMME ACCREDITATION
+            //AGGREGATE PROGRAMME ACCREDITATION
             $national_accreditation [$key]= DB::connection('mongodb')->collection('indicator_7.3')
                 ->whereIn('report_id', $reports)
                 ->where(function ($query) {
@@ -282,39 +288,29 @@ class AnalyticsController extends Controller
 
             $total_enrolled[$key]=$masters_students [$key]+$prof_students [$key]+$phd_students [$key] ;
 
-             //Internship
+            //Internship
 
             $student_internship[$key] = DB::connection('mongodb')->collection('indicator_5.2')
-                                     ->whereIn('report_id', $reports)
-                                    ->where('start-date-ddmmyyyy','=',$this_year)
-                                    ->where(function ($query) {
-                                        $query->where('studentfaculty', 'like', "Student%")
-                                            ->orWhere('studentfaculty', 'like', "stud%");
-                                    })
-                                    ->count();
+                ->whereIn('report_id', $reports)
+                ->where('start-date-ddmmyyyy','=',$this_year)
+                ->where(function ($query) {
+                    $query->where('studentfaculty', 'like', "Student%")
+                        ->orWhere('studentfaculty', 'like', "stud%");
+                })
+                ->count();
             $faculty_internship[$key] = DB::connection('mongodb')->collection('indicator_5.2')
-                                      ->whereIn('report_id', $reports)
-                                        ->where(function ($query) {
-                                            $query->where('studentfaculty', 'like', "F%")
-                                                ->orWhere('studentfaculty', 'like', "f%");
-                                        })
-                                        ->where('start-date-ddmmyyyy','=',$this_year)
-                                        ->count();
+                ->whereIn('report_id', $reports)
+                ->where(function ($query) {
+                    $query->where('studentfaculty', 'like', "F%")
+                        ->orWhere('studentfaculty', 'like', "f%");
+                })
+                ->where('start-date-ddmmyyyy','=',$this_year)
+                ->count();
 
 
         }
 
-        $research_publication= DB::connection('mongodb')->collection('indicator_4.2')
-            ->select('publication-name')
-            ->groupBy('publication-year');
-//            ->count();
-
-        foreach ($research_publication as $i){
-            $publication_year[]=DB::connection('mongodb')->collection('indicator_4.2')
-                ->select('publication-year');
-        }
-        return response() ->json(['publication_year'=>$publication_year,'research_publication'=>$research_publication,
-            'years'=>$years,'actual_external_revenue'=>$actual_external_revenue,'target_external_revenue'=>$target_external_revenue,
+        return response() ->json(['years'=>$years,'actual_external_revenue'=>$actual_external_revenue,'target_external_revenue'=>$target_external_revenue,
             'international_accreditation'=>$international_accreditation,'national_accreditation'=>$national_accreditation,
             'total_students'=>$total_students,'regional_students'=>$regional_students,
             'national_students'=>$national_students,'target_students'=>$target_students,'total_enrolled'=>$total_enrolled,

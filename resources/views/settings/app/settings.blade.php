@@ -166,6 +166,7 @@
                                             <th style="width: 100px">Reporting Period #</th>
                                             <th>Start</th>
                                             <th>End</th>
+                                            <th>Active Status</th>
                                             <th>Actions</th>
                                         </tr>
                                         @php
@@ -190,13 +191,24 @@
                                                 <td>{{$start}}</td>
                                                 <td>{{$end}}</td>
                                                 <td>
+                                                    @php
+                                                        $type = "success";
+                                                        $text = "Active";
+                                                        if ($period->active_period == false) {$type = "danger"; $text = "Closed";};
+                                                    @endphp<span class="badge badge-{{$type}}">{{$text}}</span>
+                                                </td>
+                                                <td>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                         <a href="#form_template" onclick="edit_period('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')" class="btn btn-s btn-secondary">
                                                             <i class="ft-edit"></i></a>
                                                         <a href="{{route('settings.app_settings.delete_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}"
                                                            class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Period?');"
                                                            title="Delete Report"><i class="ft-trash-2"></i></a>
+
+
                                                     </div>
+
+
                                                 </td>
                                             </tr>
                                         @endforeach

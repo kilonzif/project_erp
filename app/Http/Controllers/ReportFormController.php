@@ -69,9 +69,10 @@ class ReportFormController extends Controller {
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 
 		$reporting_periods = ReportingPeriod::all();
+		$active_period = ReportingPeriod::where('active_period','=',true)->get();
 
 		if ($project) {
-			return view('report-form.new', compact('project', 'aces', 'me', 'ace_officers','indicators','reporting_periods'));
+			return view('report-form.new', compact('project', 'aces', 'me', 'ace_officers','indicators','reporting_periods','active_period'));
 		} else {
 			notify(new ToastNotification('Notice!', 'Please add the project first!', 'warning'));
 			return back();
@@ -92,10 +93,12 @@ class ReportFormController extends Controller {
                 'reporting_period' => 'required|string',
                 'submission_date' => 'nullable|string|date',
             ]);
+            if($request->has('ace_officer')){
+                $this->validate($request,[
+                    'ace_officer' =>'required',
+                ]);
+            }
             $report_id = null;
-
-//            DB::transaction(function () use ($request,$report_id) {
-
                 if (isset($request->ace_officer)) {
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
                 } else {
@@ -122,6 +125,8 @@ class ReportFormController extends Controller {
                 $report->save();
                 $report_id = $report->id;
 
+
+
                 ReportStatusTracker::create([
                     'report_id' => $report->id,
                     'status_code' => 99,
@@ -139,7 +144,6 @@ class ReportFormController extends Controller {
 		}
 		$exist = Report::where('project_id', '=', Crypt::decrypt($request->project_id))
 			->where('ace_id', '=', $ace_id)
-			->where('reporting_period_id', '=', $request->reporting_period)
 			->first();
 		if ($exist) {
 			notify(new ToastNotification('Duplicate', 'The report already exist.', 'error'));
@@ -151,7 +155,7 @@ class ReportFormController extends Controller {
 				'project_id' => 'required|string|min:100',
 				'indicators' => 'required|array|min:1',
 				'indicators.*' => 'required|numeric|min:0',
-				'reporting_period' => 'required|string',
+				'reporting_period_id' => 'required|string|min:100',
 				'submission_date' => 'nullable|string|date',
 			]);
 
@@ -176,8 +180,8 @@ class ReportFormController extends Controller {
 				$report->project_id = $project_id;
 				$report->ace_id = $ace_id;
 				$report->status = 1;
-				$report->reporting_period_id = $request->reporting_period;
 				$report->editable =False;
+				$report->reporting_period_id = $request->reporting_period;
 				$report->submission_date = $submission_date;
 				if (isset($request->ace_officer)) {
 					$report->user_id = Crypt::decrypt($request->ace_officer);
@@ -284,7 +288,6 @@ class ReportFormController extends Controller {
 		$this->validate($request, [
 			'ace_id' => 'required|string|min:100',
 			'project_id' => 'required|string|min:100',
-			'reporting_period' => 'required|string',
 			'submission_date' => 'nullable|string|date',
 		]);
 		if (isset($request->ace_officer)) {
@@ -363,7 +366,6 @@ class ReportFormController extends Controller {
             ->get();
 
         $reporting_period = ReportingPeriod::where('id',$report->reporting_period_id)->first();
-
 
 		if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
 
@@ -533,13 +535,13 @@ class ReportFormController extends Controller {
 					'report_id' => 'required|string|min:100',
 					'indicators' => 'required|array|min:1',
 					'indicators.*' => 'required|numeric|min:0',
-					'reporting_period' => 'required|string',
 				]);
 
 				$report_id = Crypt::decrypt($request->report_id);
 
 				$report = Report::find($report_id);
 				$report->reporting_period_id = $request->reporting_period;
+
 				$report->status = 1;
 				if (isset($request->ace_officer)) {
 					$ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
@@ -590,7 +592,6 @@ class ReportFormController extends Controller {
 		else {
 			$this->validate($request, [
 				'report_id' => 'required|string|min:100',
-				'reporting_period' => 'required|string',
 			]);
 			DB::transaction(function () use ($request) {
 				$report_id = Crypt::decrypt($request->report_id);

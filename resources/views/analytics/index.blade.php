@@ -30,20 +30,24 @@
                         <div class="card-body load-area">
 
                             {{--<form action="#">--}}
-
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <label for="ace_id">Select Ace <span class="required">*</span></label>
-                                        <div class="input-group">
+                                        <div class="input-group {{ $errors->has('ace_id') ? ' form-control-warning' : '' }}">
                                         <select  multiple="multiple" name="ace_id[]"  class="form-control select2" id="ace_id" required>
                                             @foreach($aces as $this_ace)
                                                 <option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
                                             @endforeach
                                         </select>
+                                            @if ($errors->has('ace_id'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('ace_id') }}</small>
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)</label><br>
+                                        <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)<span class="required">*</span></label><br>
                                         @foreach($periods as $key => $this_period)
                                             @php
                                                 $start_period = date('m-Y',strtotime($this_period->period_start));
@@ -59,9 +63,14 @@
                                                 $full_period = $start . "   -    " . $end;
                                             @endphp
                                             <div class=" col-md-4 d-inline">
-                                                <div class="d-inline custom-control custom-checkbox">
+                                                <div class="d-inline custom-control custom-checkbox {{ $errors->has('this_period') ? ' form-control-warning' : ''}}">
                                                     <input type="checkbox" name="this_period[]" value="{{$this_period->id}}" id="this_period{{$key}}">
-                                                    <label for="this_period">{{$full_period}}</label>
+                                                    <label for="this_period{{$key}}">{{$full_period}}</label>
+                                                    @if ($errors->has('this_period'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('this_period') }}</small>
+                                                        </p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endforeach
@@ -98,10 +107,10 @@
                         <div class="card-content collapse show">
                         <div class="card-body">
                                 <div class="form-group row">
-                                    <div class="col-6">
-                                        <label>Aggregate Topic: </label>
+                                    <div class="col-6 form-group {{ $errors->has('topic_name') ? ' form-control-warning' : ''}}">
+                                        <label>Aggregate Topic <span class="required"> *</span> </label>
                                         <select class="form-control select-lg" name="topic_name" id="topic_name">
-                                            <option selected disabled>Select aggregate topic</option>
+                                            <option selected value="">Select aggregate topic</option>
                                             <option value="Aggregate Student">Aggregate Student</option>
                                             <option value="Student Enrollment">Student Enrollment</option>
                                             <option value="Aggregate Internships/Outreach">Aggregate Internships/Outreach</option>
@@ -109,20 +118,31 @@
                                             <option value="AGGREGATE EXTERNAL REVENUE">Aggregate External Revenue</option>
                                             <option VALUE="AGGREGATE PROGRAMME ACCREDITATION">Aggregate Programme Accreditation</option>
                                         </select>
+                                        @if ($errors->has('topic_name'))
+                                            <p class="text-right">
+                                                <small class="warning text-muted">{{ $errors->first('topic_name') }}</small>
+                                            </p>
+                                        @endif
+
                                     </div>
                                     <div class="col-6">
                                         <label for="ace_id">Select Ace <span class="required">*</span></label>
-                                        <div class="input-group">
+                                        <div class="input-group {{ $errors->has('selected_ace') ? ' form-control-warning' : ''}}">
                                             <select  multiple="multiple" name="selected_ace[]"  class="form-control select2" id="selected_ace" required>
                                                 @foreach($aces as $this_ace)
                                                     <option  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
                                                 @endforeach
                                             </select>
+                                            @if ($errors->has('selected_ace'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('selected_ace') }}</small>
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label for="selected_period" style="margin-top: 1.4rem">Select Reporting Period (s)</label><br>
-                                        <div class="input-group">
+                                        <label for="selected_period" style="margin-top: 1.4rem">Select Reporting Period (s) <span class="required"> *</span> </label><br>
+                                        <div class="input-group {{ $errors->has('selected_period') ? ' form-control-warning' : ''}}">
                                             <select  multiple="multiple" name="selected_period[]"  class="form-control select2" id="selected_period" required>
                                                 <option disabled>Select Period</option>
                                                 @foreach($periods as $period)
@@ -142,10 +162,15 @@
                                                     <option  value="{{$period->id}}">{{$full_period}}</option>
                                                 @endforeach
                                             </select>
+                                            @if ($errors->has('selected_period'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('selected_period') }}</small>
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <label for="filter-by">Filter By</label>
+                                        <label for="filter-by" style="margin-top: 1.1rem">Filter By</label>
                                         <div class="input-group">
                                             <select class="form-control select-lg filter_select" name="filter_by" id="filter_by">
                                                 <option value=""  selected disabled>Add Filter...</option>
@@ -156,7 +181,6 @@
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        {{--<label>Select Filter</label>--}}
                                         <div class="accordion-icon-rotate left" id="forField" style="display:none">
                                             <div id="byField_1" class="card-header sm-white bg-gradient-4">
                                                 <a href="#" class="card-title lead gray">Filter By Field of Study</a>
@@ -223,6 +247,7 @@
 @endsection
 @push('vendor-script')
 {{--    <script src="{{asset('vendors/js/charts/echarts/echarts.js')}}" type="text/javascript"></script>--}}
+<script src="{{ asset('vendors/js/extensions/toastr.min.js') }}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/dateTime/moment-with-locales.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/dateTime/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
@@ -280,6 +305,14 @@
 
         //Script for Cumulative PDO
         function showCumulativePDO() {
+            if($("select[name='ace_id[]'] option:selected").length == 0){
+                toastr['warning']('Input field for aces is required', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                return false;
+            };
+            if($("input[name='this_period[]']:checkbox:checked").length == 0){
+                toastr['warning']('Input field for Reporting Period is required', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                return false;
+            };
 
             let block_ele = $(this).closest('.load-area');
             let this_period = $("input[name='this_period[]']:checkbox:checked").map(function () {
@@ -331,6 +364,15 @@
 
 
         function  calculateAggregate() {
+            if($("input[name='selected_period[]']:checkbox:checked").length == 0){
+                toastr['warning']('Input field for Reporting Period is required', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                return false;
+            };
+
+            if($("#topic_name").val() ==""){
+                toastr['warning']('Input field for aces is required', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                return false;
+            }
 
             let topic_name = $("#topic_name").val();
             let selected_period = $("#selected_period").val();

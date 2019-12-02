@@ -46,8 +46,8 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="ace_officer">Select ACE Officer <span class="required">*</span></label>
-                                                        <select name="ace_officer" class="form-control select2" id="ace_officer" required>
-                                                            <option selected disabled>Select Officer</option>
+                                                        <select required="required" name="ace_officer" class="form-control select2" id="ace_officer">
+                                                            <option selected value="" disabled>Select Officer</option>
                                                             @foreach($ace_officers as $key=>$ace_officer)
                                                                 <option {{old('ace_officer')? "selected": ''}} value="{{\Illuminate\Support\Facades\Crypt::encrypt($key)}}">{{$ace_officer}}</option>
                                                             @endforeach
@@ -59,13 +59,43 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                            @endif
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         <label for="reporting_period">Reporting Period<span class="required">*</span></label>
                                                         <select class="form-control" name="reporting_period">
-                                                            <option selected disabled>Select Period</option>
-                                                            @foreach($reporting_periods as $period)
+                                                        @foreach($reporting_periods as $period)
+                                                            @php
+                                                                $start_period = date('m-Y',strtotime($period->period_start));
+                                                                $end_period = date('m-Y',strtotime($period->period_end));
+                                                                $monthNum1=date('m',strtotime($period->period_start));
+                                                                $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                                $year1 = date('Y',strtotime($period->period_start));
+                                                                $start = $monthName1 .', '.$year1;
+                                                                $monthNum2=date('m',strtotime($period->period_end));
+                                                                $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                                $year2 = date('Y',strtotime($period->period_end));
+                                                                $end =$monthName2 .', '.$year2;
+                                                                $full_period = $start ."    -  ". $end;
+                                                            @endphp
+                                                            <option value="{{$period->id}}">{{$full_period}}</option>
+                                                        @endforeach
+                                                        </select>
+                                                        <input type="hidden" value="">
+                                                        @if ($errors->has('reporting_period'))
+                                                            <p class="text-right">
+                                                                <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                                @if (\Auth::user()->hasRole('ace-officer'))
+
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="reporting_period">Reporting Period</label>
+                                                            @foreach($active_period as $period)
                                                                 @php
                                                                     $start_period = date('m-Y',strtotime($period->period_start));
                                                                     $end_period = date('m-Y',strtotime($period->period_end));
@@ -79,17 +109,12 @@
                                                                     $end =$monthName2 .', '.$year2;
                                                                     $full_period = $start ."    -  ". $end;
                                                                 @endphp
-
-                                                                <option value="{{$period->id}}">{{$full_period}}</option>
+                                                                <h6>{{$full_period}}</h6>
+                                                                <input type="hidden"  name="reporting_period" value="{{$period->id}}">
                                                              @endforeach
-                                                        </select>
-                                                        @if ($errors->has('reporting_period'))
-                                                            <p class="text-right">
-                                                                <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>
-                                                            </p>
-                                                        @endif
                                                     </div>
                                                 </div>
+                                                @endif
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="date_submission">Date of Submission <span class="required">*</span></label>

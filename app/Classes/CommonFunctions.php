@@ -8,6 +8,7 @@
 
 namespace App\Classes;
 
+use App\ReportingPeriod;
 use App\SystemOption;
 use Illuminate\Support\Facades\Auth;
 
@@ -157,9 +158,10 @@ class CommonFunctions {
 	}
 
 	public function isSubmissionOpen() {
-		$opened = SystemOption::where('option_name', '=', 'app_deadline')
-			->where('status', '=', 1)
-			->count();
+	    $opened = ReportingPeriod::where('active_period','=',1)->count();
+//		$opened = SystemOption::where('option_name', '=', 'app_deadline')
+//			->where('status', '=', 1)
+//			->count();
 		if ($opened > 0 or Auth::user()->ability(['webmaster', 'super-admin'], ['close-submission'])) {
 			return true;
 		} else {
