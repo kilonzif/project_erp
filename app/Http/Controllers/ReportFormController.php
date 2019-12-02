@@ -495,6 +495,7 @@ class ReportFormController extends Controller {
 		$project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 		$report = Report::find($id);
         $reporting_period = ReportingPeriod::find($report->reporting_period_id);
+        $reporting_periods = ReportingPeriod::all();
 
 		if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
@@ -518,7 +519,7 @@ class ReportFormController extends Controller {
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
-		return view('report-form.edit', compact('project', 'reporting_period','report', 'aces','comment','values', 'ace_officers',
+		return view('report-form.edit', compact('project', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
             'indicators','result','indicator_5_2','indicator_4_1','indicator_7_3'));
 	}
 

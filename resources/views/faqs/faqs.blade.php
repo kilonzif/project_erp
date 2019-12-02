@@ -25,7 +25,9 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <ul class="nav nav-tabs nav-underline no-hover-bg nav-justified" role="tablist">
+                            <div class="nav-vertical">
+                            {{--<ul class="nav nav-tabs nav-underline no-hover-bg nav-justified" role="tablist">--}}
+                            <ul class="nav nav-tabs nav-left nav-border-left no-hover-bg" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active" id="active-tab32" data-toggle="tab" href="#active32" aria-controls="active32" role="tab" aria-selected="true">All FAQs</a>
                                 </li>
@@ -39,7 +41,7 @@
                                     <a class="nav-link" id="linkOpt-tab22" data-toggle="tab" href="#linkOpt22" aria-controls="linkOpt22">System FAQs</a>
                                 </li>
                             </ul>
-                            <div class="tab-content px-1 pt-1">
+                            <div class="tab-content px-1">
                                 <div class="tab-pane active in" id="active32" aria-labelledby="active-tab32" role="tabpanel">
                                     @if(sizeof($allfaqs) > 0)
                                         @foreach($allfaqs as $faq)
@@ -70,22 +72,22 @@
                                     @if(sizeof($general) > 0)
                                         @foreach($general as $general)
                                             <div class="card mb-1">
-                                                <div class="card-header">
-                                                    <h4 class="card-title" style="font-weight: 400; text-transform: none">{{$general->question}}</h4>
-                                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                                                    <div class="heading-elements">
-                                                        <ul class="list-inline mb-0">
-                                                            <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="card-content collapse">
-                                                    <div class="card-body">
-                                                        <div class="card-text">
+                                                {{--<div class="card-header">--}}
+                                                    <h4 class="title" style="font-weight: 400; text-transform: none">{{$general->question}}</h4>
+                                                    {{--<a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>--}}
+                                                    {{--<div class="heading-elements">--}}
+                                                        {{--<ul class="list-inline mb-0">--}}
+                                                            {{--<li><a data-action="collapse"><i class="ft-plus"></i></a></li>--}}
+                                                        {{--</ul>--}}
+                                                    {{--</div>--}}
+                                                {{--</div>--}}
+                                                {{--<div class="card-content collapse">--}}
+                                                    {{--<div class="card-body">--}}
+                                                        <p class="card-text">
                                                             {!! $general->answer !!}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                        </p>
+                                                    {{--</div>--}}
+                                                {{--</div>--}}
                                             </div>
                                         @endforeach
                                     @else
@@ -146,13 +148,13 @@
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
     </section>
-
 @endsection
 
 
