@@ -156,9 +156,10 @@
         });
 
         function loadFields() {
-            var selected = $('#indicator').val();
+            let selected = $('#indicator').val();
 
-            var path = "{{route('getIndicatorFields')}}"
+            let path = "{{route('getIndicatorFields')}}";
+            let css_path = "{{asset('vendors/js/forms/select/select2.full.min.js')}}";
             $.ajaxSetup(    {
                 headers: {
                     'X-CSRF-Token': $('meta[name=_token]').attr('content')
@@ -186,12 +187,11 @@
                     $('#action-card').empty();
                 },
                 success: function(data){
-                    console.log(data)
                     $('#action-card').html(data.theView);
                 },
                 complete:function(){
                     $('#action-loader').unblock();
-                    $.getScript("http://127.0.0.1:8000/vendors/js/forms/select/select2.full.min.js")
+                    $.getScript(css_path)
                 }
                 ,
                 error: function (data) {
