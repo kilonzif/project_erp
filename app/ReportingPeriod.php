@@ -14,4 +14,8 @@ class ReportingPeriod extends Model
 
     protected $dates = ['deleted_at'];
 
+
+
+
+
 }

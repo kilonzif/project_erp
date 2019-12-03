@@ -45,6 +45,7 @@ class ReportFormController extends Controller {
 		} else {
 			$ace_reports = Report::SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->get();
 		}
+
 		return view('report-form.index', compact('ace_reports', 'me','notsubmitted'));
 	}
 
@@ -1008,6 +1009,25 @@ class ReportFormController extends Controller {
 
 
         return $indicator_7_3_values;
+    }
+
+    public static function getReportingName($id){
+
+        $period = ReportingPeriod::find($id);
+        $start_period = date('m-Y',strtotime($period->period_start));
+        $monthNum1=date('m',strtotime($period->period_start));
+        $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+        $year1 = date('Y',strtotime($period->period_start));
+
+        $start = $monthName1 .', '.$year1;
+        $monthNum2=date('m',strtotime($period->period_end));
+        $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+        $year2 = date('Y',strtotime($period->period_end));
+        $end =$monthName2 .', '.$year2;
+        $full_period = $start . "   -    " . $end;
+
+        return $full_period;
+
     }
 
 
