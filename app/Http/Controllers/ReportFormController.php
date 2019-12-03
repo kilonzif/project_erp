@@ -709,7 +709,7 @@ class ReportFormController extends Controller {
             ->orderBy('identifier','asc')
             ->get();
 
-        $filters = ["PhD","Masters","Bachelors","Course"];
+        $filters = ["PhD","Master","Bachelors","Course"];
         $indicator_3_values = array();
 
         foreach ($indicators as $key=>$indicator) {
