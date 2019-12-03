@@ -2,6 +2,20 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        .nav-vertical .nav-left.nav-tabs li.nav-item a.nav-link{
+            min-width: 12rem;
+        }
+        .nav-vertical .nav-left.nav-tabs.nav-border-left li.nav-item a.nav-link{
+            color:#555;
+        }
+        .nav-vertical .nav-left.nav-tabs.nav-border-left li.nav-item a.nav-link.active {
+            border-left: 3px solid #00B5B8;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            color:#00B5B8;
+        }
+    </style>
     <div class="content-header row">
         <div class="content-header-left col-md-12 col-12 mb-2">
             <div class="row breadcrumbs-top">
@@ -21,13 +35,12 @@
 
     <section id="justified-bottom-border">
         <div class="row match-height">
-            <div class="col-xl-12 col-lg-12">
+            <div class="col-md-3">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="nav-vertical">
-                            {{--<ul class="nav nav-tabs nav-underline no-hover-bg nav-justified" role="tablist">--}}
-                            <ul class="nav nav-tabs nav-left nav-border-left no-hover-bg" role="tablist">
+                            <ul class="nav nav-tabs nav-left nav-border-left" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active" id="active-tab32" data-toggle="tab" href="#active32" aria-controls="active32" role="tab" aria-selected="true">All FAQs</a>
                                 </li>
@@ -41,26 +54,24 @@
                                     <a class="nav-link" id="linkOpt-tab22" data-toggle="tab" href="#linkOpt22" aria-controls="linkOpt22">System FAQs</a>
                                 </li>
                             </ul>
-                            <div class="tab-content px-1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content px-1">
                                 <div class="tab-pane active in" id="active32" aria-labelledby="active-tab32" role="tabpanel">
                                     @if(sizeof($allfaqs) > 0)
                                         @foreach($allfaqs as $faq)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 class="card-title" style="font-weight: 400; text-transform: none">{{$faq->question}}</h4>
-                                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                                                    <div class="heading-elements">
-                                                        <ul class="list-inline mb-0">
-                                                            <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                                                        </ul>
-                                                    </div>
+                                                    <h4 style="font-weight: bold">{{$faq->question}}</h4>
                                                 </div>
-                                                <div class="card-content collapse">
-                                                    <div class="card-body">
-                                                        <div class="card-text">
+                                                <div class="card-content">
+                                                        <div class="card-body">
                                                             {!! $faq->answer !!}
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -72,22 +83,14 @@
                                     @if(sizeof($general) > 0)
                                         @foreach($general as $general)
                                             <div class="card mb-1">
-                                                {{--<div class="card-header">--}}
-                                                    <h4 class="title" style="font-weight: 400; text-transform: none">{{$general->question}}</h4>
-                                                    {{--<a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>--}}
-                                                    {{--<div class="heading-elements">--}}
-                                                        {{--<ul class="list-inline mb-0">--}}
-                                                            {{--<li><a data-action="collapse"><i class="ft-plus"></i></a></li>--}}
-                                                        {{--</ul>--}}
-                                                    {{--</div>--}}
-                                                {{--</div>--}}
-                                                {{--<div class="card-content collapse">--}}
-                                                    {{--<div class="card-body">--}}
-                                                        <p class="card-text">
+                                                <div class="card-header">
+                                                    <h4 style="font-weight: bold">{{$general->question}}</h4>
+                                                </div>
+                                                <div class="card-content">
+                                                        <div class="card-body">
                                                             {!! $general->answer !!}
-                                                        </p>
-                                                    {{--</div>--}}
-                                                {{--</div>--}}
+                                                        </div>
+                                                </div>
                                             </div>
                                         @endforeach
                                     @else
@@ -99,20 +102,12 @@
                                         @foreach($aces as $aces)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 class="card-title" style="font-weight: 400; text-transform: none">{{$aces->question}}</h4>
-                                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                                                    <div class="heading-elements">
-                                                        <ul class="list-inline mb-0">
-                                                            <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                                                        </ul>
-                                                    </div>
+                                                    <h4 style="font-weight: bold;">{{$aces->question}}</h4>
                                                 </div>
-                                                <div class="card-content collapse">
-                                                    <div class="card-body">
-                                                        <div class="card-text">
+                                                <div class="card-content">
+                                                        <div class="card-body">
                                                             {!! $aces->answer !!}
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -125,20 +120,12 @@
                                         @foreach($system as $system)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 class="card-title" style="font-weight: 400; text-transform: none">{{$system->question}}</h4>
-                                                    <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                                                    <div class="heading-elements">
-                                                        <ul class="list-inline mb-0">
-                                                            <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                                                        </ul>
-                                                    </div>
+                                                    <h4 style="font-weight: bold">{{$system->question}}</h4>
                                                 </div>
-                                                <div class="card-content collapse">
-                                                    <div class="card-body">
-                                                        <div class="card-text">
+                                                <div class="card-content">
+                                                        <div class="card-body">
                                                             {!! $system->answer !!}
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -147,14 +134,10 @@
                                     @endif
                                 </div>
                             </div>
+                            </div>
                         </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
     </section>
+
 @endsection
 
 
