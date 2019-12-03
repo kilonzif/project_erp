@@ -82,7 +82,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::put('user/{id}/change_password', 'UserController@save_password')->name('user.change_password');
     Route::post('user/{id}/permissions', 'UserController@permissions_save')->name('user.permissions_save');
     Route::post('user/{id}/roles', 'UserController@roles_save')->name('user.roles_save');
-    Route::delete('user/{user}', 'UserController@remove_user')->name('user.remove');
+    Route::get('user/{user}', 'UserController@remove_user')->name('user.remove');
     Route::delete('user/{user}/status', 'UserController@status_user')->name('user.delete');
     //ACEs Routes
     Route::get('aces', 'AcesController@index')->name('aces');

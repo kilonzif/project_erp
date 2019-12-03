@@ -202,12 +202,9 @@
                                                             <i class="ft-user-x"></i>
                                                         @endif
                                                     </a>
-                                                    <a class="dropdow-item btn btn-danger btn-s"
-                                                       href="{{ route('user-management.user.remove',[\Illuminate\Support\Facades\Crypt::encrypt($user->id)]) }}"
-                                                       onclick="event.preventDefault();
-                                                     document.getElementById('delete-form-{{$count}}').submit();">
-                                                        <i class="ft-trash-2"></i>
-                                                    </a>
+                                                    <a href="{{route('user-management.user.remove',[\Illuminate\Support\Facades\Crypt::encrypt($user->id)])}}"
+                                                       class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this user?');"
+                                                       title="Delete User"><i class="ft-trash-2"></i></a>
                                                 </div>
 
                                                 <form id="status-form-{{$count}}" action="{{ route('user-management.user.delete',[\Illuminate\Support\Facades\Crypt::encrypt($user->id)]) }}" method="POST" style="display: none;">

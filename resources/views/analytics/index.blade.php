@@ -3,6 +3,8 @@
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/daterange/daterangepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/datetime/bootstrap-datetimepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/pickadate/pickadate.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">
 @endpush
 @push('other-styles')
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -47,7 +49,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)<span class="required">*</span></label><br>
+                                        <div class="row">
+                                        <div class="col-md-12">
+                                            <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)<span class="required">*</span></label><br>
+                                        </div>
                                         @foreach($periods as $key => $this_period)
                                             @php
                                                 $start_period = date('m-Y',strtotime($this_period->period_start));
@@ -74,6 +79,7 @@
                                                 </div>
                                             </div>
                                         @endforeach
+                                    </div>
                                     </div>
                                     <div class="col-md-4 offset-4">
                                         <button class="btn btn-primary block-custom-message" style="margin-top: 25px;"
@@ -256,11 +262,11 @@
     <script src="{{asset('vendors/js/pickers/pickadate/picker.time.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/pickadate/legacy.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/pickers/daterange/daterangepicker.js')}}" type="text/javascript"></script>
+
+    <script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>
 @endpush()
 @push('end-script')
-{{--    <script src="{{asset('js/scripts/pickers/dateTime/bootstrap-datetime.js')}}" type="text/javascript"></script>--}}
-{{--    <script src="{{asset('js/scripts/pickers/dateTime/pick-a-datetime.js')}}" type="text/javascript"></script>--}}
-    <script>
+ <script>
         // Single Date Range Picker
         $('.singledate').daterangepicker({
             singleDatePicker: true,

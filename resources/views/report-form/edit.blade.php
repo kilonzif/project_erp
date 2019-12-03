@@ -64,9 +64,38 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                        @endif
                                             <div class="col-md-4">
-
+                                                <div class="form-group">
+                                                    <label for="reporting_period">Reporting Period<span class="required">*</span></label>
+                                                    <select class="form-control" name="reporting_period">
+                                                        @foreach($reporting_periods as $period)
+                                                            @php
+                                                                $start_period = date('m-Y',strtotime($period->period_start));
+                                                                $end_period = date('m-Y',strtotime($period->period_end));
+                                                                $monthNum1=date('m',strtotime($period->period_start));
+                                                                $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                                                $year1 = date('Y',strtotime($period->period_start));
+                                                                $start = $monthName1 .', '.$year1;
+                                                                $monthNum2=date('m',strtotime($period->period_end));
+                                                                $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                                                $year2 = date('Y',strtotime($period->period_end));
+                                                                $end =$monthName2 .', '.$year2;
+                                                                $full_period = $start ."    -  ". $end;
+                                                            @endphp
+                                                            <option {{($report->reporting_period_id == $period->id)  ? "selected":""}} value="{{$period->id}}">{{$full_period}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <input type="hidden" value="">
+                                                    @if ($errors->has('reporting_period'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('reporting_period') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if (\Auth::user()->hasRole('ace-officer'))
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="reporting_period">Reporting Period<span class="required">*</span></label>
                                                     @php
@@ -86,6 +115,7 @@
                                                     <input type="hidden" name="reporting_period" value="{{$reporting_period->id}}">
                                                 </div>
                                             </div>
+                                        @endif
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="date_submission">Date of Submission <span class="required">*</span></label>
