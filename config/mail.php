@@ -60,6 +60,8 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'aau_email' => 'info@aau.org',
+
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol
