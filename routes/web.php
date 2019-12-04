@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,18 +30,40 @@ Route::get('/sendbasicemail', 'MailController@basic_email');
 
 Route::get('/send-mail', function () {
 
-    $send_mail = new \App\Classes\SystemMail();
-    try {
+//    $send_mail = new \App\Classes\SystemMail();
+//    try {
         $user = \App\User::find(2);
-        $send_mail->to('asowa45@gmail.com')
-            ->from('no-reply@aau@org')
-            ->subject('Account Confirmation & Password')
-            ->markdown('mail.email-confirmation', ['user' => $user])
-            ->send();
-        return "Sent you";
-    } catch (\Throwable $exception) {
-        return "Hello";
-    }
+//        dd($user);
+//        $send_mail->to('asowa45@gmail.com')
+//            ->from('no-reply@aau@org')
+//            ->subject('Account Confirmation & Password')
+//            ->markdown('mail.email-confirmation', ['user' => $user])
+//            ->send();
+//        $data = "Hello, Testing mail";
+        $subject = "Email Subject";
+        $emails = ['asowa45@gmail.com'];
+        $ccs = ['alfred.sowa@makeduconsult.com'];
+//        $user = \App\User::find(2);
+//        $fileName = 'testing_1546452037.pdf';
+//        $attachLink = \Storage::url('app/public/workflow_attachments/'.$fileName);
+//        $attachLink = base_path().''.$attachLink;
+        $attachLink = null;
+//        dd($user);
+       Mail::send('mail.email-confirmation',['user' => $user],
+            function ($message) use($emails,$subject,$ccs,$attachLink) {
+                $message->to($emails)
+                    ->subject($subject);
+//                    ->cc($ccs);
+//                if ($attachLink!=null){
+//                    $message->attach($attachLink);
+//                }
+            });
+//        dd($user);
+    dd(Mail::failures());
+//        return "Sent you";
+//    } catch (\Throwable $exception) {
+//        return "Hello";
+//    }
 
 }
 

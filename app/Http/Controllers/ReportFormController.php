@@ -518,6 +518,7 @@ class ReportFormController extends Controller {
         $result = $this->generateAggregatedIndicator3Results($id);
         $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
         $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
+        $indicator_4_2 = $this->generateAggregatedIndicator42Results($id);
         $indicator_7_3 = $this->generateAggregatedIndicator73Results($id);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
@@ -525,7 +526,7 @@ class ReportFormController extends Controller {
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
 		return view('report-form.edit', compact('project', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
-            'indicators','result','indicator_5_2','indicator_4_1','indicator_7_3'));
+            'indicators','result','indicator_5_2','indicator_4_1','indicator_4_2','indicator_7_3'));
 	}
 
     /**
@@ -810,6 +811,11 @@ class ReportFormController extends Controller {
 
 	}
 
+    /**
+     * Generate Aggregated results for Indicator 5.2
+     * @param $report_id
+     * @return array
+     */
     public function generateAggregatedIndicator52Results($report_id)
     {
         $indicator_5_2_values = array();
@@ -839,6 +845,11 @@ class ReportFormController extends Controller {
         return $indicator_5_2_values;
 	}
 
+    /**
+     * Generate Aggregated results for Indicator 4.1
+     * @param $report_id
+     * @return array
+     */
     public function generateAggregatedIndicator41Results($report_id)
     {
         $indicator_4_1_values = array();
@@ -911,6 +922,40 @@ class ReportFormController extends Controller {
 
         return $indicator_4_1_values;
 	}
+
+    /**
+     * Generate Aggregated results for Indicator 4.1
+     * @param $report_id
+     * @return array
+     */
+    public function generateAggregatedIndicator42Results($report_id)
+    {
+        $indicator_4_2_values = array();
+
+        $indicator_4_2_values['non-regional']= DB::connection('mongodb')
+            ->collection('indicator_4.2')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','<>', "Regional")
+                    ->orWhere('type-of-accreditation2','<>', "regional");
+//                    ->orWhere('type-of-accreditation2','like', "n%")
+//                    ->orWhere('type-of-accreditation2','like', "N%");
+            })->count();
+
+        $indicator_4_2_values['regional'] = DB::connection('mongodb')
+            ->collection('indicator_4.2')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('type-of-accreditation2','=', "Regional")
+                    ->orWhere('type-of-accreditation2','=', "regional");
+//                    ->orWhere('type-of-accreditation2','like', "r%")
+//                    ->orWhere('type-of-accreditation2','like', "R%");
+            })->count();
+
+        return $indicator_4_2_values;
+    }
 
 //    public function generateAggregatedIndicator42Results($report_id)
 //    {
@@ -985,6 +1030,11 @@ class ReportFormController extends Controller {
 //        return $indicator_4_2_values;
 //    }
 
+    /**
+     * Generate Aggregated results for Indicator 7.3
+     * @param $report_id
+     * @return array
+     */
     public function generateAggregatedIndicator73Results($report_id)
     {
         $indicator_7_3_values = array();
@@ -1046,7 +1096,4 @@ class ReportFormController extends Controller {
         return $full_period;
 
     }
-
-
-
 }
