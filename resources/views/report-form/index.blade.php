@@ -46,7 +46,7 @@
                                     <thead>
                                     <tr>
                                         <th>ACE</th>
-                                        <th width="100px">Reporting Year</th>
+                                        <th width="100px">Reporting Period</th>
                                         <th width="100px">Uploaded On</th>
                                         <th width="100px">Status</th>
                                         <th width="50px">Action</th>
@@ -54,13 +54,19 @@
                                     </thead>
                                     <tbody>
                                     @foreach($ace_reports as $report)
+
                                         <tr>
                                             <td>
                                                 @if($report->ace)
                                                     {{$report->ace->name}} <strong>{{'('.$report->ace->acronym.')'}}</strong>
                                                 @endif
                                             </td>
-                                            <td>{{date('Y', strtotime($report->start_date))}}</td>
+                                            <td>
+                                                @php
+                                                    $reporting_period = \App\Http\Controllers\ReportFormController::getReportingName($report->reporting_period_id);
+                                            @endphp
+                                                {{$reporting_period}}
+                                            </td>
                                             <td>{{date('M d, Y', strtotime($report->submission_date))}}</td>
                                             <td>{!! $me->reportStatusTag($report->status) !!}</td>
                                             <td>
