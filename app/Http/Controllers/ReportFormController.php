@@ -920,8 +920,8 @@ class ReportFormController extends Controller {
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','<>', "Regional")
-                    ->orWhere('type-of-accreditation2','<>', "regional");
+                $query->where('country','<>', "Regional")
+                    ->orWhere('country','<>', "regional");
 //                    ->orWhere('type-of-accreditation2','like', "n%")
 //                    ->orWhere('type-of-accreditation2','like', "N%");
             })->count();
@@ -931,8 +931,8 @@ class ReportFormController extends Controller {
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "Regional")
-                    ->orWhere('type-of-accreditation2','=', "regional");
+                $query->where('country','=', "Regional")
+                    ->orWhere('country','=', "regional");
 //                    ->orWhere('type-of-accreditation2','like', "r%")
 //                    ->orWhere('type-of-accreditation2','like', "R%");
             })->count();
