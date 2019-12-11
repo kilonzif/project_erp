@@ -8,6 +8,7 @@ use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Indicator;
 use App\Indicator3;
+use App\Notifications\ReportSubmission;
 use App\Project;
 use App\Report;
 use App\ReportIndicatorsStatus;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ReportFormController extends Controller {
 	//
@@ -190,6 +192,8 @@ class ReportFormController extends Controller {
 					$report->user_id = Auth::id();
 				}
 				$report->save();
+				dd($report->notify(new ReportSubmission()));
+
 
 				foreach ($request->indicators as $indicator => $value) {
 					$report_values = new ReportValue();
@@ -553,7 +557,10 @@ class ReportFormController extends Controller {
 				} else {
 					$report->user_id = Auth::id();
 				}
+//                $report->notify(new ReportSubmission());
+
 				$report->save();
+
 
                 foreach ($request->indicators as $indicator => $value) {
 
@@ -586,6 +593,16 @@ class ReportFormController extends Controller {
                     }
 
                 }
+                $email_ace = Ace::query()->where('id',$report->ace_id);
+
+                $emails = array_merge($email_ace->pluck('email')->toArray(),[config('mail.aau_email')]);
+
+                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
+                    function ($message) use($emails) {
+                        $message->to($emails)
+                            ->subject("Report Submitted");
+                    });
+
 
 				notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
 			});

@@ -2,12 +2,15 @@
 
 namespace App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Laravelista\Comments\Commentable;
+
 
 class Report extends Model {
 	//
 	use Commentable;
+	use Notifiable;
 	protected $fillable = ['project_id', 'reporting_period_id', 'submission_date', 'user_id'];
 
 	public function project() {
