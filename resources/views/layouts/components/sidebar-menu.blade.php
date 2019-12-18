@@ -172,6 +172,15 @@
                             <span class="menu-title" data-i18n="">{{__('ACEs')}}</span>
                         </a>
                     </li>
+
+                    <li class="{{isRouteActive('user-management.contacts')}}">
+                        <a href="{{route('user-management.contacts')}}">
+                            <span class="menu-title" data-i18n="">{{__('Contacts')}}</span>
+                        </a>
+                    </li>
+
+
+
                     @endability
                 </ul>
             </li>
@@ -192,6 +201,8 @@
                 </a>
             </li>
             @endability
+
+
         </ul>
     </div>
 </div>

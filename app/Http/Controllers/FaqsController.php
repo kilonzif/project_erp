@@ -105,12 +105,12 @@ class FaqsController extends Controller
 
     public function faqs()
     {
-        $allfaqs = Faq::where('status','=',1)->get();
-        $system = Faq::where('category','=','System FAQs')->get();
-        $aces = Faq::where('category','=','ACE FAQs')->get();
-        $general = Faq::where('category','=','General FAQs')->get();
+        $system = Faq::where('category','=','System FAQs')->where('status','=',1)->get();
+        $reporting = Faq::where('category','=','Reporting FAQs')->where('status','=',1)->get();
+        $verification = Faq::where('category','=','Verification FAQs')->where('status','=',1)->get();
+        $general = Faq::where('category','=','General FAQs')->where('status','=',1)->get();
 
-        return view('faqs.faqs', compact('allfaqs','system','aces','general'));
+        return view('faqs.faqs', compact('system','reporting','verification','general'));
     }
 
 

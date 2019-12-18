@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Contacts;
 use App\Course;
 use App\SubIndicator;
 use App\Classes\ToastNotification;
@@ -9,7 +10,6 @@ use App\Indicator;
 use App\Project;
 use App\Specific;
 use App\UnitMeasure;
-use App\Aceemail;
 use App\Ace;
 use Complex\Exception;
 use Illuminate\Http\Request;
@@ -388,90 +388,6 @@ class SettingsController extends Controller
         return view('settings.projects', compact('indicators','projects'));
     }
 
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function mailing_list(){
-        $aces = Ace::all();
-        $aceemails= Aceemail::all();
-
-        return view('settings.mailinglist',compact('aces','aceemails'));
-    }
-
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function save_mailing_list(Request $request){
-
-        $this->validate($request,[
-            'ace_id' => 'required|string|min:1',
-            'mailing_name' => 'required|string|min:1',
-            'mailing_title' => 'required|string|min:1',
-            'mailing_phone' => 'required|string|min:10',
-            'mailing_email' => 'required|string|min:1',
-        ]);
-
-        Aceemail::create([
-            'ace_id' => $request->ace_id,
-            'contact_name' => $request->mailing_name,
-            'contact_title' => $request->mailing_title,
-            'contact_phone' => $request->mailing_phone,
-            'email' => $request->mailing_email
-        ]);
-        notify(new ToastNotification('Successful!', 'Contact Person Added!', 'success'));
-        return back();
-    }
-
-    /**
-     * @param $id
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function edit_mailinglist($id){
-        $aceemail_id = Crypt::decrypt($id);
-        $aceemails = Aceemail::find($aceemail_id);
-        $ace = Ace::find($aceemails->ace_id);
-
-        return view('settings.mailinglist.edit', compact('aceemails','ace'));
-    }
-
-    /**
-     * @param Request $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update_mailinglist(Request $request,$id){
-
-        $aceemails = Aceemail::find($id);
-
-        $aceemails->ace_id =$aceemails->ace_id;
-        $aceemails->contact_name =$request->mailing_name;
-        $aceemails->contact_title =$request->mailing_title;
-        $aceemails->contact_phone = $request->mailing_phone;
-        $aceemails->email=$request->mailing_email;
-
-        $aceemails->save();
-
-        notify(new ToastNotification('Successful!', ' Contact Updated!', 'success'));
-        return redirect()->route('user-management.aces.profile',[\Illuminate\Support\Facades\Crypt::encrypt($aceemails->ace_id)]);
-    }
-
-    /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function   destroy_mailinglist($id){
-
-        $aceemail_id = Crypt::decrypt($id);
-        if (Aceemail::destroy($aceemail_id)){
-            notify(new ToastNotification('Successful!', '  deleted!', 'success'));
-        } else {
-            notify(new ToastNotification('Sorry!', 'Something went wrong. Please try again', 'warning'));
-        }
-
-        return redirect()->back();
-    }
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
