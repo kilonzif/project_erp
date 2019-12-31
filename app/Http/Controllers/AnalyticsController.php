@@ -10,6 +10,10 @@ use App\ReportingPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+
 
 class AnalyticsController extends Controller
 {
@@ -58,7 +62,6 @@ class AnalyticsController extends Controller
         $filters_selected[] = [ ];
         $reporting_periods = $request->selected_period;
 
-//        dd($reporting_periods);
         $selected_aces = $selected_fields = $selected_countries = $selected_typeofcentre =[];
         $reports = DB::table('reports')
             ->join('reporting_period', 'reports.reporting_period_id', '=', 'reporting_period.id')
@@ -549,4 +552,24 @@ class AnalyticsController extends Controller
             'student_internship'=>$student_internship,'faculty_internship'=>$faculty_internship
         ]);
     }
+
+
+    public function export_data(Request $request){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        try {
+            $spreadSheet = new Spreadsheet();
+            $spreadSheet->getActiveSheet()->getDefaultColumnDimension()->setWidth(20);
+            $spreadSheet->getActiveSheet()->fromArray($request->all());
+            $Excel_writer = new Xls($spreadSheet);
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="ACE-IMPACT Analytics Sheet.xls"');
+            header('Cache-Control: max-age=0');
+            $Excel_writer->save('php://output');
+            return;
+        } catch (Exception $e) {
+            return;
+        }
+
+   }
 }

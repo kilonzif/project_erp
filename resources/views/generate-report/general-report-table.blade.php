@@ -12,11 +12,10 @@
     {{--@php dd(old('indicator.3')) @endphp--}}
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">General Report</h3>
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
                         <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">General Reports</a>
                         </li>

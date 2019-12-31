@@ -128,7 +128,7 @@ class UserController extends Controller
     public function save_user(Request $request){
 
         $this->validate($request, [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|alpha|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'ace' => 'nullable|numeric|min:1',
             'role' => 'required|numeric|min:1',

@@ -88,6 +88,7 @@ Route::prefix('analytics')->name('analytics.')->group(function () {
     Route::get('/get-cumulative-pdo', 'AnalyticsController@getCumulativePDO')->name('getCumulativePDO');
     Route::get('/calculate-aggregate','AnalyticsController@calculateAggregate')->name('calculateAggregate');
     Route::post('/add-filter','AnalyticsController@add_filter')->name('add_filter');
+    Route::get('/export-data','AnalyticsController@export_data')->name('export_data');
 });
 
 

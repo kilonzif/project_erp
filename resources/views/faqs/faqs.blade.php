@@ -21,7 +21,7 @@
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
                         <li class="breadcrumb-item active">FAQS
                         </li>

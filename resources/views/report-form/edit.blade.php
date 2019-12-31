@@ -1,22 +1,18 @@
 @extends('layouts.app')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('other-styles')
-    {{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 @endpush
 @section('content')
-    {{--@php dd(old('indicator.3')) @endphp--}}
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">Edit Submitted Report</h3>
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
-                        <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">Submitted Reports</a>
+                        <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">Reports</a>
                         </li>
                         <li class="breadcrumb-item active">Edit report
                         </li>
