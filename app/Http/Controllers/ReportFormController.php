@@ -511,22 +511,27 @@ class ReportFormController extends Controller {
             ->where('status','=', 1)
             ->where('show_on_report','=', 1)
             ->orderBy('identifier','asc')
+
             ->get();
         $comment = AceComment::where('report_id',$id)->first();
+//        dd(str_replace('-','_',\Illuminate\Support\Str::slug(strtolower("PDO indicator 1.a"))));
 
         //Get the aggregated result for Indicator 3
-        $result = $this->generateAggregatedIndicator3Results($id);
-        $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
-        $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
-        $indicator_4_2 = $this->generateAggregatedIndicator42Results($id);
-        $indicator_7_3 = $this->generateAggregatedIndicator73Results($id);
+        $pdo_1 = $this->generateAggregatedIndicator3Results($id);
+//        $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
+//        $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
+//        $indicator_4_2 = $this->generateAggregatedIndicator42Results($id);
+//        $indicator_7_3 = $this->generateAggregatedIndicator73Results($id);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
 			->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
 		$aces = Ace::where('active', '=', 1)->get();
+//		dd($indicators);
 		return view('report-form.edit', compact('project', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
-            'indicators','result','indicator_5_2','indicator_4_1','indicator_4_2','indicator_7_3'));
+            'indicators','pdo_1'));
+//		return view('report-form.edit', compact('project', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
+//            'indicators','result','indicator_5_2','indicator_4_1','indicator_4_2','indicator_7_3'));
 	}
 
     /**
@@ -720,7 +725,480 @@ class ReportFormController extends Controller {
      * @param $report_id
      * @return array
      */
+    public function generateAggregatedIndicator3Results_ex($report_id)
+    {
+        $indicators = Indicator::where('is_parent','=', 1)
+            ->where('status','=', 1)
+            ->where('show_on_report','=', 1)
+            ->where('parent_id','=', 3)
+            ->orderBy('identifier','asc')
+            ->get();
+
+        $all_students = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id);
+        $total_students = $all_students->count();
+
+        $filters = config('app.filters');
+        $indicator_3_specifics = config('app.indicator_3');
+        dd($indicator_3_specifics);
+        $indicator_3_values = array();
+
+        foreach ($indicators as $key=>$indicator) {
+//            $national_and_men = DB::connection('mongodb')
+//                ->collection('indicator_3')
+//                ->where('report_id','=', $report_id)
+//                ->where(function($query)
+//                {
+//                    $query->where('gender','=', "M")
+//                        ->orWhere('gender','=', "Male");
+//                })
+//                ->where(function($query)
+//                {
+//                    $query->where('regional-status','=', "National")
+//                        ->orWhere('regional-status','=', "national")
+//                        ->orWhere('regional-status','like', "n%")
+//                        ->orWhere('regional-status','like', "N%");
+//                });
+//                ->where('regional-status','=', "National");
+
+
+            /**
+             * National Data
+             * @var $regional_and_men
+             */
+            $national_and_women = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "F")
+                        ->orWhere('gender','=', "Female");
+                })
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "National")
+                        ->orWhere('regional-status','=', "national")
+                        ->orWhere('regional-status','like', "n%")
+                        ->orWhere('regional-status','like', "N%");
+                });
+            $national_and_men = 0;
+            $total_national = $national_and_women + $national_and_men;
+            $indicator_3_values['national']['total'] = $total_national;
+            $indicator_3_values['national']['women'] = $national_and_women;
+
+            /**
+             * Regional Data
+             *  @var $regional_and_men
+             */
+            $regional_and_men = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "Regional")
+                        ->orWhere('regional-status','=', "regional")
+                        ->orWhere('regional-status','like', "r%")
+                        ->orWhere('regional-status','like', "R%");
+                })
+//                ->where('regional-status','=', "Regional")
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "M")
+                        ->orWhere('gender','=', "Male");
+                });
+            $regional_and_women = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id','=', $report_id)
+                ->where(function($query)
+                {
+                    $query->where('regional-status','=', "Regional")
+                        ->orWhere('regional-status','=', "regional")
+                        ->orWhere('regional-status','like', "r%")
+                        ->orWhere('regional-status','like', "R%");
+                })
+//                ->where('regional-status','=', "Regional")
+                ->where(function($query)
+                {
+                    $query->where('gender','=', "F")
+                        ->orWhere('gender','=', "Female");
+                });
+            $total_regional = $national_and_women + $national_and_men;
+            $indicator_3_values['regional']['total'] = $total_regional;
+            $indicator_3_values['regional']['women'] = $national_and_women;
+
+            $identifier = $indicator->identifier;
+            $filter_value = $filters[$key];
+
+            $indicator_3_values["$identifier"]["national_and_men"] = $national_and_men->where("level","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["national_and_women"] = $national_and_women->where("level","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["regional_and_men"] = $regional_and_men->where("level","like","%$filter_value%")->count();
+            $indicator_3_values["$identifier"]["regional_and_women"] = $regional_and_women->where("level","like","%$filter_value%")->count();
+        }
+
+        return $indicator_3_values;
+
+	}
+
     public function generateAggregatedIndicator3Results($report_id)
+    {
+        $pdo_1_values = array();
+        $phd = config('app.filters.phd_text');
+        $masters = config('app.filters.masters_text');
+        $bachelors = config('app.filters.bachelors_text');
+        $course = config('app.filters.Course_text');
+//        $indicators = Indicator::where('is_parent','=', 1)
+//            ->where('status','=', 1)
+//            ->where('show_on_report','=', 1)
+//            ->where('parent_id','=', 3)
+//            ->orderBy('identifier','asc')
+//            ->get();
+//        dd($indicators);
+
+//        $filters = config('app.filters');
+//        $indicator_3_specifics = config('app.indicator_3');
+
+        $all_students = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id);
+        $total_students = $all_students->count();
+
+        /**
+         * PDO Indicator 1
+         */
+        $regional = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            });
+
+        $regional_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            })
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            });
+
+        $national = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            });
+
+        $national_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            })
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            });
+
+        $pdo_1_values["pdo_indicator_1"]["total_no_students"] = $total_students;
+        $pdo_1_values["pdo_indicator_1"]["regional_total"] = $regional->count();
+        $pdo_1_values["pdo_indicator_1"]["regional_female"] = $regional_female->count();
+        $pdo_1_values["pdo_indicator_1"]["national_total"] = $national->count();
+        $pdo_1_values["pdo_indicator_1"]["national_female"] = $national_female->count();
+
+        /**
+         * PDO Indicator 1.a (PhD)
+         */
+        $phd_regional = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$phd)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            });
+
+        $phd_regional_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$phd)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            })
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $phd_national = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$phd)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            });
+
+        $phd_national_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            })
+            ->where("level","=",$phd)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $pdo_1_values["pdo_indicator_1a"]["phd_regional_total"] = $phd_regional->count();
+        $pdo_1_values["pdo_indicator_1a"]["phd_regional_female"] = $phd_regional_female->count();
+        $pdo_1_values["pdo_indicator_1a"]["phd_national_total"] = $phd_national->count();
+        $pdo_1_values["pdo_indicator_1a"]["phd_national_female"] = $phd_national_female->count();
+
+        /**
+         * PDO Indicator 1.a (Masters)
+         */
+        $masters_regional = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$masters)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            });
+
+        $masters_regional_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$masters)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            })
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $masters_national = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$masters)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            });
+
+        $masters_national_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            })
+            ->where("level","=",$masters)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $pdo_1_values["pdo_indicator_1b"]["masters_regional_total"] = $masters_regional->count();
+        $pdo_1_values["pdo_indicator_1b"]["masters_regional_female"] = $masters_regional_female->count();
+        $pdo_1_values["pdo_indicator_1b"]["masters_national_total"] = $masters_national->count();
+        $pdo_1_values["pdo_indicator_1b"]["masters_national_female"] = $masters_national_female->count();
+
+        /**
+         * PDO Indicator 1.c (Regional All Courses)
+         */
+        $bachelors_regional = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            })
+            ->where("level","=",$bachelors);
+
+        $bachelors_regional_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            })
+            ->where("level","=",$bachelors)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+        $course_regional = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            })
+            ->where("level","=",$course);
+
+        $course_regional_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "Regional")
+                    ->orWhere('regional-status','=', "regional")
+                    ->orWhere('regional-status','like', "r%")
+                    ->orWhere('regional-status','like', "R%");
+            })
+            ->where("level","=",$course)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $pdo_1_values["pdo_indicator_1c"]["regional_total"] = $regional->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_phd_total"] = $phd_regional->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_phd_female"] = $phd_regional_female->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_masters_total"] = $masters_regional->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_masters_female"] = $masters_regional_female->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_bachelors_total"] = $bachelors_regional->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_bachelors_female"] = $bachelors_regional_female->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_short_course_total"] = $course_regional->count();
+        $pdo_1_values["pdo_indicator_1c"]["regional_short_course_female"] = $course_regional_female->count();
+
+        /**
+         * PDO Indicator 1.d (Female All Courses)
+         */
+        $female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $bachelors_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$bachelors)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $course_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$course)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $pdo_1_values["pdo_indicator_1d"]["female_total"] = $female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_phd_total"] = $phd_regional->count()+$phd_national_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_phd_regional"] = $phd_regional_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_masters_total"] = $masters_regional_female->count()+$masters_national_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_masters_regional"] = $masters_regional_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_bachelors_total"] = $bachelors_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_bachelors_regional"] = $bachelors_regional_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_short_course_total"] = $course_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_short_course_regional"] = $course_regional_female->count();
+
+        /**
+         * PDO Indicator 1.e (Short Courses)
+         */
+        $course_national = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where("level","=",$course)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            });
+
+        $course_national_female = DB::connection('mongodb')
+            ->collection('indicator_3')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('regional-status','=', "National")
+                    ->orWhere('regional-status','=', "national")
+                    ->orWhere('regional-status','like', "n%")
+                    ->orWhere('regional-status','like', "N%");
+            })
+            ->where("level","=",$course)
+            ->where(function($query) {
+                $query->where('gender','=', "F")
+                    ->orWhere('gender','=', "Female");
+            });
+
+        $pdo_1_values["pdo_indicator_1e"]["sc_regional_total"] = $course_regional->count();
+        $pdo_1_values["pdo_indicator_1e"]["sc_regional_female"] = $course_regional_female->count();
+        $pdo_1_values["pdo_indicator_1e"]["sc_national_total"] = $course_national->count();
+        $pdo_1_values["pdo_indicator_1e"]["sc_national_female"] = $course_national_female->count();
+
+        return $pdo_1_values;
+	}
+
+    public function generateAggregatedIndicator3Result($report_id)
     {
         $indicators = Indicator::where('is_parent','=', 1)
             ->where('status','=', 1)
@@ -809,7 +1287,7 @@ class ReportFormController extends Controller {
 
         return $indicator_3_values;
 
-	}
+    }
 
     /**
      * Generate Aggregated results for Indicator 5.2

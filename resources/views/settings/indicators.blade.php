@@ -166,7 +166,7 @@
                             <table class="table table-striped table-bordered all_indicators">
                                 <thead>
                                 <tr>
-                                    <th style="width: 30px;">No.</th>
+                                    <th style="width: 100px;">Identifier</th>
                                     <th>Title</th>
                                     <th style="width: 100px;">Action</th>
                                 </tr>
@@ -231,7 +231,7 @@
                 { "orderable": false, "targets": [0,1,2] }
             ],
             // "order": [[ 0, 'asc' ]],
-            pageLength: 15,
+            pageLength: 50,
             responsive: true
         });
 

@@ -229,4 +229,48 @@ return [
 
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Constants
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+
+    'phd_id'                        => '1',
+    'masters_id'                    => '2',
+    'bachelors_id'                  => '3',
+    'Course_id'                     => '4',
+
+    'filters'     =>  [
+        'phd_text'                      => 'PhD',
+        'masters_text'                  => 'Master',
+        'bachelors_text'                => 'Bachelors',
+        'Course_text'                   => 'Course',
+    ],
+
+    'indicator_3'     =>  [
+        'pdo_indicator_1'     =>  [
+            'total_no_students','regional_total','regional_female','national_total','national_female'
+        ],
+        'pdo_indicator_1a'     =>  [
+            'phd_regional_total','phd_regional_female','phd_national_total','phd_national_female'
+        ],
+        'pdo_indicator_1b'     =>  [
+            'masters_regional_total','masters_regional_female','masters_national_total','masters_national_female'
+        ],
+        'pdo_indicator_1c'     =>  [
+            'regional_total','regional_phd_total','regional_phd_female','regional_masters_total','regional_masters_female',
+            'regional_bachelors_total','regional_bachelors_female','regional_short_course_total','regional_short_course_female'
+        ],
+        'pdo_indicator_1d'     =>  [
+            'female_total','female_phd_total','female_phd_regional','female_masters_total','female_masters_regional',
+            'female_bachelors_total','female_bachelors_regional','female_short_course_total','female_short_course_regional'
+        ],
+        'pdo_indicator_1e'     =>  [
+            'sc_regional_total','sc_regional_female','sc_national_total','sc_national_female'
+        ]
+    ],
+
 ];
