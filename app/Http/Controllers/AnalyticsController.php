@@ -10,6 +10,10 @@ use App\ReportingPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
+use PhpOffice\PhpSpreadsheet\Writer\Xls;
+
 
 class AnalyticsController extends Controller
 {
@@ -45,13 +49,241 @@ class AnalyticsController extends Controller
     }
 
 
+
+
+
+
+
+
     public function getGenderDistribution(Request $request)
     {
-        $males = DB::connection('mongodb')->collection('indicator_3')->where('gender',"=","M")->orWhere('gender',"=","Male")->count();
-        $females = DB::connection('mongodb')->collection('indicator_3')->where('gender',"=","F")->orWhere('gender',"=","Female")->count();
+        $filters_selected = array();
 
-        return response()->json(['male'=>$males,'female'=>$females]);
+        $filters_selected[] = [ ];
+        $reporting_periods = $request->selected_period;
+
+        $selected_aces = $selected_fields = $selected_countries = $selected_typeofcentre =[];
+        $reports = DB::table('reports')
+            ->join('reporting_period', 'reports.reporting_period_id', '=', 'reporting_period.id')
+            ->join('aces', 'reports.ace_id', '=', 'aces.id')
+            ->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+            ->select(DB::raw('reports.*,aces.id as aceID, aces.*,countries.id as countryID, countries.*,reports.id'))
+            ->whereIn('reports.reporting_period_id', $reporting_periods)
+            ->get();
+
+        foreach ($request->filter_by as $filter) {
+            //Filter by field
+            if ($filter == "Field of Study") {
+                if (isset($request->field) && sizeof($request->field) > 0) {
+                    $selected_fields = $request->field;
+                    $reports = $reports->whereIn('aces.field', $selected_fields);
+
+                }
+            }
+            //Filter by Country
+            if ($filter == "Countries") {
+                if (isset($request->country) && sizeof($request->country) > 0) {
+                    $selected_countries = $request->country;
+                    $reports = $reports->whereIn('countryID', $selected_countries);
+                }
+            }
+            //Filter by Type of Centre
+            if ($filter == "Type of Centre") {
+                if (isset($request->typeofcentre) && sizeof($request->typeofcentre) > 0) {
+                    $selected_typeofcentre = $request->typeofcentre;
+                    $reports = $reports->whereIn('aces.ace_type', $selected_typeofcentre);
+                }
+            }
+            //Filter by Ace
+            if ($filter == "ACE") {
+                if (isset($request->selected_ace) && sizeof($request->selected_ace) > 0) {
+                    $selected_aces = $request->selected_ace;
+                    $reports = $reports->whereIn('ace_id', $selected_aces);
+                }
+            }
+        }
+
+        $report_ids = $reports->pluck('id')->toArray();
+
+
+        $resultset = new \stdClass();
+        $aces = Ace::all();
+        $all_ace_ids = Ace::where('id' ,'>' ,0)->pluck('id');
+        $countries = DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+            ->distinct('countries.id')
+            ->select('countries.*')
+            ->get();
+
+        $fields = ['Agriculture', 'Health', 'STEM','Education','Applied Soc. Sc.'];
+        $type_of_centres = ['Colleges of Engineering','Emerging Centre','ACE'];
+        $periods = ReportingPeriod::all();
+
+        $aggregate_topic = $request->topic_name;
+
+        if ($aggregate_topic == "Gender Distribution") {
+            $query = DB::connection('mongodb')->collection('indicator_3');
+
+            $males = $query->where('gender',"=","M")
+                ->orWhere('gender',"=","Male")
+                ->whereIn('report_id',$report_ids)
+                ->count();
+            $females = $query->where('gender',"=","F")
+                ->orWhere('gender',"=","Female")
+                ->whereIn('report_id',$report_ids)
+                ->count();
+
+            $resultset->males = $males;
+            $resultset->females = $females;
+        }elseif ($aggregate_topic == "Aggregate Student"){
+            $query = DB::connection('mongodb')->collection('indicator_3');
+            $regional_students = $query
+//                ->whereIn('report_id', $reports)
+//                ->where('calender-year-of-enrollment', $this_year)
+                ->where(function ($query) {
+                    $query->where('regional-status', 'like', "R%")
+                        ->orWhere('regional-status', 'like', "r%");
+                })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+
+
+            $national_students  = $query
+//                ->whereIn('report_id', $reports)
+//                ->where('calender-year-of-enrollment', $this_year)
+                ->where(function ($query) {
+                    $query->where('regional-status', 'like', "N%")
+                        ->orWhere('regional-status', 'like', "n%");
+                })
+                ->whereIn('report_id', $reports)
+                ->count();
+
+            $total_students = $regional_students + $national_students;
+
+            $resultset->national_students = $national_students;
+            $resultset->regional_students = $regional_students;
+            $resultset->total_students = $total_students;
+
+
+        }else if($aggregate_topic == "Student Enrollment"){
+            $query = DB::connection('mongodb')->collection('indicator_3');
+            $phd_students =$query->where(function ($query) {
+                $query->where('level', 'like', "phD%")
+                    ->orWhere('level', 'like', "PHD%");
+                 })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+            $masters_students = $query->where(function ($query) {
+                $query->where('level', 'like', "M%")
+                ->orWhere('level', 'like', "m%");
+                 })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+            $prof_students =$query ->where(function ($query) {
+                    $query->where('level', 'like', "prof%")
+                        ->orWhere('level', 'like', "Pro%");
+                })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+
+            $total_enrolled=$masters_students +$prof_students +$phd_students;
+
+            $resultset->masters_students = $masters_students;
+            $resultset->prof_students = $prof_students;
+            $resultset->phd_students = $phd_students;
+            $resultset->total_enrolled = $total_enrolled;
+
+        }else if($aggregate_topic == "list of donors"){
+            $query = DB::connection('mongodb')->collection('indicator_5.1');
+            $individual_donor =$query->where(function ($query) {
+                $query->DISTINCT('source')
+                ->SELECT('source');
+                })
+                ->whereIn('report_id', $report_ids)
+                ->pluck('source')->toArray();
+            $donation_amount =DB::connection('mongodb')->collection('indicator_5.1')
+                ->whereIn('report_id', $report_ids)
+                ->pluck('amount-usd')->toArray();
+
+
+            $resultset->Source = $individual_donor;
+            $resultset->Amount = $donation_amount;
+
+        }else if($aggregate_topic == "Aggregate Internships"){
+
+            $student_internship = DB::connection('mongodb')->collection('indicator_5.2')
+                ->whereIn('report_id', $report_ids)
+                ->where(function ($query) {
+                    $query->where('studentfaculty', 'like', "Student%")
+                        ->orWhere('studentfaculty', 'like', "stud%");
+                })
+                ->count();
+            $faculty_internship = DB::connection('mongodb')->collection('indicator_5.2')
+                ->whereIn('report_id', $report_ids)
+                ->where(function ($query) {
+                    $query->where('studentfaculty', 'like', "F%")
+                        ->orWhere('studentfaculty', 'like', "f%");
+                })
+                ->count();
+
+            $resultset->Student_Interns =$student_internship;
+            $resultset->Faculty_Interns =$faculty_internship;
+        }else if($aggregate_topic == "Aggregate Programme Accreditation"){
+            //AGGREGATE PROGRAMME ACCREDITATION
+            $national_accreditation = DB::connection('mongodb')->collection('indicator_7.3')
+                ->where(function ($query) {
+                    $query->where('type-of-accreditation2', 'like', "n%")
+                        ->orWhere('type-of-accreditation2', 'like', "N%");
+                })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+
+            $international_accreditation= DB::connection('mongodb')->collection('indicator_7.3')
+                ->where(function ($query) {
+                    $query->where('type-of-accreditation2', 'like', "International%")
+                        ->orWhere('type-of-accreditation2', 'like', "international%");
+                })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+            $gap_assessment_accreditation= DB::connection('mongodb')->collection('indicator_7.3')
+                ->where(function ($query) {
+                    $query->where('type-of-accreditation2', 'like', "Gap%")
+                        ->orWhere('type-of-accreditation2', 'like', "Self Assessment%")
+                        ->orWhere('type-of-accreditation2', 'like', "gap%");
+                })
+                ->whereIn('report_id', $report_ids)
+                ->count();
+
+            $resultset->National_Accreditation = $national_accreditation;
+            $resultset->International_Accreditation = $international_accreditation;
+            $resultset->Gap_Assessment_Accreditation = $gap_assessment_accreditation;
+
+        }
+
+
+        return view('analytics.index',compact('resultset','request','aces','all_ace_ids', 'periods','countries','fields','type_of_centres'));
     }
+
+    public function add_filter(){
+        $filtercount = rand ( 10000 , 99999 );
+        $aces = Ace::all();
+        $all_ace_ids = Ace::where('id' ,'>' ,0)->pluck('id');
+        $countries = DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+            ->distinct('countries.id')
+            ->select('countries.*')
+            ->get();
+
+        $fields = ['Agriculture', 'Health', 'STEM','Education','Applied Soc. Sc.'];
+        $type_of_centres = ['Colleges of Engineering','Emerging Centre','ACE'];
+        $periods = ReportingPeriod::all();
+
+        return view('analytics.add_filter',compact('filtercount','aces','all_ace_ids', 'periods','countries','fields','type_of_centres'));
+    }
+
+
+
 
     public function getCumulativePDO(Request $request)
     {
@@ -183,6 +415,8 @@ class AnalyticsController extends Controller
         if ($request->filter == "Field of Study") {
             if (isset($request->field)) {
                 if (sizeof($request->field) > 0) {
+
+
                     $reports = $reports->whereIn('field', $request->field);
                 }
             }
@@ -318,4 +552,24 @@ class AnalyticsController extends Controller
             'student_internship'=>$student_internship,'faculty_internship'=>$faculty_internship
         ]);
     }
+
+
+    public function export_data(Request $request){
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '4000M');
+        try {
+            $spreadSheet = new Spreadsheet();
+            $spreadSheet->getActiveSheet()->getDefaultColumnDimension()->setWidth(20);
+            $spreadSheet->getActiveSheet()->fromArray($request->all());
+            $Excel_writer = new Xls($spreadSheet);
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="ACE-IMPACT Analytics Sheet.xls"');
+            header('Cache-Control: max-age=0');
+            $Excel_writer->save('php://output');
+            return;
+        } catch (Exception $e) {
+            return;
+        }
+
+   }
 }

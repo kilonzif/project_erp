@@ -2,13 +2,12 @@
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class="navigation-header">
-                <span>Menu</span><i class=" ft-minus" data-toggle="tooltip" data-placement="right" data-original-title="Menu"></i>
+                {{--<span>Menu</span><i class=" ft-minus" data-toggle="tooltip" data-placement="right" data-original-title="Menu"></i>--}}
             </li>
             @ability('webmaster|super-admin|admin', 'admin-dashboard')
             <li class="nav-item {{isRouteActive('home')}}">
                 <a href="{{route('home')}}"><i class="ft-home"></i>
                     <span class="menu-title" data-i18n="">{{__('Dashboard')}}</span>
-                    {{--<span class="badge badge badge-pill badge-info float-right">3.0</span>--}}
                 </a>
             </li>
             @endability
@@ -17,7 +16,6 @@
             <li class="nav-item {{isRouteActive('analytics.index')}}">
                 <a href="{{route('analytics.index')}}"><i class="ft-pie-chart"></i>
                     <span class="menu-title" data-i18n="">{{__('Analytics')}}</span>
-                    {{--<span class="badge badge badge-pill badge-info float-right">3.0</span>--}}
                 </a>
             </li>
             @endability
@@ -172,6 +170,15 @@
                             <span class="menu-title" data-i18n="">{{__('ACEs')}}</span>
                         </a>
                     </li>
+
+                    <li class="{{isRouteActive('user-management.contacts')}}">
+                        <a href="{{route('user-management.contacts')}}">
+                            <span class="menu-title" data-i18n="">{{__('Contacts')}}</span>
+                        </a>
+                    </li>
+
+
+
                     @endability
                 </ul>
             </li>
@@ -192,6 +199,8 @@
                 </a>
             </li>
             @endability
+
+
         </ul>
     </div>
 </div>

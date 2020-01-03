@@ -13,7 +13,7 @@
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
                         <li class="breadcrumb-item active">FAQS
                         </li>
@@ -24,7 +24,11 @@
     </div>
 
     <div class="content-body">
-        <a href="{{route('faq.new')}}" class="btn btn-primary mb-1 right"><i class="ft-plus"></i> Add New</a>
+        <div class="row">
+            <div class="col-12">
+                <a href="{{route('faq.new')}}" class="btn btn-primary mb-1 pull-right"><i class="ft-plus"></i> Add New</a>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="card">

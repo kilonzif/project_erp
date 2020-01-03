@@ -21,7 +21,7 @@
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
                         <li class="breadcrumb-item active">FAQS
                         </li>
@@ -42,16 +42,16 @@
                             <div class="nav-vertical">
                             <ul class="nav nav-tabs nav-left nav-border-left" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="active-tab32" data-toggle="tab" href="#active32" aria-controls="active32" role="tab" aria-selected="true">All FAQs</a>
+                                    <a class="nav-link active" id="active-tab32" data-toggle="tab" href="#active32" aria-controls="active32" role="tab" aria-selected="true">General FAQs</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="link-tab32" data-toggle="tab" href="#link32" aria-controls="link32" role="tab" aria-selected="false">General FAQs</a>
+                                    <a class="nav-link" id="link-tab32" data-toggle="tab" href="#link32" aria-controls="link32" role="tab" aria-selected="false">Reporting FAQs</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="linkOpt-tab2" data-toggle="tab" href="#linkOpt2" aria-controls="linkOpt2">Aces FAQs</a>
+                                    <a class="nav-link" id="linkOpt-tab2" data-toggle="tab" href="#linkOpt2" aria-controls="linkOpt2">System FAQs</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="linkOpt-tab22" data-toggle="tab" href="#linkOpt22" aria-controls="linkOpt22">System FAQs</a>
+                                    <a class="nav-link" id="linkOpt-tab22" data-toggle="tab" href="#linkOpt22" aria-controls="linkOpt22">Verification FAQs</a>
                                 </li>
                             </ul>
                             </div>
@@ -62,15 +62,15 @@
             <div class="col-md-9">
                 <div class="tab-content px-1">
                                 <div class="tab-pane active in" id="active32" aria-labelledby="active-tab32" role="tabpanel">
-                                    @if(sizeof($allfaqs) > 0)
-                                        @foreach($allfaqs as $faq)
+                                    @if(sizeof($general) > 0)
+                                        @foreach($general as $general_faq)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 style="font-weight: bold">{{$faq->question}}</h4>
+                                                    <h4 style="font-weight: bold">{{$general_faq->question}}</h4>
                                                 </div>
                                                 <div class="card-content">
                                                         <div class="card-body">
-                                                            {!! $faq->answer !!}
+                                                            {!! $general_faq->answer !!}
                                                         </div>
                                                 </div>
                                             </div>
@@ -80,15 +80,15 @@
                                     @endif
                                  </div>
                                 <div class="tab-pane" id="link32" aria-labelledby="link-tab32" role="tabpanel">
-                                    @if(sizeof($general) > 0)
-                                        @foreach($general as $general)
+                                    @if(sizeof($reporting) > 0)
+                                        @foreach($reporting as $reporting_faq)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 style="font-weight: bold">{{$general->question}}</h4>
+                                                    <h4 style="font-weight: bold">{{$reporting_faq->question}}</h4>
                                                 </div>
                                                 <div class="card-content">
                                                         <div class="card-body">
-                                                            {!! $general->answer !!}
+                                                            {!! $reporting_faq->answer !!}
                                                         </div>
                                                 </div>
                                             </div>
@@ -98,15 +98,15 @@
                                     @endif
                                     </div>
                                 <div class="tab-pane" id="linkOpt2" aria-labelledby="linkOpt-tab2" role="tabpanel">
-                                    @if(sizeof($aces) > 0)
-                                        @foreach($aces as $aces)
+                                    @if(sizeof($system) > 0)
+                                        @foreach($system as $system_faq)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 style="font-weight: bold;">{{$aces->question}}</h4>
+                                                    <h4 style="font-weight: bold;">{{$system_faq->question}}</h4>
                                                 </div>
                                                 <div class="card-content">
                                                         <div class="card-body">
-                                                            {!! $aces->answer !!}
+                                                            {!! $system_faq->answer !!}
                                                         </div>
                                                 </div>
                                             </div>
@@ -116,15 +116,15 @@
                                     @endif
                                 </div>
                                 <div class="tab-pane" id="linkOpt22" aria-labelledby="linkOpt-tab22" role="tabpanel">
-                                    @if(sizeof($system) > 0)
-                                        @foreach($system as $system)
+                                    @if(sizeof($verification) > 0)
+                                        @foreach($verification as $verification_faq)
                                             <div class="card mb-1">
                                                 <div class="card-header">
-                                                    <h4 style="font-weight: bold">{{$system->question}}</h4>
+                                                    <h4 style="font-weight: bold">{{$verification_faq->question}}</h4>
                                                 </div>
                                                 <div class="card-content">
                                                         <div class="card-body">
-                                                            {!! $system->answer !!}
+                                                            {!! $verification_faq->answer !!}
                                                         </div>
                                                 </div>
                                             </div>

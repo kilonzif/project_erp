@@ -5,7 +5,7 @@ use App\Ace;
 use App\AceCourse;
 use App\AceDlrIndicator;
 use App\AceDlrIndicatorCost;
-use App\Aceemail;
+use App\Contacts;
 use App\AceIndicatorsBaseline;
 use App\AceIndicatorsTarget;
 use App\AceIndicatorsTargetYear;
@@ -269,9 +269,9 @@ class AcesController extends Controller {
 		$ace_dlrs = AceDlrIndicator::where('parent_id', '=', 0)->orderBy('order', 'asc')->get();
 
 		$target_years = $ace->target_years;
-//		dd($target_years);
+        $country =Institution::find($ace->institution_id)->select('country_id')->first();
+        $aceemails = Contacts::where('ace_id', '=', $id)->orwhere('institution','=',$ace->institution_id)->orWhere('thematic_field','=',$ace->field)->orwhere('country',$country->country_id)->get();
 
-		$aceemails = Aceemail::where('ace_id', '=', $id)->orderBy('email', 'asc')->get();
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
 		return view('aces.profile', compact('ace','dlr_unit_costs', 'target_years',

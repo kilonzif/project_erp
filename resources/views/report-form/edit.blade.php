@@ -1,22 +1,18 @@
 @extends('layouts.app')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('other-styles')
-    {{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 @endpush
 @section('content')
-    {{--@php dd(old('indicator.3')) @endphp--}}
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">Edit Submitted Report</h3>
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
-                        <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">Submitted Reports</a>
+                        <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">Reports</a>
                         </li>
                         <li class="breadcrumb-item active">Edit report
                         </li>
@@ -132,10 +128,28 @@
                                                 @endif
                                             </div>
                                         </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="label">Fiduciary Report Submitted ?</label>
+                                                    <select name="fiduciary_report" id="fiduciary_report" class="form-control">
+                                                        <option {{($report->fiduciary_report == '1')  ? "selected":""}} value="1">YES</option>
+                                                        <option {{($report->fiduciary_report == '0')  ? "selected":""}} value="0">NO</option>
+                                                    </select>
+                                                    @if ($errors->has('fiduciary_report'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('fiduciary_report') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
+
+
+                                            </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div style="display: inline; margin-right:10px;">
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
                                 <i class="ft-upload"></i> Upload Indicators</a>

@@ -16,11 +16,10 @@
 @section('content')
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">ACEs</h3>
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
                         </li>
                         <li class="breadcrumb-item"><a href="{{route('user-management.aces')}}">ACEs</a>
                         </li>
@@ -36,7 +35,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header bg-blue bg-darken-4 white">
+                    <div class="card-header bg-dark bg-darken-4 white">
                         <h4 class="card-title">{{$ace->name}}</h4>
                         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
@@ -89,18 +88,130 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
+        {{--<div class="row">--}}
+            <div class="col-md-7">
+                <div class="card">
+                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
+                        Contact Group
+                    </h6>
+                    <div class="card-content">
+                        <div class="card-body table-responsive">
+                            <div id="edit_contact">
+                                <form class="form" action="{{route('user-management.mailinglist.save')}}" method="post">
+                                    @csrf
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
+                                                <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
+
+                                                    <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
+                                                    @if ($errors->has('mailing_name'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group{{ $errors->has('mailing_title') ? ' form-control-warning' : '' }}">
+                                                    <label for="mailing_title">Position <span class="required">*</span></label>
+                                                    <select class="form-control" name="mailing_title">
+                                                        <option value="" selected disabled>Select Title</option>
+                                                        <option value="Center Leader">Center Leader</option>
+                                                        <option value="Deputy Center Leader">Deputy Center Leader</option>
+                                                        <option value="Finance Officer">Finance Officer</option>
+                                                        <option value="Procurement Officer">Procurement Officer</option>
+                                                        <option value="Project / Program Manager">Project / Program Manager</option>
+                                                        <option value="PSC Member">MEL Officer</option>
+                                                    </select>
+
+                                                    @if ($errors->has('mailing_title'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('mailing_title') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
+                                                    <label for="email">Phone <span class="required">*</span></label><input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
+                                                    @if ($errors->has('mailing_phone'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
+                                                    <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
+                                                    @if ($errors->has('mailing_email'))
+                                                        <p class="text-right">
+                                                            <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="submit" class="btn btn-primary" style="margin-top: 1.9rem">
+                                                    Submit
+                                                </button><br><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <br>
+                            </div>
+
+                            <table class="table table-striped table-bordered all_indicators">
+                                <thead>
+                                <tr>
+                                    <th> Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Title</th>
+                                    <th style="width: 100px;">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($aceemails as $contact)
+                                    <tr>
+                                        <td>{{$contact->contact_name}}</td>
+                                        <td>{{$contact->email}}</td>
+                                        <td>{{$contact->contact_phone}}</td>
+                                         <td>{{$contact->contact_title}}</td>
+                                        <td>
+                                            <div class="btn-group" role="group" aria-label="Basic example">
+
+                                                    @if($contact->edit_status == true)
+                                                <a href="#edit_contact" onclick="edit_contact('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
+                                                    <i class="ft-edit"></i></a>
+                                                <a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"
+                                                   class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"
+                                                   title="Delete Report"><i class="ft-trash-2"></i></a>
+                                                        @else
+                                                    <a href="#" class="btn btn-s btn-secondary">
+                                                        <i class="ft-eye"></i></a>
+                                                        @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
                 <div class="card">
                     <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
                         Programmes
-                        <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                            </ul>
-                        </div>
                     </h6>
-                    <div class="card-content collapse">
+                    <div class="card-content">
                         <div class="card-body table-responsive">
                             <form action="{{route('user-management.ace.add_courses',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post">
                                 @csrf
@@ -118,12 +229,12 @@
                                 </div>
                             </form>
                             <br>
-                                @php
+                            @php
                                 $allcourses=explode(';',$ace->programmes);
 
-                                @endphp
+                            @endphp
 
-                                @foreach($allcourses as $course)
+                            @foreach($allcourses as $course)
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
                                     <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"  data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
@@ -131,128 +242,9 @@
                                     </a>
                                 </div>
                                 {{--@php--}}
-                                    {{--$count+=1;--}}
+                                {{--$count+=1;--}}
                                 {{--@endphp--}}
-                                @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
-                        Contact Group
-                        <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                            </ul>
-                        </div>
-                    </h6>
-                    <div class="card-content collapse">
-                        <div class="card-body table-responsive">
-                            <form class="form" action="{{route('settings.mailinglist.save')}}" method="post">
-                                @csrf
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
-                                            <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
-
-                                                <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
-                                                @if ($errors->has('mailing_name'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group{{ $errors->has('mailing_title') ? ' form-control-warning' : '' }}">
-                                                <label for="mailing_title">Position <span class="required">*</span></label>
-                                                <select class="form-control" name="mailing_title">
-                                                    <option value="" selected disabled>Select Title</option>
-                                                    <option value="Center Leader">Center Leader</option>
-                                                    <option value="Deputy Center Leader">Deputy Center Leader</option>
-                                                    <option value="Finance Officer">Finance Officer</option>
-                                                    <option value="Focal Person">Focal Person</option>
-                                                    <option value="M&E">M&E</option>
-                                                    <option value="Primary Expert">Primary Expert</option>
-                                                    <option value="Procument Officer">Procument Officer</option>
-                                                    <option value="Project / Program Manager">Project / Program Manager</option>
-                                                    <option value="PSC Member">PSC Member</option>
-                                                    <option value="Secondary Expert">Secondary Expert</option>
-                                                    <option value="Vice Chancellor">Vice Chancellor</option>
-                                                </select>
-                                                @if ($errors->has('mailing_title'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('mailing_title') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
-                                                <label for="email">Phone <span class="required">*</span></label><input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
-                                                @if ($errors->has('mailing_phone'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
-                                                <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
-                                                @if ($errors->has('mailing_email'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <button type="submit" class="btn btn-primary" style="margin-top: 1.9rem">
-                                                Submit
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                            <br>
-                            <table class="table table-striped table-bordered all_indicators">
-                                <thead>
-                                <tr>
-                                    <th> Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Title</th>
-                                    <th style="width: 100px;">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($aceemails as $aceemail)
-                                    <tr>
-                                        <td>{{$aceemail->contact_name}}</td>
-                                        <td>{{$aceemail->contact_title}}</td>
-                                        <td>{{$aceemail->contact_phone}}</td>
-                                         <td>{{$aceemail->email}}</td>
-                                        <td>
-                                            <div class="btn-group" role="group" aria-label="Basic example">
-                                                <a href="{{ route('settings.mailinglist.delete',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="Delete Contact"><i class="ft-trash-2"></i></a></a>
-                                                <a href="{{ route('settings.mailinglist.edit',  [Crypt::encrypt($aceemail->id)] ) }}" class="btn btn-s btn-primary" data-toggle="tooltip" data-placement="top" title="Edit Contact"><i class="ft-edit-2"></i></a></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -368,6 +360,48 @@
         });
         // Currency in USD
         $('.currency-inputmask').inputmask("{{$ace->currency->symbol}} 99999999");
+
+
+        function edit_contact(key) {
+            var path = "{{route('user-management.mailinglist.edit')}}";
+            $.ajaxSetup(    {
+                headers: {
+                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
+                }
+            });
+            $.ajax({
+                url: path,
+                type: 'GET',
+                data: {id:key},
+                beforeSend: function(){
+                    $('#edit_contact').block({
+                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                        overlayCSS: {
+                            backgroundColor: '#ccc',
+                            opacity: 0.8,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });;
+                },
+                success: function(data){
+                    $('#edit_contact').empty();
+                    $('#edit_contact').html(data.theView);
+                    // console.log(data)
+                },
+                complete:function(){
+                    $('#edit_contact').unblock();
+                }
+                ,
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        }
 
 
         $("#removeCourse").click(function(){

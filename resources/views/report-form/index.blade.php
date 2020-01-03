@@ -1,17 +1,18 @@
 @extends('layouts.app')
 @push('vendor-styles')
-        <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
 @endpush
 @push('other-styles')
 @endpush
 @section('content')
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">Submitted Reports</h3>
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
+                        </li>
+                        <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">Reports</a>
                         </li>
                         <li class="breadcrumb-item active">All Reports
                         </li>
@@ -64,7 +65,7 @@
                                             <td>
                                                 @php
                                                     $reporting_period = \App\Http\Controllers\ReportFormController::getReportingName($report->reporting_period_id);
-                                            @endphp
+                                                @endphp
                                                 {{$reporting_period}}
                                             </td>
                                             <td>{{date('M d, Y', strtotime($report->submission_date))}}</td>
@@ -73,7 +74,7 @@
                                                 <div class="btn-group" role="group" aria-label="Basic example">
                                                     <a href="{{route('report_submission.view',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                        class="btn btn-s btn-dark" data-toggle="tooltip" data-placement="top" title="View Report"><i class="ft-eye"></i></a>
-                                                    @if($report->editable == 1 or \Auth::user()->hasRole('webmaster|super-admin'))
+                                                    @if($report->status != 1)
                                                         <a href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                            class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Report"><i class="ft-edit-3"></i></a>
                                                     @else
@@ -81,11 +82,11 @@
                                                             <i class="ft-edit-3"></i></a>
                                                     @endif
                                                     @if(\Auth::user()->hasRole('webmaster|super-admin'))
-                                                        <a href="{{route('report_submission.indicators_status',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
-                                                       class="btn btn-s btn-success" data-toggle="tooltip" data-placement="top" title="Report Status"><i class="fa fa-hourglass-start"></i></a>
+                                                        {{--<a href="{{route('report_submission.indicators_status',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"--}}
+                                                           {{--class="btn btn-s btn-success" data-toggle="tooltip" data-placement="top" title="Report Status"><i class="fa fa-hourglass-start"></i></a>--}}
                                                         <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
-                                                       class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
-                                                       title="Delete Report"><i class="ft-trash-2"></i></a>
+                                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
+                                                           title="Delete Report"><i class="ft-trash-2"></i></a>
                                                     @endif
 
                                                 </div>
@@ -103,7 +104,7 @@
     </div>
 @endsection
 @push('vendor-script')
-        <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
 @endpush
 @push('end-script')
     <script>

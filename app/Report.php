@@ -11,7 +11,7 @@ class Report extends Model {
 	//
 	use Commentable;
 	use Notifiable;
-	protected $fillable = ['project_id', 'reporting_period_id', 'submission_date', 'user_id'];
+	protected $fillable = ['project_id', 'reporting_period_id', 'submission_date', 'user_id','fiduciary_report'];
 
 	public function project() {
 		return $this->belongsTo('App\Project');

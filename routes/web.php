@@ -87,6 +87,8 @@ Route::prefix('analytics')->name('analytics.')->group(function () {
     Route::get('/get-data-gender', 'AnalyticsController@getGenderDistribution')->name('getGenderDistribution');
     Route::get('/get-cumulative-pdo', 'AnalyticsController@getCumulativePDO')->name('getCumulativePDO');
     Route::get('/calculate-aggregate','AnalyticsController@calculateAggregate')->name('calculateAggregate');
+    Route::post('/add-filter','AnalyticsController@add_filter')->name('add_filter');
+    Route::get('/export-data','AnalyticsController@export_data')->name('export_data');
 });
 
 
@@ -143,6 +145,21 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     //Groups Route
     Route::get('groups', 'GroupsController@index')->name('groups');
     Route::post('groups/create', 'GroupsController@create')->name('groups.create');
+
+
+    //Contacts (ACE) Route
+    Route::post('mailinglist/save', 'ContactsController@save_mailing_list')->name('mailinglist.save');
+    Route::get('mailinglist/edit_mailinglist', 'ContactsController@edit_mailinglist')->name('mailinglist.edit');
+    Route::post('mailinglist/update/{id}', 'ContactsController@update_mailinglist')->name('mailinglist.update');
+    Route::get('mailinglist/delete/{id}', 'ContactsController@destroy_mailinglist')->name('mailinglist.delete');
+
+//    central contacts
+
+    Route::get('contacts', 'ContactsController@index')->name('contacts');
+    Route::get('contacts/edit_view', 'ContactsController@edit_view')->name('contacts.edit_view');
+    Route::post('contacts/save', 'ContactsController@save_contact')->name('contacts.save');
+    Route::post('contacts/update/{id}', 'ContactsController@update_contact')->name('contacts.update');
+
 
 });
 
@@ -220,11 +237,11 @@ Route::prefix('settings')->name('settings.')->group(function () {
     Route::get('commentnotification/{id}/edit_commentnotification', 'SettingsController@edit_commentnotification')->name('commentnotification.edit');
     Route::post('commentnotification/update/{id}', 'SettingsController@update_commentnotification')->name('commentnotification.update');
 
-    Route::get('mailinglist', 'SettingsController@mailing_list')->name('mailinglist');
-    Route::post('mailinglist/save', 'SettingsController@save_mailing_list')->name('mailinglist.save');
-    Route::get('mailinglist/{id}/edit_mailinglist', 'SettingsController@edit_mailinglist')->name('mailinglist.edit');
-    Route::post('mailinglist/update/{id}', 'SettingsController@update_mailinglist')->name('mailinglist.update');
-    Route::get('mailinglist/delete/{id}', 'SettingsController@destroy_mailinglist')->name('mailinglist.delete');
+//    Route::get('mailinglist', 'SettingsController@mailing_list')->name('mailinglist');
+//    Route::post('mailinglist/save', 'SettingsController@save_mailing_list')->name('mailinglist.save');
+//    Route::get('mailinglist/{id}/edit_mailinglist', 'SettingsController@edit_mailinglist')->name('mailinglist.edit');
+//    Route::post('mailinglist/update/{id}', 'SettingsController@update_mailinglist')->name('mailinglist.update');
+//    Route::get('mailinglist/delete/{id}', 'SettingsController@destroy_mailinglist')->name('mailinglist.delete');
 });
 
 //Indicators Routes

@@ -70,9 +70,11 @@
                                     <div>
                                         <select id="category" class="form-control{{ $errors->has('category') ? ' is-invalid' : '' }}"
                                                name="category"  required >
-                                            <option value="General FAQs">General FAQs</option>
+                                            <option value="Reporting FAQs">Reporting FAQs</option>
                                             <option value="System FAQs">System FAQs</option>
-                                            <option value="ACE FAQs">ACE FAQs</option>
+                                            <option value="Verification FAQs">Verification FAQs</option>
+                                            <option value="General FAQs">General FAQs</option>
+
                                         </select>
 
                                         @if ($errors->has('category'))

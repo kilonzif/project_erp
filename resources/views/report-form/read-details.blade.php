@@ -1,23 +1,20 @@
 
 @extends('layouts.app')
 @push('vendor-styles')
-{{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/extended/form-extended.css')}}">--}}
-
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
 @endpush
 @push('other-styles')
-
-{{--    <link rel="stylesheet" type="text/css" href="{{asset('css/core/colors/palette-tooltip.css')}}">--}}
 @endpush
 
 @section('content')
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
-            <h3 class="content-header-title mb-0">Report Indicator Details</h3>
             <div class="row breadcrumbs-top">
                 <div class="breadcrumb-wrapper col-12">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a>
+                        <li class="breadcrumb-item"><a href="{{route('home')}}">Ace-Impact</a>
+                        </li>
+                        <li class="breadcrumb-item"><a href="{{route('report_submission.reports')}}">Reports</a>
                         </li>
                         <li class="breadcrumb-item active">Report Indicator Details
                         </li>
