@@ -178,18 +178,21 @@
                                         <table class="table table-bordered table-striped">
                                             @if($indicator->indicators->count() > 0)
                                                 @php
-                                                    $sub_indicators = $indicator->indicators->where('status','=',1);
-                                                    $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
-                                                    $pdo_indicator_1 = config('app.indicator_3');
-                                                    //dd($pdo_indicator_1);
-                                                    $indicator_5_2_filter = ['national','regional'];
-                                                    $indicator_4_1_filter = ['international','national','gap-assessment','regional','self-evaluation','course'];
-                                                    $indicator_4_2_filter = ['non-regional','regional'];
-                                                    $indicator_5_1_filter = ['External_Revenue_National ','External_Revenue_Regional'];
-                                                    $indicator_7_3_filter = ['national','self_evaluation','international'];
-                                                    $indicator_identifier = (string)$indicator->identifier;
-                                                    $counter = 0;
-                                                //dd($sub_indicators);
+
+                                                        $sub_indicators = $indicator->indicators->where('status','=',1);
+                                                        $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
+                                                        $pdo_indicator_1 = config('app.indicator_3');
+
+                                                        $pdo_indicator_2 = config('app.indicator_2');
+
+                                                        $indicator_5_2_filter = ['national','regional'];
+                                                        $indicator_4_1_filter = ['international','national','gap-assessment','regional','self-evaluation','course'];
+                                                        $indicator_4_2_filter = ['non-regional','regional'];
+                                                        $indicator_5_1_filter = ['External_Revenue_National ','External_Revenue_Regional'];
+                                                        $indicator_7_3_filter = ['national','self_evaluation','international'];
+                                                        $indicator_identifier = (string)$indicator->identifier;
+                                                        $counter = 0;
+                                                    //dd($sub_indicators);
                                                 @endphp
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     {{--{{dd($sub_indicator)}}--}}
@@ -204,16 +207,25 @@
                                                             {{--@endif--}}
                                                         </td>
                                                         <td style="width: 200px">
-{{--                                                            {{dd()}}--}}
+
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
                                                             style="margin-bottom: 0;">
 
+
+
                                                                 @if($indicator->parent_id == 3)
+
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-                                                                @elseif($indicator->parent_id == 4)
-                                                                    <input type="number" readonly min="0" class="form-control frm-control-sm-custom">
+
+                                                                    @elseif($indicator->parent_id == 4)
+
+                                                                    {{--{{dd($pdo_indicator_2)}};--}}
+
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$pdo_2[$pdo_indicator][$pdo_indicator_2[$pdo_indicator][$counter]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
                                                                 @endif
                                                                 @if(false)
 

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Ace-Impact'),
 
     /*
     |--------------------------------------------------------------------------
@@ -272,5 +272,22 @@ return [
             'sc_regional_total','sc_regional_female','sc_national_total','sc_national_female'
         ]
     ],
+    'indicator_2'     =>  [
+        'pdo_indicator_2' => [
+            'total_accreditations','international_accreditation','regional_accreditation','national_accreditation',
+            'gap_assessment','self_evaluation'
+        ],
+        'pdo_indicator_2a' => [
+            'total_accreditations','international_accreditation','regional_accreditation','national_accreditation',
+            'gap_assessment','self_evaluation'
+        ],
+        'pdo_indicator_2b' => [
+            'total_accreditations','international_accreditation','regional_accreditation',
+            'gap_assessment','self_evaluation'
+
+        ]
+
+    ],
+
 
 ];
