@@ -71,10 +71,10 @@ class MigrationScript extends Command
                 $website = $worksheet->getCell("Z$row")->getValue();
                 $opening_hours_time = $worksheet->getCell("AC$row")->getValue();
                 $opening_hours_days = $worksheet->getCell("AD$row")->getValue();
-                $type = $worksheet->getCell("AG$row")->getValue();
+                $type = $worksheet->getCell("Q$row")->getValue();
                 $town = $worksheet->getCell("N$row")->getValue();
 
-                $categories = $worksheet->getCell("Q$row")->getValue();
+                $categories = $worksheet->getCell("AG$row")->getValue();
                 $serviceProviderName = trim($serviceProviderName);
 
 
@@ -116,8 +116,8 @@ class MigrationScript extends Command
                     $listing_id = $this->insertRecord("directory_platform_listings",
                         [
                             "location_id" => $region_id ?? $district_id ?? null,
-                            "type" => trim(str_replace('_', ' ', $type)),
-                            "name" => $serviceProviderName,
+                            "type" => ucwords(trim(str_replace('_', ' ', str_replace(' ', '&', $type)))),
+                            "name" => ucwords($serviceProviderName),
                             "address" => $address,
                             "slug" => str_slug($serviceProviderName.'_'.str_random(4)),
                             "telephone" => $telephone,
@@ -138,7 +138,7 @@ class MigrationScript extends Command
                                 "category_id" => $record->id,
                             ]);
                         } else $this->insertRecord("directory_platform_categories", [
-                            "name" => str_replace('_', ' ', $category),
+                            "name" => ucwords(str_replace('_', ' ', $category)),
                             "slug" => $category,
                         ]);
 
