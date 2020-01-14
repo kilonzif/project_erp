@@ -1,7 +1,3 @@
-{{--<div class="row">--}}
-    {{--<div class="col-12">--}}
-        {{--<div class="card-content collapse show">--}}
-            {{--<div class="row">--}}
                 <div class="row pull-right">
                     <div class="col-12">
                         <a href="{{ route('analytics.export_data').'?'.http_build_query(["resultset"=>$resultset]) }}"
@@ -37,7 +33,3 @@
                             </tbody>
                         </table>
 
-{{--</div>--}}
-{{--</div>--}}
-    {{--</div>--}}
-{{--</div>--}}
