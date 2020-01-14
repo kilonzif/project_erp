@@ -28,6 +28,5 @@
 @section('form-footer')
     <div class="card-footer border-0">
         <p class="float-sm-left text-center"><a href="{{route('login')}}" class="card-link">{{ __('Login') }}</a></p>
-        <p class="float-sm-right text-center">New to Stack ? <a href="{{route('register')}}" class="card-link">{{ __('Create Account') }}</a></p>
     </div>
 @endsection

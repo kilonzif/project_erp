@@ -41,7 +41,8 @@ class UserController extends Controller
 
         //The ACES represent GROUPS
         $aces = Ace::where('active','=',1)->orderBy('name', 'ASC')->get();
-        $institutions = Institution::where('university','=',0)->where('active','=',1)->orderBy('name', 'ASC')->get();
+        $institutions = Institution::where('active','=',1)->orderBy('name', 'ASC')->get();
+//        dd($institutions);
         return view('users.index', compact('users','roles','institutions','aces'));
     }
 
@@ -128,7 +129,7 @@ class UserController extends Controller
     public function save_user(Request $request){
 
         $this->validate($request, [
-            'name' => 'required|string|alpha|max:255',
+            'name' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u',
             'email' => 'required|string|email|max:255|unique:users',
             'ace' => 'nullable|numeric|min:1',
             'role' => 'required|numeric|min:1',
@@ -198,7 +199,7 @@ class UserController extends Controller
         $id = Crypt::decrypt($request->id);
         $this->validate($request, [
             'id' => 'required|string|min:100',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|regex:/^[\pL\s\-]+$/u',
             'email' => 'required|string|email|max:255|unique:users,email,'.$id,
             'ace' => 'nullable|numeric|min:1',
             'role' => 'required|numeric|min:1',

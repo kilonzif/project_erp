@@ -128,22 +128,22 @@
                                                 @endif
                                             </div>
                                         </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label class="label">Fiduciary Report Submitted ?</label>
-                                                    <select name="fiduciary_report" id="fiduciary_report" class="form-control">
-                                                        <option {{($report->fiduciary_report == '1')  ? "selected":""}} value="1">YES</option>
-                                                        <option {{($report->fiduciary_report == '0')  ? "selected":""}} value="0">NO</option>
-                                                    </select>
-                                                    @if ($errors->has('fiduciary_report'))
-                                                        <p class="text-right">
-                                                            <small class="warning text-muted">{{ $errors->first('fiduciary_report') }}</small>
-                                                        </p>
-                                                    @endif
-                                                </div>
-
-
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="label">Fiduciary Report Submitted ?</label>
+                                                <select name="fiduciary_report" id="fiduciary_report" class="form-control">
+                                                    <option {{($report->fiduciary_report == '1')  ? "selected":""}} value="1">YES</option>
+                                                    <option {{($report->fiduciary_report == '0')  ? "selected":""}} value="0">NO</option>
+                                                </select>
+                                                @if ($errors->has('fiduciary_report'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('fiduciary_report') }}</small>
+                                                    </p>
+                                                @endif
                                             </div>
+
+
+                                        </div>
 
                                     </div>
                                 </div>
@@ -179,37 +179,39 @@
                                             @if($indicator->indicators->count() > 0)
                                                 @php
 
-                                                        $sub_indicators = $indicator->indicators->where('status','=',1);
-                                                        $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
-                                                        $pdo_indicator_1 = config('app.indicator_3');
+                                                    $sub_indicators = $indicator->indicators->where('status','=',1);
+                                                    $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
+                                                    $pdo_indicator_1 = config('app.indicator_3');
 
-                                                        $pdo_indicator_2 = config('app.indicator_2');
+                                                    $pdo_indicator_2 = config('app.indicator_2');
 
-                                                        $indicator_5_2_filter = ['national','regional'];
-                                                        $indicator_4_1_filter = ['international','national','gap-assessment','regional','self-evaluation','course'];
-                                                        $indicator_4_2_filter = ['non-regional','regional'];
-                                                        $indicator_5_1_filter = ['External_Revenue_National ','External_Revenue_Regional'];
-                                                        $indicator_7_3_filter = ['national','self_evaluation','international'];
-                                                        $indicator_identifier = (string)$indicator->identifier;
-                                                        $counter = 0;
-                                                    //dd($sub_indicators);
+                                                    $pdo_indicator_5 = config('app.indicator_5');
+
+                                                    $indicator_5_2_filter = ['national','regional'];
+                                                    $indicator_4_1_filter = ['international','national','gap-assessment','regional','self-evaluation','course'];
+                                                    $indicator_4_2_filter = ['non-regional','regional'];
+                                                    $indicator_5_1_filter = ['External_Revenue_National ','External_Revenue_Regional'];
+                                                    $indicator_7_3_filter = ['national','self_evaluation','international'];
+                                                    $indicator_identifier = (string)$indicator->identifier;
+                                                    $counter = 0;
+                                                //dd($pdo_indicator_5);
                                                 @endphp
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     {{--{{dd($sub_indicator)}}--}}
-                                                @if($sub_indicator->status == 0) @continue @endif
-                                                @php
-                                                    $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
-                                                @endphp
+                                                    @if($sub_indicator->status == 0) @continue @endif
+                                                    @php
+                                                        $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
+                                                    @endphp
                                                     <tr>
                                                         <td>{{$sub_indicator->title}} <span class="required">*</span>
                                                             {{--@if($sub_indicator->unit_measure)--}}
-                                                                {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
+                                                            {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
                                                             {{--@endif--}}
                                                         </td>
                                                         <td style="width: 200px">
 
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
-                                                            style="margin-bottom: 0;">
+                                                                 style="margin-bottom: 0;">
 
 
 
@@ -219,48 +221,52 @@
                                                                            value="{{$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
-                                                                    @elseif($indicator->parent_id == 4)
-
-                                                                    {{--{{dd($pdo_indicator_2)}};--}}
-
+                                                                @elseif($indicator->parent_id == 4)
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$pdo_2[$pdo_indicator][$pdo_indicator_2[$pdo_indicator][$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+
+                                                                @elseif($indicator->parent_id == 5)
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$pdo_52[$pdo_indicator][$pdo_indicator_5[$pdo_indicator][$counter]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+
+
                                                                 @endif
                                                                 @if(false)
 
-                                                            @if($indicator->identifier == "4.1")
-                                                                <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                       value="{{$indicator_4_1[$indicator_4_1_filter[$counter]]}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-                                                            @elseif($indicator->identifier == "4.2")
-                                                                <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                       value="{{$indicator_4_2[$indicator_4_2_filter[$counter]]}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-                                                            {{--@elseif($indicator->identifier == "5.1")--}}
-                                                                {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"--}}
-                                                                       {{--value="{{$indicator_5_1[$indicator_5_1_filter[$counter]]}}"--}}
-                                                                       {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">--}}
-                                                            @elseif($indicator->identifier == "5.2")
-                                                                <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                       value="{{$indicator_5_2[$indicator_5_2_filter[$counter]]}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-                                                            @elseif($indicator->identifier == "7.3")
-                                                                <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                       value="{{$indicator_7_3[$indicator_7_3_filter[$counter]]}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-                                                            @elseif(isset($values[$sub_indicator->id]))
-                                                                <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}" placeholder="Eg. 1"
-                                                                       value="{{old('indicators.'.$sub_indicator->id)?old('indicators.'.$sub_indicator->id):$values[$sub_indicator->id]}}"
-                                                                       name="indicators[{{$sub_indicator->id}}]">
-                                                            @else
-                                                                <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}" placeholder="Eg. 1"
-                                                                       value="{{old('indicators.'.$sub_indicator->id)?old('indicators.'.$sub_indicator->id):''}}"
-                                                                       name="indicators[{{$sub_indicator->id}}]">
-                                                            @endif
-                                                            @endif
+                                                                    @if($indicator->identifier == "4.1")
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{$indicator_4_1[$indicator_4_1_filter[$counter]]}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                    @elseif($indicator->identifier == "4.2")
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{$indicator_4_2[$indicator_4_2_filter[$counter]]}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                        @elseif($indicator->identifier == "5.1")
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                        value="{{$indicator_5_1[$indicator_5_1_filter[$counter]]}}"
+                                                                        class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                    @elseif($indicator->identifier == "5.2")
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{$indicator_5_2[$indicator_5_2_filter[$counter]]}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                    @elseif($indicator->identifier == "7.3")
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{$indicator_7_3[$indicator_7_3_filter[$counter]]}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                    @elseif(isset($values[$sub_indicator->id]))
+                                                                        <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}" placeholder="Eg. 1"
+                                                                               value="{{old('indicators.'.$sub_indicator->id)?old('indicators.'.$sub_indicator->id):$values[$sub_indicator->id]}}"
+                                                                               name="indicators[{{$sub_indicator->id}}]">
+                                                                    @else
+                                                                        <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}" placeholder="Eg. 1"
+                                                                               value="{{old('indicators.'.$sub_indicator->id)?old('indicators.'.$sub_indicator->id):''}}"
+                                                                               name="indicators[{{$sub_indicator->id}}]">
+                                                                    @endif
+                                                                @endif
                                                                 @if(false)
                                                                     <input type="number" step="0.01" min="0" id="indicator_{{$sub_indicator->id}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}" placeholder="Eg. 1"
@@ -367,16 +373,16 @@
 @push('vendor-script')
 
 
-<script type="text/javascript" src="{{ asset("js/scripts/customizer.js") }}"></script>
-<script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ asset("js/scripts/customizer.js") }}"></script>
+    <script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
 
-<script type="text/javascript" >
+    <script type="text/javascript" >
 
-  $('.customizer-toggle').on('click',function(){
-        $('.customizer').toggleClass('open');
-    });
+        $('.customizer-toggle').on('click',function(){
+            $('.customizer').toggleClass('open');
+        });
 
-</script>
+    </script>
 @endpush
 @push('end-script')
 

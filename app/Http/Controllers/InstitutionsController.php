@@ -6,6 +6,7 @@ use App\Classes\ToastNotification;
 use App\Country;
 use App\Institution;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class InstitutionsController extends Controller
 {
@@ -70,4 +71,20 @@ class InstitutionsController extends Controller
         notify(new ToastNotification('Successful!', 'Institution Updated', 'success'));
         return back();
     }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete_institution($id){
+        $institution_id = Crypt::decrypt($id);
+        if (Institution::destroy($institution_id)){
+            notify(new ToastNotification('Successful!', '  Institution deleted!', 'success'));
+        } else {
+            notify(new ToastNotification('Sorry!', 'Something went wrong. Please try again', 'warning'));
+        }
+
+        return redirect()->back();
+    }
+
 }

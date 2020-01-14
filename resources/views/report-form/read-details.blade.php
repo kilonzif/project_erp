@@ -53,16 +53,16 @@
                                         $counter = 1;
                                     @endphp
                                     @foreach($indicator_details->data as $indicator_detail)
-                                    <tr>
-                                        <td>{{$counter++}}</td>
-                                        @foreach($slugs as $slug)
-                                            @if(isset($indicator_detail[$slug]))
-                                                <td>{{$indicator_detail[$slug]}}</td>
-                                            @else
-                                                <td>N/A</td>
-                                            @endif
-                                        @endforeach
-                                    </tr>
+                                        <tr>
+                                            <td>{{$counter++}}</td>
+                                            @foreach($slugs as $slug)
+                                                @if(isset($indicator_detail[$slug]))
+                                                    <td>{{$indicator_detail[$slug]}}</td>
+                                                @else
+                                                    <td>N/A</td>
+                                                @endif
+                                            @endforeach
+                                        </tr>
                                     @endforeach
                                     </tbody>
                                 </table>
@@ -82,12 +82,12 @@
 
 
 @push('vendor-script')
-{{--    <script src="{{asset('vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js')}}" type="text/javascript"></script>--}}
+    {{--    <script src="{{asset('vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js')}}" type="text/javascript"></script>--}}
     <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
-{{--    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>--}}
+    {{--    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>--}}
 @endpush
 @push('end-script')
-{{--    <script src="{{asset('js/scripts/forms/extended/form-inputmask.js')}}" type="text/javascript"></script>--}}
+    {{--    <script src="{{asset('js/scripts/forms/extended/form-inputmask.js')}}" type="text/javascript"></script>--}}
     <script>
         $('.indicator-info').DataTable({
             // responsive: true,

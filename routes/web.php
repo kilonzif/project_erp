@@ -113,8 +113,10 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('ace/create', 'AcesController@create')->name('aces.create');
     Route::post('ace/{id}/add-courses','AcesController@add_courses')->name('ace.add_courses');
     Route::get('ace/{id}/delete-course/{course}','AcesController@delete_course')->name('ace.delete_course');
-    Route::get('aces/json-view', 'AcesController@edit_view')->name('ace.edit');
-    Route::post('ace/update', 'AcesController@update_ace')->name('ace.update');
+
+    Route::get('aces/json-view', 'AcesController@edit_view')->name('ace.edit-view');
+
+    Route::get('ace/update', 'AcesController@update_ace')->name('ace.update');
     Route::get('aces/{id}', 'AcesController@ace_page')->name('aces.profile');
     Route::get('ace/{id}/baselines', 'AcesController@baselines')->name('ace.baselines');
     Route::get('ace/{id}/indicator_one', 'AcesController@indicator_one')->name('ace.indicator_one');
@@ -128,6 +130,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('institutions/create', 'InstitutionsController@create')->name('institutions.create');
     Route::get('institution/edit', 'InstitutionsController@edit')->name('institution.edit');
     Route::post('institution/update', 'InstitutionsController@update')->name('institution.update');
+    Route::get('institution/delete/{id}', 'InstitutionsController@delete_institution')->name('institution.delete');
 
     //Permissions Routes
     Route::get('permissions', 'PermissionsController@index')->name('permissions');

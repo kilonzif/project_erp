@@ -272,10 +272,7 @@
         });
 
         function editAce(key) {
-            var path = "{{route('user-management.ace.edit')}}";
-            var check1 = "{{asset('vendors/js/forms/icheck/icheck.min.js')}}";
-            var check3 = "{{asset('vendors/js/forms/select/select2.full.min.js')}}";
-            var check2 = "{{asset('js/scripts/forms/checkbox-radio.js')}}";
+            var path = "{{route('user-management.ace.edit-view')}}";
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -286,7 +283,6 @@
                 type: 'GET',
                 data: {id:key},
                 beforeSend: function(){
-                    // alert(key);
                     $('#action-card').block({
                         message: '<div class="ft-loader icon-spin font-large-1"></div>',
                         overlayCSS: {
@@ -302,23 +298,58 @@
                     });
                 },
                 success: function(data){
-                    // console.log(data);
                     $('#action-card').empty();
+
                     $('#action-card').html(data.theView);
                 },
                 complete:function(data){
-                    // console.log(data.ace);
                     $('#action-card').unblock();
-                    $.getScript(check3);
-                    $.getScript(check2);
-                    $.getScript(check1);
-                    $.getScript($('.select2').select2({placeholder: 'Select Courses',allowClear: true}));
                 },
                 error: function (data) {
                     console.log(data);
                 }
             });
         }
+
+        {{--function edit_view(key) {--}}
+            {{--var path = "{{route('user-management.contacts.edit_view')}}";--}}
+            {{--$.ajaxSetup(    {--}}
+                {{--headers: {--}}
+                    {{--'X-CSRF-Token': $('meta[name=_token]').attr('content')--}}
+                {{--}--}}
+            {{--});--}}
+            {{--$.ajax({--}}
+                {{--url: path,--}}
+                {{--type: 'GET',--}}
+                {{--data: {id:key},--}}
+                {{--beforeSend: function(){--}}
+                    {{--$('#edit_view').block({--}}
+                        {{--message: '<div class="ft-loader icon-spin font-large-1"></div>',--}}
+                        {{--overlayCSS: {--}}
+                            {{--backgroundColor: '#ccc',--}}
+                            {{--opacity: 0.8,--}}
+                            {{--cursor: 'wait'--}}
+                        {{--},--}}
+                        {{--css: {--}}
+                            {{--border: 0,--}}
+                            {{--padding: 0,--}}
+                            {{--backgroundColor: 'transparent'--}}
+                        {{--}--}}
+                    {{--});;--}}
+                {{--},--}}
+                {{--success: function(data){--}}
+                    {{--$('#edit_view').empty();--}}
+                    {{--$('#edit_view').html(data.theView);--}}
+                    {{--// console.log(data)--}}
+                {{--},--}}
+                {{--complete:function(){--}}
+                    {{--$('#edit_view').unblock();--}}
+                {{--}--}}
+                {{--,--}}
+                {{--error: function (data) {--}}
+                    {{--console.log(data)--}}
+                {{--}--}}
+            {{--});--}}
     </script>
 
         <script>

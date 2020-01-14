@@ -82,15 +82,21 @@
                                                             <i class="ft-edit-3"></i></a>
                                                     @endif
                                                     @if(\Auth::user()->hasRole('webmaster|super-admin'))
-                                                        {{--<a href="{{route('report_submission.indicators_status',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"--}}
-                                                           {{--class="btn btn-s btn-success" data-toggle="tooltip" data-placement="top" title="Report Status"><i class="fa fa-hourglass-start"></i></a>--}}
+                                                        <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
+                                                           title="Delete Report"><i class="ft-trash-2"></i></a>}
+                                                    @endif
+                                                    @if($report->status != 1 && \Auth::user()->hasRole('ace-officer'))
                                                         <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                            class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
                                                            title="Delete Report"><i class="ft-trash-2"></i></a>
-                                                    @endif
+                                                    @elseif($report->status == 1 && \Auth::user()->hasRole('ace-officer'))
+                                                        <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                                                           class="btn btn-s btn-danger disabled" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
+                                                           title="Delete Report"><i class="ft-trash-2"></i></a>
 
+                                            @endif
                                                 </div>
-                                            </td>
                                         </tr>
                                     @endforeach
                                     </tbody>

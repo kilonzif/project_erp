@@ -62,7 +62,6 @@ class AcesController extends Controller {
             'dlr' => 'nullable|numeric|min:0',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
-
 ]);
 
 
@@ -214,11 +213,15 @@ class AcesController extends Controller {
 
 		$id = Crypt::decrypt($request->id);
 		$ace = Ace::find($id);
+
 		$currency = Currency::orderBy('name', 'ASC')->get();
 		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
         $indicator_ones=IndicatorOne::where('ace_id', '=', $id)->get();
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 		$view = view('aces.edit-view', compact('ace', 'universities','currency','requirements','indicator_ones'))->render();
+
+//		dd($view);
+
 		return response()->json(['theView' => $view, 'ace' => $ace, 'indicator_ones'=>$indicator_ones]);
 	}
 
@@ -228,36 +231,41 @@ class AcesController extends Controller {
      * @throws \Illuminate\Validation\ValidationException
      */
 	public function update_ace(Request $request) {
-		$id = Crypt::decrypt($request->id);
-		$this->validate($request, [
-			'id' => 'required|string|min:100',
-			'name' => 'required|string|min:3|unique:aces,name,' . $id,
-			'contact' => 'required|numeric|digits_between:10,17',
-			'email' => 'required|string|email|min:3',
-			'field' => 'required|string',
-			'currency' => 'required|numeric',
-			'dlr' => 'nullable|numeric|min:0',
-			'university' => 'required|integer|min:1',
-			'active' => 'nullable|boolean',
-			'acronym' => 'required|string|min:2',
-            'ace_type' =>'required|string|min:2',
-		]);
-		$addAce = Ace::find($id);
 
-		$addAce->name = $request->name;
-		$addAce->acronym = $request->acronym;
-		$addAce->contact = $request->contact;
-		$addAce->currency_id = $request->currency;
-		$addAce->field = $request->field;
-		$addAce->dlr = $request->dlr;
-		$addAce->email = $request->email;
-		$addAce->institution_id = $request->university;
-		$addAce->active = $request->active;
-        $addAce->ace_type = $request->ace_type;
-        $addAce->save();
+		$id = $request->ace_id;
 
-		notify(new ToastNotification('Successful!', 'ACE Updated!', 'success'));
-		return back();
+        $this->validate($request, [
+            'name' => 'required|string|min:3|unique:aces,name',
+            'contact' => 'required|numeric|digits_between:10,17',
+            'email' => 'required|string|email|min:3',
+            'university' => 'required|integer|min:1',
+            'field' => 'required|string',
+            'active' => 'nullable|boolean',
+            'currency' => 'required|numeric',
+            'dlr' => 'nullable|numeric|min:0',
+            'acronym' => 'required|string|min:2',
+            'ace_type' => 'required|string|min:2',
+        ]);
+
+        $update_ace = Ace::find($id);
+        $update_ace->name = $request->name;
+        $update_ace->acronym = $request->acronym;
+        $update_ace->field = $request->field;
+        $update_ace->contact = $request->contact;
+        $update_ace->currency_id = $request->currency;
+        $update_ace->email = $request->email;
+        $update_ace->dlr = $request->dlr;
+        $update_ace->institution_id = $request->university;
+        $update_ace->active = $request->active;
+        $update_ace->ace_type = $request->ace_type;
+
+        $updated = $update_ace->save();
+        if(!$updated){
+            notify(new ToastNotification('error!', 'There was an error updating this ACE!', 'success'));
+            return back()->withInput();
+        }
+            notify(new ToastNotification('Successful!', 'ACE Updated!', 'success'));
+            return back();
 	}
 
 	public function ace_page($id) {

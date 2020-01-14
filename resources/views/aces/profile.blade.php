@@ -230,20 +230,19 @@
                             </form>
                             <br>
                             @php
-                                $allcourses=explode(';',$ace->programmes);
-
+                                $allcourses=explode(';',$ace->programmes)  ;
                             @endphp
 
                             @foreach($allcourses as $course)
+                            @if($course != "")
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
-                                    <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"  data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
-                                        <span class="fa fa-remove"></span>
+                                    <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"
+                                       onclick="return confirm('Are you sure you want to delete this Course?');" data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
+                                        <span class="fa fa-remove" style="color:red"></span>
                                     </a>
                                 </div>
-                                {{--@php--}}
-                                {{--$count+=1;--}}
-                                {{--@endphp--}}
+                                @endif
                             @endforeach
                         </div>
                     </div>

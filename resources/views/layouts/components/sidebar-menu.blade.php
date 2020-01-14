@@ -60,7 +60,7 @@
             </li>
             @endability
 
-            @ability('webmaster|super-admin', 'generate-report')
+            @ability('webmaster', 'generate-report')
             <li class=" nav-item {{isRouteActive('report_generation','false','open')}}"><a href="#">
                     <i class="ft-bar-chart-2"></i><span class="menu-title" data-i18n="">{{__('Report Generation')}}</span></a>
                 <ul class="menu-content">
@@ -184,18 +184,18 @@
             </li>
             @endability
 
-            @ability('webmaster|super-admin|admin','setup-faq')
-            <li data-menu="" class="{{isRouteActive('faqs')}}">
-                <a class="dropdown-item" href="{{ route('faqs') }}"><i class="ft-message-circle"></i>FAQS
-                    <submenu class="name"></submenu>
+            @ability('webmaster|super-admin|admin', 'setup-faq')
+            <li class="nav-item {{isRouteActive('faqs')}}">
+                <a href="{{route('faqs')}}"><i class="ft-message-circle"></i>
+                    <span class="menu-title" data-i18n="">{{__('FAQs')}}</span>
                 </a>
             </li>
             @endability
 
             @ability('ace-officer','faq')
-            <li data-menu="" class="{{isRouteActive('read.faqs')}}">
-                <a class="dropdown-item" href="{{ route('read.faqs') }}"><i class="ft-message-circle"></i>FAQS
-                    <submenu class="name"></submenu>
+            <li class="nav-item {{isRouteActive('read.faqs')}}">
+                <a href="{{route('read.faqs')}}"><i class="ft-message-circle"></i>
+                    <span class="menu-title" data-i18n="">{{__('FAQs')}}</span>
                 </a>
             </li>
             @endability

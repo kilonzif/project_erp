@@ -288,6 +288,12 @@ return [
         ]
 
     ],
+    'indicator_5' => [
+        'pdo_indicator_5' => [
+            'total_number_of_interns','students','faculty'
+        ]
+
+    ],
 
 
 ];

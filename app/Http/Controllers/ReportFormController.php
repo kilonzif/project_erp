@@ -522,6 +522,8 @@ class ReportFormController extends Controller {
 
         $pdo_2 = $this->generateAggregatedIndicator73Results($id);
 
+        $pdo_52 = $this->generateAggregatedIndicator52Results($id);
+
 
 //        $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
 //        $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
@@ -534,7 +536,7 @@ class ReportFormController extends Controller {
 		$aces = Ace::where('active', '=', 1)->get();
 //		dd($indicators);
 		return view('report-form.edit', compact('project', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
-            'indicators','pdo_1','pdo_2'));
+            'indicators','pdo_1','pdo_2','pdo_52'));
 //		return view('report-form.edit', compact('project', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
 //            'indicators','result','indicator_5_2','indicator_4_1','indicator_4_2','indicator_7_3'));
 	}
@@ -1411,29 +1413,33 @@ class ReportFormController extends Controller {
      */
     public function generateAggregatedIndicator52Results($report_id)
     {
+
+//        'total_number_of_interns','students','faculty'
+
         $indicator_5_2_values = array();
 
-        $indicator_5_2_values['national']= DB::connection('mongodb')
+        $total_number_of_interns= DB::connection('mongodb')
             ->collection('indicator_5.2')
             ->where('report_id','=', $report_id)
-            ->where(function($query)
-            {
-                $query->where('nationality','=', "National")
-                    ->orWhere('nationality','=', "national")
-                    ->orWhere('nationality','like', "n%")
-                    ->orWhere('nationality','like', "N%");
-            })->count();
+            ->count();
 
-        $indicator_5_2_values['regional'] = DB::connection('mongodb')
-            ->collection('indicator_5.2')
-            ->where('report_id','=', $report_id)
-            ->where(function($query)
-            {
-                $query->where('nationality','=', "Regional")
-                    ->orWhere('nationality','=', "regional")
-                    ->orWhere('nationality','like', "r%")
-                    ->orWhere('nationality','like', "R%");
-            })->count();
+
+        $students= DB::connection('mongodb')->collection('indicator_5.2')
+            ->where('report_id', $report_id)
+            ->where(function ($query) {
+                $query->where('studentfaculty', 'like', "Student%")
+                    ->orWhere('studentfaculty', 'like', "stud%");
+            });
+        $faculty = DB::connection('mongodb')->collection('indicator_5.2')
+            ->where('report_id', $report_id)
+            ->where(function ($query) {
+                $query->where('studentfaculty', 'like', "F%")
+                    ->orWhere('studentfaculty', 'like', "f%");
+            });
+
+        $indicator_5_2_values["pdo_indicator_5"]["total_number_of_interns"] = $total_number_of_interns;
+        $indicator_5_2_values["pdo_indicator_5"]["students"] = $students->count();
+        $indicator_5_2_values["pdo_indicator_5"]["faculty"] = $faculty->count();
 
         return $indicator_5_2_values;
     }

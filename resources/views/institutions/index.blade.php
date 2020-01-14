@@ -155,16 +155,9 @@
                                                     <div class="btn-group" role="group" aria-label="Basic example">
                                                         <a href="#action-card" onclick="editInstitution('{{$institution->id}}')" class="btn btn-s btn-secondary">
                                                             {{__('Edit')}}</a>
-                                                        {{--<a class="dropdow-item btn {{($user->status == 0)?'btn-success' : 'btn-danger'}} btn-s"--}}
-                                                           {{--href="{{ route('user-management.user.delete',[\Illuminate\Support\Facades\Crypt::encrypt($institution->id)]) }}"--}}
-                                                           {{--onclick="event.preventDefault();--}}
-                                                                   {{--document.getElementById('delete-form-{{$count}}').submit();">--}}
-                                                            {{--@if($user->status == 0)--}}
-                                                                {{--{{ __('Activate') }}--}}
-                                                            {{--@else--}}
-                                                                {{--{{ __('Deactivate') }}--}}
-                                                            {{--@endif--}}
-                                                        {{--</a>--}}
+                                                        <a href="{{route('user-management.institution.delete',[\Illuminate\Support\Facades\Crypt::encrypt($institution->id)])}}"
+                                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Institution?');"
+                                                           title="Delete Report"><i class="ft-trash-2"></i></a>
                                                     </div>
                                                 </td>
                                             </tr>
