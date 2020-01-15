@@ -132,8 +132,8 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group{{ $errors->has('contact') ? ' form-control-warning' : '' }}">
-                            <label for="contact">Phone Number <span class="required">*</span></label>
-                            <input type="text" name="contact" required placeholder="Phone Number" class="form-control" value="{{ $ace->contact }}" id="contact">
+                            <label for="contact">Phone Number</label>
+                            <input type="text" name="contact"  placeholder="Phone Number" class="form-control" value="{{ $ace->contact }}" id="contact">
                             @if ($errors->has('contact'))
                                 <p class="text-right">
                                     <small class="warning text-muted">{{ $errors->first('contact') }}</small>

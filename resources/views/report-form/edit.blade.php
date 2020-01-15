@@ -130,8 +130,9 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label class="label">Fiduciary Report Submitted ?</label>
-                                                <select name="fiduciary_report" id="fiduciary_report" class="form-control">
+                                                <label class="label">Fiduciary Report Submitted <span class="required">  *</span>  </label>
+                                                <select name="fiduciary_report" id="fiduciary_report" class="form-control" required>
+                                                    <option selected value="">Select One</option>
                                                     <option {{($report->fiduciary_report == '1')  ? "selected":""}} value="1">YES</option>
                                                     <option {{($report->fiduciary_report == '0')  ? "selected":""}} value="0">NO</option>
                                                 </select>

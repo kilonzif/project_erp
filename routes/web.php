@@ -393,7 +393,7 @@ Route::name('report_submission.')->group(function () {
 });
 
 ////FAQs
-Route::group(['prefix' => 'setup', 'middleware' => ['ability:administrator|webmaster,setup-faqs']], function() {
+Route::group(['prefix' => 'setup', 'middleware' => ['ability:admin|webmaster|super-admin,setup-faq']], function() {
     Route::get('/faqs', 'FaqsController@index')->name('faqs');
     Route::get('/faq/new', 'FaqsController@create')->name('faq.new');
     Route::get('/faq/edit/{id}', 'FaqsController@edit')->name('faq.edit');

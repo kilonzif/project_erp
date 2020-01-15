@@ -94,7 +94,7 @@
                     <i class="ft-settings"></i><span class="menu-title" data-i18n="">{{__('System Settings')}}</span></a>
                 <ul class="menu-content">
 
-                    @role('webmaster')
+                    @role('webmaster|admin|super-admin')
                     <li class="{{isRouteActive('settings.projects')}}">
                         <a class="menu-item" href="{{route('settings.projects')}}">{{__('Projects')}}</a>
                     </li>
@@ -176,9 +176,6 @@
                             <span class="menu-title" data-i18n="">{{__('Contacts')}}</span>
                         </a>
                     </li>
-
-
-
                     @endability
                 </ul>
             </li>

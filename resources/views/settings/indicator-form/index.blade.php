@@ -38,7 +38,14 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">
-                                Indicator {{$ind->identifier}}
+                                @if($ind->identifier ==3)
+                                    DLR {{$ind->identifier}} (DLRs 3.1 - 3.4 New Students)
+                                @elseif($ind->identifier =="PDO Indicator 5")
+                                    DLR 5.2 (Internships)
+                                @else
+                                    DLR {{$ind->identifier}} {{$ind->title}}
+                                @endif
+
                             </h4>
                             <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                             <div class="heading-elements">

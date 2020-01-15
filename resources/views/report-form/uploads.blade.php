@@ -51,7 +51,18 @@
                                                 {{--<option value="">Choose...</option>--}}
                                                 @foreach($indicators as $indicator)
                                                     @if($indicator->IsUploadable($indicator->id))
-                                                    <option @if($indicatorID == $indicator->id) selected @endif value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</option>
+                                                    <option @if($indicatorID == $indicator->id) selected @endif value="{{$indicator->id}}">
+                                                            @if($indicator->identifier ==3)
+                                                                DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)
+
+                                                        @elseif($indicator->identifier =="PDO Indicator 5")
+                                                            DLR 5.2 (Internships)
+                                                        @else
+                                                             DLR {{$indicator->identifier}} {{$indicator->title}}
+                                                            @endif
+
+                                                    </option>
+
                                                     @endif
                                                 @endforeach
                                             </select>

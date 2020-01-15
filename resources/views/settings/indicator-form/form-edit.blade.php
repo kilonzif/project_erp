@@ -68,7 +68,14 @@
                                             <select name="indicator" required class="select2 form-control" id="indicator">
                                                 <option value=""></option>
                                                 @foreach($indicators as $indicator)
-                                                    <option @if($form->indicator == $indicator->id) selected @endif value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</option>
+                                                    <option @if($form->indicator == $indicator->id) selected @endif value="{{$indicator->id}}">
+                                                        @if($indicator->identifier ==3)
+                                                            DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)
+                                                        @elseif($indicator->identifier =="PDO Indicator 5")
+                                                            DLR 5.2 (Internships)
+                                                        @else
+                                                            DLR {{$indicator->identifier}} {{$indicator->title}}
+                                                        @endif
                                                 @endforeach
                                             </select>
                                         </fieldset>

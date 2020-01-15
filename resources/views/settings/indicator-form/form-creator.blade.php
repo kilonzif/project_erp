@@ -31,19 +31,6 @@
             <a href="{{route('settings.indicator.generated_forms')}}" class="btn btn-sm btn-secondary square">Back to lists</a>
         </p>
         <div class="row">
-            {{--<div class="col-md-3">--}}
-                {{--<div class="card">--}}
-                    {{--<div class="card-header">--}}
-                        {{--<h5>Fields Types</h5>--}}
-                        {{--<a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>--}}
-                    {{--</div>--}}
-                    {{--<div class="card-content">--}}
-                        {{--<div class="card-body">--}}
-
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-            {{--</div>--}}
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-content">
@@ -68,7 +55,15 @@
                                             <select name="indicator" required class="select2 form-control" id="indicator">
                                                 <option value=""></option>
                                                 @foreach($indicators as $indicator)
-                                                    <option value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</option>
+                                                    <option value="{{$indicator->id}}">
+                                                        @if($indicator->identifier ==3)
+                                                            DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)
+                                                        @elseif($indicator->identifier =="PDO Indicator 5")
+                                                            DLR 5.2 (Internships)
+                                                        @else
+                                                            DLR {{$indicator->identifier}} {{$indicator->title}}
+                                                        @endif
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </fieldset>
@@ -127,34 +122,34 @@
                                             <button type="submit" class="btn btn-secondary square">Submit Fields</button>
                                         </div>
                                         {{--<div class="form-group overflow-hidden">--}}
-                                            <div class="col-md-6 text-right">
+                                        <div class="col-md-6 text-right">
                                             <span data-repeater-create="" class="btn btn-primary square">
                                                 <i class="icon-plus4"></i> Add New Field
                                             </span>
-                                            </div>
+                                        </div>
                                         {{--</div>--}}
                                     </div>
                                 </div>
 
 
 
-                                    {{--<div class="col-md-12">--}}
+                                {{--<div class="col-md-12">--}}
                                 {{--<div class="form-group mb-1 contact-repeater">--}}
-                                            {{--<div data-repeater-list="repeater-group">--}}
-                                                {{--<div class="input-group mb-1" data-repeater-item="" style="">--}}
-                                                    {{--<input type="tel" placeholder="Column Title" class="form-control" id="example-tel-input">--}}
-                                                    {{--<div class="input-group-append">--}}
-                                                      {{--<span class="input-group-btn" id="button-addon2">--}}
-                                                        {{--<button class="btn btn-danger" type="button" data-repeater-delete=""><i class="ft-x"></i></button>--}}
-                                                      {{--</span>--}}
-                                                    {{--</div>--}}
-                                                {{--</div>--}}
-                                            {{--</div>--}}
-                                            {{--<button type="button" data-repeater-create="" class="btn btn-primary">--}}
-                                                {{--<i class="icon-plus4"></i> Add Column--}}
-                                            {{--</button>--}}
-                                        {{--</div>--}}
-                                    {{--</div>--}}
+                                {{--<div data-repeater-list="repeater-group">--}}
+                                {{--<div class="input-group mb-1" data-repeater-item="" style="">--}}
+                                {{--<input type="tel" placeholder="Column Title" class="form-control" id="example-tel-input">--}}
+                                {{--<div class="input-group-append">--}}
+                                {{--<span class="input-group-btn" id="button-addon2">--}}
+                                {{--<button class="btn btn-danger" type="button" data-repeater-delete=""><i class="ft-x"></i></button>--}}
+                                {{--</span>--}}
+                                {{--</div>--}}
+                                {{--</div>--}}
+                                {{--</div>--}}
+                                {{--<button type="button" data-repeater-create="" class="btn btn-primary">--}}
+                                {{--<i class="icon-plus4"></i> Add Column--}}
+                                {{--</button>--}}
+                                {{--</div>--}}
+                                {{--</div>--}}
                                 {{--</div>--}}
 
                             </form>
