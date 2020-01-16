@@ -180,12 +180,13 @@ class UploadIndicatorsController extends Controller
 
                     echo PHP_EOL;
 
-                    for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                    for ($col = 1; $col < $highestColumnIndex; $col++) {
                         $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
 //                        if ($value == null or $value == " "){
 //                            break;
 //                        }
                         $line = $row - $data_start;
+//                        dd($headers);
                         $upload_values['data'][$line][$headers[$col-1]] = $value;
                         $indicator_details[$headers[$col-1]] = $value;
                         echo  PHP_EOL;
