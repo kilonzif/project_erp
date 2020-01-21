@@ -39,7 +39,7 @@
                             <form action="{{route('settings.indicator.generate_form.save')}}" method="post">
                                 @csrf
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <fieldset class="form-group">
                                             <label for="project">Select Project</label>
                                             <select name="project" required class="select2 form-control" id="project">
@@ -56,16 +56,20 @@
                                                 <option value=""></option>
                                                 @foreach($indicators as $indicator)
                                                     <option value="{{$indicator->id}}">
-                                                        @if($indicator->identifier ==3)
-                                                            DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)
-                                                        @elseif($indicator->identifier =="PDO Indicator 5")
-                                                            DLR 5.2 (Internships)
-                                                        @else
-                                                            DLR {{$indicator->identifier}} {{$indicator->title}}
-                                                        @endif
+                                                        {{$indicator->title}}
                                                     </option>
                                                 @endforeach
                                             </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <fieldset class="form-group">
+                                        <label for="basicInputFile">Select Language</label>
+                                        <select name="language" required class="form-control" id="language">
+                                            <option value="">select language</option>
+                                            <option value="english">  <span class="flag-icon flag-icon-gb">English</span></option>
+                                            <option value="french"><span class="flag-icon flag-icon-fr">French</span></option>
+                                        </select>
                                         </fieldset>
                                     </div>
                                     <div class="col-md-2">

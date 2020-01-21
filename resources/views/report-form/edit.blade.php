@@ -205,9 +205,6 @@
                                                     @endphp
                                                     <tr>
                                                         <td>{{$sub_indicator->title}} <span class="required">*</span>
-                                                            {{--@if($sub_indicator->unit_measure)--}}
-                                                            {{--<br><small><strong>Unit of Measure: </strong>{{$sub_indicator->unit_measure->title}}</small>--}}
-                                                            {{--@endif--}}
                                                         </td>
                                                         <td style="width: 200px">
 
@@ -216,18 +213,21 @@
 
 
 
-                                                                @if($indicator->parent_id == 3)
+                                                                @if($indicator->parent_id == 1)
 
+                                                                    {{--new students--}}
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
-                                                                @elseif($indicator->parent_id == 4)
+                                                                    {{--institutional accreditation--}}
+                                                                @elseif($indicator->parent_id == 14)
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$pdo_2[$pdo_indicator][$pdo_indicator_2[$pdo_indicator][$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
-                                                                @elseif($indicator->parent_id == 5)
+                                                                    {{--internships--}}
+                                                                @elseif($indicator->parent_id == 6)
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$pdo_52[$pdo_indicator][$pdo_indicator_5[$pdo_indicator][$counter]]}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
@@ -244,10 +244,10 @@
                                                                         <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                                value="{{$indicator_4_2[$indicator_4_2_filter[$counter]]}}"
                                                                                class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-                                                                        @elseif($indicator->identifier == "5.1")
+                                                                    @elseif($indicator->identifier == "5.1")
                                                                         <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                        value="{{$indicator_5_1[$indicator_5_1_filter[$counter]]}}"
-                                                                        class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                               value="{{$indicator_5_1[$indicator_5_1_filter[$counter]]}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
                                                                     @elseif($indicator->identifier == "5.2")
                                                                         <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                                value="{{$indicator_5_2[$indicator_5_2_filter[$counter]]}}"

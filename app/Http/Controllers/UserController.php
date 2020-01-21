@@ -155,11 +155,15 @@ class UserController extends Controller
         $user->attachRole($request->role);
         $send_mail = new SystemMail();
         try{
+
+            dd("before");
             $send_mail->to($user->email)
                 ->from(strtolower($email))
                 ->subject('Account Confirmation & Password')
                 ->markdown('mail.email-confirmation',['user'=>$user])
                 ->send();
+
+            dd($send_mail);
         }catch (\Throwable $exception){
 
         }

@@ -101,7 +101,7 @@
                                             <select id="ace" class="form-control{{ $errors->has('ace') ? ' is-invalid' : '' }}" name="ace" value="{{ old('ace') }}">
                                                 <option value="">Select ACE</option>
                                                 @foreach($aces as $ace)
-                                                    <option {{old('ace') == $ace->id ? 'selected': ''}} value="{{$ace->id}}">{{$ace->name}}</option>
+                                                    <option {{old('ace') == $ace->id ? 'selected': ''}} value="{{$ace->id}}">{{$ace->acronym}}</option>
                                                 @endforeach
                                             </select>
 

@@ -91,7 +91,7 @@
                             <option value="">Select ACE</option>
                             @foreach($aces as $ace)
                                 <option {{($user->ace == $ace->id)? 'selected': ''}} value="{{$ace->id}}">
-                                    {{$ace->name." (".$ace->acronym.")"}}
+                                    {{$ace->acronym}}
                                 </option>
                             @endforeach
                         </select>

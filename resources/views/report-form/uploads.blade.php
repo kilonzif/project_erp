@@ -40,9 +40,10 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <form action="{{route('report_submission.save_excel_upload')}}" enctype="multipart/form-data" method="post">
+{{--                            <form action="{{route('report_submission.save_excel_upload')}}" enctype="multipart/form-data" method="post">--}}
+                                <form enctype="multipart/form-data" id="upload-form">
                                 @csrf
-                                <input type="hidden" name="report_id" value="{{$report_id}}">
+                                <input type="hidden" name="report_id" value="{{$report_id}}" id="report_id">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
@@ -52,14 +53,16 @@
                                                 @foreach($indicators as $indicator)
                                                     @if($indicator->IsUploadable($indicator->id))
                                                     <option @if($indicatorID == $indicator->id) selected @endif value="{{$indicator->id}}">
-                                                            @if($indicator->identifier ==3)
-                                                                DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)
+                                                        {{$indicator->title}}
 
-                                                        @elseif($indicator->identifier =="PDO Indicator 5")
-                                                            DLR 5.2 (Internships)
-                                                        @else
-                                                             DLR {{$indicator->identifier}} {{$indicator->title}}
-                                                            @endif
+                                                        {{--@if($indicator->identifier ==3)--}}
+                                                                {{--DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)--}}
+
+                                                        {{--@elseif($indicator->identifier =="PDO Indicator 5")--}}
+                                                            {{--DLR 5.2 (Internships)--}}
+                                                        {{--@else--}}
+                                                             {{--DLR {{$indicator->identifier}} {{$indicator->title}}--}}
+                                                            {{--@endif--}}
 
                                                     </option>
 
@@ -85,6 +88,10 @@
                                         </fieldset>
                                     </div>
                                     <div class="col-md-3">
+
+
+                                        {{--<input type="submit" class="btn" onclick=" loadUpload()">--}}
+
                                         <button style="margin-top: 2rem;" type="submit" class="btn btn-secondary"
                                                 id="uploadData">
                                             <i class="ft-upload mr-1"></i> Upload Indicator
@@ -158,11 +165,66 @@
 @endsection
 @push('vendor-script')
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
+    <script src="{{ asset('vendors/js/extensions/toastr.min.js') }}" type="text/javascript"></script>
 @endpush
 @push('end-script')
     <script>
         $('document').ready(function () {
             loadFields();
+        });
+
+        $('#upload-form').submit(function(event) {
+            console.log("start");
+            event.preventDefault();
+            var formData = new FormData($(this)[0]);
+            let report_id = $('#report_id').val();
+            let indicator = $('#indicator').val();
+            let upload_file = $('#upload_file').val();
+
+
+            formData.append('report_id', $("#report_id").val());
+            formData.append('indicator', $("#indicator").val());
+            formData.append('upload_file', $("#upload_file").val());
+            $.ajax({
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                cache: false,
+                data: formData,
+                url: "{{route('report_submission.save_excel_upload')}}",
+                enctype: 'multipart/form-data',
+                beforeSend: function(){
+                        $('#upload-form').block({
+                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                        overlayCSS: {
+                        backgroundColor: '#ccc',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                        },
+                        css: {
+                        border: 0,
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                        }
+                        });
+                        },
+                success: function(result)
+                {
+                    toastr['success']('Indicator Uploaded Successfully', 'success','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                    $('#upload-form').unblock();
+                    return true;
+
+                },
+                error: function(data)
+                {
+                    let message = data.responseText;
+                    toastr['error']('Indicator failed to upload', 'error','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                    $('#upload-form').unblock();
+                    console.log(data);
+                    return false;
+                }
+            });
+
         });
 
         function loadFields() {

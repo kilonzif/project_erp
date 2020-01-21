@@ -30,7 +30,6 @@ class UploadIndicatorsController extends Controller
         $d_report_id = Crypt::decrypt($report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
         $report = Report::find($d_report_id);
-//        dd($report);
         if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return back();
@@ -45,7 +44,6 @@ class UploadIndicatorsController extends Controller
 
     public function downloadIndicators()
     {
-//        $indicators = Indicator::where('parent_id','=', 1)->get();
         $indicators = Indicator::where('is_parent','=', 1)
             ->where('status','=', 1)
             ->where('upload','=', 1)
@@ -60,7 +58,6 @@ class UploadIndicatorsController extends Controller
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')->where('indicator','=',$indicator_details->indicator_id)->pluck('fields');
 
         $headers = array();
-//        dd($getHeaders);
 
         for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
             $headers[] = $getHeaders[0][$a]['label'];
@@ -75,20 +72,9 @@ class UploadIndicatorsController extends Controller
 
     public function getFields(Request $request)
     {
-        //row headers
-//        $headers = array();
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')
             ->where('indicator','=',(integer)$request->id)->orderBy('order','asc')->pluck('fields');
 
-//        if ($getHeaders){
-//            for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
-//                $headers[] = $getHeaders[0][$a]['label'];
-//            }
-//            $message = "Successful";
-//        }else{
-//            $headers = [];
-//        }
-//        dd($request->id);
 
         $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->first();
         $theView = view('report-form.field-list', compact('getHeaders','excel_upload'))->render();
@@ -156,6 +142,7 @@ class UploadIndicatorsController extends Controller
                 $highestRow = (integer)$highestRow; // e.g. 10
 //                dd($highestRow);
                 $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
+
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); // e.g. 5
                 $highestColumnIndex = (integer)$highestColumnIndex; // e.g. 5
 //                dd("Column: ".$highestColumnIndex." <br> Row:".$highestRow);
@@ -180,20 +167,13 @@ class UploadIndicatorsController extends Controller
 
                     echo PHP_EOL;
 
-                    for ($col = 1; $col <= $highestColumnIndex; $col++) {
+                    for ($col = 1; $col < $highestColumnIndex; $col++) {
                         $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
-//                        if ($value == null or $value == " "){
-//                            break;
-//                        }
                         $line = $row - $data_start;
                         $upload_values['data'][$line][$headers[$col-1]] = $value;
+
                         $indicator_details[$headers[$col-1]] = $value;
                         echo  PHP_EOL;
-
-//                        DB::connection('mongodb')
-//                            ->collection("$table_name")
-//                            ->where('_id', $indicator_item->_id)
-//                            ->update($indicator_details);
                     }
                     DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
@@ -205,10 +185,6 @@ class UploadIndicatorsController extends Controller
                     ->collection('indicator_form_details')
                     ->where('report_id','=', $upload_values['report_id'])->where('indicator_id','=', $upload_values['indicator_id'])->first();
                 $item = (object)$row;
-//                $indicator_table = DB::connection('mongodb')
-//                    ->collection("$table_name")
-//                    ->where('report_id','=', $indicator_details['report_id'])->first();
-//                $indicator_item = (object)$indicator_table;
 
                 if ($row){
                     DB::connection('mongodb')

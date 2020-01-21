@@ -11,6 +11,15 @@ use Illuminate\Support\Facades\Mail;
 |
  */
 
+
+Route::get('locale/{locale}', function ($locale){
+//    dd(session()->get('locale'));
+    \App::setLocale($locale);
+    session()->put('locale', $locale);
+    return redirect()->back();
+});
+
+
 Route::get('/php', function () {
     dd( phpinfo());
 });

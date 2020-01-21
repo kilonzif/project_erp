@@ -1,10 +1,12 @@
 @extends('layouts.app')
 @push('vendor-styles')
+    @php  str_replace('_', '-', app()->getLocale()); @endphp
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
 @endpush
 @push('other-styles')
 @endpush
 @section('content')
+{{--    @php dd(app()->isLocale('en')); @endphp--}}
     <div class="content-header row">
         <div class="content-header-left col-md-6 col-12 mb-2">
             <div class="row breadcrumbs-top">
@@ -22,14 +24,29 @@
         </div>
     </div>
 
+
     <div class="content-body">
+        {{--<div class="row">--}}
+            {{--<div class="float-left">--}}
+               {{--<a style="font-size: 16px" class="dropdown-toggle nav-link" id="dropdown-flag" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">--}}
+                   {{--{{__('creator.language')}}  @if (app()->isLocale('en')) <i class="flag-icon flag-icon-gb"> @else <i class="flag-icon flag-icon-fr">@endif</i>--}}
+                    {{--<span class="selected-language"></span>--}}
+                {{--</a>--}}
+                {{--<div class="dropdown-menu" aria-labelledby="dropdown-flag">--}}
+                    {{--<a class="dropdown-item" href="{{url('locale/en')}}"><i class="flag-icon flag-icon-gb"></i> English</a>--}}
+                    {{--<a class="dropdown-item" href="{{url('locale/fr')}}"><i class="flag-icon flag-icon-fr"></i> French</a>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+
+
         <p class="text-right">
+
             <a href="{{route('settings.indicator.generate_form.create')}}" class="btn btn-secondary square">Add Form</a>
         </p>
 
         <div class="row">
             @foreach($fields as $key=>$field)
-{{--                {{var_dump($field->id)}}--}}
             @php
                 $field = (object)$field;
                 $ind = \App\Indicator::find($field->indicator);
@@ -38,18 +55,12 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">
-                                @if($ind->identifier ==3)
-                                    DLR {{$ind->identifier}} (DLRs 3.1 - 3.4 New Students)
-                                @elseif($ind->identifier =="PDO Indicator 5")
-                                    DLR 5.2 (Internships)
-                                @else
-                                    DLR {{$ind->identifier}} {{$ind->title}}
-                                @endif
-
+                                {{$ind->title}}
                             </h4>
                             <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
                             <div class="heading-elements">
                                 <ul class="list-inline mb-0">
+                                    <li class="badge-circle"><i class="fa fa-language"> {{$field->language["Text"]}}</i></li>
                                     <li><a href="{{route('settings.indicator.generate_form.edit',[$field->_id])}}" class="btn btn-sm btn-outline-primary"><i class="ft-edit-2 mr-sm-1"></i>Edit</a></li>
                                     <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
                                 </ul>
@@ -59,13 +70,9 @@
                             <div class="card-body">
                                 <p>{{$ind->title}}</p>
                                 @foreach($field->fields as $label)
-                                    {{--<p>{{$label['label']}}</p>--}}
                                     <div class="badge badge-pill badge-square badge-secondary mb-sm-1">
                                         {{$label['label']}}
                                     </div>
-                                    {{--<div class="badge badge-pill badge-danger badge-square">--}}
-                                        {{--<i class="font-medium-4 icon-line-height fa fa-flask"></i>--}}
-                                    {{--</div>--}}
                                 @endforeach
                             </div>
                         </div>

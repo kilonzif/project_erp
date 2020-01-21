@@ -59,12 +59,14 @@ class ReportFormController extends Controller {
 
     }
 
+
     /**
      *Add new report form
      */
     public function add_report() {
         $me = new CommonFunctions();
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
+
         $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->orderBy('identifier','asc')->get();
         $aces = Ace::where('active', '=', 1)->get();
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
@@ -89,8 +91,6 @@ class ReportFormController extends Controller {
      * @throws \Illuminate\Validation\ValidationException
      */
     public function save_report(Request $request) {
-
-
         $this->validate($request, [
             'project_id' => 'required|string|min:100',
             'reporting_period' => 'required|string',
@@ -107,13 +107,21 @@ class ReportFormController extends Controller {
         } else {
             $ace_id = Auth::user()->ace;
         }
-
         $submission_date = $request->submission_date;
         if ($submission_date == null) {
             $submission_date = date('Y-m-d');
         }
-
         $project_id = Crypt::decrypt($request->project_id);
+
+        $report_exists= Report::where('ace_id',$ace_id)->where('reporting_period_id',$request->reporting_period)->first();
+
+        if($report_exists){
+            if($report_exists->status !=1){
+                notify(new ToastNotification('Error!', 'You have a pending report on this period and ACE- Go and submit!', 'error'));
+            }
+            notify(new ToastNotification('Error!', 'A report by this ACE this Period has already been created and submitted!', 'error'));
+            return back()->withInput();
+        }
         $report = new Report();
         $report->project_id = $project_id;
         $report->ace_id = $ace_id;
@@ -128,14 +136,11 @@ class ReportFormController extends Controller {
         $report->save();
         $report_id = $report->id;
 
-
-
         ReportStatusTracker::create([
             'report_id' => $report->id,
             'status_code' => 99,
         ]);
         notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
-//            });
         return redirect()->route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report_id)]);
     }
 
@@ -176,8 +181,6 @@ class ReportFormController extends Controller {
                 if ($submission_date == null) {
                     $submission_date = date('Y-m-d');
                 }
-
-//                $ace_id = $ace_id;
                 $project_id = Crypt::decrypt($request->project_id);
                 $report = new Report();
                 $report->project_id = $project_id;
@@ -1628,6 +1631,7 @@ class ReportFormController extends Controller {
 //
 //        return $indicator_4_2_values;
 //    }
+
 
 
 

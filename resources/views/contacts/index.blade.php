@@ -126,7 +126,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
-                                            <label for="email">Phone <span class="required">*</span></label><input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
+                                            <label for="email">Phone </label><input type="text"  placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
                                             @if ($errors->has('mailing_phone'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>

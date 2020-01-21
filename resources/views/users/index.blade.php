@@ -115,7 +115,7 @@
                                                 <select id="ace" class="form-control{{ $errors->has('ace') ? ' is-invalid' : '' }}" name="ace" value="{{ old('ace') }}">
                                                     <option value="">Select ACE</option>
                                                     @foreach($aces as $ace)
-                                                        <option {{old('ace') == $ace->id ? 'selected': ''}} value="{{$ace->id}}">{{$ace->name." (".$ace->acronym.")"}}</option>
+                                                        <option {{old('ace') == $ace->id ? 'selected': ''}} value="{{$ace->id}}">{{$ace->acronym}}</option>
                                                     @endforeach
                                                 </select>
 
@@ -175,7 +175,7 @@
                                             $count += 1;
                                             $institution = "-";
                                             if (isset($user->ace)){
-                                                $institution = $user->ace_->name;
+                                                $institution = $user->ace_->acronym;
                                             }elseif (isset($user->institution)){
                                                 $institution = $user->institution_->name;
                                             }

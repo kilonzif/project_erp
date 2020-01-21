@@ -36,11 +36,16 @@ class IndicatorsGeneratorController extends Controller
             $theFields[$key]['slug'] = str_slug($field['label']);
         }
 
+        $lang= array();
+        $lang['Text'] =$request->language;
+
         $request->fields = $theFields;
         $values['indicator'] = (integer)$request->indicator;
         $values['project'] = (integer)$request->project;
         $values['start_row'] = (integer)$request->start_row;
+        $values['language'] = $lang;
         $values['fields'] = $request->fields;
+
 
         $row = DB::connection('mongodb')->collection('indicator_form')->insert($values);
 
@@ -58,6 +63,9 @@ class IndicatorsGeneratorController extends Controller
         $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->get();
         $projects = Project::where('status','=', 1)->get();
         $form = IndicatorForm::find($id);
+
+
+
         return view('settings.indicator-form.form-edit', compact('indicators','projects','form'));
     }
 
@@ -68,11 +76,19 @@ class IndicatorsGeneratorController extends Controller
             $theFields[$key]['slug'] = str_slug($field['label']);
         }
 
+        $lang= array();
+        $lang['Text'] =$request->language;
+
+
+
         $request->fields = $theFields;
         $values['indicator'] = (integer)$request->indicator;
         $values['project'] = (integer)$request->project;
         $values['start_row'] = (integer)$request->start_row;
+        $values['language'] = $lang;
         $values['fields'] = $request->fields;
+
+//        dd($values['language']);
 
         $row = DB::connection('mongodb')->collection('indicator_form')->where('_id', $id)->update($values);
 

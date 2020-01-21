@@ -47,7 +47,7 @@
                                     <select name="indicator_id" id="indicator_id" class=" form-control" required>
                                         <option value="">Select indicator</option>
                                         @foreach($indicators as $indicator)
-                                            <option value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</option>
+                                            <option value="{{$indicator->id}}">{{$indicator->title}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('indicator_id'))
@@ -101,18 +101,12 @@
                                         <tr>
                                             <td>
                                                 <strong>
-                                                    Indicator {{$excelupload->indicator->identifier}}
+                                                     {{$excelupload->indicator->title}}
                                                 </strong>
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Basic example">
                                                     <a href="{{ route('settings.excelupload.download',  [Crypt::encrypt($excelupload->id)] ) }}" class="btn btn-s btn-secondary"><i class="fa fa-cloud-download"></i><span></span></a>
-                                                    {{-- <a href="{{ route('settings.excelupload.delete',  [Crypt::encrypt($excelupload->id)] ) }}"
-                                                       class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete ">
-                                                       <br>
-                                                        <i class="ft-trash-2"></i>
-
-                                                    </a> --}}
 
                                                     <a href="{{ route('settings.excelupload.delete',  [Crypt::encrypt($excelupload->id)] ) }}" class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete Project"><i class="ft-trash-2"></i></a>
                                                 </div>

@@ -35,7 +35,7 @@ class ContactsController extends Controller
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
             'mailing_name' => 'required|string|min:1',
-            'mailing_phone' => 'required|string|min:10',
+            'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
 
         ]);
@@ -83,7 +83,7 @@ class ContactsController extends Controller
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
             'mailing_name' => 'required|string|min:1',
-            'mailing_phone' => 'required|string|min:10',
+            'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
 
         ]);
@@ -124,7 +124,7 @@ class ContactsController extends Controller
             'ace_id' => 'required|string|min:1',
             'mailing_name' => 'required|string|min:1',
             'mailing_title' => 'required|string|min:1',
-            'mailing_phone' => 'required|string|min:10',
+            'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
         ]);
 

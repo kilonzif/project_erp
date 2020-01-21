@@ -63,8 +63,8 @@
 
 
                                         <tr>
-                                        <td value="{{$indicator->id}}">Indicator {{$indicator->identifier}}</td>
-                                            <td value="{{$indicator->id}}">Indicator {{$indicator->title}}</td>
+                                        <td value="{{$indicator->id}}"> {{$indicator->identifier}}</td>
+                                            <td value="{{$indicator->id}}"> {{$indicator->title}}</td>
                                             <td>
                                                 @if($excel_upload)
                                                     <a href="{{ route('settings.excelupload.download',  [\Illuminate\Support\Facades\Crypt::encrypt($excel_upload->id)] ) }}"
