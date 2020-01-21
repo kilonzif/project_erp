@@ -170,6 +170,7 @@ class UploadIndicatorsController extends Controller
                     for ($col = 1; $col < $highestColumnIndex; $col++) {
                         $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
                         $line = $row - $data_start;
+//                        dd($headers);
                         $upload_values['data'][$line][$headers[$col-1]] = $value;
 
                         $indicator_details[$headers[$col-1]] = $value;
