@@ -28,6 +28,14 @@
             </li>
             @endability
 
+            @ability('ace-officer','ace_profile')
+            <li class="nav-item {{isRouteActive('ace_profile')}}">
+                <a href="{{route('ace_profile')}}"><i class="ft-home"></i>
+                    <span class="menu-title" data-i18n="">{{__('Ace Profile')}}</span>
+                </a>
+            </li>
+            @endability
+
             @ability('webmaster|super-admin|admin|ace-officer', 'submit-report|view-report')
             <li class="nav-item has-sub {{isRouteActive('report_submission','true','open')}}">
                 <a href="#"><i class="ft-file-text"></i>

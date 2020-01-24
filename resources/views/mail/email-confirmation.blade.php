@@ -25,10 +25,6 @@
     Email: {{$user->email}}<br>
     Password : {{$user->email}}
 </p>
-<p>Please click on the button below to activate your account.</p>
-<p style="margin-top: 31px;">
-    <a class="btn" href="{{route('account_activation',$user->remember_token)}}">Activate Account</a>
-</p>
 <br>
 <p>Best regards.</p>
 

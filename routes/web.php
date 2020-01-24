@@ -89,7 +89,11 @@ Route::get('/user/account-activation/{token}', 'UserController@verify_user')->na
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/calendar', 'HomeController@calendar')->name('calendar');
-//Route::get('/reports', 'ReportsController@index')->name('reports');
+
+
+Route::group(['middleware' => ['ability:ace-officer,ace_profile']], function() {
+    Route::get('/ace_profile', 'UserController@getAceProfile')->name('ace_profile');
+});
 
 Route::prefix('analytics')->name('analytics.')->group(function () {
     Route::get('/', 'AnalyticsController@index')->name('index');
@@ -201,7 +205,10 @@ Route::prefix('settings')->name('settings.')->group(function () {
     Route::get('excelupload', 'ExcelUploadController@index')->name('excelupload.create');
     Route::post('excelupload/save', 'ExcelUploadController@save')->name('excelupload.save');
     Route::get('/excelupload/download/{id}', 'ExcelUploadController@download')->name('excelupload.download');
-    Route::get('/excelupload/download-all','ExcelUploadController@downloadAll')->name('excelupload.download_all');
+    Route::get('/excelupload/downloadEn/{id}', 'ExcelUploadController@downloadEn')->name('excelupload.downloadEn');
+    Route::get('/excelupload/downloadFr/{id}', 'ExcelUploadController@downloadFr')->name('excelupload.downloadFr');
+    Route::get('/excelupload/download-all','ExcelUploadController@downloadAllEnglish')->name('excelupload.downloadall_eng');
+    Route::get('/excelupload/downloadall','ExcelUploadController@downloadAllFrench')->name('excelupload.downloadall_fr');
     Route::get('excelupload/delete/{id}', 'ExcelUploadController@delete')->name('excelupload.delete');
 
     //System Application Route

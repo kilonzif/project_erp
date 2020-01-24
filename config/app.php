@@ -243,12 +243,28 @@ return [
     'bachelors_id'                  => '3',
     'Course_id'                     => '4',
 
+
+
+
     'filters'     =>  [
         'phd_text'                      => 'PhD',
         'masters_text'                  => 'Master',
         'bachelors_text'                => 'Bachelors',
         'Course_text'                   => 'Course',
     ],
+
+//    french filters
+
+    'filters_fr'     =>  [
+    'phd_text'                      => 'Doctorat',
+    'masters_text'                  => 'Masters',
+    'bachelors_text'                => 'Premier Cycle',
+    'Course_text'                   => 'Programme de courte durée',
+    ],
+
+
+
+
 
     'indicator_3'     =>  [
         'pdo_indicator_1'     =>  [

@@ -45,24 +45,23 @@
                                 @csrf
                                 <input type="hidden" name="report_id" value="{{$report_id}}" id="report_id">
                                 <div class="row">
+                                    <div class="col-md-3">
+                                        <fieldset class="form-group">
+                                            <label>Langauge</label>
+                                            <select class="form-control" name="language" id="language">
+                                                <option value="english">English</option>
+                                                <option value="french">French</option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
                                             <label for="basicInputFile">Select Indicator</label>
                                             <select name="indicator" required class="select form-control" id="indicator" onchange=" loadFields()">
-                                                {{--<option value="">Choose...</option>--}}
                                                 @foreach($indicators as $indicator)
                                                     @if($indicator->IsUploadable($indicator->id))
                                                     <option @if($indicatorID == $indicator->id) selected @endif value="{{$indicator->id}}">
                                                         {{$indicator->title}}
-
-                                                        {{--@if($indicator->identifier ==3)--}}
-                                                                {{--DLR {{$indicator->identifier}} (DLRs 3.1 - 3.4 New Students)--}}
-
-                                                        {{--@elseif($indicator->identifier =="PDO Indicator 5")--}}
-                                                            {{--DLR 5.2 (Internships)--}}
-                                                        {{--@else--}}
-                                                             {{--DLR {{$indicator->identifier}} {{$indicator->title}}--}}
-                                                            {{--@endif--}}
 
                                                     </option>
 
@@ -87,11 +86,7 @@
                                             @endif
                                         </fieldset>
                                     </div>
-                                    <div class="col-md-3">
-
-
-                                        {{--<input type="submit" class="btn" onclick=" loadUpload()">--}}
-
+                                    <div class="col-md-3 offset-4">
                                         <button style="margin-top: 2rem;" type="submit" class="btn btn-secondary"
                                                 id="uploadData">
                                             <i class="ft-upload mr-1"></i> Upload Indicator
@@ -142,9 +137,9 @@
                                     <tr>
                                         <td>
                                             @php
-                                                $indicator_iden = $indicators->where('id','=',$indicator_detail->indicator_id)->pluck('identifier')->first();
+                                                $indicator_iden = $indicators->where('id','=',$indicator_detail->indicator_id)->pluck('title')->first();
                                             @endphp
-                                            INDICATOR {{$indicator_iden}}
+                                            {{$indicator_iden}}
                                         </td>
                                         <td>{{$indicator_detail->created_at}}</td>
                                         <td>{{$indicator_detail->created_at}}</td>
@@ -179,11 +174,13 @@
             var formData = new FormData($(this)[0]);
             let report_id = $('#report_id').val();
             let indicator = $('#indicator').val();
+            let language = $('#language').val();
             let upload_file = $('#upload_file').val();
 
 
             formData.append('report_id', $("#report_id").val());
             formData.append('indicator', $("#indicator").val());
+            formData.append('language',language);
             formData.append('upload_file', $("#upload_file").val());
             $.ajax({
                 type: 'POST',
@@ -218,6 +215,7 @@
                 error: function(data)
                 {
                     let message = data.responseText;
+
                     toastr['error']('Indicator failed to upload', 'error','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
                     $('#upload-form').unblock();
                     console.log(data);
@@ -229,7 +227,7 @@
 
         function loadFields() {
             let selected = $('#indicator').val();
-
+            let language = $('#language').val();
             let path = "{{route('getIndicatorFields')}}";
             let css_path = "{{asset('vendors/js/forms/select/select2.full.min.js')}}";
             $.ajaxSetup(    {
@@ -240,7 +238,7 @@
             $.ajax({
                 url: path,
                 type: 'GET',
-                data: {id:selected},
+                data: {id:selected,language:language},
                 beforeSend: function(){
                     $('#action-loader').block({
                         message: '<div class="ft-loader icon-spin font-large-1"></div>',

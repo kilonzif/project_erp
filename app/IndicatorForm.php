@@ -11,6 +11,6 @@ class IndicatorForm extends Eloquent
     protected $connection = 'mongodb';
     protected $collection = 'indicator_form';
 
-//    protected $fillable = ['name','age','phone','school'];
+
 
 }

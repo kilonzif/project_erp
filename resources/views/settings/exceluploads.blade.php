@@ -25,40 +25,42 @@
     </div>
 
     <div class="content-body">
-        <div class="row">
-            <div class="col-md-5">
                 <div class="card" id="action-card">
                     <div class="card-header">
                         <h4 class="card-title">Add file</h4>
-                        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
-                        <div class="heading-elements">
-                            <ul class="list-inline mb-0">
-                                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                            </ul>
-                        </div>
                     </div>
-                    <div class="card-content collapse show">
+                    <div class="card-content">
                         <div class="card-body">
                             <form class="form" action="{{route('settings.excelupload.save')}}" enctype="multipart/form-data" method="post">
                                 @csrf
-                                <div class="form-body">
-                                    <label for="indicator_id">indicator <span class="required">*</span></label>
-                                    <select name="indicator_id" id="indicator_id" class=" form-control" required>
-                                        <option value="">Select indicator</option>
-                                        @foreach($indicators as $indicator)
-                                            <option value="{{$indicator->id}}">{{$indicator->title}}</option>
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('indicator_id'))
-                                        <p class="text-right">
-                                            <small class="warning text-muted">{{ $errors->first('indicator_id') }}</small>
-                                        </p>
-                                    @endif
-                                </div>
-                                <br>
-                                <div class="form-body">
-                                     <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <fieldset class="form-group">
+                                            <label for="indicator_id">indicator <span class="required">*</span></label>
+                                            <select name="indicator_id" id="indicator_id" class=" form-control" required>
+                                                <option value="">Select indicator</option>
+                                                @foreach($indicators as $indicator)
+                                                    <option value="{{$indicator->id}}">{{$indicator->title}}</option>
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('indicator_id'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('indicator_id') }}</small>
+                                                </p>
+                                            @endif
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <fieldset class="form-group">
+                                            <label for="basicInputFile">Select Language</label>
+                                            <select name="language" required class="form-control" id="language">
+                                                <option value="">select language</option>
+                                                <option value="english">  <span class="flag-icon flag-icon-gb">English</span></option>
+                                                <option value="french"><span class="flag-icon flag-icon-fr">French</span></option>
+                                            </select>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-3">
                                         <fieldset class="form-group">
                                             <label for="upload_file">Browse File <span class="warning text-muted">{{__(' Excel (.xlsx) files only')}}</span></label>
                                             <input type="file" style="padding: 8px;" required class="form-control" name="upload_file" id="upload_file">
@@ -69,19 +71,19 @@
                                             @endif
                                         </fieldset>
                                     </div>
-                                </div>
-                                <div class="">
-                                    <button type="submit" class="btn btn-primary">
-                                        Submit
-                                    </button>
+                                    <div class="col-md-2 form-group">
+                                        <button class="btn btn-primary" style="margin-top: 1.7rem;" type="submit"><i class="ft-save"></i> Submit File</button>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-md-7">
+
+        <div class="row">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Uploaded Templates</h4>
@@ -93,6 +95,7 @@
                                     <thead>
                                     <tr>
                                         <th>Title</th>
+                                        <th>Language</th>
                                         <th style="width: 100px;">Action</th>
                                     </tr>
                                     </thead>
@@ -104,6 +107,7 @@
                                                      {{$excelupload->indicator->title}}
                                                 </strong>
                                             </td>
+                                            <td>{{$excelupload->language}}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Basic example">
                                                     <a href="{{ route('settings.excelupload.download',  [Crypt::encrypt($excelupload->id)] ) }}" class="btn btn-s btn-secondary"><i class="fa fa-cloud-download"></i><span></span></a>

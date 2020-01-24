@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Ace;
 use App\Classes\SystemMail;
 use App\Classes\ToastNotification;
+use App\Contacts;
 use App\Institution;
 use App\Permission;
 use App\Role;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -136,38 +138,32 @@ class UserController extends Controller
             'phone' => 'required|string|numeric|min:1',
             'institution' => 'nullable|integer|min:1'
         ]);
+            $user = new User();
+            $user->name = $request->name;
+             $user->email = $request->email;
+                $user->password = Hash::make($request->email);
+                $user->phone = $request->phone;
+                $user->status = 1;
+                $user->institution = $request->institution;
+                $user->ace = $request->ace;
+                $user->remember_token = substr(Crypt::encrypt($request->email), 0, 30);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->email),
-            'phone' => $request->phone,
-            'status' => 1,
-            'institution' => $request->institution,
-            'ace' => $request->ace,
-            'remember_token' => substr(Crypt::encrypt($request->email),0,30),
-        ]);
-        $email = SystemOption::where('option_name', '=', 'app_email')->pluck('display_name')->first();
-        if (!isset($email)){
-            $email = "no-reply@aau@org";
-        }
+           $saved= $user->save();
+            $user->attachRole($request->role);
+            if($saved) {
+                $user_email = $request->email;
+                Mail::send('mail.email-confirmation', ['email' => $user_email, 'user' => $user],
+                    function ($message) use ($user_email) {
+                        $message->to($user_email)
+                            ->subject("Ace-Impact [ Account Creation ]");
+                    });
 
-        $user->attachRole($request->role);
-        $send_mail = new SystemMail();
-        try{
 
-            dd("before");
-            $send_mail->to($user->email)
-                ->from(strtolower($email))
-                ->subject('Account Confirmation & Password')
-                ->markdown('mail.email-confirmation',['user'=>$user])
-                ->send();
-
-            dd($send_mail);
-        }catch (\Throwable $exception){
-
-        }
-        notify(new ToastNotification('Successful!', 'New user added!', 'success'));
+            }else{
+                notify(new ToastNotification('Error!', 'Failed to add a user!', 'error'));
+                return back()->withInput();
+            }
+            notify(new ToastNotification('Successful!', 'New user added!', 'success'));
         return back();
     }
 
@@ -373,4 +369,18 @@ class UserController extends Controller
         notify(new ToastNotification('Successful!', 'Roles updated!', 'success'));
         return back();
     }
+
+
+    public function getAceProfile()
+    {
+        if(isset(Auth::user()->name) ){
+            $ace_id = Auth::user()->ace;
+            $user_id=Auth::user()->id;
+        }
+        $ace= Ace::find($ace_id);
+        $contacts = Contacts::where('ace_id','=',$ace_id)->get();
+
+        return view('aces_profile',compact('ace','contacts'));
+    }
+
 }

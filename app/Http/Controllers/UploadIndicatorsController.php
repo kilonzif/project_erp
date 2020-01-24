@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Collection;
 use phpDocumentor\Reflection\Types\Integer;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -72,12 +73,21 @@ class UploadIndicatorsController extends Controller
 
     public function getFields(Request $request)
     {
-        $getHeaders = DB::connection('mongodb')->collection('indicator_form')
-            ->where('indicator','=',(integer)$request->id)->orderBy('order','asc')->pluck('fields');
 
 
-        $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->first();
-        $theView = view('report-form.field-list', compact('getHeaders','excel_upload'))->render();
+        $getHeaders = IndicatorForm::query()
+            ->where('indicator','=',(integer)$request->id)
+            ->orderBy('order','asc')->get();
+
+        $maindata = collect($getHeaders)->filter(function ($query) use($request){
+            return in_array($request->language,collect($query)->get('language'));
+        })->pluck('fields')->toArray();
+
+        $data=$maindata;
+
+        $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->where('language','=',$request->language)->first();
+        $theView = view('report-form.field-list', compact('data','excel_upload'))->render();
+
         return response()->json(['theView'=>$theView]);
     }
 
@@ -86,16 +96,23 @@ class UploadIndicatorsController extends Controller
         $this->validate($request,[
             'report_id'=>'required|string|min:100',
             'indicator'=>'required|numeric|min:1',
+            'language'=>'required|string|min:1',
             'upload_file'=>'required|file|mimes:xls,xlsx',
         ]);
 
         $indicator_info = Indicator::find($request->indicator);
 
-        //Get the start row of data inputs for the upload
-        $data_start = DB::connection('mongodb')
-            ->collection('indicator_form')
+        $getHeaders = IndicatorForm::query()
             ->where('indicator','=',(integer)$request->indicator)
+            ->orderBy('order','asc')->get();
+
+//        dd($getHeaders);
+        //Get the start row of data inputs for the upload
+        $data_start = collect($getHeaders)->filter(function ($query) use($request){
+            return in_array($request->language,collect($query)->get('language'));
+        })
             ->pluck('start_row')->first();
+
 
         //Assign 3 which is row 3 if no data is found
         if ($data_start == null){
@@ -104,6 +121,7 @@ class UploadIndicatorsController extends Controller
         $upload_values = array(); //An array to holds the upload cells values
         $upload_values['report_id'] = (integer)Crypt::decrypt($request->report_id);
         $upload_values['indicator_id'] = (integer)$request->indicator;
+        $upload_values['language'] = $request->language;
         $upload_values['created_at'] = date('Y-m-d H:i:s');
         $upload_values['updated_at'] = date('Y-m-d H:i:s');
 
@@ -114,10 +132,25 @@ class UploadIndicatorsController extends Controller
         //row headers
         $headers = array();
         $error = $success = "";
-        $getHeaders = DB::connection('mongodb')
-            ->collection('indicator_form')
+//
+//        $getHeaders = IndicatorForm::query()
+//            ->filter(function ($query) use($request){
+//            return in_array($request->language,collect($query)->get('language'));
+//        })->pluck('fields')->toArray();
+
+        $getIndicator = IndicatorForm::query()
             ->where('indicator','=',(integer)$request->indicator)
-            ->pluck('fields');
+            ->orderBy('order','asc')->get();
+
+//        dd($getHeaders);
+
+
+        $getHeaders = collect($getIndicator)->filter(function ($query) use($request){
+            return in_array($request->language,collect($query)->get('language'));
+        })->pluck('fields')->toArray();
+
+
+
         if (sizeof($getHeaders) < 1){
             notify(new ToastNotification('Sorry!','This indicator is not available for uploads yet.','info'));
             return back();
@@ -128,6 +161,7 @@ class UploadIndicatorsController extends Controller
         }
 
         if ($request->file('upload_file')->isValid()) {
+
             $extension = \File::extension($request->upload_file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file('upload_file')->getRealPath();

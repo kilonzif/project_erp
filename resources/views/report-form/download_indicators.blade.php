@@ -38,13 +38,27 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                                <label class="label-control">Download All the Templates</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="label-control">Download All the Templates: <span class="fa fa-file-zip-o"></span></label>
+                                </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    <a href="{{route('settings.excelupload.download_all')}}"
+                                    <a type="submit" href="{{route('settings.excelupload.downloadall_eng')}}"
                                        class="btn btn-s btn-outline-secondary mb-2">
-                                        <i class="fa fa-cloud-download"></i> Download All Templates
+                                        <i class="fa fa-cloud-download"></i> English <span class="flag-icon flag-icon-gb"></span>
                                     </a>
                                 </div>
+                            </div>
+                                 <div class="col-md-3">
+                                     <div class="form-group">
+                                     <a type="submit" href="{{route('settings.excelupload.downloadall_fr')}}"
+                                        class="btn btn-s btn-outline-secondary mb-2">
+                                         <i class="fa fa-cloud-download"></i> French <span class="flag-icon flag-icon-fr"></span>
+                                     </a>
+                                     </div>
+                                 </div>
+                            </div>
 
                             <table class="table table-bordered table-striped">
                                 <tr>
@@ -58,7 +72,7 @@
                                     @if($indicator->IsUploadable($indicator->id))
 
                                         @php
-                                            $excel_upload =\App\ExcelUpload::where('indicator_id','=',(integer)$indicator->id)->first();
+                                            $excel_uploads =\App\ExcelUpload::where('indicator_id','=',(integer)$indicator->id)->get();
                                         @endphp
 
 
@@ -66,11 +80,23 @@
                                         <td value="{{$indicator->id}}"> {{$indicator->identifier}}</td>
                                             <td value="{{$indicator->id}}"> {{$indicator->title}}</td>
                                             <td>
-                                                @if($excel_upload)
-                                                    <a href="{{ route('settings.excelupload.download',  [\Illuminate\Support\Facades\Crypt::encrypt($excel_upload->id)] ) }}"
-                                                       class="btn btn-s btn-outline-secondary mb-2">
-                                                        <i class="fa fa-cloud-download"></i> Download Template
-                                                    </a>
+                                                @if($excel_uploads)
+                                                   @foreach($excel_uploads as $i)
+                                                    @if($i->language=="english")
+                                                        <a href="{{ route('settings.excelupload.downloadEn',  [\Illuminate\Support\Facades\Crypt::encrypt($i->id)] ) }}"
+                                                           class="btn btn-s btn-outline-secondary mb-2">
+                                                            <i class="fa fa-cloud-download"></i> English<span class="flag-icon flag-icon-gb"></span>
+                                                        </a>
+                                                    @endif
+                                                        @if($i->language=="french")
+                                                        <a href="{{ route('settings.excelupload.downloadFr',  [\Illuminate\Support\Facades\Crypt::encrypt($i->id)] ) }}"
+                                                           class="btn btn-s btn-outline-secondary mb-2">
+                                                            <i class="fa fa-cloud-download"></i> French<span class="flag-icon flag-icon-fr"></span>
+                                                        </a>
+                                                    @endif
+
+                                                    @endforeach
+
                                                 @endif
                                             </td>
                                         </tr>
