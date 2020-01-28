@@ -513,7 +513,8 @@ class ReportFormController extends Controller {
         $reporting_period = ReportingPeriod::find($report->reporting_period_id);
         $reporting_periods = ReportingPeriod::all();
 
-        if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
+
+        if ($report->editable == 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return redirect()->route('report_submission.reports');
         }
@@ -629,7 +630,6 @@ class ReportFormController extends Controller {
 
                 notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
             });
-//			return redirect()->route('report_submission.upload_indicator', [$request->report_id]);
             return redirect()->route('report_submission.reports');
         }
         else {
@@ -720,14 +720,14 @@ class ReportFormController extends Controller {
 
         $report = Report::find($id);
         if ($report->editable == 1) {
-            $report->editable = 0;
+            $report->editable = false;
             $report->save();
             $message = "Review mode has been enabled.";
             $note = "In Review Mode";
             $status = 0;
             $btnclass = "btn-secondary";
         } else {
-            $report->editable = 1;
+            $report->editable = true;
             $report->save();
             $message = "Review mode has been disabled.";
             $note = "In Edit Mode";
@@ -1909,5 +1909,27 @@ class ReportFormController extends Controller {
         $end =$monthName2 .', '.$year2;
         $full_period = $start . "   -    " . $end;
         return $full_period;
+    }
+
+
+
+    public function setEditMode($id){
+            $report_id = Crypt::decrypt($id);
+            $report = Report::find($report_id);
+
+            $status_tracker = ReportStatusTracker::find($report_id);
+
+            $status= $status_tracker->status_code;
+
+            if($report->editable !=1) {
+                $report->status = 99;
+                $report->editable=true;
+                $report->save();
+                notify(new ToastNotification('Success!', 'The report submission has been reopened for edit!', 'success'));
+            }else {
+                notify(new ToastNotification('Notice!', 'The report is already in edit mode!', 'warning'));
+            }return back();
+
+
     }
 }

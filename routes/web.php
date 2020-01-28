@@ -383,6 +383,8 @@ Route::name('report_submission.')->group(function () {
     Route::prefix('report-submitted')->group(function () {
 
         Route::get('edit/{id}', 'ReportFormController@edit_report')->name('edit');
+
+        Route::get('report_edit_mode/{id}','ReportFormController@setEditMode')->name('report_edit_mode');
         Route::get('view/{id}', 'ReportFormController@view_report')->name('view');
         Route::get('indicators-status/{id}', 'ReportFormController@indicators_status')->name('indicators_status');
         Route::get('set-review-mode/{id}', 'ReportFormController@report_review')->name('report_review_mode');
