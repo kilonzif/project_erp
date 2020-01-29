@@ -47,7 +47,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <fieldset class="form-group">
-                                            <label>Langauge</label>
+                                            <label>Language</label>
                                             <select class="form-control" name="language" id="language">
                                                 <option value="english">English</option>
                                                 <option value="french">French</option>

@@ -85,13 +85,13 @@
                                                     @if($i->language=="english")
                                                         <a href="{{ route('settings.excelupload.downloadEn',  [\Illuminate\Support\Facades\Crypt::encrypt($i->id)] ) }}"
                                                            class="btn btn-s btn-outline-secondary mb-2">
-                                                            <i class="fa fa-cloud-download"></i> English<span class="flag-icon flag-icon-gb"></span>
+                                                            <i class="fa fa-cloud-download"></i> English  <span class="flag-icon flag-icon-gb"></span>
                                                         </a>
                                                     @endif
                                                         @if($i->language=="french")
                                                         <a href="{{ route('settings.excelupload.downloadFr',  [\Illuminate\Support\Facades\Crypt::encrypt($i->id)] ) }}"
                                                            class="btn btn-s btn-outline-secondary mb-2">
-                                                            <i class="fa fa-cloud-download"></i> French<span class="flag-icon flag-icon-fr"></span>
+                                                            <i class="fa fa-cloud-download"></i> French  <span class="flag-icon flag-icon-fr"></span>
                                                         </a>
                                                     @endif
 

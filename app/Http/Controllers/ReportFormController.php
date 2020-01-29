@@ -513,7 +513,6 @@ class ReportFormController extends Controller {
         $reporting_period = ReportingPeriod::find($report->reporting_period_id);
         $reporting_periods = ReportingPeriod::all();
 
-
         if ($report->editable == 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return redirect()->route('report_submission.reports');
@@ -541,7 +540,6 @@ class ReportFormController extends Controller {
             $pdo_52 = $this->generateAggregatedIndicator52Results($id);
 
         }
-
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')

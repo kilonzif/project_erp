@@ -123,11 +123,6 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_one[]')? 'form-control-warning':'' }}">
                                                             @if($key=="PROCEDURES MANUALS")<label>Financial Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Work Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
-                                                            @isset($values[0]['file_one'])
-                                                                <a href="{{$values[0]['file_one']}}">
-                                                                    {{$values[0]['file_one']}}
-                                                                </a>
-                                                            @endisset
                                                             <input type="file" class="form-control" name="file_one[]" required  id="filename{{$key[0]}}"
                                                                    @if($labels[$key]['file1']['required']) required @endif
                                                                    value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
@@ -137,6 +132,11 @@
                                                                     <small class="warning text-muted">{{ $errors->first('file_one[]') }}</small>
                                                                 </p>
                                                             @endif
+                                                                @isset($values[0]['file_one'])
+                                                                    <a href="{{asset('indicator1/'.$values[0]['file_one'])}}" target="_blank">
+                                                                        <span class="fa fa-file">               </span>   Download uploaded file
+                                                                    </a>
+                                                                @endisset
                                                         </div>
 
                                                     </div>
@@ -145,7 +145,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_two[]')? 'form-control-warning':'' }}">
                                                             @if($key=="PROCEDURES MANUALS")<label>Procedure Manual<span class="required">*</span></label>@else<label>File 2 Upload<span class="required">*</span></label>@endif
-                                                            <input type="file" class="form-control" required id="file_two[]"
+
+                                                               <input type="file" class="form-control" required id="file_two[]"
                                                                    @if($labels[$key]['file2']['required']) required @endif
                                                                    name="file_two[]" value="{{old('file_two',empty($values[0]['file_two'])?"":$values[0]['file_two'])}}">
                                                             @if ($errors->has('file_two[]'))
@@ -153,6 +154,12 @@
                                                                     <small class="warning text-muted">{{ $errors->first('file_two[]') }}</small>
                                                                 </p>
                                                             @endif
+
+                                                                @isset($values[0]['file_two'])
+                                                                    <a href="{{asset('indicator1/'.$values[0]['file_two'])}}" target="_blank">
+                                                                        <span class="fa fa-file"></span>    Download the uploaded file
+                                                                    </a>
+                                                                @endisset
                                                         </div>
                                                     </div>
                                                 @endif

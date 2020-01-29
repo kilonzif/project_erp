@@ -211,25 +211,25 @@
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
                                                                  style="margin-bottom: 0;">
 
-
-
                                                                 @if($indicator->parent_id == 1)
+
+
 
                                                                     {{--new students--}}
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                           value="{{$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]}}"
+                                                                           value="{{!empty($pdo_1) ? $pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]] :0  }}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
                                                                     {{--institutional accreditation--}}
                                                                 @elseif($indicator->parent_id == 14)
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                           value="{{$pdo_2[$pdo_indicator][$pdo_indicator_2[$pdo_indicator][$counter]]}}"
+                                                                           value="{{!empty($pdo_2) ? $pdo_2[$pdo_indicator][$pdo_indicator_2[$pdo_indicator][$counter]] : 0}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
                                                                     {{--internships--}}
                                                                 @elseif($indicator->parent_id == 6)
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                           value="{{$pdo_52[$pdo_indicator][$pdo_indicator_5[$pdo_indicator][$counter]]}}"
+                                                                           value="{{!empty($pdo_52) ? $pdo_52[$pdo_indicator][$pdo_indicator_5[$pdo_indicator][$counter]] :0 }}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
 

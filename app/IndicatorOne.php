@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class IndicatorOne extends Model
 {
@@ -11,6 +12,8 @@ class IndicatorOne extends Model
     public function ace(){
         $this->hasMany('App\Ace');
     }
+
+
 }
 
 
