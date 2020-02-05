@@ -17,10 +17,13 @@ use App\Indicator;
 use App\IndicatorOne;
 use App\Institution;
 use App\Project;
+use App\SectoralBoard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use vendor\project\StatusTest;
 //use Illuminate\Support\Facades\Storage;
 //use Illuminate\Support\Facades\File;
@@ -29,19 +32,19 @@ use File;
 
 
 class AcesController extends Controller {
-	//
-	//
-	public function __construct() {
-		$this->middleware('auth');
-	}
+    //
+    //
+    public function __construct() {
+        $this->middleware('auth');
+    }
 
 
-	public function index() {
-		$aces = Ace::orderBy('name', 'ASC')->get();
-		$currency = Currency::orderBy('name', 'ASC')->get();
-		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
-		return view('aces.index', compact('aces', 'universities','currency'));
-	}
+    public function index() {
+        $aces = Ace::orderBy('name', 'ASC')->get();
+        $currency = Currency::orderBy('name', 'ASC')->get();
+        $universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
+        return view('aces.index', compact('aces', 'universities','currency'));
+    }
 
 
     /**
@@ -51,18 +54,21 @@ class AcesController extends Controller {
      */
     public function create(Request $request)
     {
-            $this->validate($request, [
+        $this->validate($request, [
             'name' => 'required|string|min:3|unique:aces,name',
             'contact' => 'required|numeric|digits_between:10,17',
             'email' => 'required|string|email|min:3',
             'university' => 'required|integer|min:1',
             'field' => 'required|string',
             'active' => 'nullable|boolean',
-            'currency' => 'required|numeric',
-            'dlr' => 'nullable|numeric|min:0',
+            'grant1' => 'nullable|numeric',
+            'currency1' =>'required|numeric',
+            'grant2' => 'nullable|numeric',
+            'currency2' =>'required|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
-]);
+            'ace_state' => 'required|string|min:2',
+        ]);
 
 
         $addAce = new Ace();
@@ -70,25 +76,31 @@ class AcesController extends Controller {
         $addAce->acronym = $request->acronym;
         $addAce->field = $request->field;
         $addAce->contact = $request->contact;
-        $addAce->currency_id = $request->currency;
+        $addAce->currency1_id = $request->currency1;
+        $addAce->currency2_id = $request->currency2;
+        $addAce->grant1 = $request->grant1;
+        $addAce->grant2 = $request->grant2;
         $addAce->email = $request->email;
-        $addAce->dlr = $request->dlr;
         $addAce->institution_id = $request->university;
         $addAce->active = $request->active;
         $addAce->ace_type = $request->ace_type;
+        $addAce->ace_state = $request->ace_state;
 
 
         $addAce->save();
 
-		if (isset($addAce->id)) {
-			notify(new ToastNotification('Successful!', 'New ACE Added', 'success'));
-			return redirect()->route('user-management.aces.profile', [Crypt::encrypt($addAce->id)]);
-		} else {
-			notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-			return back();
-		}
-	}
-	public function add_courses(Request $request,$id){
+        if (isset($addAce->id)) {
+            $currency1 =  Currency::where('id','=',$addAce->currency1_id)->orderBy('name', 'ASC')->first();
+            $currency2= Currency::where('id','=',$addAce->currency2_id)->orderBy('name', 'ASC')->first();
+
+            notify(new ToastNotification('Successful!', 'New ACE Added', 'success'));
+            return redirect()->route('user-management.aces.profile', compact([Crypt::encrypt($addAce->id)],'currency1','currency2'));
+        } else {
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+    }
+    public function add_courses(Request $request,$id){
         $ace_id = Crypt::decrypt($id);
         $ace=Ace::find($ace_id);
         $ace->programmes.=";".$request->ace_programmes;
@@ -102,15 +114,15 @@ class AcesController extends Controller {
         }
     }
     public function delete_course($aceId,$course){
-         $ace_id = Crypt::decrypt($aceId);
-         $ace = Ace::find($ace_id);
-         $all_programmes = explode(';',$ace->programmes);
+        $ace_id = Crypt::decrypt($aceId);
+        $ace = Ace::find($ace_id);
+        $all_programmes = explode(';',$ace->programmes);
 
         $key = array_search($course, $all_programmes);
         if (false !== $key) {
             unset($all_programmes[$key]);
         }
-       $ace->programmes = implode(";",$all_programmes);
+        $ace->programmes = implode(";",$all_programmes);
         $ace->save();
         if($ace->save()){
             notify(new ToastNotification('Successful!', 'Course Removed', 'success'));
@@ -130,14 +142,13 @@ class AcesController extends Controller {
         $ace = Ace::find($ace_id);
         $all_aces = Ace::get();
         $getRequirements = Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
-            $indicatorOne = new CommonFunctions();
-            $labels = $indicatorOne->getRequirementLabels(null);
-            $indicator_ones =IndicatorOne::where('ace_id', '=', $ace_id)->get()->groupBy('requirement')->toArray();
+        $indicatorOne = new CommonFunctions();
+        $labels = $indicatorOne->getRequirementLabels(null);
+        $indicator_ones =IndicatorOne::where('ace_id', '=', $ace_id)->get()->groupBy('requirement')->toArray();
 
+        $sectoral_board = IndicatorOne::where('ace_id', '=', $ace_id)->where('requirement', '=', 'SECTORAL ADVISORY BOARD')->first();
 
-//            dd($indicator_ones->groupBy('requirement'));
-//            dd($indicator_ones);
-            return view('aces.indicator-one', compact('ace', 'all_aces', 'indicator_ones','labels'));
+        return view('aces.indicator-one', compact('ace', 'all_aces', 'indicator_ones','labels','sectoral_board'));
 
     }
 
@@ -187,10 +198,10 @@ class AcesController extends Controller {
             $saveIndicatorOne = IndicatorOne::updateOrCreate(
                 ['ace_id' => $ace_id,'requirement' => $request->requirement[$key]],
                 ['submission_date' => $request->submission_date[$key],
-                'file_one' => $thefile_one,
-                'file_two' => $thefile_two,
-                'url' => $request->url[$key],
-                'comments' => $request->comments[$key]]
+                    'file_one' => $thefile_one,
+                    'file_two' => $thefile_two,
+                    'url' => $request->url[$key],
+                    'comments' => $request->comments[$key]]
             );
 
         }
@@ -204,199 +215,340 @@ class AcesController extends Controller {
         }
 
     }
-	/**
-	 * @param Request $request
-	 * @return \Illuminate\Http\JsonResponse
-	 * @throws \Throwable
-	 */
-	public function edit_view(Request $request) {
 
-		$id = Crypt::decrypt($request->id);
-		$ace = Ace::find($id);
 
-		$currency = Currency::orderBy('name', 'ASC')->get();
-		$universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function save_sectoral_board(Request $request, $id)
+    {
+
+        $this->validate($request, [
+            'ss_file_one' => 'required|file|mimes:xls,xlsx',
+            'ss_submission_date' => 'required',
+        ]);
+
+        $ace_id = Crypt::decrypt($id);
+        $oldIndicator=IndicatorOne::find($ace_id);
+        $requirement = $request->ss_requirement;
+        $submission_date = $request->ss_submission_date;
+        $file_one=$request->ss_file_one;
+        $destinationPath = base_path() . '/public/indicator1/';
+        $thefile_one = "";
+
+        $file1 = $request->file('ss_file_one');
+
+
+        if (isset($file1)) {
+            $dd = $this->extractMembers($file1, $ace_id);
+            if ($dd) {
+                $file1->move($destinationPath, $file1->getClientOriginalName());
+                $thefile_one = $file_one->getClientOriginalName();
+            }else{
+                notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
+                return back();
+            }
+        }
+        $saveIndicatorOne = IndicatorOne::updateOrCreate(
+            ['ace_id' => $ace_id, 'requirement' => $request->ss_requirement],
+            ['submission_date' => $request->ss_submission_date,
+                'file_one' => $thefile_one]
+        );
+
+        if (isset($saveIndicatorOne)) {
+
+//            where you extract the members
+            notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
+            return back();
+        } else {
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+    }
+
+    public function extractMembers($file,$ace_id){
+        try {
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet        = $spreadsheet->getActiveSheet();
+            $row_limit    = $sheet->getHighestDataRow();
+            $column_limit = $sheet->getHighestDataColumn();
+            $row_range    = range( 2, $row_limit );
+            $column_range = range( 'D', $column_limit );
+            $startcount = 1;
+            foreach ( $row_range as $row ) {
+                $data[] = [
+                    'ace_id' => $ace_id,
+                    'name' => $sheet->getCell( 'A' . $row )->getValue(),
+                    'title' => $sheet->getCell( 'B' . $row )->getValue(),
+                    'phone' => $sheet->getCell( 'C' . $row )->getValue(),
+                    'email' => $sheet->getCell( 'D' . $row )->getValue(),
+                    'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
+                    'updated_at' => \Carbon\Carbon::now()->toDateTimeString()
+                ];
+                $startcount++;
+            }
+            // Unique data without duplicates
+            $unique = array_unique($data, SORT_REGULAR);
+
+            $batchthis = $this->insertOrUpdate('sectoral_board',$unique);
+
+        } catch (Exception $e) {
+            $error_code = $e->errorInfo[1];
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function insertOrUpdate($table,array $rows){
+        $first = reset($rows);
+        $columns = implode( ',',
+            array_map( function( $value ) { return "$value"; } , array_keys($first) )
+        );
+        $values = implode( ',', array_map( function( $row ) {
+                return '('.implode( ',',
+                        array_map( function( $value ) { return '"'.str_replace('"', '""', $value).'"'; } , $row )
+                    ).')';
+            } , $rows )
+        );
+        $updates = implode( ',',
+            array_map( function( $value ) { return "$value = VALUES($value)"; } , array_keys($first) )
+        );
+        $sql = "INSERT INTO {$table}({$columns}) VALUES {$values} ON DUPLICATE KEY UPDATE {$updates}";
+        return \DB::statement( $sql );
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Throwable
+     */
+    public function edit_view(Request $request) {
+
+        $id = Crypt::decrypt($request->id);
+        $ace = Ace::find($id);
+
+        $currency = Currency::orderBy('name', 'ASC')->get();
+        $universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
         $indicator_ones=IndicatorOne::where('ace_id', '=', $id)->get();
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
-		$view = view('aces.edit-view', compact('ace', 'universities','currency','requirements','indicator_ones'))->render();
+        $view = view('aces.edit-view', compact('ace', 'universities','currency','requirements','indicator_ones'))->render();
 
 //		dd($view);
 
-		return response()->json(['theView' => $view, 'ace' => $ace, 'indicator_ones'=>$indicator_ones]);
-	}
+        return response()->json(['theView' => $view, 'ace' => $ace, 'indicator_ones'=>$indicator_ones]);
+    }
 
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-	public function update_ace(Request $request) {
+    public function update_ace(Request $request) {
 
-		$id = $request->ace_id;
+        $id = $request->ace_id;
 
         $this->validate($request, [
-            'name' => 'required|string|min:3|unique:aces,name',
+            'name' => 'required|string|min:3:aces,name',
             'contact' => 'required|numeric|digits_between:10,17',
             'email' => 'required|string|email|min:3',
             'university' => 'required|integer|min:1',
             'field' => 'required|string',
             'active' => 'nullable|boolean',
-            'currency' => 'required|numeric',
-            'dlr' => 'nullable|numeric|min:0',
+            'grant1' => 'nullable|numeric',
+            'currency1' =>'nullable|numeric',
+            'grant2' => 'nullable|numeric',
+            'currency2' =>'nullable|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
+            'ace_state' => 'required|string|min:2',
         ]);
 
-        $update_ace = Ace::find($id);
-        $update_ace->name = $request->name;
-        $update_ace->acronym = $request->acronym;
-        $update_ace->field = $request->field;
-        $update_ace->contact = $request->contact;
-        $update_ace->currency_id = $request->currency;
-        $update_ace->email = $request->email;
-        $update_ace->dlr = $request->dlr;
-        $update_ace->institution_id = $request->university;
-        $update_ace->active = $request->active;
-        $update_ace->ace_type = $request->ace_type;
+        $this_ace = Ace::find($id);
+        $update_ace = $this_ace->Update([
+            'name' => $request->name,
+            'acronym' => $request->acronym,
+            'field' => $request->field,
+            'contact' => $request->contact,
+            'currency1_id' => $request->currency1,
+            'currency2_id' => $request->currency2,
+            'grant1' => $request->grant1,
+            'grant2' => $request->grant2,
+            'email' => $request->email,
+            'institution_id' => $request->university,
+            'active' => $request->active,
+            'ace_type' => $request->ace_type,
+            'ace_state' => $request->ace_state
+        ]);
 
-        $updated = $update_ace->save();
-        if(!$updated){
+
+        if(!$update_ace){
             notify(new ToastNotification('error!', 'There was an error updating this ACE!', 'success'));
             return back()->withInput();
         }
-            notify(new ToastNotification('Successful!', 'ACE Updated!', 'success'));
-            return back();
-	}
+        notify(new ToastNotification('Successful!', 'ACE Updated!', 'success'));
+        return back();
+    }
 
-	public function ace_page($id) {
-		$id = Crypt::decrypt($id);
+    public function ace_page($aceId) {
+        $id = Crypt::decrypt($aceId);
 
-		$ace = Ace::find($id);
-		$dlr_unit_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('unit_cost','ace_dlr_indicator_id');
-		$dlr_max_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('max_cost','ace_dlr_indicator_id');
-		$ace_dlrs = AceDlrIndicator::where('parent_id', '=', 0)->orderBy('order', 'asc')->get();
+        $ace = Ace::find($id);
+        $dlr_unit_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('unit_cost','ace_dlr_indicator_id');
+        $dlr_max_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('max_cost','ace_dlr_indicator_id');
+        $ace_dlrs = AceDlrIndicator::where('parent_id', '=', 0)->orderBy('order', 'asc')->get();
 
-		$target_years = $ace->target_years;
-        $country =Institution::find($ace->institution_id)->select('country_id')->first();
-        $aceemails = Contacts::where('ace_id', '=', $id)->orwhere('institution','=',$ace->institution_id)->orWhere('thematic_field','=',$ace->field)->orwhere('country',$country->country_id)->get();
+        $target_years = $ace->target_years;
+        $aceemails= $this->getContactGroup($id);
+
+        $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
+        $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
-		return view('aces.profile', compact('ace','dlr_unit_costs', 'target_years',
+        return view('aces.profile', compact('ace','currency1','currency2','dlr_unit_costs', 'target_years',
             'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
-	}
+    }
 
-	public function baselines($id) {
-		$ace_id = Crypt::decrypt($id);
+    public function getContactGroup($ace_id){
+        $the_ace = Ace::find($ace_id);
+        $country =Institution::find($the_ace->institution_id)->pluck('country_id')->first();
+        $institution = Institution::find($the_ace->institution_id)->pluck('id')->first();
 
-		$ace = Ace::find($ace_id);
-		$all_aces = Ace::get();
-		$project = Project::find(1);
-		$values = array();
-		$getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->pluck('baseline', 'indicator_id');
-		if ($getBaselines->isNotEmpty()) {
-			$values = $getBaselines;
-		}
+        $contacts = Contacts::orWhere('institution', '=', $institution)->orWhere('ace_id', '=', $ace_id)
+            ->orWhere('country',$country)
+            ->orWhere('thematic_field','=',$the_ace->field)->get();
 
-		return view('aces.baselines', compact('ace', 'project', 'all_aces', 'values'));
-	}
+        return $contacts;
+    }
 
-	public function target_values($id, $year_id = null) {
-		$ace_id = Crypt::decrypt($id);
 
-		$ace = Ace::find($ace_id);
-		$all_aces = Ace::get();
-		$project = Project::find(1);
+
+    public function baselines($id) {
+        $ace_id = Crypt::decrypt($id);
+
+        $ace = Ace::find($ace_id);
+        $all_aces = Ace::get();
+        $project = Project::find(1);
+        $values = array();
+        $getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->pluck('baseline', 'indicator_id');
+        if ($getBaselines->isNotEmpty()) {
+            $values = $getBaselines;
+        }
+
+        return view('aces.baselines', compact('ace', 'project', 'all_aces', 'values'));
+    }
+
+    public function target_values($id, $year_id = null) {
+        $ace_id = Crypt::decrypt($id);
+
+        $ace = Ace::find($ace_id);
+        $all_aces = Ace::get();
+        $project = Project::find(1);
         $indicators = Indicator::where('is_parent','=',1)
             ->where('status','=',1)
             ->where('set_target','=',1)
             ->orderBy('identifier','asc')
             ->get();
-		$values = array();
+        $values = array();
         $getYear = null;
-		if ($year_id != null) {
-			$getYear = AceIndicatorsTargetYear::find($year_id);
-			$getTargets = AceIndicatorsTarget::where('target_year_id', '=', $year_id)->pluck('target', 'indicator_id');
+        if ($year_id != null) {
+            $getYear = AceIndicatorsTargetYear::find($year_id);
+            $getTargets = AceIndicatorsTarget::where('target_year_id', '=', $year_id)->pluck('target', 'indicator_id');
 
-			if ($getTargets->isNotEmpty()) {
-				$values = $getTargets;
-			}
-		}
+            if ($getTargets->isNotEmpty()) {
+                $values = $getTargets;
+            }
+        }
 
-		return view('aces.target_values', compact('ace', 'project', 'all_aces', 'values',
+        return view('aces.target_values', compact('ace', 'project', 'all_aces', 'values',
             'year_id', 'getYear', 'indicators'));
-	}
+    }
 
-	public function baselines_save(Request $request, $id) {
-		$ace_id = Crypt::decrypt($id);
-		$getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->get();
-		if ($getBaselines->isNotEmpty()) {
-			foreach ($request->indicators as $indicator => $baseline) {
-				$getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->where('indicator_id', '=', $indicator)->update([
-					'baseline' => $baseline,
-					'user_id' => Auth::id(),
-				]);
-			}
-			notify(new ToastNotification('Successful', 'Baselines have been updated.', 'success'));
-		} else {
-			foreach ($request->indicators as $indicator => $baseline) {
-				$ace_baseline = new AceIndicatorsBaseline();
-				$ace_baseline->ace_id = $ace_id;
-				$ace_baseline->indicator_id = $indicator;
-				$ace_baseline->baseline = $baseline;
-				$ace_baseline->user_id = Auth::id();
-				$ace_baseline->save();
-			}
-			notify(new ToastNotification('Successful', 'Baselines have been saved.', 'success'));
-		}
+    public function baselines_save(Request $request, $id) {
+        $ace_id = Crypt::decrypt($id);
+        $getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->get();
+        if ($getBaselines->isNotEmpty()) {
+            foreach ($request->indicators as $indicator => $baseline) {
+                $getBaselines = AceIndicatorsBaseline::where('ace_id', '=', $ace_id)->where('indicator_id', '=', $indicator)->update([
+                    'baseline' => $baseline,
+                    'user_id' => Auth::id(),
+                ]);
+            }
+            notify(new ToastNotification('Successful', 'Baselines have been updated.', 'success'));
+        } else {
+            foreach ($request->indicators as $indicator => $baseline) {
+                $ace_baseline = new AceIndicatorsBaseline();
+                $ace_baseline->ace_id = $ace_id;
+                $ace_baseline->indicator_id = $indicator;
+                $ace_baseline->baseline = $baseline;
+                $ace_baseline->user_id = Auth::id();
+                $ace_baseline->save();
+            }
+            notify(new ToastNotification('Successful', 'Baselines have been saved.', 'success'));
+        }
 
-		return back();
-	}
+        return back();
+    }
 
-	public function targets_save(Request $request, $ace_id, $target_year_id = null) {
-		$this->validate($request, [
-			'start' => 'required|date',
-			'end' => 'required|date',
-			'indicators' => 'required|array',
-		]);
-		$aceId = Crypt::decrypt($ace_id);
-		if ($target_year_id != null) {
+    public function targets_save(Request $request, $ace_id, $target_year_id = null) {
+        $this->validate($request, [
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'indicators' => 'required|array',
+        ]);
+        $aceId = Crypt::decrypt($ace_id);
+        if ($target_year_id != null) {
 
-			AceIndicatorsTargetYear::find($target_year_id)->update([
-				'start_period' => $request->start,
-				'end_period' => $request->end,
-				'user_id' => Auth::id(),
-			]);
+            AceIndicatorsTargetYear::find($target_year_id)->update([
+                'start_period' => $request->start,
+                'end_period' => $request->end,
+                'user_id' => Auth::id(),
+            ]);
 
-			foreach ($request->indicators as $indicator => $target) {
-				AceIndicatorsTarget::where('ace_id', '=', $aceId)
-					->where('target_year_id', '=', $target_year_id)
-					->where('indicator_id', '=', $indicator)
-					->update([
-						'target' => $target,
-					]);
-			}
+            foreach ($request->indicators as $indicator => $target) {
+                AceIndicatorsTarget::where('ace_id', '=', $aceId)
+                    ->where('target_year_id', '=', $target_year_id)
+                    ->where('indicator_id', '=', $indicator)
+                    ->update([
+                        'target' => $target,
+                    ]);
+            }
 
-			notify(new ToastNotification('Successful', 'Indicator Targets updated.', 'success'));
-		} else {
-			$target_year = new AceIndicatorsTargetYear();
-			$target_year->ace_id = $aceId;
-			$target_year->user_id = Auth::id();
-			$target_year->start_period = $request->start;
-			$target_year->end_period = $request->end;
-			$target_year->save();
+            notify(new ToastNotification('Successful', 'Indicator Targets updated.', 'success'));
+        } else {
+            $target_year = new AceIndicatorsTargetYear();
+            $target_year->ace_id = $aceId;
+            $target_year->user_id = Auth::id();
+            $target_year->start_period = $request->start;
+            $target_year->end_period = $request->end;
+            $target_year->save();
 
-			foreach ($request->indicators as $indicator => $target) {
-				AceIndicatorsTarget::create([
-					'ace_id' => $aceId,
-					'target_year_id' => $target_year->id,
-					'indicator_id' => $indicator,
-					'target' => $target,
-				]);
-			}
+            foreach ($request->indicators as $indicator => $target) {
+                AceIndicatorsTarget::create([
+                    'ace_id' => $aceId,
+                    'target_year_id' => $target_year->id,
+                    'indicator_id' => $indicator,
+                    'target' => $target,
+                ]);
+            }
 
-			notify(new ToastNotification('Successful', 'Indicator Targets added.', 'success'));
-		}
-		return back();
-	}
+            notify(new ToastNotification('Successful', 'Indicator Targets added.', 'success'));
+        }
+        return back();
+    }
 }

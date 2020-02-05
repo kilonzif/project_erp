@@ -10,7 +10,7 @@ class Indicator extends Model
 {
 
     protected $fillable = ['title','identifier','order_no','project_id','unit_measure','parent_id',
-        'unit_measure_id','status','upload','set_target','show_on_report','is_parent'];
+        'unit_measure_id','status','upload','set_target','show_on_report','is_parent','set_milestone'];
 
 
     protected static function boot()

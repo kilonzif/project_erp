@@ -235,7 +235,9 @@
 @endpush
 @push('end-script')
     <script>
-        $('#users-table').dataTable();
+        $('#users-table').dataTable( {
+            "ordering": false
+        } );
 
         function changeOnRole(){
             let e = document.getElementById("role");

@@ -1,4 +1,14 @@
-    <div class="card-header">
+
+@push('vendor-styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">
+@endpush
+
+
+
+<div class="card-header">
         <h4 class="card-title">Edit ACE</h4>
         <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
         <div class="heading-elements">
@@ -13,7 +23,7 @@
                 @csrf
                 <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="form-group{{ $errors->has('name') ? ' form-control-warning' : '' }}">
                             <label for="permission_name">ACE Name <span class="required">*</span></label>
                             <input type="text" required min="2" name="name" placeholder="ACE Name" class="form-control" value="{{ $ace->name }}" id="permission_name">
@@ -24,43 +34,13 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group{{ $errors->has('acronym') ? ' form-control-warning' : '' }}">
                             <label for="acronym">Acronym <span class="required">*</span></label>
                             <input type="text" required placeholder="Acronym" min="2" name="acronym" class="form-control" value="{{ $ace->acronym }}" id="acronym">
                             @if ($errors->has('acronym'))
                                 <p class="text-right">
                                     <small class="warning text-muted">{{ $errors->first('acronym') }}</small>
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group{{ $errors->has('dlr') ? ' form-control-warning' : '' }}">
-                            <label for="dlr">Grant Amount </label>
-                            <input type="number" placeholder="DLR Amount" min="0" name="dlr" class="form-control"
-                                   value="{{ $ace->dlr }}" id="dlr" style="text-align: right;">
-                            @if ($errors->has('dlr'))
-                                <p class="text-right">
-                                    <small class="warning text-muted">{{ $errors->first('dlr') }}</small>
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
-                            <label for="field">{{__('Currency')}} <span class="required">*</span></label>
-                            <select class="form-control" required name="currency" id="currency">
-                                <option value="" selected disabled>--Choose--</option>
-                                @foreach($currency as $cc)
-                                    <option {{($ace->currency_id == $cc->id)  ? "selected":""}} value="{{$cc->id}}">
-                                        {{$cc->name.' - '.$cc->symbol}}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('currency'))
-                                <p class="text-right">
-                                    <small class="warning text-muted">{{ $errors->first('currency') }}</small>
                                 </p>
                             @endif
                         </div>
@@ -83,6 +63,68 @@
                             @endif
                         </div>
                     </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('grant1') ? ' form-control-warning' : '' }}">
+                            <label for="grant1">Grant Amount 1</label>
+                            <input type="number" placeholder="SDR Grant Amount 1" min="0" name="grant1" class="form-control"
+                                   value="{{ $ace->grant1 }}" id="grant1" style="text-align: right;">
+                            @if ($errors->has('grant1'))
+                                <p class="text-right">
+                                    <small class="warning text-muted">{{ $errors->first('grant1') }}</small>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('currency1') ? ' form-control-warning' : '' }}">
+                            <label for="field">{{__('Currency 1')}}</label>
+                            <select class="form-control" name="currency1" id="currency1">
+                                <option value=""  disabled>--Choose--</option>
+                                @foreach($currency as $cc)
+                                    <option {{($cc->id == old('currency1'))?"selected":""}} value="{{$cc->id}}">
+                                        {{$cc->name.' - '.$cc->symbol}}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('currency1'))
+                                <p class="text-right">
+                                    <small class="warning text-muted">{{ $errors->first('currency1') }}</small>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('grant2') ? ' form-control-warning' : '' }}">
+                            <label for="dlr">Grant Amount 2</label>
+                            <input type="number" placeholder="Grant Amount 2" min="0" name="grant2" class="form-control"
+                                   value="{{ $ace->grant2 }}" id="dlr" style="text-align: right;">
+                            @if ($errors->has('grant2'))
+                                <p class="text-right">
+                                    <small class="warning text-muted">{{ $errors->first('grant2') }}</small>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
+                            <label for="field">{{__('Currency 2')}}</label>
+                            <select class="form-control"  name="currency2" id="currency2">
+                                <option value=""  disabled>--Choose--</option>
+                                @foreach($currency as $cc)
+                                    <option {{($cc->id == old('currency2'))?"selected":""}} value="{{$cc->id}}">
+                                        {{$cc->name.' - '.$cc->symbol}}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if ($errors->has('currency2'))
+                                <p class="text-right">
+                                    <small class="warning text-muted">{{ $errors->first('currency2') }}</small>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+
                     <div class="col-md-3">
                         <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
                             <label for="email">Email <span class="required">*</span></label>
@@ -94,14 +136,27 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('contact') ? ' form-control-warning' : '' }}">
+                            <label for="contact">Phone Number</label>
+                            <input type="text" name="contact"  placeholder="Phone Number" class="form-control" value="{{ $ace->contact }}" id="contact">
+                            @if ($errors->has('contact'))
+                                <p class="text-right">
+                                    <small class="warning text-muted">{{ $errors->first('contact') }}</small>
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group{{ $errors->has('ace_type') ? ' form-control-warning' : '' }}">
                             <label for="ace_type">Type of Centres<span class="required">*</span></label>
                             <select class="form-control" required name="ace_type" id="ace_type">
                                 <option value="">--Choose--</option>
-                                <option {{($ace->ace_type == 'engineering')  ? "selected":""}} value="engineering">Colleges of Engineering </option>
+                                <option {{($ace->ace_type == 'engineering')  ? "selected":""}} value="engineering">Colleges of Engineering</option>
                                 <option {{($ace->ace_type == 'emerging')  ? "selected":""}} value="emerging">Emerging Centre</option>
                                 <option {{($ace->ace_type == 'ACE')  ? "selected":""}} value="ACE">ACE</option>
+                                <option {{($ace->ace_type == 'add-on')  ? "selected":""}} value="add-on">Add-on</option>
+
                             </select>
                             @if ($errors->has('ace_type'))
                                 <p class="text-right">
@@ -110,6 +165,22 @@
                             @endif
 
                         </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group{{ $errors->has('ace_state') ? ' form-control-warning' : '' }}">
+                        <label for="ace_state">Ace State <span class="required">*</span></label>
+                        <select class="form-control" required name="ace_state" id="ace_state">
+                            <option  value="">Choose State</option>
+                            <option {{($ace->ace_state == 'NEW')  ? "selected":""}} value="NEW">NEW</option>
+                            <option {{($ace->ace_state == 'RENEWED')  ? "selected":""}} value="RENEWED">RENEWED</option>
+                        </select>
+                        @if ($errors->has('university'))
+                            <p class="text-right">
+                                <small class="warning text-muted">{{ $errors->first('ace_state') }}</small>
+
+                            </p>
+                        @endif
+                    </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group{{ $errors->has('university') ? ' form-control-warning' : '' }}">
@@ -126,17 +197,6 @@
                                     <small class="warning text-muted">{{ $errors->first('email') }}</small>
                                     <small class="warning text-muted">{{ $errors->first('university') }}</small>
 
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group{{ $errors->has('contact') ? ' form-control-warning' : '' }}">
-                            <label for="contact">Phone Number</label>
-                            <input type="text" name="contact"  placeholder="Phone Number" class="form-control" value="{{ $ace->contact }}" id="contact">
-                            @if ($errors->has('contact'))
-                                <p class="text-right">
-                                    <small class="warning text-muted">{{ $errors->first('contact') }}</small>
                                 </p>
                             @endif
                         </div>
@@ -165,3 +225,11 @@
             </form>
         </div>
     </div>
+
+
+
+    @push('vendor-script')
+        <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>
+    @endpush

@@ -17,6 +17,7 @@
                         </li>
                         <li class="breadcrumb-item active">FAQS
                         </li>
+                        </li>
                     </ol>
                 </div>
             </div>

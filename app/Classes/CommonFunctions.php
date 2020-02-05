@@ -267,16 +267,16 @@ class CommonFunctions {
                 'comments' => TRUE,
                 'url' => TRUE
             ],
-            'SECTORAL ADVISORY BOARD'=>[
-                'submission_date' => [
-                    'show'  =>  true,
-                    'required'  =>  true,
-                ],
-                'file1' => TRUE,
-                'file2' => FALSE,
-                'comments' => FALSE,
-                'url' => FALSE
-            ]
+//            'SECTORAL ADVISORY BOARD'=>[
+//                'submission_date' => [
+//                    'show'  =>  true,
+//                    'required'  =>  true,
+//                ],
+//                'file1' => TRUE,
+//                'file2' => FALSE,
+//                'comments' => FALSE,
+//                'url' => FALSE
+//            ]
         ];
 
         if ($code == null) {

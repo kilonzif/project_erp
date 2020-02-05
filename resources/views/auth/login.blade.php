@@ -8,9 +8,9 @@
             @csrf
 
             <div class="form-group position-relative has-icon-left{{ $errors->has('email') ? ' form-control-warning' : '' }}">
-                <input type="text"  required placeholder="email" min="2" name="email" class="form-control" value="{{ old('email') }}" required="required" . id="email">
+                <input type="text"  required placeholder="email" min="2" name="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" value="{{ old('email') }}" required="required" . id="email">
                 <div class="form-control-position">
-                <i class="ft-user"></i>
+                <i class="ft-mail"></i>
                 </div>
                 @if ($errors->has('email'))
                     <p class="text-right">
@@ -20,7 +20,7 @@
             </div>
 
             <div class="form-group position-relative has-icon-left{{ $errors->has('password') ? ' form-control-warning' : '' }}">
-                <input type="password"  required placeholder="password" min="2" name="password" class="form-control" value="{{ old('password')}}" id="password" required="required">
+                <input type="password"  required placeholder="password" min="2" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" value="{{ old('password')}}" id="password" required="required">
                 <div class="form-control-position">
                 <i class="fa fa-key"></i>
                 </div>

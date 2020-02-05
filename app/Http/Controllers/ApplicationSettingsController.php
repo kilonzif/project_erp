@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classes\ToastNotification;
+use App\Report;
 use App\ReportingPeriod;
 use App\SystemOption;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ class ApplicationSettingsController extends Controller
     {
         $apps = SystemOption::all();
 
+        $periods = ReportingPeriod::all()->sortByDesc('id');
         $periods = ReportingPeriod::all()->sortByDesc('id');
         return view('settings.app.settings', compact('apps', 'periods'));
     }
@@ -191,9 +193,14 @@ class ApplicationSettingsController extends Controller
     public function deleteReportingPeriod($id)
     {
         $id = Crypt::decrypt($id);
-        ReportingPeriod::destroy($id);
+        $reports_count = Report::where('reporting_period_id','=',$id)->get()->count();
+        if($reports_count >=1){
+            notify(new ToastNotification('Sorry!', 'Reporting Period cannot be deleted! It has a report submitted.', 'warning'));
+        }else{
+            ReportingPeriod::destroy($id);
+            notify(new ToastNotification('Successful!', 'Reporting Period Deleted!', 'success'));
+        }
 
-        notify(new ToastNotification('Successful!', 'Reporting Period Deleted!', 'success'));
         return back();
     }
 

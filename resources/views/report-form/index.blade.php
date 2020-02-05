@@ -65,8 +65,9 @@
                                             <td>
                                                 @php
                                                     $reporting_period = \App\Http\Controllers\ReportFormController::getReportingName($report->reporting_period_id);
+
                                                 @endphp
-                                                {{$reporting_period}}
+                                                        {{$reporting_period}}
                                             </td>
                                             <td>{{date('M d, Y', strtotime($report->submission_date))}}</td>
                                             <td>{!! $me->reportStatusTag($report->status) !!}</td>
