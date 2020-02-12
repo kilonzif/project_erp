@@ -1907,6 +1907,8 @@ class ReportFormController extends Controller {
         $year2 = date('Y',strtotime($period->period_end));
         $end =$monthName2 .', '.$year2;
         $full_period = $start . "   -    " . $end;
+
+        
         return $full_period;
     }
 

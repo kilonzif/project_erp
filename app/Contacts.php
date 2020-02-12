@@ -15,6 +15,16 @@ class Contacts extends Model
 	    	   return $this->belongsToMany('App\Ace');
 	    }
 
+    public function scopeContact($query, $id) {
+        $contact = $query->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+            ->join('countries', 'contacts.country', '=', 'countries.id')
+            ->where('aces.id', '=', $id)
+            ->pluck('countries.country');
+
+        return $contact;
+    }
+
+
 
 
 

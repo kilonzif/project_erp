@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Ace;
+use App\Classes\CommonFunctions;
 use App\Classes\SystemMail;
 use App\Classes\ToastNotification;
 use App\Contacts;
+use App\Currency;
+use App\IndicatorOne;
 use App\Institution;
 use App\Permission;
 use App\Role;
+use App\SectoralBoard;
 use App\SystemOption;
 use App\User;
 use Illuminate\Http\Request;
@@ -378,9 +382,39 @@ class UserController extends Controller
             $user_id=Auth::user()->id;
         }
         $ace= Ace::find($ace_id);
-        $contacts = Contacts::where('ace_id','=',$ace_id)->get();
+        $contacts = $this->getContactGroup($ace_id);
 
-        return view('aces_profile',compact('ace','contacts'));
+        $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
+        $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
+
+        $indicatorOne = new CommonFunctions();
+        $labels = $indicatorOne->getRequirementLabels(null);
+        $indicator_ones =IndicatorOne::where('ace_id', '=', $ace_id)->get();
+
+
+//        board members
+        $board_members=$this->getSectorialAdvisoryBoardMembers($ace_id);
+
+        return view('aces_profile',compact('ace','contacts','board_members','currency1','currency2','labels','indicator_ones'));
     }
+    public function getContactGroup($ace_id){
+        $the_ace = Ace::find($ace_id);
+        $country =Institution::find($the_ace->institution_id)->pluck('country_id')->first();
+        $institution = Institution::find($the_ace->institution_id)->pluck('id')->first();
+
+        $contacts = Contacts::orWhere('institution', '=', $institution)->orWhere('ace_id', '=', $ace_id)
+            ->orWhere('country',$country)
+            ->orWhere('thematic_field','=',$the_ace->field)->get();
+
+        return $contacts;
+    }
+
+    public function getSectorialAdvisoryBoardMembers($ace_id){
+        $members = SectoralBoard::where('ace_id','=',$ace_id)->get();
+
+        return $members;
+
+    }
+
 
 }

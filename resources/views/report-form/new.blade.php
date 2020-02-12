@@ -126,7 +126,8 @@
                                                             </p>
                                                         @endif
                                                     @else
-                                                        <input type="text" disabled="disabled" readonly value="{{ date('Y-m-d') }}" class="form-control">
+                                                        <input type="text" disabled="disabled" hidden value="{{ date('Y-m-d') }}" class="form-control">
+                                                        <h6>{{ date('Y-m-d') }}</h6>
                                                     @endif
                                                 </div>
                                             </div>

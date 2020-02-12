@@ -25,7 +25,9 @@ Route::get('/php', function () {
 });
 Route::redirect('/', '/login', 301);
 
+
 Auth::routes();
+Route::get('/logout', 'Auth\LoginController@logout');
 
 Route::get('/export', 'ExcelExportController@export');
 
@@ -137,6 +139,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('ace/{id}/baselines/save', 'AcesController@baselines_save')->name('ace.baselines.save');
     Route::post('ace/{id}/targets/save/{year_id?}', 'AcesController@targets_save')->name('ace.targets.save');
     Route::post('ace/{id}/indicator_one/save', 'AcesController@indicator_one_save')->name('ace.indicator_one.save');
+    Route::post('ace/{id}/indicator_one/sectoral_board', 'AcesController@save_sectoral_board')->name('ace.indicator_one.sectoral_board');
 
     //Institutions Routes
     Route::get('institutions', 'InstitutionsController@index')->name('institutions');

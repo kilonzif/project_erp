@@ -50,13 +50,15 @@
 
                             <table class="table table-bordered table-striped">
                                 <tr>
-                                    <td style="width: 50px;"><strong>Acronym</strong><br>{{$ace->acronym}}</td>
+                                    <td ><strong>ACE</strong><br>{{$ace->name}}</td>
+                                    <td ><strong>Acronym</strong><br>{{$ace->acronym}}</td>
                                     <td><strong>Institution</strong><br>{{$ace->university->name}}</td>
-                                    <td style="width: 50px;"><strong>Contact</strong><br>{{$ace->contact}}</td>
+                                    <td><strong>Contact</strong><br>{{$ace->contact}}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong><br>{{$ace->email}}</td>
-                                    <td><strong>Grant Amount</strong><br>{{$ace->dlr}}</td>
+                                    <td><strong>Grant Amount1</strong><br>{{$ace->grant1}} - {{$currency1->name}}</td>
+                                    <td><strong>Grant Amount2</strong><br>{{$ace->grant2}} - {{$currency2->name}}</td>
                                     <td><strong>Field</strong><br>{{$ace->field}}</td>
                                 </tr>
                             </table>
@@ -285,9 +287,9 @@
                                                 <fieldset class="form-group position-relative has-icon-left">
                                                     <input type="number" class="form-control" name="max"
                                                            value="{{isset($dlr_max_costs[$ace_dlr->id])?$dlr_max_costs[$ace_dlr->id]:0}}">
-                                                    <div class="form-control-position">
-                                                        <span class="symbol">{{$ace->currency->symbol}}</span>
-                                                    </div>
+                                                    {{--<div class="form-control-position">--}}
+                                                        {{--<span class="symbol">{{$ace->currency->symbol}}</span>--}}
+                                                    {{--</div>--}}
                                                 </fieldset>
                                             </div>
                                         </div>
@@ -358,7 +360,7 @@
             allowClear: true
         });
         // Currency in USD
-        $('.currency-inputmask').inputmask("{{$ace->currency->symbol}} 99999999");
+        {{--$('.currency-inputmask').inputmask("{{$ace->currency->symbol}} 99999999");--}}
 
 
         function edit_contact(key) {

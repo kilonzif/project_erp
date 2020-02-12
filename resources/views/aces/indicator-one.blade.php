@@ -134,7 +134,7 @@
                                                             @endif
                                                                 @isset($values[0]['file_one'])
                                                                     <a href="{{asset('indicator1/'.$values[0]['file_one'])}}" target="_blank">
-                                                                        <span class="fa fa-file">               </span>   Download uploaded file
+                                                                        <span class="fa fa-file">  </span>   Download uploaded file
                                                                     </a>
                                                                 @endisset
                                                         </div>
@@ -183,9 +183,7 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
                                                             <label for="comments1">Comments<span class="required">*</span></label>
-                                                            <input type="text" name="comments[]" placeholder="comments" class="form-control"
-                                                                   @if($labels[$key]['comments']['required']) required @endif
-                                                                   value="{{ old('comments',empty($values[0]['comments'])?"":$values[0]['comments'])}}" id="comments1">
+                                                                <textarea class="form-control" placeholder="Comments" id="comments1" name="comments[]">{{ old('comments',empty($values[0]['comments'])?"":$values[0]['comments'])}}</textarea>
                                                             @if ($errors->has('comments[]'))
                                                                 <p class="text-right">
                                                                     <small class="warning text-muted">{{ $errors->first('comments[]') }}</small>
@@ -213,6 +211,79 @@
                                 </div>
                             </div>
                         @endforeach
+
+
+                        {{--sectoral board--}}
+                            <div class="card" id="action-card">
+                                <div class="card-header">
+                                    <h4 class="card-title">SECTORAL ADVISORY BOARD</h4>
+                                    <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                                    <div class="heading-elements">
+                                        <ul class="list-inline mb-0">
+                                            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-content collapse show">
+                                    <div class="card-body">
+
+                                        <form action="{{route('user-management.ace.indicator_one.sectoral_board',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="ss_requirement" value="SECTORAL ADVISORY BOARD">
+                                            <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group{{ $errors->has('ss_submission_date') ? ' form-control-warning' : '' }}">
+                                                            <label for="ss_submission_date">Submission Date <span class="required">*</span></label>
+                                                            <input type="date" class="form-control" required name="ss_submission_date"
+                                                                   id="ss_submission_date" value="{{ old('ss_submission_date',empty($sectoral_board->submission_date))?"":$sectoral_board->submission_date}}">
+                                                            @if ($errors->has('ss_submission_date'))
+                                                                <p class="text-right">
+                                                                    <small class="warning text-muted">{{ $errors->first('ss_submission_date') }}</small>
+                                                                </p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group {{ $errors->has('ss_file_one')? 'form-control-warning':'' }}">
+                                                            <label for="ss_file_one">Sectoral Board File <span class="required">*</span><span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span></label>
+                                                            <input type="file" class="form-control" name="ss_file_one" required  id="filename1"
+                                                                   value="{{old('ss_file_one',empty($sectoral_board->file_one))?"":$sectoral_board->file_one}}">
+                                                            @if ($errors->has('ss_file_one'))
+                                                                <p class="text-right">
+                                                                    <small class="warning text-muted">{{ $errors->first('ss_file_one') }}</small>
+                                                                </p>
+                                                            @endif
+                                                            @if(!empty($sectoral_board) && $sectoral_board->file_one !="")
+                                                                <strong>Sectoral Advisory Board File</strong>
+                                                                <a href="{{asset('indicator1/'.$sectoral_board->file_one)}}" target="_blank">
+                                                                    <span class="fa fa-file"></span>   Download file
+                                                                </a>
+                                                                <br>
+                                                            @endif
+
+                                                        </div>
+
+                                                    </div>
+
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                                            Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                     </div>
 
                 </div>

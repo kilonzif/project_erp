@@ -18,7 +18,7 @@ class IndicatorsGeneratorController extends Controller
 
     public function index()
     {
-        $fields = DB::connection('mongodb')->collection('indicator_form')->get();
+        $fields = DB::connection('mongodb')->collection('indicator_form')->orderBy('language')->get();
         return view('settings.indicator-form.index',compact('fields'));
     }
 
