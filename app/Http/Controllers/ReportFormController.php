@@ -1981,6 +1981,7 @@ class ReportFormController extends Controller {
 
     public static function getReportingName($id){
         $period = ReportingPeriod::find($id);
+//        dd($period);
         $start_period = date('m-Y',strtotime($period->period_start));
         $monthNum1=date('m',strtotime($period->period_start));
         $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
