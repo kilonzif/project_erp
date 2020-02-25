@@ -114,6 +114,43 @@
                                                     </div>
                                                 </div>
                                                 @endif
+
+
+                                                <div class="col-md-4">
+                                                    <fieldset class="form-group">
+                                                        <label for="basicInputFile">Select DLR (Indicator)</label>
+                                                        {{--@php--}}
+                                                        {{--dd($indicators);--}}
+                                                        {{--@endphp--}}
+                                                        <select name="indicator" required class="select form-control" id="indicator" onchange=" loadFields()">
+                                                            @foreach($indicators as $indicator)
+                                                                {{--@if($indicator->IsUploadable($indicator->id))--}}
+                                                                    <option value="{{$indicator->id}}">
+                                                                        {{$indicator->title}}
+
+                                                                    </option>
+
+                                                                {{--@endif--}}
+                                                            @endforeach
+                                                        </select>
+                                                        @if ($errors->has('indicator'))
+                                                            <p class="text-right mb-0">
+                                                                <small class="warning text-muted" id="indicator-error">{{ $errors->first('indicator') }}</small>
+                                                            </p>
+                                                        @endif
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <fieldset class="form-group">
+                                                        <label>Language<span class="required">*</span></label>
+                                                        <select class="form-control" name="language" id="language">
+                                                            <option value="">Select One</option>
+                                                            <option value="english">English</option>
+                                                            <option value="french">French</option>
+                                                        </select>
+                                                    </fieldset>
+                                                </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="date_submission">Date of Submission <span class="required">*</span></label>

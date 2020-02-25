@@ -46,6 +46,7 @@
                                 <table class="table table-bordered table-striped mb-0 reports-table">
                                     <thead>
                                     <tr>
+                                        <th>DLR</th>
                                         <th>ACE</th>
                                         <th width="100px">Reporting Period</th>
                                         <th width="100px">Uploaded On</th>
@@ -55,8 +56,16 @@
                                     </thead>
                                     <tbody>
                                     @foreach($ace_reports as $report)
+                                        @php
+
+                                        $dlr = \App\Indicator::where('id','=',$report->indicator_id)->first();
+
+                                        @endphp
 
                                         <tr>
+                                            <td>
+                                                {{$dlr->title}}
+                                            </td>
                                             <td>
                                                 @if($report->ace)
                                                     {{$report->ace->name}} <strong>{{'('.$report->ace->acronym.')'}}</strong>

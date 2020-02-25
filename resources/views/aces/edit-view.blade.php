@@ -150,7 +150,7 @@
                     <div class="col-md-3">
                         <div class="form-group{{ $errors->has('ace_type') ? ' form-control-warning' : '' }}">
                             <label for="ace_type">Type of Centres<span class="required">*</span></label>
-                            <select class="form-control" required name="ace_type" id="ace_type">
+                            <select class="form-control"  onchange="changeAceStatus()" required name="ace_type" id="ace_type">
                                 <option value="">--Choose--</option>
                                 <option {{($ace->ace_type == 'engineering')  ? "selected":""}} value="engineering">Colleges of Engineering</option>
                                 <option {{($ace->ace_type == 'emerging')  ? "selected":""}} value="emerging">Emerging Centre</option>
@@ -166,7 +166,7 @@
 
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3" id="ace_state_div">
                         <div class="form-group{{ $errors->has('ace_state') ? ' form-control-warning' : '' }}">
                         <label for="ace_state">Ace State <span class="required">*</span></label>
                         <select class="form-control" required name="ace_state" id="ace_state">
@@ -232,4 +232,34 @@
         <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>
+    @endpush
+@push('end-script')
+    <script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>
+    <script>
+
+        function changeAceStatus(){
+            var e = document.getElementById("ace_type");
+            var ace_type = e.options[e.selectedIndex].value;
+            if(ace_type == 'engineering' || ace_type=='add-on'){
+                $('#ace_state_div').css("display", "none");
+            }
+            else if(ace_type == 'emerging' || ace_type=='ACE'){
+                $('#ace_state_div').css("display", "block");
+            }
+            else{
+                $('#ace_state_div').css("display", "block");
+            }
+
+        }
+
+
+        $('#aces-table').dataTable( {
+            "ordering": false
+        } );
+
+        $('.select2').select2({
+            placeholder: "Select Programmes",
+            allowClear: true
+        });
+</script>
     @endpush

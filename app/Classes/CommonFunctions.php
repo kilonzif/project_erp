@@ -202,6 +202,36 @@ class CommonFunctions {
 		}
 	}
 
+    public function getRequirements( $code=null)
+    {
+        $requirement = ['THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS','IMPLEMENTATION PLAN','PROCEDURES MANUALS',
+            'PROJECT MANAGEMENT CERTIFICATION', 'STUDENT HANDBOOK (INCLUDES SCHOLARSHIP AND ANTI-SEXUAL HARASSMENT POLICIES)',
+            'PROJECT WEBSITE','SECTORAL ADVISORY BOARD'];
+
+        if ($code == null) {
+            return $requirement;
+        } else {
+            return $requirement[$code];
+        }
+
+    }
+
+    public function getContactTitles( $code=null)
+    {
+      $titles =['Country TTL','Vice Chancelor','Center Leader','Procurement Officer','Finance Officer','MEL Officer','PSC Member'];
+
+        if ($code == null) {
+            return $titles;
+        } else {
+            return $titles[$code];
+        }
+
+    }
+
+
+
+
+
 
 	public function getRequirementLabels( $code=null)
     {
@@ -223,7 +253,7 @@ class CommonFunctions {
                     'required'  =>  true,
                 ],
                 'file1' => TRUE,
-                'file2' => TRUE,
+                'file2' => FALSE,
                 'comments' => FALSE,
                 'url' => FALSE
             ],

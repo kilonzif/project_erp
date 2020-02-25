@@ -171,7 +171,14 @@
                                 <td>{{$contact->contact_name}}</td>
                                 <td>{{$contact->email}}</td>
                                 <td>{{$contact->contact_phone}}</td>
-                                <td>{{$contact->contact_title}}</td>
+                                <td>
+                                    {{$contact->contact_title}}
+                                        @if($contact->contact_status==0)
+                                        <strong>-Former</strong>
+                                    @else
+                                        <strong>-Current</strong>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Basic example">
                                         <a href="#edit_view" onclick="edit_view('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">

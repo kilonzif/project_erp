@@ -18,6 +18,7 @@ use App\IndicatorOne;
 use App\Institution;
 use App\Project;
 use App\SectoralBoard;
+use App\WorkPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -67,7 +68,7 @@ class AcesController extends Controller {
             'currency2' =>'required|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
-            'ace_state' => 'required|string|min:2',
+            'ace_state' => 'string|min:2',
         ]);
 
 
@@ -375,7 +376,7 @@ class AcesController extends Controller {
             'currency2' =>'nullable|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
-            'ace_state' => 'required|string|min:2',
+            'ace_state' => 'string|min:2',
         ]);
 
         $this_ace = Ace::find($id);
@@ -415,12 +416,15 @@ class AcesController extends Controller {
         $target_years = $ace->target_years;
         $aceemails= $this->getContactGroup($id);
 
+        $workplans=WorkPlan::where('ace_id',$ace->id)->get();
+
+
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
-        return view('aces.profile', compact('ace','currency1','currency2','dlr_unit_costs', 'target_years',
+        return view('aces.profile', compact('ace','workplans','currency1','currency2','dlr_unit_costs', 'target_years',
             'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
     }
 
@@ -435,6 +439,73 @@ class AcesController extends Controller {
 
         return $contacts;
     }
+
+//    Workplan
+
+    public function saveWorkPlan(Request $request,$ace_id){
+        $ace_id = $request->ace_id;
+        $wp_filename=$request->wp_file;
+        $destinationPath = base_path() . '/public/WorkPlan/';
+        $file1 = $request->file('wp_file');
+        $wp_year=$request->wp_year;
+
+        $year_exists = WorkPlan::where('ace_id','=',$ace_id)->where('wp_year','=',$wp_year)->get();
+
+        if($year_exists){
+            notify(new ToastNotification('Notice', 'You have already submitted a workplan for this year.', 'info'));
+            return back();
+        }
+        if (isset($file1)) {
+            $file1->move($destinationPath, $file1->getClientOriginalName());
+            $the_wpfile=$wp_filename->getClientOriginalName();
+        }
+
+        $saveWorkPlan = WorkPlan::updateOrCreate(
+            ['ace_id' => $ace_id,
+                'submission_date' => $request->submission_date,
+                'wp_file' => $the_wpfile,
+                'wp_year' => $request->wp_year
+            ]
+        );
+
+        if (isset($saveWorkPlan)) {
+            notify(new ToastNotification('Successful!', 'WorkPlan Added', 'success'));
+            return back();
+        } else {
+            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            return back();
+        }
+
+
+
+
+    }
+
+
+    public  function  destroyWorkPlan($id){
+        $wp_entry = WorkPlan::find(Crypt::decrypt($id));
+
+            $wp_entry->delete();
+            notify(new ToastNotification('Successful!', 'WorkPlan Deleted!', 'success'));
+
+        return back();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/daterange/daterangepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/datetime/bootstrap-datetimepicker.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/pickers/pickadate/pickadate.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
+
 @endpush
 @push('other-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/pickers/daterange/daterange.css')}}">
@@ -126,101 +128,119 @@
                                 </div>
                             </div>
                         </div>
-                        {{--@php--}}
-                        {{--$indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);--}}
-                        {{--@endphp--}}
-                        <div id="indicators-form">
-                            @foreach($indicators as $indicator)
-                                <div class="card mb-1">
-                                    <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
-                                        {{--<h6 class="card-title"></h6>--}}
-                                        <strong>{{"Indicator ".$indicator->identifier}}:</strong> {{$indicator->title}}
-                                        {{--<br>--}}
-                                        <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
-                                        <div class="heading-elements">
-                                            <ul class="list-inline mb-0">
-                                                <li><a data-action="collapse"><i class="ft-plus"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </h6>
-                                    <div class="card-content collapse">
-                                        <div class="card-body table-responsive">
-                                            <h5>
-                                                <small>
-                                                    <span class="text-secondary text-bold-500">Unit of Measure:</span>
-                                                    {{$indicator->unit_measure}}
-                                                </small>
-                                            </h5>
-                                            @role('webmaster|super-admin|admin')
-                                            @if($indicator->IsUploadable($indicator->id))
-                                                <a class="btn btn-dark square text-left mr-3 mb-sm-1"
-                                                   href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$indicator->id])}}">
-                                                    <i class="ft-upload mr-sm-1"></i>{{__('Upload details')}}
-                                                </a>
-                                            @endif
-                                            @endrole
-                                            <table class="table table-bordered table-striped">
-                                                @if($indicator->indicators->count() > 0)
-                                                    @php
-                                                        $sub_indicators = $indicator->indicators->where('status','=',1);
-                                                        $filter_index = ['national_and_men','national_and_women','regional_and_men','regional_and_women'];
-                                                        $indicator_5_2_filter = ['national','regional'];
-                                                        $indicator_identifier = (string)$indicator->identifier;
-                                                        $counter = 0;
-                                                    @endphp
-                                                    @foreach($sub_indicators as $sub_indicator)
-                                                        @if(isset($values[$sub_indicator->id]))
-                                                            <tr>
-                                                                <td>{{$sub_indicator->title}}
-                                                                </td>
-                                                                <td style="width: 200px">
-                                                                    <input type="text" disabled="disabled" readonly class="form-control" value="{{$values[$sub_indicator->id]}}">
-                                                                </td>
-                                                            </tr>
-                                                        @else
-                                                            <tr>
-                                                                <td>{{$sub_indicator->title}}
-                                                                </td>
-                                                                <td style="width: 200px">
-                                                                    <input type="text" disabled="disabled" readonly class="form-control" value="N/A">
-                                                                </td>
-                                                            </tr>
-                                                        @endif
-
-                                                    @endforeach
-                                                @else
-                                                    @if(!isset($values[$indicator->id]))
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <input type="text" disabled="disabled" readonly value="N/A" class="form-control">
-                                                            </td>
-                                                        </tr>
-                                                    @else
-                                                        @php
-                                                            if ($indicator->identifier == 11){
-                                                                if ($values[$indicator->id] == 0){
-                                                                    $val = "No";
-                                                                }else{
-                                                                    $val = "Yes";
-                                                                }
-                                                            }
-                                                            else{
-                                                                $val = $values[$indicator->id];
-                                                            }
-                                                        @endphp
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <input type="text" disabled="disabled" readonly value="{{$val}}" class="form-control">
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-
-                                                @endif
-                                            </table>
-                                        </div>
-                                    </div>
+                        {{--indicators3--}}
+                        <div class="card mb-1">
+                            <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
+                                {{$indicators->title}}
+                                <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
+                                <div class="heading-elements">
+                                    <ul class="list-inline mb-0">
+                                        <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                    </ul>
                                 </div>
-                            @endforeach
+                            </h6>
+                            <div class="card-content collapse show">
+                                <div class="card-body table-responsive">
+                                    <h5>
+                                        <small>
+                                            <span class="text-secondary text-bold-500">Unit of Measure: {{$indicators->unit_measure}}</span>
+                                        </small>
+                                    </h5>
+                                    @if($indicators->indicators->count() > 0)
+                                        @php
+                                            $sub_indicators = $indicators->indicators->where('parent_id','=',$indicators->id);
+                                            $pdo_indicator_1 = config('app.indicator_3');
+                                            $pdo_indicator_41 = config('app.indicator_41');
+
+                                       $counter_one = 0;
+                                        @endphp
+                                        @foreach($sub_indicators as $sub_indicator)
+                                            @php
+                                                $indicator_identifier = (string)$sub_indicator->identifier;
+                                                $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
+                                               $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
+
+                                            @endphp
+
+                                            @if(!empty($child_dlr))
+
+                                                <table class="table table-bordered table-striped">
+
+                                                    @if($sub_indicator->status == 0) @continue @endif
+
+                                                    <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
+                                                        <strong>{{$sub_indicator->identifier}}:</strong> {{$sub_indicator->title}}
+                                                    </h6>
+                                                    @php $counter = 0; @endphp
+
+                                                    @foreach($child_dlr as $child)
+
+
+                                                        <tr>
+                                                            <td>{{$child->title}} <span class="required">*</span>
+                                                            </td>
+                                                            <td style="width: 200px">
+
+                                                                @if($sub_indicator->parent_id == 1)
+
+                                                                    <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
+                                                                         style="margin-bottom: 0;">
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
+                                                                               value="{{!empty($pdo_1) ?$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]:0}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+
+                                                                    </div>
+                                                                @elseif($sub_indicator->parent_id == 2)
+                                                                    {{--programme accreditation--}}
+                                                                    <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{!empty($pdo_41) ?$pdo_41[$pdo_indicator][$pdo_indicator_41[$pdo_indicator][$counter]]:0}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
+
+
+                                                                @endif
+
+                                                            </td>
+                                                        </tr>
+                                                        @php
+                                                            $counter += 1;
+                                                        @endphp
+                                                    @endforeach
+
+
+
+                                                </table>
+                                            @else
+                                                <table class="table table-bordered table-striped">
+
+                                                    <tr>
+                                                        <td>{{$sub_indicator->title}} <span class="required">*</span>
+                                                        </td>
+                                                        <td style="width: 200px">
+                                                            @if($sub_indicator->parent_id == 2)
+                                                                {{--programme accreditation--}}
+                                                                <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$pdo_41['pdo_indicator_41'][$pdo_indicator_41['pdo_indicator_41'][$counter_one]]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
+                                                            @endif
+                                                        </td>
+                                                </table>
+                                            @endif
+
+                                            @php
+                                                $counter_one += 1;
+                                            @endphp
+
+
+
+                                        @endforeach
+
+                                    @endif
+
+
+                                </div>
+                            </div>
                         </div>
 
                 @else

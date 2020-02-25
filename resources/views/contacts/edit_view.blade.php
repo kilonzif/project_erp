@@ -71,8 +71,27 @@
                     @endif
                 </div>
             </div>
+
+        <div style="margin-top: 2rem;" class="col-md-2">
+            <label for="contact_status">Contact Status <span class="required">*</span></label><br>
+            <div class="form-group">
+                <div class="skin skin-square">
+                    <input type="radio" name="contact_status" value="1" {{ ($contacts->contact_status=="1")? "checked" : "" }} checked id="active">
+                    <label for="active" class="">Current</label>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 2.5rem;" class="col-md-2">
+            <div class="form-group">
+                <label for="contact_status" class="hidden">Contact Status <span class="required">*</span></label><br>
+                <div class="skin skin-square">
+                    <input type="radio" name="contact_status" value="0" {{ ($contacts->contact_status=="0")? "checked" : "" }} id="inactive">
+                    <label for="inactive" class="">Former</label>
+                </div>
+            </div>
+        </div>
+
             <div class="col-md-4">
-                {{--<input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">--}}
                 <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
                     <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ (old('mailing_name')) ? old('mailing_name') : $contacts->contact_name }}"  id="mailing_name">

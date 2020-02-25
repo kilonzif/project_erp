@@ -27,6 +27,7 @@ Route::redirect('/', '/login', 301);
 
 
 Auth::routes();
+
 Route::get('/logout', 'Auth\LoginController@logout');
 
 Route::get('/export', 'ExcelExportController@export');
@@ -107,6 +108,13 @@ Route::prefix('analytics')->name('analytics.')->group(function () {
 });
 
 
+Route::prefix('file-uploads')->name('file-uploads.')->group(function (){
+    Route::get('/','FileUploadsController@index')->name('index');
+    Route::POST('/file-uploads/save','FileUploadsController@saveUploads')->name('save');
+    Route::get('/file-uploads/delete/{id}','FileUploadsController@destroyUpload')->name('delete');
+});
+
+
 Route::prefix('user-management')->name('user-management.')->group(function () {
 
     //Users Routes
@@ -140,6 +148,15 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('ace/{id}/targets/save/{year_id?}', 'AcesController@targets_save')->name('ace.targets.save');
     Route::post('ace/{id}/indicator_one/save', 'AcesController@indicator_one_save')->name('ace.indicator_one.save');
     Route::post('ace/{id}/indicator_one/sectoral_board', 'AcesController@save_sectoral_board')->name('ace.indicator_one.sectoral_board');
+
+//    workplan
+
+    Route::post('ace/{id}/workplan/save','AcesController@saveWorkPlan')->name('ace.workplan.save');
+    Route::get('ace/{id}/workplan/edit', 'AcesController@editWorkPlan')->name('ace.workplan.edit');
+    Route::post('ace/{id}/workplan/update','AcesController@updateWorkPlan')->name('ace.workplan.update');
+    Route::get('ace/workplan/delete/{id}','AcesController@destroyWorkPlan')->name('ace.workplan.delete');
+
+
 
     //Institutions Routes
     Route::get('institutions', 'InstitutionsController@index')->name('institutions');
@@ -380,7 +397,7 @@ Route::name('report_generation.')->group(function () {
 Route::name('report_submission.')->group(function () {
 
     Route::get('reports-submitted', 'ReportFormController@index')->name('reports');
-    Route::get('reports-submitted/delete/{id}', 'ReportFormController@delete')->name('reports.delete');
+    Route::get('reports-submitted/dereport_submission.view\'lete/{id}', 'ReportFormController@delete')->name('reports.delete');
 
 
     Route::prefix('report-submitted')->group(function () {
@@ -396,6 +413,9 @@ Route::name('report_submission.')->group(function () {
         Route::post('report-status/{report_id}', 'ReportFormController@report_status_save')->name('report_status_save');
         Route::post('indicators-status/{report_id}/{id}', 'ReportFormController@indicators_status_save')->name('indicators_status_save');
 
+
+
+
     });
 
     Route::prefix('report-submission')->group(function () {
@@ -407,7 +427,14 @@ Route::name('report_submission.')->group(function () {
         Route::get('indicators-download', 'UploadIndicatorsController@downloadIndicators')->name('downloadIndicators');
         Route::get('indicator-details/read/{id}', 'UploadIndicatorsController@read')->name('view_indicator_details');
         Route::get('indicator-upload/{report_id}/{indicator?}', 'UploadIndicatorsController@index')->name('upload_indicator');
+
         Route::post('indicator-upload/save', 'UploadIndicatorsController@excelUpload')->name('save_excel_upload');
+
+        //webforms
+        Route::post('webforms/{indicator_id}/saveform','UploadIndicatorsController@saveWebForm')->name('save_webform');
+
+
+
 
     });
 

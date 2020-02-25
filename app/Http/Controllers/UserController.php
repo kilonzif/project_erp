@@ -388,14 +388,17 @@ class UserController extends Controller
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
 
         $indicatorOne = new CommonFunctions();
-        $labels = $indicatorOne->getRequirementLabels(null);
+        $labels = $indicatorOne->getRequirements(null);
+
+        $contact_positions = $indicatorOne->getContactTitles(null);
+
         $indicator_ones =IndicatorOne::where('ace_id', '=', $ace_id)->get();
 
 
 //        board members
         $board_members=$this->getSectorialAdvisoryBoardMembers($ace_id);
 
-        return view('aces_profile',compact('ace','contacts','board_members','currency1','currency2','labels','indicator_ones'));
+        return view('aces_profile',compact('ace','contacts','contact_positions','board_members','currency1','currency2','labels','indicator_ones'));
     }
     public function getContactGroup($ace_id){
         $the_ace = Ace::find($ace_id);

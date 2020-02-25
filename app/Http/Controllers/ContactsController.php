@@ -48,6 +48,7 @@ class ContactsController extends Controller
             'email' => $request->mailing_email,
             'institution' =>$request->institution,
             'country' =>$request->country,
+            'contact_status'=>1,
             'thematic_field' =>$request->thematic_field
         ]);
         if($contact_saved) {
@@ -85,6 +86,7 @@ class ContactsController extends Controller
             'mailing_name' => 'required|string|min:1',
             'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
+            'contact_status'=>'required'
 
         ]);
 
@@ -98,8 +100,12 @@ class ContactsController extends Controller
             'email' => $request->mailing_email,
             'institution' => $request->institution,
             'country' => $request->country,
-            'thematic_field' => $request->thematic_field
+            'contact_status'=>$request->contact_status,
+            'thematic_field' => $request->thematic_field,
+
         ]);
+
+
         if ($contact_update) {
             notify(new ToastNotification('Successful!', 'Contact Person Updated!', 'success'));
 

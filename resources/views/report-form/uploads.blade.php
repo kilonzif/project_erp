@@ -2,6 +2,8 @@
 @push('vendor-styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
+
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
 @endpush
 @push('other-styles')
 @endpush
@@ -48,19 +50,19 @@
                                     <div class="col-md-3">
                                         <fieldset class="form-group">
                                             <label>Language</label>
-                                            <select class="form-control" name="language" id="language">
-                                                <option value="english">English</option>
-                                                <option value="french">French</option>
+                                            <select class="form-control"  disabled name="language" id="language">
+                                                <option @if($report->language == "english") selected @endif value="english">English</option>
+                                                <option @if($report->language == "french") selected @endif value="french">French</option>
                                             </select>
                                         </fieldset>
                                     </div>
                                     <div class="col-md-4">
                                         <fieldset class="form-group">
                                             <label for="basicInputFile">Select Indicator</label>
-                                            <select name="indicator" required class="select form-control" id="indicator" onchange=" loadFields()">
+                                            <select name="indicator" disabled required class="select form-control" id="indicator" onchange=" loadFields()">
                                                 @foreach($indicators as $indicator)
                                                     @if($indicator->IsUploadable($indicator->id))
-                                                    <option @if($indicatorID == $indicator->id) selected @endif value="{{$indicator->id}}">
+                                                    <option @if($report->indicator_id == $indicator->id) selected @endif value="{{$indicator->id}}">
                                                         {{$indicator->title}}
 
                                                     </option>
@@ -123,7 +125,7 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <table class="table table-striped table-bordered indicators-details">
+                            <table class="table table-striped table-bordered indicators-details" id="indicators_table">
                                 <thead>
                                 <tr>
                                     <th>Indicator</th>
@@ -161,6 +163,8 @@
 @push('vendor-script')
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{ asset('vendors/js/extensions/toastr.min.js') }}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+
 @endpush
 @push('end-script')
     <script>
@@ -209,6 +213,8 @@
                 {
                     toastr['success']('Indicator Uploaded Successfully', 'success','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
                     $('#upload-form').unblock();
+                    var mytbl = $("#indicators_table").datatable();
+                    $.ajax(mytbl).reload();
                     return true;
 
                 },

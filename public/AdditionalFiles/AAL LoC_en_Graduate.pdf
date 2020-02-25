@@ -1,0 +1,1753 @@
+-- phpMyAdmin SQL Dump
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: Sep 25, 2019 at 12:18 PM
+-- Server version: 5.7.27
+-- PHP Version: 7.2.7
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `makedude_ace_impact`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `aceemails`
+--
+
+CREATE TABLE `aceemails` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(11) NOT NULL,
+  `contact_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contact_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contact_phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `aces`
+--
+
+CREATE TABLE `aces` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `acronym` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `institution_id` int(10) UNSIGNED NOT NULL,
+  `contact` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `field` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `programmes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `currency_id` tinyint(4) NOT NULL DEFAULT '1',
+  `dlr` int(11) DEFAULT '0',
+  `milestone_no` tinyint(4) NOT NULL DEFAULT '4',
+  `active` tinyint(4) NOT NULL DEFAULT '1',
+  `ace_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `aces`
+--
+
+INSERT INTO `aces` (`id`, `name`, `acronym`, `institution_id`, `contact`, `email`, `field`, `programmes`, `currency_id`, `dlr`, `milestone_no`, `active`, `ace_type`, `created_at`, `updated_at`) VALUES
+(12, 'Sample ACE', 'sa', 6, '0560223058', 'faith.mueni@ashesi.edu.gh', 'Education', NULL, 3, 0, 4, 1, 'emerging', '2019-09-19 10:06:08', '2019-09-19 10:06:08'),
+(13, 'Test ACE', 'tace', 14, '1111111111', 'info@testace.com', 'Health', ';MSc Biochemical Science; BSc Biochemical Science; PhD Biochemical Science', 3, NULL, 4, 1, 'engineering', '2019-09-22 00:57:44', '2019-09-22 01:05:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_courses`
+--
+
+CREATE TABLE `ace_courses` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(10) UNSIGNED NOT NULL,
+  `course_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_dlr_indicators`
+--
+
+CREATE TABLE `ace_dlr_indicators` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `indicator_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` tinyint(4) NOT NULL DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `order` tinyint(100) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_dlr_indicator_costs`
+--
+
+CREATE TABLE `ace_dlr_indicator_costs` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(11) NOT NULL,
+  `ace_dlr_indicator_id` int(11) NOT NULL,
+  `unit_cost` double NOT NULL DEFAULT '0',
+  `max_cost` double NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_dlr_indicator_values`
+--
+
+CREATE TABLE `ace_dlr_indicator_values` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_dlr_indicator_id` int(11) NOT NULL,
+  `report_id` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_indicators_baselines`
+--
+
+CREATE TABLE `ace_indicators_baselines` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(11) NOT NULL,
+  `indicator_id` int(11) NOT NULL,
+  `baseline` int(11) NOT NULL DEFAULT '0',
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ace_indicators_baselines`
+--
+
+INSERT INTO `ace_indicators_baselines` (`id`, `ace_id`, `indicator_id`, `baseline`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, 13, 56, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(2, 13, 57, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(3, 13, 58, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(4, 13, 59, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(5, 13, 60, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(6, 13, 61, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(7, 13, 62, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(8, 13, 2, 1, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(9, 13, 33, 10, 13, '2019-09-22 01:01:41', '2019-09-22 01:01:41'),
+(10, 13, 34, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(11, 13, 35, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(12, 13, 36, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(13, 13, 55, 1, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(14, 13, 8, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(15, 13, 9, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(16, 13, 10, 200, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(17, 13, 11, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(18, 13, 13, 1, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(19, 13, 14, 1, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42'),
+(20, 13, 12, 10, 13, '2019-09-22 01:01:42', '2019-09-22 01:01:42');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_indicators_targets`
+--
+
+CREATE TABLE `ace_indicators_targets` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(11) NOT NULL,
+  `target_year_id` int(11) NOT NULL,
+  `indicator_id` int(11) NOT NULL,
+  `target` int(11) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_indicators_target_years`
+--
+
+CREATE TABLE `ace_indicators_target_years` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `start_period` date NOT NULL,
+  `end_period` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ace_reports`
+--
+
+CREATE TABLE `ace_reports` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(10) UNSIGNED NOT NULL,
+  `reporting_period` int(10) UNSIGNED NOT NULL,
+  `submission_date` date NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audits`
+--
+
+CREATE TABLE `audits` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `user_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `event` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `auditable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `auditable_id` bigint(20) UNSIGNED NOT NULL,
+  `old_values` text COLLATE utf8mb4_unicode_ci,
+  `new_values` text COLLATE utf8mb4_unicode_ci,
+  `url` text COLLATE utf8mb4_unicode_ci,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tags` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `audits`
+--
+
+INSERT INTO `audits` (`id`, `user_type`, `user_id`, `event`, `auditable_type`, `auditable_id`, `old_values`, `new_values`, `url`, `ip_address`, `user_agent`, `tags`, `created_at`, `updated_at`) VALUES
+(1, 'App\\User', 2, 'created', 'App\\Ace', 1, '[]', '{\"name\":\"cOLLEGE OF EMERGING CENTER\",\"acronym\":\"KCA\",\"field\":\"STEM\",\"contact\":\"0560223058\",\"currency_id\":\"5\",\"email\":\"COLLEGE@EMAIL.COM\",\"dlr\":\"1332\",\"institution_id\":\"1\",\"active\":\"1\",\"contact_person\":\"Faith\",\"person_email\":\"faith.mueni@ashesi.edu.gh\",\"person_number\":\"5602230583\",\"position\":\"Associate SE\",\"requirement\":\"REQUIREMENT\",\"signature\":\"Signature.com\",\"web_link\":\"DSJKSD.COIOIXC.C ODV\",\"ace_type\":\"emerging\",\"finalised\":\"22166\",\"comments\":\"SOME CIMMENTS\",\"id\":1}', 'http://127.0.0.1:8000/user-management/ace/create', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-04 11:13:36', '2019-09-04 11:13:36'),
+(6, 'App\\User', 2, 'created', 'App\\Ace', 5, '[]', '{\"name\":\"African Center of Excellence for Genomics of Infectious Diseases\",\"acronym\":\"ACEGID\",\"field\":\"Education\",\"contact\":\"0501375124\",\"currency_id\":\"4\",\"email\":\"asowa45@gmail.com\",\"dlr\":\"20000\",\"institution_id\":\"1\",\"active\":\"1\",\"contact_person\":\"Alfred\",\"person_email\":null,\"person_number\":null,\"position\":null,\"ace_type\":\"emerging\",\"id\":5}', 'http://ace-impact.makedudev.com/user-management/ace/create', '154.160.14.31', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-12 09:16:16', '2019-09-12 09:16:16'),
+(7, 'App\\User', 2, 'created', 'App\\Ace', 11, '[]', '{\"name\":\"West African Centre for Cell Biology of Infectious Pathogens\",\"acronym\":\"WACCBIP\",\"field\":\"Health\",\"contact\":\"0501375124\",\"currency_id\":\"3\",\"email\":\"asowa45@gmail.com\",\"dlr\":\"230000\",\"institution_id\":\"1\",\"active\":\"1\",\"ace_type\":\"ACE\",\"id\":11}', 'http://ace-impact.makedudev.com/user-management/ace/create', '154.160.14.66', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-18 12:17:31', '2019-09-18 12:17:31'),
+(8, 'App\\User', 2, 'updated', 'App\\Ace', 11, '{\"programmes\":null}', '{\"programmes\":\";BSc. Agriculture;MSc. Human Resource\"}', 'http://ace-impact.makedudev.com/user-management/ace/eyJpdiI6Im05bGIrekVlRWtNYnlzNFpQSFFGanc9PSIsInZhbHVlIjoiVksyNFlZdTF2bjI5UElGYmdmUjN0Zz09IiwibWFjIjoiMjFlMjU2MDNmZDdlOGU4OWY2NzQ2YTE4NDAzYjU2ZmNlYjU4MjQ1Yjk2NGY1OTM1MjYwYmE1MzEwOTkxMTUzMiJ9/add-courses', '154.160.14.66', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-18 12:19:11', '2019-09-18 12:19:11'),
+(9, 'App\\User', 2, 'updated', 'App\\Ace', 11, '{\"programmes\":\";BSc. Agriculture;MSc. Human Resource\"}', '{\"programmes\":\";MSc. Human Resource\"}', 'http://ace-impact.makedudev.com/user-management/ace/eyJpdiI6Ik9GZ1VieXNZVTQyU1BRcXNYUU9KOEE9PSIsInZhbHVlIjoidmZLWkozY0tMVnpvRjhrV3ZtWWU1Zz09IiwibWFjIjoiMmUzODliZTNmNzliYTMyYzQzMDRlYTAwODY3N2ZlODlhM2Q1YWVjNWE3OTc2YWY0ZmE3MGZjZjhmMDk1OTFmZiJ9/delete-course/BSc.%20Agriculture', '154.160.14.66', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-18 12:19:33', '2019-09-18 12:19:33'),
+(10, 'App\\User', 2, 'updated', 'App\\Ace', 11, '{\"programmes\":\";MSc. Human Resource\"}', '{\"programmes\":\";MSc. Human Resource;business;Agriculture;English\"}', 'http://ace-impact.makedudev.com/user-management/ace/eyJpdiI6IlQwMXo3MEJuRjJ4QnJMa3E0NXYzT2c9PSIsInZhbHVlIjoiWHRFUnE3VGIxbjloVXdkVUU3OE8rdz09IiwibWFjIjoiYzhmYjljYjNiYTJiMmYyM2UzZjUzNzQ3YmZhMzVmYTdhYjk4ZDI1MDUyYzhmZTNkNzkzNDkxNGEzMWEzODJhNCJ9/add-courses', '102.176.94.153', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-18 14:18:55', '2019-09-18 14:18:55'),
+(11, 'App\\User', 2, 'updated', 'App\\Ace', 11, '{\"programmes\":\";MSc. Human Resource;business;Agriculture;English\"}', '{\"programmes\":\";MSc. Human Resource;business;Agriculture\"}', 'http://ace-impact.makedudev.com/user-management/ace/eyJpdiI6InF1QVJFR0RWSDZ4NVpHRUxncGZJbVE9PSIsInZhbHVlIjoidEpxcU5nMFpkcW43Z29jcVVwQTNidz09IiwibWFjIjoiZDM4OTdlMTllNWNmZjE1MWEzNzFlMjJmY2ExYTQxYTBkNGMwYjNjZjViZGUyM2ZhMzlkNGZkYjNhNmZkOWNhZSJ9/delete-course/English', '102.176.94.153', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36', NULL, '2019-09-18 14:19:17', '2019-09-18 14:19:17'),
+(12, 'App\\User', 2, 'created', 'App\\Ace', 12, '[]', '{\"name\":\"Sample ACE\",\"acronym\":\"sa\",\"field\":\"Education\",\"contact\":\"0560223058\",\"currency_id\":\"3\",\"email\":\"faith.mueni@ashesi.edu.gh\",\"dlr\":\"0\",\"institution_id\":\"6\",\"active\":\"1\",\"ace_type\":\"emerging\",\"id\":12}', 'http://ace-impact.makedudev.com/user-management/ace/create', '154.160.14.66', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.75 Safari/537.36', NULL, '2019-09-19 10:06:08', '2019-09-19 10:06:08'),
+(13, 'App\\User', 13, 'created', 'App\\Ace', 13, '[]', '{\"name\":\"Test ACE\",\"acronym\":\"tace\",\"field\":\"Health\",\"contact\":\"1111111111\",\"currency_id\":\"3\",\"email\":\"info@testace.com\",\"dlr\":null,\"institution_id\":\"14\",\"active\":\"1\",\"ace_type\":\"engineering\",\"id\":13}', 'http://ace-impact.makedudev.com/user-management/ace/create', '102.176.94.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', NULL, '2019-09-22 00:57:44', '2019-09-22 00:57:44'),
+(14, 'App\\User', 13, 'updated', 'App\\Ace', 13, '{\"programmes\":null}', '{\"programmes\":\";MSc Biochemical Science; BSc Biochemical Science; PhD Biochemical Science\"}', 'http://ace-impact.makedudev.com/user-management/ace/eyJpdiI6IndNZEFUTno2ck1CR2V3c096ZTBsTlE9PSIsInZhbHVlIjoiSEJYd2FUV3lxRStPNlI2VGI2QjJjZz09IiwibWFjIjoiNjhiYjUxYjhlNjA0NTYwZDViY2Q0ZTQ2NzgxZmQ1YjljNGE3ZTdhY2E5MGQxZTU0OWQxNzE0MDRlMmVjY2JmMSJ9/add-courses', '102.176.94.154', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36', NULL, '2019-09-22 01:05:44', '2019-09-22 01:05:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `commenter_id` bigint(20) UNSIGNED NOT NULL,
+  `commentable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `commentable_id` bigint(20) UNSIGNED NOT NULL,
+  `comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `child_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `countries`
+--
+
+CREATE TABLE `countries` (
+  `id` int(11) NOT NULL,
+  `country` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `countries`
+--
+
+INSERT INTO `countries` (`id`, `country`) VALUES
+(1, 'Algeria'),
+(2, 'Angola'),
+(3, 'Benin'),
+(4, 'Botswana'),
+(5, 'British Indian Ocean Territory'),
+(6, 'Burkina Faso'),
+(7, 'Burundi'),
+(8, 'Cameroon'),
+(9, 'Cape Verde'),
+(10, 'Central African Republic'),
+(11, 'Chad'),
+(12, 'Comoros'),
+(13, 'Congo'),
+(14, 'Congo DR'),
+(26, 'Côte d\'Ivoire'),
+(15, 'Djibouti'),
+(16, 'Egypt'),
+(17, 'Equatorial Guinea'),
+(18, 'Eritrea'),
+(19, 'Ethiopia'),
+(20, 'French Southern Territories'),
+(21, 'Gabon'),
+(22, 'Gambia'),
+(23, 'Ghana'),
+(24, 'Guinea'),
+(25, 'Guinea-Bissau'),
+(27, 'Kenya'),
+(28, 'Lesotho'),
+(29, 'Liberia'),
+(30, 'Libya'),
+(31, 'Madagascar'),
+(32, 'Malawi'),
+(33, 'Mali'),
+(34, 'Mauritania'),
+(35, 'Mauritius'),
+(36, 'Mayotte'),
+(37, 'Morocco'),
+(38, 'Mozambique'),
+(39, 'Namibia'),
+(40, 'Niger'),
+(41, 'Nigeria'),
+(42, 'Réunion'),
+(43, 'Rwanda'),
+(44, 'Saint Helena, Ascension and Tristan da Cunha'),
+(45, 'Sao Tome and Principe'),
+(46, 'Senegal'),
+(47, 'Seychelles'),
+(48, 'Sierra Leone'),
+(49, 'Somalia'),
+(50, 'South Africa'),
+(51, 'South Sudan'),
+(52, 'Sudan'),
+(53, 'Swaziland'),
+(54, 'Tanzania'),
+(55, 'Togo'),
+(56, 'Tunisia'),
+(57, 'Uganda'),
+(58, 'Western Sahara'),
+(59, 'Zambia'),
+(60, 'Zimbabwe');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `currencies`
+--
+
+CREATE TABLE `currencies` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `symbol` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `currencies`
+--
+
+INSERT INTO `currencies` (`id`, `name`, `code`, `symbol`, `created_at`, `updated_at`) VALUES
+(1, 'US Dollar', 'USD', '$', NULL, NULL),
+(2, 'Euro', 'EUR', '€', NULL, NULL),
+(3, 'SDR', 'SDR', 'SDR', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `excel_uploads`
+--
+
+CREATE TABLE `excel_uploads` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `indicator_id` int(11) NOT NULL,
+  `upload_file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `excel_uploads`
+--
+
+INSERT INTO `excel_uploads` (`id`, `indicator_id`, `upload_file`, `created_at`, `updated_at`) VALUES
+(1, 3, 'uploads/docs/1569361653indicator 3.xlsx', '2019-09-24 21:47:33', '2019-09-24 21:47:33');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `indicators`
+--
+
+CREATE TABLE `indicators` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `identifier` char(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `order_no` int(10) UNSIGNED NOT NULL,
+  `unit_measure` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `project_id` int(10) UNSIGNED NOT NULL DEFAULT '1',
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `is_parent` tinyint(1) DEFAULT '0',
+  `unit_measure_id` int(11) DEFAULT NULL,
+  `show_on_report` tinyint(4) DEFAULT '1',
+  `upload` tinyint(4) DEFAULT '1',
+  `set_target` tinyint(1) DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `indicators`
+--
+
+INSERT INTO `indicators` (`id`, `title`, `identifier`, `order_no`, `unit_measure`, `project_id`, `status`, `created_at`, `updated_at`, `parent_id`, `is_parent`, `unit_measure_id`, `show_on_report`, `upload`, `set_target`) VALUES
+(1, 'Institution Readiness', '1', 1, 'measure', 1, 1, '2019-09-10 09:26:46', '2019-09-24 15:43:22', 0, 1, NULL, 0, NULL, NULL),
+(2, 'Development Impact of ACE', '2', 2, 'measure', 1, 1, '2019-09-10 09:27:02', '2019-09-24 15:43:41', 0, 1, NULL, 0, NULL, NULL),
+(3, 'Quantity of students with focus on gender and regionalization', '3', 3, 'measure', 1, 1, '2019-09-10 09:34:58', '2019-09-24 15:50:19', 0, 1, NULL, 0, 1, NULL),
+(4, 'Quality of Education & research through international accreditation, research publications and improved teaching and research infrastructure', '4', 4, 'measure', 1, 1, '2019-09-10 09:35:29', '2019-09-24 22:23:25', 0, 1, NULL, 0, NULL, NULL),
+(5, 'Relevance of Education and Research through externally generated revenue, internships, and entrepreneurship', '5', 5, 'measure', 1, 1, '2019-09-10 09:35:55', '2019-09-24 15:45:43', 0, 1, NULL, 0, NULL, NULL),
+(6, 'Timeliness and quality of fiduciary management', '6', 6, 'measure', 1, 1, '2019-09-10 09:36:27', '2019-09-24 15:47:31', 0, 1, NULL, 0, NULL, NULL),
+(7, 'Institutional Impact', '7', 7, 'measure', 1, 1, '2019-09-10 09:47:44', '2019-09-24 15:49:22', 0, 1, NULL, 0, NULL, NULL),
+(8, 'Program Accreditation', '4.1', 1, 'measure', 1, 1, '2019-09-10 09:58:20', '2019-09-23 12:06:38', 4, 1, NULL, 1, 1, 1),
+(9, 'Research Publications', '4.2', 2, 'measure', 1, 1, '2019-09-10 09:59:06', '2019-09-23 12:06:48', 4, 1, NULL, 1, 1, 1),
+(10, 'External Revenue', '5.1', 1, 'measure', 1, 1, '2019-09-10 10:00:32', '2019-09-23 12:06:57', 5, 1, NULL, 1, 1, 1),
+(11, 'Internships', '5.2', 2, 'measure', 1, 1, '2019-09-10 10:01:22', '2019-09-23 12:07:06', 5, 1, NULL, 1, 1, 1),
+(12, 'Institutional Accreditation', '7.3', 3, 'measure', 1, 1, '2019-09-10 10:03:04', '2019-09-23 12:07:17', 7, 1, NULL, 1, 1, 1),
+(13, 'Entrepreneurship', '5.3', 3, 'measure', 1, 1, '2019-09-10 10:04:56', '2019-09-24 15:46:55', 5, 1, NULL, 0, NULL, NULL),
+(14, 'Timely Fiduciary Reporting', '6.1', 1, 'measure', 1, 1, '2019-09-10 10:06:44', '2019-09-24 15:49:01', 6, 1, NULL, 0, NULL, NULL),
+(15, 'International accreditation', NULL, 1, NULL, 1, 1, '2019-09-10 10:10:43', '2019-09-10 14:26:56', 8, 0, NULL, 1, 1, NULL),
+(16, 'National accreditation', NULL, 2, NULL, 1, 1, '2019-09-10 10:11:03', '2019-09-10 10:11:03', 8, 0, NULL, 1, 1, NULL),
+(17, 'Gap assessment verified', NULL, 3, NULL, 1, 1, '2019-09-10 10:11:19', '2019-09-10 10:11:19', 8, 0, NULL, 1, 1, NULL),
+(18, 'Regional Accreditation (CAMES, Bologna, etc.)', NULL, 4, NULL, 1, 1, '2019-09-10 10:11:41', '2019-09-10 10:11:41', 8, 0, NULL, 1, 1, NULL),
+(19, 'Self-Evaluation', NULL, 5, NULL, 1, 1, '2019-09-10 10:12:18', '2019-09-10 10:12:18', 8, 0, NULL, 1, 1, NULL),
+(20, 'New/ revamped courses per int\'l standards', NULL, 6, NULL, 1, 1, '2019-09-10 10:12:37', '2019-09-10 10:12:37', 8, 0, NULL, 1, 1, NULL),
+(21, 'Regional Collaboration', NULL, 1, NULL, 1, 1, '2019-09-10 10:13:11', '2019-09-10 14:58:15', 9, 0, NULL, 1, 1, NULL),
+(22, 'No Regional Collaboration', NULL, 2, NULL, 1, 1, '2019-09-10 10:17:01', '2019-09-10 10:17:01', 9, 0, NULL, 1, 1, NULL),
+(23, 'External Revenue - National', NULL, 1, NULL, 1, 1, '2019-09-10 10:18:00', '2019-09-10 10:18:00', 10, 0, NULL, 1, 1, NULL),
+(24, 'External Revenue - Regional', NULL, 2, NULL, 1, 1, '2019-09-10 10:18:13', '2019-09-10 10:18:13', 10, 0, NULL, 1, 1, NULL),
+(25, 'National', NULL, 1, NULL, 1, 1, '2019-09-10 10:18:43', '2019-09-10 10:18:43', 11, 0, NULL, 1, 1, NULL),
+(26, 'Regional', NULL, 2, NULL, 1, 1, '2019-09-10 10:18:57', '2019-09-10 10:18:57', 11, 0, NULL, 1, 1, NULL),
+(27, 'Activity 1:', NULL, 1, NULL, 1, 1, '2019-09-10 10:27:15', '2019-09-10 10:27:15', 13, 0, NULL, 1, 1, NULL),
+(28, 'Activity 2:', NULL, 2, NULL, 1, 1, '2019-09-10 10:27:28', '2019-09-10 10:27:28', 13, 0, NULL, 1, 1, NULL),
+(29, 'Activity 3:', NULL, 3, NULL, 1, 1, '2019-09-10 10:27:39', '2019-09-10 10:27:39', 13, 0, NULL, 1, 1, NULL),
+(30, 'Activity 4:', NULL, 4, NULL, 1, 1, '2019-09-10 10:27:53', '2019-09-10 10:27:53', 13, 0, NULL, 1, 1, NULL),
+(31, 'International accreditation', NULL, 1, NULL, 1, 1, '2019-09-10 10:28:54', '2019-09-10 10:28:54', 12, 0, NULL, 1, 1, NULL),
+(32, 'Gap Assessment/ Self-evaluation', NULL, 2, NULL, 1, 1, '2019-09-10 10:29:12', '2019-09-10 10:29:12', 12, 0, 0, 1, 1, NULL),
+(33, 'New PhD students', '3.1', 1, 'measure', 1, 1, '2019-09-10 10:34:49', '2019-09-23 12:05:55', 3, 1, NULL, 1, NULL, 1),
+(34, 'New Masters Students', '3.2', 2, 'measure', 1, 1, '2019-09-10 10:35:32', '2019-09-23 12:06:02', 3, 1, 0, 1, NULL, 1),
+(35, 'New First Degree Students', '3.3', 3, 'measure', 1, 1, '2019-09-10 10:36:13', '2019-09-23 12:06:10', 3, 1, 0, 1, NULL, 1),
+(36, 'New Prof. Short Course Students', '3.4', 4, 'measure', 1, 1, '2019-09-10 10:36:44', '2019-09-23 12:06:16', 3, 1, 0, 1, NULL, 1),
+(37, 'National and men', NULL, 1, NULL, 1, 1, '2019-09-10 10:37:30', '2019-09-10 10:37:30', 36, 0, 0, 1, 1, NULL),
+(38, 'National and women', NULL, 2, NULL, 1, 1, '2019-09-10 10:37:41', '2019-09-10 10:37:41', 36, 0, 0, 1, 1, NULL),
+(39, 'Regional and men', NULL, 3, NULL, 1, 1, '2019-09-10 10:37:53', '2019-09-10 10:37:53', 36, 0, 0, 1, 1, NULL),
+(40, 'Regional and women', NULL, 4, NULL, 1, 1, '2019-09-10 10:38:12', '2019-09-10 10:38:12', 36, 0, 0, 1, 1, NULL),
+(41, 'National and men', NULL, 1, NULL, 1, 1, '2019-09-10 10:38:39', '2019-09-10 10:38:39', 35, 0, 0, 1, 1, NULL),
+(42, 'National and women', NULL, 2, NULL, 1, 1, '2019-09-10 10:38:56', '2019-09-10 10:38:56', 35, 0, 0, 1, 1, NULL),
+(43, 'Regional and men', NULL, 3, NULL, 1, 1, '2019-09-10 10:39:14', '2019-09-10 10:39:14', 35, 0, 0, 1, 1, NULL),
+(44, 'Regional and women', NULL, 4, NULL, 1, 1, '2019-09-10 10:39:26', '2019-09-10 10:39:26', 35, 0, NULL, 1, 1, NULL),
+(45, 'National and men', NULL, 1, NULL, 1, 1, '2019-09-10 10:39:44', '2019-09-10 10:39:44', 34, 0, NULL, 1, 1, NULL),
+(46, 'National and women', NULL, 2, NULL, 1, 1, '2019-09-10 10:39:57', '2019-09-10 10:39:57', 34, 0, NULL, 1, 1, NULL),
+(47, 'Regional and men', NULL, 3, NULL, 1, 1, '2019-09-10 10:40:09', '2019-09-10 10:40:09', 34, 0, NULL, 1, 1, NULL),
+(48, 'Regional and women', NULL, 4, NULL, 1, 1, '2019-09-10 10:42:41', '2019-09-10 10:42:41', 34, 0, NULL, 1, 1, NULL),
+(49, 'National and men', NULL, 1, NULL, 1, 0, '2019-09-10 10:43:01', '2019-09-24 16:26:01', 33, 0, NULL, 1, 1, NULL),
+(50, 'National and women', NULL, 2, NULL, 1, 1, '2019-09-10 10:43:16', '2019-09-10 10:43:16', 33, 0, NULL, 1, 1, NULL),
+(51, 'Regional and men', NULL, 3, NULL, 1, 1, '2019-09-10 10:43:49', '2019-09-10 10:43:49', 33, 0, NULL, 1, 1, NULL),
+(52, 'Regional and women', NULL, 4, NULL, 1, 1, '2019-09-10 10:46:32', '2019-09-10 10:46:32', 33, 0, NULL, 1, 1, NULL),
+(54, 'National and men', NULL, 1, NULL, 1, 1, '2019-09-10 14:32:44', '2019-09-10 14:39:15', 33, 0, NULL, 1, 1, NULL),
+(55, 'djkjds', NULL, 1, NULL, 1, 0, '2019-09-10 14:47:13', '2019-09-24 21:58:45', 4, 0, NULL, 1, 1, NULL),
+(56, 'The official designation of core team members', NULL, 1, NULL, 1, 1, '2019-09-10 15:56:23', '2019-09-10 15:56:23', 1, 0, NULL, 1, 1, NULL),
+(57, 'Implementation Plan', NULL, 2, NULL, 1, 1, '2019-09-10 15:56:39', '2019-09-10 15:56:39', 1, 0, NULL, 1, 1, NULL),
+(58, 'Procedures manuals', NULL, 3, NULL, 1, 1, '2019-09-12 09:04:52', '2019-09-12 09:04:52', 1, 0, NULL, 1, 1, NULL),
+(59, 'Project Management Certification', NULL, 4, NULL, 1, 1, '2019-09-12 09:05:12', '2019-09-12 09:05:12', 1, 0, NULL, 1, 1, NULL),
+(60, 'Student Handbook (includes scholarship and anti-sexual harassment policies)', NULL, 5, NULL, 1, 1, '2019-09-12 09:05:36', '2019-09-12 09:05:36', 1, 0, NULL, 1, 1, NULL),
+(61, 'Project Website', NULL, 6, NULL, 1, 1, '2019-09-12 09:05:51', '2019-09-12 09:05:51', 1, 0, NULL, 1, 1, NULL),
+(62, 'Sectoral Advisory Board', NULL, 7, NULL, 1, 1, '2019-09-12 09:06:02', '2019-09-12 09:06:02', 1, 0, NULL, 1, 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `indicator_form`
+--
+
+CREATE TABLE `indicator_form` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `indicator_one`
+--
+
+CREATE TABLE `indicator_one` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `ace_id` int(10) UNSIGNED NOT NULL,
+  `requirement` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `submission_date` date NOT NULL,
+  `file_one` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `file_two` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `comments` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `indicator_one`
+--
+
+INSERT INTO `indicator_one` (`id`, `ace_id`, `requirement`, `submission_date`, `file_one`, `file_two`, `url`, `comments`, `created_at`, `updated_at`) VALUES
+(4, 13, 'THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS', '2019-09-01', 'dp-for-whatsapp.jpg', NULL, NULL, NULL, '2019-09-22 01:03:24', '2019-09-22 01:03:24'),
+(5, 13, 'THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS', '2019-09-01', NULL, NULL, NULL, NULL, '2019-09-22 01:03:31', '2019-09-22 01:03:31');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `institutions`
+--
+
+CREATE TABLE `institutions` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_id` int(10) UNSIGNED NOT NULL,
+  `contact` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `university` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `institutions`
+--
+
+INSERT INTO `institutions` (`id`, `name`, `country_id`, `contact`, `email`, `university`, `created_at`, `updated_at`, `deleted_at`, `active`) VALUES
+(6, 'Inst nm', 12, NULL, NULL, 1, '2019-09-19 10:03:57', '2019-09-25 12:11:10', NULL, 1),
+(7, 'Assocaition of African Universities', 23, NULL, 'info@aau.org', 0, '2019-09-19 16:21:31', '2019-09-19 16:21:31', NULL, 1),
+(8, 'University of Abomey Calavi', 3, NULL, NULL, 1, '2019-09-20 11:23:29', '2019-09-20 11:23:29', NULL, 1),
+(9, 'Institut International d\'Ingénierie de l\'Eau et de l\'Environnement', 6, NULL, NULL, 1, '2019-09-20 11:24:41', '2019-09-20 11:24:41', NULL, 1),
+(10, 'l\'Institut National Polytechnique Félix Houphouët-Boigny', 26, NULL, NULL, 1, '2019-09-20 11:25:07', '2019-09-20 11:25:07', NULL, 1),
+(11, 'Université Félix Houphouët-Boigny', 26, NULL, NULL, 1, '2019-09-20 11:26:20', '2019-09-20 11:26:20', NULL, 1),
+(12, 'École Nationale Supérieure de Statistique et d\'Economie Appliquée d\'Abidjan', 26, NULL, NULL, 1, '2019-09-20 11:26:53', '2019-09-20 11:26:53', NULL, 1),
+(13, 'Kwame Nkrumah University of Science and Technology (KNUST)', 23, NULL, NULL, 1, '2019-09-20 11:32:56', '2019-09-20 11:32:56', NULL, 1),
+(14, 'Test Institution', 5, NULL, 'info@test.com', 1, '2019-09-22 00:56:19', '2019-09-25 12:10:49', NULL, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '2014_10_12_000000_create_users_table', 1),
+(2, '2014_10_12_100000_create_password_resets_table', 1),
+(3, '2018_09_10_121820_laratrust_setup_tables', 2),
+(47, '2018_09_06_161921_create_institutions_table', 3),
+(48, '2018_09_06_190425_create_aces_table', 3),
+(49, '2018_09_12_101624_create_projects_table', 3),
+(50, '2018_09_12_114518_create_sub_indicators_table', 3),
+(51, '2018_09_12_115830_create_ace_reports_table', 3),
+(52, '2018_09_12_120023_create_target_values_table', 3),
+(53, '2018_09_12_120028_create_indicators_table', 3),
+(54, '2018_09_12_120052_create_unit_measures_table', 3),
+(55, '2018_09_12_120257_create_specifics_table', 3),
+(56, '2018_09_12_122038_create_audits_table', 3),
+(57, '2018_09_14_111432_create_reports_table', 3),
+(58, '2018_09_14_112054_create_system_options_table', 3),
+(59, '2018_09_14_112742_create_report_values_table', 3),
+(60, '2018_09_17_090343_create_courses_table', 4),
+(61, '2018_09_17_090658_create_ace_courses_table', 4),
+(62, '2018_06_30_113500_create_comments_table', 5),
+(63, '2018_09_17_210207_create_aceemails_table', 6),
+(64, '2018_09_19_151048_create_products_table', 6),
+(65, '2018_09_20_145733_create_indicator_form_table', 7),
+(66, '2018_10_01_161241_create_report_status_tracker_table', 7),
+(67, '2019_09_04_092526_create_aces_table', 8),
+(68, '2019_09_04_110523_create_aces_table', 9);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `milestones`
+--
+
+CREATE TABLE `milestones` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `number` tinyint(4) NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `responsibility` tinyint(4) NOT NULL,
+  `status` tinyint(4) NOT NULL,
+  `status_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`email`, `token`, `created_at`) VALUES
+('tayib.fall@ugb.edu.sn', '$2y$10$VVmBLX0QnJSkK3BtwWYvZ.Kky3atB11crxIiJyrJMsOg396BdaDYm', '2018-11-28 09:24:19');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permissions`
+--
+
+CREATE TABLE `permissions` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `permissions`
+--
+
+INSERT INTO `permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'edit-user', 'Edit User', NULL, '2018-09-10 12:39:28', '2018-09-14 22:59:46'),
+(2, 'add-user', 'Add a User', NULL, '2018-09-11 08:40:49', '2018-09-11 08:40:49'),
+(3, 'deactivate-user', 'Deactivate User', NULL, '2018-09-11 08:41:12', '2018-09-11 08:41:12'),
+(4, 'admin-dashboard', 'Admin Dashboard', NULL, '2018-09-14 22:58:57', '2018-09-14 22:58:57'),
+(5, 'submit-report', 'Submit Report', NULL, '2018-09-14 23:01:56', '2018-09-14 23:01:56'),
+(6, 'edit-report', 'Edit Report', NULL, '2018-09-24 09:16:54', '2018-09-24 09:16:54'),
+(7, 'view-report', 'View Report', NULL, '2018-09-24 09:17:22', '2018-09-24 09:17:22'),
+(8, 'upload-indicator-details', 'Upload Indicator Details', NULL, '2018-09-24 09:17:56', '2018-09-24 09:17:56'),
+(9, 'view-indicator-details', 'View Indicator Details', NULL, '2018-09-24 09:18:22', '2018-09-24 09:18:22'),
+(10, 'edit-indicator-details', 'Edit Indicator Details', NULL, '2018-09-24 09:18:35', '2018-09-24 09:18:35'),
+(11, 'calendar', 'Calendar', NULL, '2018-09-26 16:06:27', '2018-09-26 16:06:27'),
+(12, 'manage-projects', 'Manage Projects', 'Allows the assigned user to add, edit and deativate projects', '2018-09-26 16:17:24', '2018-09-26 16:17:24'),
+(13, 'track-report', 'Track Report', NULL, '2018-10-01 16:24:15', '2018-10-01 16:24:15'),
+(14, 'generate-report', 'Generate Report', NULL, '2018-10-03 21:41:07', '2018-10-03 21:41:07'),
+(15, 'set-report-mode', 'Set Report Status', NULL, '2018-10-04 19:01:35', '2018-10-04 19:01:35'),
+(16, 'close-submission', 'Close Report Submission', NULL, '2018-10-12 16:40:00', '2018-10-12 16:40:00'),
+(17, 'app-settings', 'Application Settings', NULL, '2018-10-12 16:41:02', '2018-10-12 16:41:02'),
+(18, 'add-dlr-indicators', 'Add DLR Indicators', NULL, '2018-11-05 15:39:38', '2018-11-05 15:39:38');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permission_role`
+--
+
+CREATE TABLE `permission_role` (
+  `permission_id` int(10) UNSIGNED NOT NULL,
+  `role_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `permission_role`
+--
+
+INSERT INTO `permission_role` (`permission_id`, `role_id`) VALUES
+(1, 2),
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 2),
+(6, 2),
+(7, 2),
+(8, 2),
+(9, 2),
+(10, 2),
+(11, 2),
+(12, 2),
+(13, 2),
+(14, 2),
+(15, 2),
+(16, 2),
+(17, 2),
+(18, 2),
+(5, 3),
+(6, 3),
+(7, 3),
+(8, 3),
+(9, 3),
+(10, 3),
+(11, 3),
+(1, 1000),
+(2, 1000),
+(3, 1000),
+(4, 1000),
+(5, 1000),
+(6, 1000),
+(7, 1000),
+(8, 1000),
+(9, 1000),
+(10, 1000),
+(11, 1000),
+(12, 1000),
+(13, 1000),
+(14, 1000),
+(15, 1000),
+(16, 1000),
+(17, 1000),
+(1, 1001),
+(2, 1001),
+(3, 1001),
+(4, 1001),
+(5, 1001),
+(6, 1001),
+(7, 1001),
+(8, 1001),
+(9, 1001),
+(10, 1001),
+(11, 1001),
+(12, 1001),
+(13, 1001),
+(14, 1001),
+(15, 1001),
+(16, 1001),
+(17, 1001),
+(18, 1001),
+(4, 1002),
+(7, 1002),
+(11, 1002),
+(13, 1002),
+(14, 1002);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `permission_user`
+--
+
+CREATE TABLE `permission_user` (
+  `permission_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `user_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `permission_user`
+--
+
+INSERT INTO `permission_user` (`permission_id`, `user_id`, `user_type`) VALUES
+(8, 3, 'App\\User'),
+(9, 3, 'App\\User'),
+(10, 3, 'App\\User');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `products`
+--
+
+CREATE TABLE `products` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `projects`
+--
+
+CREATE TABLE `projects` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `uuid` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_grant` int(10) UNSIGNED NOT NULL,
+  `grant_id` int(10) UNSIGNED NOT NULL,
+  `project_coordinator` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `end_date` date NOT NULL,
+  `start_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `projects`
+--
+
+INSERT INTO `projects` (`id`, `uuid`, `title`, `total_grant`, `grant_id`, `project_coordinator`, `status`, `end_date`, `start_date`, `created_at`, `updated_at`) VALUES
+(1, NULL, 'ACE Impact', 10000, 12, 'Peter Jamaa', 1, '2020-09-15', '2019-09-09', '2019-09-09 11:26:56', '2019-09-09 11:26:56');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `project_dlis`
+--
+
+CREATE TABLE `project_dlis` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `project_id` int(11) NOT NULL DEFAULT '1',
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reports`
+--
+
+CREATE TABLE `reports` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `project_id` int(10) UNSIGNED NOT NULL,
+  `ace_id` int(11) NOT NULL,
+  `submission_date` date NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `editable` tinyint(4) NOT NULL DEFAULT '1',
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `reports`
+--
+
+INSERT INTO `reports` (`id`, `project_id`, `ace_id`, `submission_date`, `user_id`, `start_date`, `end_date`, `editable`, `status`, `created_at`, `updated_at`) VALUES
+(3, 1, 13, '2019-09-24', 74, '2019-01-01', '2019-12-31', 1, 99, '2019-09-24 15:24:59', '2019-09-24 15:24:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_indicators_status`
+--
+
+CREATE TABLE `report_indicators_status` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `indicator_id` int(11) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '100',
+  `responsibility` tinyint(4) DEFAULT '1',
+  `status_date` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `report_indicators_status`
+--
+
+INSERT INTO `report_indicators_status` (`id`, `report_id`, `indicator_id`, `status`, `responsibility`, `status_date`, `created_at`, `updated_at`) VALUES
+(1, 3, 33, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(2, 3, 34, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(3, 3, 35, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(4, 3, 36, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(5, 3, 4, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(6, 3, 8, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(7, 3, 9, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(8, 3, 10, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(9, 3, 11, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(10, 3, 12, 99, 1, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_status_tracker`
+--
+
+CREATE TABLE `report_status_tracker` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `status_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `report_status_tracker`
+--
+
+INSERT INTO `report_status_tracker` (`id`, `report_id`, `status_code`, `status_date`, `created_at`, `updated_at`) VALUES
+(3, 3, '99', '2019-09-24 15:24:59', '2019-09-24 15:24:59', '2019-09-24 15:24:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `report_values`
+--
+
+CREATE TABLE `report_values` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `report_id` int(10) UNSIGNED NOT NULL,
+  `indicator_id` int(10) UNSIGNED NOT NULL,
+  `value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `report_values`
+--
+
+INSERT INTO `report_values` (`id`, `report_id`, `indicator_id`, `value`, `created_at`, `updated_at`) VALUES
+(1, 3, 54, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(2, 3, 50, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(3, 3, 51, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(4, 3, 52, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(5, 3, 45, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(6, 3, 46, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(7, 3, 47, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(8, 3, 48, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(9, 3, 41, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(10, 3, 42, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(11, 3, 43, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(12, 3, 44, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(13, 3, 37, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(14, 3, 38, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(15, 3, 39, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(16, 3, 40, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(17, 3, 55, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(18, 3, 8, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(19, 3, 9, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(20, 3, 15, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(21, 3, 16, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(22, 3, 17, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(23, 3, 18, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(24, 3, 19, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(25, 3, 20, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(26, 3, 21, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(27, 3, 22, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(28, 3, 23, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(29, 3, 24, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(30, 3, 25, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(31, 3, 26, '0', '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(32, 3, 31, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29'),
+(33, 3, 32, NULL, '2019-09-24 21:02:29', '2019-09-24 21:02:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `roles`
+--
+
+CREATE TABLE `roles` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `roles`
+--
+
+INSERT INTO `roles` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES
+(2, 'super-admin', 'Super Admin', NULL, '2018-09-11 09:21:27', '2018-09-16 12:13:40'),
+(3, 'ace-officer', 'ACE Officer', 'Only reviews and submit reports', '2018-09-11 12:50:41', '2018-09-11 12:50:41'),
+(4, 'admin', 'Administrator', NULL, '2018-09-27 20:01:46', '2018-09-27 20:01:46'),
+(5, 'manager', 'Manager', NULL, '2018-09-27 20:03:32', '2018-09-27 20:03:32'),
+(1000, 'webmaster', 'Webmaster', 'Root user', '2018-09-10 12:39:28', '2018-09-10 12:39:28'),
+(1001, 'test-admin', 'Test Admin', 'a test account with administrative role', '2018-11-20 13:19:29', '2018-11-20 13:19:29'),
+(1002, 'project-manager', 'Project Manager', 'General Overseer', '2019-09-08 22:28:21', '2019-09-08 22:28:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `role_user`
+--
+
+CREATE TABLE `role_user` (
+  `role_id` int(10) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
+  `user_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `role_user`
+--
+
+INSERT INTO `role_user` (`role_id`, `user_id`, `user_type`) VALUES
+(2, 6, 'App\\User'),
+(2, 8, 'App\\User'),
+(2, 13, 'App\\User'),
+(2, 15, 'App\\User'),
+(2, 16, 'App\\User'),
+(2, 19, 'App\\User'),
+(2, 73, 'App\\User'),
+(3, 3, 'App\\User'),
+(3, 5, 'App\\User'),
+(3, 11, 'App\\User'),
+(3, 17, 'App\\User'),
+(3, 18, 'App\\User'),
+(3, 22, 'App\\User'),
+(3, 23, 'App\\User'),
+(3, 24, 'App\\User'),
+(3, 25, 'App\\User'),
+(3, 26, 'App\\User'),
+(3, 27, 'App\\User'),
+(3, 28, 'App\\User'),
+(3, 29, 'App\\User'),
+(3, 30, 'App\\User'),
+(3, 31, 'App\\User'),
+(3, 32, 'App\\User'),
+(3, 33, 'App\\User'),
+(3, 34, 'App\\User'),
+(3, 35, 'App\\User'),
+(3, 36, 'App\\User'),
+(3, 37, 'App\\User'),
+(3, 38, 'App\\User'),
+(3, 39, 'App\\User'),
+(3, 41, 'App\\User'),
+(3, 43, 'App\\User'),
+(3, 44, 'App\\User'),
+(3, 45, 'App\\User'),
+(3, 46, 'App\\User'),
+(3, 47, 'App\\User'),
+(3, 49, 'App\\User'),
+(3, 50, 'App\\User'),
+(3, 51, 'App\\User'),
+(3, 52, 'App\\User'),
+(3, 53, 'App\\User'),
+(3, 56, 'App\\User'),
+(3, 57, 'App\\User'),
+(3, 58, 'App\\User'),
+(3, 59, 'App\\User'),
+(3, 60, 'App\\User'),
+(3, 62, 'App\\User'),
+(3, 63, 'App\\User'),
+(3, 74, 'App\\User'),
+(4, 43, 'App\\User'),
+(4, 67, 'App\\User'),
+(4, 72, 'App\\User'),
+(5, 43, 'App\\User'),
+(1000, 2, 'App\\User'),
+(1000, 9, 'App\\User'),
+(1000, 20, 'App\\User'),
+(1000, 43, 'App\\User'),
+(1000, 64, 'App\\User'),
+(1001, 43, 'App\\User'),
+(1001, 61, 'App\\User'),
+(1001, 68, 'App\\User'),
+(1002, 69, 'App\\User'),
+(1002, 70, 'App\\User'),
+(1002, 71, 'App\\User');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `specifics`
+--
+
+CREATE TABLE `specifics` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order_no` int(10) UNSIGNED NOT NULL,
+  `ace_level_indicator_id` int(10) UNSIGNED NOT NULL,
+  `unit_measure_id` int(10) UNSIGNED DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sub_indicators`
+--
+
+CREATE TABLE `sub_indicators` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order_no` int(10) UNSIGNED NOT NULL DEFAULT '1',
+  `indicator_id` int(10) UNSIGNED NOT NULL,
+  `unit_measure_id` int(10) UNSIGNED DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `system_options`
+--
+
+CREATE TABLE `system_options` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `option_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `display_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `option_value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `option_parent_id` int(10) UNSIGNED DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `system_options`
+--
+
+INSERT INTO `system_options` (`id`, `slug`, `option_name`, `display_name`, `option_value`, `description`, `option_parent_id`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'monitoring-evaluation-system', 'app_name', 'MONITORING & EVALUATION SYSTEM', 'app_name', NULL, 0, 1, '2018-10-12 16:10:41', '2018-10-12 16:10:41'),
+(2, NULL, 'app_email', 'INFO@AAU.ORG', 'app_email', NULL, 0, 1, '2018-10-12 16:10:57', '2018-10-12 16:10:57'),
+(3, NULL, 'app_deadline', '2018-10-19', 'app_deadline', NULL, 0, 1, '2018-10-12 16:11:09', '2018-10-12 16:13:09'),
+(4, NULL, 'generation_status', 'SUBMITTED', '1', NULL, 0, 1, '2018-11-29 21:49:48', '2018-11-29 21:49:48');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `target_values`
+--
+
+CREATE TABLE `target_values` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `value` int(10) UNSIGNED NOT NULL,
+  `ace_report_id` int(10) UNSIGNED NOT NULL,
+  `specific_id` int(10) UNSIGNED NOT NULL,
+  `ace_level_indicator_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `unit_measures`
+--
+
+CREATE TABLE `unit_measures` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order_no` int(10) UNSIGNED NOT NULL,
+  `indicator_id` int(10) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ace` int(11) DEFAULT NULL,
+  `institution` int(11) DEFAULT NULL,
+  `phone` char(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `ace`, `institution`, `phone`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
+(2, 'Web Master', 'web@master.com', NULL, '$2y$10$V5mXe2XpFssJ7xKr1QkTWuren1hLtFiLvWpTDKKErnsbRTt.anvYm', NULL, NULL, '0501375124', 1, 'iu9QAvExzbyobjkkWWxbkrgHzdfJADzfeqBGuUr4rmjeMb1IDskBRculAeBl', '2018-09-10 12:39:28', '2018-09-14 08:08:56'),
+(13, 'Georgina Maison', 'gdmaison@aau.org', '2018-09-28 13:02:25', '$2y$10$sEblMi.Ph9vcQDpF67f8kuQnCaGtEmNLJoANNdCccdRV.tIihGBfu', NULL, 7, '0279785380', 1, 'vZnzJwyU3NVQcjuhRGvrveTdmHfuZWBvhEDuxVxFKLXoWArffGrbq3q0MHJz', '2018-09-28 13:02:01', '2019-09-20 09:22:22'),
+(73, 'Nodumo Dhlamini', 'ndhlamini@aau.org', '2019-09-20 10:24:13', '$2y$10$2OCTatIKk7kt4SNjM3lOPOSZJapmkIlAiVzGCAuvs/T8sfoO83UeW', NULL, 7, '0502699914', 1, NULL, '2019-09-19 16:22:05', '2019-09-20 10:24:13'),
+(74, 'Test ACE Officer', 'officer@testace.com', '2019-09-24 21:44:43', '$2y$10$99xdf29owIX53615bezJOeHIIfSn6vpqTdzYjCvWYwn1JSlDLzHpK', 13, NULL, '111111111', 1, NULL, '2019-09-24 13:04:32', '2019-09-24 21:44:43');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `verification_letters`
+--
+
+CREATE TABLE `verification_letters` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `ace_id` int(11) DEFAULT NULL,
+  `amount_due` int(11) NOT NULL,
+  `payment` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `comment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `letter_dated` date NOT NULL,
+  `date_dispatched` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `aceemails`
+--
+ALTER TABLE `aceemails`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `aces`
+--
+ALTER TABLE `aces`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_courses`
+--
+ALTER TABLE `ace_courses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_dlr_indicators`
+--
+ALTER TABLE `ace_dlr_indicators`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_dlr_indicator_costs`
+--
+ALTER TABLE `ace_dlr_indicator_costs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_dlr_indicator_values`
+--
+ALTER TABLE `ace_dlr_indicator_values`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_indicators_baselines`
+--
+ALTER TABLE `ace_indicators_baselines`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_indicators_targets`
+--
+ALTER TABLE `ace_indicators_targets`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_indicators_target_years`
+--
+ALTER TABLE `ace_indicators_target_years`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `ace_reports`
+--
+ALTER TABLE `ace_reports`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `audits`
+--
+ALTER TABLE `audits`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `audits_auditable_type_auditable_id_index` (`auditable_type`,`auditable_id`),
+  ADD KEY `audits_user_id_user_type_index` (`user_id`,`user_type`);
+
+--
+-- Indexes for table `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `comments_commentable_type_commentable_id_index` (`commentable_type`,`commentable_id`),
+  ADD KEY `comments_child_id_foreign` (`child_id`);
+
+--
+-- Indexes for table `countries`
+--
+ALTER TABLE `countries`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `countries_country_uindex` (`country`);
+
+--
+-- Indexes for table `currencies`
+--
+ALTER TABLE `currencies`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `excel_uploads`
+--
+ALTER TABLE `excel_uploads`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `indicators`
+--
+ALTER TABLE `indicators`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `indicator_form`
+--
+ALTER TABLE `indicator_form`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `indicator_one`
+--
+ALTER TABLE `indicator_one`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `institutions`
+--
+ALTER TABLE `institutions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `milestones`
+--
+ALTER TABLE `milestones`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD KEY `password_resets_email_index` (`email`);
+
+--
+-- Indexes for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `permissions_name_unique` (`name`);
+
+--
+-- Indexes for table `permission_role`
+--
+ALTER TABLE `permission_role`
+  ADD PRIMARY KEY (`permission_id`,`role_id`),
+  ADD KEY `permission_role_role_id_foreign` (`role_id`);
+
+--
+-- Indexes for table `permission_user`
+--
+ALTER TABLE `permission_user`
+  ADD PRIMARY KEY (`user_id`,`permission_id`,`user_type`),
+  ADD KEY `permission_user_permission_id_foreign` (`permission_id`);
+
+--
+-- Indexes for table `products`
+--
+ALTER TABLE `products`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `projects`
+--
+ALTER TABLE `projects`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `project_dlis`
+--
+ALTER TABLE `project_dlis`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `report_indicators_status`
+--
+ALTER TABLE `report_indicators_status`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `report_status_tracker`
+--
+ALTER TABLE `report_status_tracker`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `report_values`
+--
+ALTER TABLE `report_values`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `roles_name_unique` (`name`);
+
+--
+-- Indexes for table `role_user`
+--
+ALTER TABLE `role_user`
+  ADD PRIMARY KEY (`user_id`,`role_id`,`user_type`),
+  ADD KEY `role_user_role_id_foreign` (`role_id`);
+
+--
+-- Indexes for table `specifics`
+--
+ALTER TABLE `specifics`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sub_indicators`
+--
+ALTER TABLE `sub_indicators`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `system_options`
+--
+ALTER TABLE `system_options`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `target_values`
+--
+ALTER TABLE `target_values`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `unit_measures`
+--
+ALTER TABLE `unit_measures`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`);
+
+--
+-- Indexes for table `verification_letters`
+--
+ALTER TABLE `verification_letters`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `aceemails`
+--
+ALTER TABLE `aceemails`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `aces`
+--
+ALTER TABLE `aces`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `ace_courses`
+--
+ALTER TABLE `ace_courses`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `ace_dlr_indicators`
+--
+ALTER TABLE `ace_dlr_indicators`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ace_dlr_indicator_costs`
+--
+ALTER TABLE `ace_dlr_indicator_costs`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ace_dlr_indicator_values`
+--
+ALTER TABLE `ace_dlr_indicator_values`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ace_indicators_baselines`
+--
+ALTER TABLE `ace_indicators_baselines`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `ace_indicators_targets`
+--
+ALTER TABLE `ace_indicators_targets`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ace_indicators_target_years`
+--
+ALTER TABLE `ace_indicators_target_years`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ace_reports`
+--
+ALTER TABLE `ace_reports`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `audits`
+--
+ALTER TABLE `audits`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `countries`
+--
+ALTER TABLE `countries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+
+--
+-- AUTO_INCREMENT for table `currencies`
+--
+ALTER TABLE `currencies`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `excel_uploads`
+--
+ALTER TABLE `excel_uploads`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `indicators`
+--
+ALTER TABLE `indicators`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+
+--
+-- AUTO_INCREMENT for table `indicator_form`
+--
+ALTER TABLE `indicator_form`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `indicator_one`
+--
+ALTER TABLE `indicator_one`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `institutions`
+--
+ALTER TABLE `institutions`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+
+--
+-- AUTO_INCREMENT for table `milestones`
+--
+ALTER TABLE `milestones`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `permissions`
+--
+ALTER TABLE `permissions`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `projects`
+--
+ALTER TABLE `projects`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `project_dlis`
+--
+ALTER TABLE `project_dlis`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `report_indicators_status`
+--
+ALTER TABLE `report_indicators_status`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `report_status_tracker`
+--
+ALTER TABLE `report_status_tracker`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `report_values`
+--
+ALTER TABLE `report_values`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
+--
+-- AUTO_INCREMENT for table `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1003;
+
+--
+-- AUTO_INCREMENT for table `specifics`
+--
+ALTER TABLE `specifics`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sub_indicators`
+--
+ALTER TABLE `sub_indicators`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `system_options`
+--
+ALTER TABLE `system_options`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `target_values`
+--
+ALTER TABLE `target_values`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `unit_measures`
+--
+ALTER TABLE `unit_measures`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+
+--
+-- AUTO_INCREMENT for table `verification_letters`
+--
+ALTER TABLE `verification_letters`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_child_id_foreign` FOREIGN KEY (`child_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `permission_role`
+--
+ALTER TABLE `permission_role`
+  ADD CONSTRAINT `permission_role_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `permission_role_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `permission_user`
+--
+ALTER TABLE `permission_user`
+  ADD CONSTRAINT `permission_user_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `role_user`
+--
+ALTER TABLE `role_user`
+  ADD CONSTRAINT `role_user_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

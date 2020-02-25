@@ -3,6 +3,8 @@
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/datepicker/datepicker3.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/datepicker/daterangepicker.css')}}">
 @endpush
 @push('other-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">
@@ -91,7 +93,145 @@
 
         <div class="row">
         {{--<div class="row">--}}
-            <div class="col-md-7">
+            <div class="col-md-6">
+                <div class="card">
+                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
+                        WorkPlan Uploads
+                    </h6>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <form action="{{route('user-management.ace.workplan.save',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <input type="hidden" value="{{$ace->id}}" name="ace_id">
+                                    <div class="col-md-6">
+                                        <div class="form-group{{ $errors->has('submission_date') ? ' form-control-warning' : '' }}">
+                                            <label for="ss_submission_date">Submission Date <span class="required">*</span></label>
+                                            <input type="date" class="form-control" required name="submission_date"
+                                                   id="submission_date" value="#">
+                                            @if ($errors->has('submission_date'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('submission_date') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group {{ $errors->has('wp_file')? 'form-control-warning':'' }}">
+                                            <label for="wp_file">Work Plan File <span class="required">*</span></label>
+                                            <input type="file" class="form-control" name="wp_file" required  id="wp_file"
+                                                   value="#">
+                                            @if ($errors->has('wp_file'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('wp_file') }}</small>
+                                                </p>
+                                            @endif
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <input type='text' name="wp_year"  class="form-control datepicker" value="{{ old('wp_year') }}" placeholder="Year" required
+                                            />
+                                            <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                      <span class="fa fa-calendar-o"></span>
+                                                    </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                                Save</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </form><br>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>WorkPlan Document</th>
+                                        <th>Year</th>
+                                        <th style="width: 100px;">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                @foreach($workplans as $wp)
+                                    <tr>
+                                        <td>
+                                            {{--<strong>{{}}</strong>--}}
+                                            <a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">
+                                                <span class="fa fa-file"></span>   {{$wp->wp_file}}
+                                            </a>
+
+                                            </td>
+                                        <td>{{$wp->wp_year}}</td>
+                                        <td>
+                                            {{--<a href="#edit_contact" onclick="edit_workplan('{{\Illuminate\Support\Facades\Crypt::encrypt($wp->id)}}')" >--}}
+                                                {{--<i class="ft-edit blue"></i></a>--}}
+                                            <a class="danger" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"
+                                                data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
+                                               title="Delete Report"><i class="ft-trash-2"></i></a>
+                                        </td>
+                                    </tr>
+
+                                    @endforeach
+                                    </tbody>
+                                </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
+                        Programmes
+                    </h6>
+                    <div class="card-content">
+                        <div class="card-body table-responsive">
+                            <form action="{{route('user-management.ace.add_courses',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="name">Course Names <span class="required"></span> </label>
+                                            <textarea class="form-control" placeholder="course names" name="ace_programmes"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                        Save</button>
+                                </div>
+                            </form>
+                            <br>
+                            @php
+                                $allcourses=explode(';',$ace->programmes)  ;
+                            @endphp
+
+                            @foreach($allcourses as $course)
+                            @if($course != "")
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
+                                    <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"
+                                       onclick="return confirm('Are you sure you want to delete this Course?');" data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
+                                        <span class="fa fa-remove" style="color:red"></span>
+                                    </a>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
                 <div class="card">
                     <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
                         Contact Group
@@ -183,69 +323,26 @@
                                         <td>{{$contact->contact_name}}</td>
                                         <td>{{$contact->email}}</td>
                                         <td>{{$contact->contact_phone}}</td>
-                                         <td>{{$contact->contact_title}}</td>
+                                        <td>{{$contact->contact_title}}</td>
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
 
-                                                    @if($contact->edit_status == true)
-                                                <a href="#edit_contact" onclick="edit_contact('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
-                                                    <i class="ft-edit"></i></a>
-                                                <a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"
-                                                   class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"
-                                                   title="Delete Report"><i class="ft-trash-2"></i></a>
-                                                        @else
+                                                @if($contact->edit_status == true)
+                                                    <a href="#edit_contact" onclick="edit_contact('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
+                                                        <i class="ft-edit"></i></a>
+                                                    <a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"
+                                                       class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"
+                                                       title="Delete Report"><i class="ft-trash-2"></i></a>
+                                                @else
                                                     <a href="#" class="btn btn-s btn-secondary">
                                                         <i class="ft-eye"></i></a>
-                                                        @endif
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-5">
-                <div class="card">
-                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
-                        Programmes
-                    </h6>
-                    <div class="card-content">
-                        <div class="card-body table-responsive">
-                            <form action="{{route('user-management.ace.add_courses',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="name">Course Names <span class="required"></span> </label>
-                                            <textarea class="form-control" placeholder="course names" name="ace_programmes"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
-                                        Save</button>
-                                </div>
-                            </form>
-                            <br>
-                            @php
-                                $allcourses=explode(';',$ace->programmes)  ;
-                            @endphp
-
-                            @foreach($allcourses as $course)
-                            @if($course != "")
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-md btn-outline-secondary">{{$course}}</button>
-                                    <a href="{{ route('user-management.ace.delete_course',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$course]) }}" type="button"
-                                       onclick="return confirm('Are you sure you want to delete this Course?');" data-id="{{$course}}" class="btn btn-md btn-outline-secondary" data-toggle="remove" aria-haspopup="true" aria-expanded="false">
-                                        <span class="fa fa-remove" style="color:red"></span>
-                                    </a>
-                                </div>
-                                @endif
-                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -353,7 +450,18 @@
 @push('end-script')
     <script src="{{asset('js/scripts/forms/extended/form-inputmask.js')}}" type="text/javascript"></script>
     <script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>
+    <script src="{{asset('app-assets/datepicker/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script>
+        $('.datepicker').datepicker({
+            format: "yyyy",
+            autoclose: true,
+            changeMonth: false,
+            changeYear: true,
+            yearRange: '1900:+0'
+        });
+
+        $('.datepicker').attr('autocomplete', 'off');
+
 
         $('.select2').select2({
             placeholder: "Select Courses",

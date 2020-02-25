@@ -122,7 +122,7 @@
                                                 @if($labels[$key]['file1'])
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_one[]')? 'form-control-warning':'' }}">
-                                                            @if($key=="PROCEDURES MANUALS")<label>Financial Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Work Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
+                                                            @if($key=="PROCEDURES MANUALS")<label>Financial Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Implementation Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
                                                             <input type="file" class="form-control" name="file_one[]" required  id="filename{{$key[0]}}"
                                                                    @if($labels[$key]['file1']['required']) required @endif
                                                                    value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
@@ -141,6 +141,7 @@
 
                                                     </div>
                                                 @endif
+
                                                 @if($labels[$key]['file2'])
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_two[]')? 'form-control-warning':'' }}">

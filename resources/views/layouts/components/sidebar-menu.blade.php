@@ -20,6 +20,14 @@
             </li>
             @endability
 
+            @ability('webmaster|super-admin|admin', 'admin-dashboard')
+            <li class="nav-item {{isRouteActive('file-uploads.index')}}">
+                <a href="{{route('file-uploads.index')}}"><i class="ft-files ft-upload-cloud"></i>
+                    <span class="menu-title" data-i18n="">{{__('File Uploads')}}</span>
+                </a>
+            </li>
+            @endability
+
             @ability('webmaster|super-admin|admin', 'calendar')
             <li class="nav-item {{isRouteActive('calendar')}}">
                 <a href="{{route('calendar')}}"><i class="ft-calendar"></i>

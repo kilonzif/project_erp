@@ -11,7 +11,7 @@ class Report extends Model {
 	//
 	use Commentable;
 	use Notifiable;
-	protected $fillable = ['project_id', 'reporting_period_id', 'submission_date', 'user_id','fiduciary_report'];
+	protected $fillable = ['project_id', 'indicator_id','reporting_period_id', 'submission_date', 'user_id','fiduciary_report'];
 
 	public function project() {
 		return $this->belongsTo('App\Project');
@@ -42,7 +42,12 @@ class Report extends Model {
 	    return $this->hasOne('App\ReportingPeriod');
     }
 
-	public function scopeSubmittedAndUncompleted($query) {
+    public function indicator(){
+        return $this->hasOne('App\Indicator');
+    }
+
+
+    public function scopeSubmittedAndUncompleted($query) {
 		return $query->where('status', '=', 99)->orWhere('status', '=', 1);
 	}
 

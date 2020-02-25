@@ -42,12 +42,14 @@ class ReportFormController extends Controller {
             }
         }
         if (Auth::user()->hasRole('webmaster|super-admin')) {
-            $ace_reports = Report::get();
+            $ace_reports = Report::orderBy('reporting_period_id','desc')->get();
         } elseif (Auth::user()->hasRole('admin')) {
-            $ace_reports = Report::submitted()->get();
+            $ace_reports = Report::submitted()->orderBy('reporting_period_id','desc')->get();
         } else {
-            $ace_reports = Report::SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->get();
+            $ace_reports = Report::SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->orderBy('reporting_period_id','desc')->get();
         }
+
+
 
         return view('report-form.index', compact('ace_reports', 'me','notsubmitted'));
     }
@@ -68,7 +70,7 @@ class ReportFormController extends Controller {
         $me = new CommonFunctions();
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 
-        $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->where('upload','=', 1)->orderBy('identifier','asc')->get();
+        $indicators = Indicator::where('is_parent','=', 1)->where('status','=', 1)->orderBy('identifier','asc')->get();
         $aces = Ace::where('active', '=', 1)->get();
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -92,10 +94,13 @@ class ReportFormController extends Controller {
      * @throws \Illuminate\Validation\ValidationException
      */
     public function save_report(Request $request) {
+
         $this->validate($request, [
             'project_id' => 'required|string|min:100',
             'reporting_period' => 'required|string',
             'submission_date' => 'nullable|string|date',
+            "indicator" => "required|numeric|min:1",
+            "language" => "required|string",
         ]);
         if($request->has('ace_officer')){
             $this->validate($request,[
@@ -113,14 +118,15 @@ class ReportFormController extends Controller {
             $submission_date = date('Y-m-d');
         }
         $project_id = Crypt::decrypt($request->project_id);
+        $dlr_id = $request->indicator;
 
-        $report_exists= Report::where('ace_id',$ace_id)->where('reporting_period_id',$request->reporting_period)->first();
+        $report_exists= Report::where('ace_id',$ace_id)->where('reporting_period_id',$request->reporting_period)->where('indicator_id','=',$dlr_id)->where('language','=',$request->language)->first();
 
         if($report_exists){
             if($report_exists->status !=1){
-                notify(new ToastNotification('Error!', 'You have a pending report on this period and ACE- Go and submit!', 'error'));
+                notify(new ToastNotification('Error!', 'You have a pending report on this DLR and period- Go and submit!', 'error'));
             }
-            notify(new ToastNotification('Error!', 'A report by this ACE this Period has already been created and submitted!', 'error'));
+            notify(new ToastNotification('Error!', 'A report by this DLR this Period has already been created and submitted!', 'error'));
             return back()->withInput();
         }
         $report = new Report();
@@ -129,6 +135,8 @@ class ReportFormController extends Controller {
         $report->status = 99;
         $report->reporting_period_id = $request->reporting_period;
         $report->submission_date = $submission_date;
+        $report->indicator_id = $dlr_id;
+        $report->language=$request->language;
         if (isset($request->ace_officer)) {
             $report->user_id = Crypt::decrypt($request->ace_officer);
         } else {
@@ -141,9 +149,15 @@ class ReportFormController extends Controller {
             'report_id' => $report->id,
             'status_code' => 99,
         ]);
+
+
         notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
+
         return redirect()->route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report_id)]);
     }
+
+
+
 
     public function save_report_old(Request $request) {
         if (isset($request->ace_officer)) {
@@ -368,32 +382,83 @@ class ReportFormController extends Controller {
         $id = Crypt::decrypt($id);
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
         $report = Report::find($id);
-        $comment = AceComment::where('report_id',$id)->first();
-        $indicators = Indicator::where('is_parent','=', 1)
-            ->where('status','=', 1)
-            ->where('show_on_report','=', 1)
-            ->orderBy('identifier','asc')
-            ->get();
 
-        $reporting_period = ReportingPeriod::where('id',$report->reporting_period_id)->first();
+        $get_form = IndicatorDetails::query()
+            ->where('report_id','=',$id)
+            ->orderBy('order','asc')
+            ->pluck('language');
 
-        if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
 
-            //Get the aggregated result for Indicator 3
-            $result = $this->generateAggregatedIndicator3Results($id);
-            $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
-            $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
-            $indicator_7_3 = $this->generateAggregatedIndicator73Results($id);
+        $reporting_period = ReportingPeriod::find($report->reporting_period_id);
+        $reporting_periods = ReportingPeriod::all();
 
-            $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
-            $aces = Ace::where('active', '=', 1)->get();
-
-            return view('report-form.view', compact('project', 'report', 'reporting_period','comment','aces', 'values', 'indicators'
-                , 'result', 'indicator_5_2','indicator_4_1','indicator_7_3'));
-
-        }else{
-            notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
+        if ($report->editable == 0 && Auth::user()->hasRole('ace-officer')){
+            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
+            return redirect()->route('report_submission.reports');
         }
+        $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
+
+
+        $indicators = Indicator::where('id','=',$report->indicator_id)->orderBy('identifier','asc')->first();
+
+
+        $comment = AceComment::where('report_id',$id)->first();
+
+        $language = collect($get_form)->toArray();
+
+        if(in_array('french',collect($get_form)->toArray())){
+            $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
+            $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
+
+        }elseif(in_array('english',collect($get_form)->toArray()))
+        {
+            $pdo_1 = $this->generateAggregatedIndicator3Results($id);
+
+            $pdo_2 = $this->generateAggregatedIndicator73Results($id);
+
+            $pdo_52 = $this->generateAggregatedIndicator52Results($id);
+
+            $pdo_41 = $this->generateAggregatedIndicator41Results($id);
+
+        }
+
+        $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
+            ->join('roles', 'role_user.role_id', '=', 'roles.id')
+            ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
+        $aces = Ace::where('active', '=', 1)->get();
+
+        return view('report-form.view', compact('project','language', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
+            'indicators', 'the_indicator','pdo_1','pdo_41','pdo_2','pdo_52'));
+//        $id = Crypt::decrypt($id);
+//        $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
+//        $report = Report::find($id);
+//        $comment = AceComment::where('report_id',$id)->first();
+//        $indicators = Indicator::where('is_parent','=', 1)
+//            ->where('status','=', 1)
+//            ->where('parent_id','=',$report->indicator_id)
+//            ->where('show_on_report','=', 1)
+//            ->orderBy('identifier','asc')
+//            ->get();
+//
+//        $reporting_period = ReportingPeriod::where('id',$report->reporting_period_id)->first();
+//
+//        if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
+//
+//            //Get the aggregated result for Indicator 3
+//            $result = $this->generateAggregatedIndicator3Results($id);
+//            $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
+//            $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
+//            $indicator_7_3 = $this->generateAggregatedIndicator73Results($id);
+//
+//            $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
+//            $aces = Ace::where('active', '=', 1)->get();
+//
+//            return view('report-form.view', compact('project', 'report', 'reporting_period','comment','aces', 'values', 'indicators'
+//                , 'result', 'indicator_5_2','indicator_4_1','indicator_7_3'));
+//
+//        }else{
+//            notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
+//        }
 
     }
 
@@ -510,6 +575,7 @@ class ReportFormController extends Controller {
             ->orderBy('order','asc')
             ->pluck('language');
 
+
         $reporting_period = ReportingPeriod::find($report->reporting_period_id);
         $reporting_periods = ReportingPeriod::all();
 
@@ -518,11 +584,19 @@ class ReportFormController extends Controller {
             return redirect()->route('report_submission.reports');
         }
         $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
-        $indicators = Indicator::where('is_parent','=', 1)
-            ->where('status','=', 1)
-            ->where('show_on_report','=', 1)
-            ->orderBy('identifier','asc')
-            ->get();
+//        $indicators = Indicator::where('is_parent','=', 1)
+//            ->where('status','=', 1)
+//            ->where('show_on_report','=', 1)
+//            ->where('parent_id','=',$report->indicator_id)
+//            ->orderBy('identifier','asc')
+//            ->get();
+
+        $indicators = Indicator::where('id','=',$report->indicator_id)->orderBy('identifier','asc')->first();
+
+//        dd($the_indicator);
+
+
+
         $comment = AceComment::where('report_id',$id)->first();
 
         $language = collect($get_form)->toArray();
@@ -539,6 +613,8 @@ class ReportFormController extends Controller {
 
             $pdo_52 = $this->generateAggregatedIndicator52Results($id);
 
+            $pdo_41 = $this->generateAggregatedIndicator41Results($id);
+
         }
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
@@ -547,7 +623,7 @@ class ReportFormController extends Controller {
 		$aces = Ace::where('active', '=', 1)->get();
 
 		return view('report-form.edit', compact('project','language', 'reporting_period','reporting_periods','report', 'aces','comment','values', 'ace_officers',
-            'indicators','pdo_1','pdo_2','pdo_52'));
+            'indicators', 'the_indicator','pdo_1','pdo_41','pdo_2','pdo_52'));
         }
 
 
@@ -579,7 +655,6 @@ class ReportFormController extends Controller {
                 } else {
                     $report->user_id = Auth::id();
                 }
-//                $report->notify(new ReportSubmission());
 
                 $report->save();
 
@@ -619,11 +694,11 @@ class ReportFormController extends Controller {
 
                 $emails = array_merge($email_ace->pluck('email')->toArray(),[config('mail.aau_email')]);
 
-                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
-                    function ($message) use($emails) {
-                        $message->to($emails)
-                            ->subject("Report Submitted");
-                    });
+//                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
+//                    function ($message) use($emails) {
+//                        $message->to($emails)
+//                            ->subject("Report Submitted");
+//                    });
 
 
                 notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
@@ -1715,71 +1790,81 @@ class ReportFormController extends Controller {
     {
         $indicator_4_1_values = array();
 
-        $indicator_4_1_values['national']= DB::connection('mongodb')
+
+        $national= DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "National")
-                    ->orWhere('type-of-accreditation2','=', "national")
-                    ->orWhere('type-of-accreditation2','like', "n%")
-                    ->orWhere('type-of-accreditation2','like', "N%");
+                $query->where('typeofaccreditation','=', "National")
+                    ->orWhere('typeofaccreditation','=', "national")
+                    ->orWhere('typeofaccreditation','like', "n%")
+                    ->orWhere('typeofaccreditation','like', "N%");
             })->count();
 
-        $indicator_4_1_values['regional'] = DB::connection('mongodb')
+        $regional = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "Regional")
-                    ->orWhere('type-of-accreditation2','=', "regional")
-                    ->orWhere('type-of-accreditation2','like', "r%")
-                    ->orWhere('type-of-accreditation2','like', "R%");
+                $query->where('typeofaccreditation','=', "Regional")
+                    ->orWhere('typeofaccreditation','=', "regional")
+                    ->orWhere('typeofaccreditation','like', "r%")
+                    ->orWhere('typeofaccreditation','like', "R%");
             })->count();
 
-        $indicator_4_1_values['international'] = DB::connection('mongodb')
+        $international = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "International")
-                    ->orWhere('type-of-accreditation2','=', "international")
-                    ->orWhere('type-of-accreditation2','like', "i%")
-                    ->orWhere('type-of-accreditation2','like', "I%");
+                $query->where('typeofaccreditation','=', "International")
+                    ->orWhere('typeofaccreditation','=', "international")
+                    ->orWhere('typeofaccreditation','like', "i%")
+                    ->orWhere('typeofaccreditation','like', "I%");
             })->count();
 
-        $indicator_4_1_values['gap-assessment'] = DB::connection('mongodb')
+        $gap_assessment = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "Gap")
-                    ->orWhere('type-of-accreditation2','=', "gap")
-                    ->orWhere('type-of-accreditation2','like', "gap%")
-                    ->orWhere('type-of-accreditation2','like', "Gap%");
+                $query->where('typeofaccreditation','=', "Gap")
+                    ->orWhere('typeofaccreditation','=', "gap")
+                    ->orWhere('typeofaccreditation','like', "gap%")
+                    ->orWhere('typeofaccreditation','like', "Gap%");
             })->count();
 
-        $indicator_4_1_values['self-evaluation'] = DB::connection('mongodb')
+        $self_evaluation = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "Self Fvaluation")
-                    ->orWhere('type-of-accreditation2','=', "self evaluation")
-                    ->orWhere('type-of-accreditation2','like', "self%")
-                    ->orWhere('type-of-accreditation2','like', "Self%");
+                $query->where('typeofaccreditation','=', "Self Fvaluation")
+                    ->orWhere('typeofaccreditation','=', "self evaluation")
+                    ->orWhere('typeofaccreditation','like', "self%")
+                    ->orWhere('typeofaccreditation','like', "Self%");
             })->count();
 
-        $indicator_4_1_values['course'] = DB::connection('mongodb')
+        $course = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id','=', $report_id)
             ->where(function($query)
             {
-                $query->where('type-of-accreditation2','=', "New Course")
-                    ->orWhere('type-of-accreditation2','=', "new course")
-                    ->orWhere('type-of-accreditation2','like', "new%")
-                    ->orWhere('type-of-accreditation2','like', "New%");
+                $query->where('typeofaccreditation','=', "New Course")
+                    ->orWhere('typeofaccreditation','=', "new course")
+                    ->orWhere('typeofaccreditation','like', "new%")
+                    ->orWhere('typeofaccreditation','like', "New%");
             })->count();
+
+        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
+        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
+        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
+        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] =$self_evaluation;
+        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] =$gap_assessment;
+        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+
+
 
         return $indicator_4_1_values;
     }
