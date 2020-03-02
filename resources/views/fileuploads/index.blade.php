@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-xl-12 col-lg-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-primary bg-primary-4 white">
                         <h4 class="card-title">Upload Additional Files Here</h4>
                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
@@ -117,7 +117,7 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-primary bg-primary-4 white">
                         <h4 class="card-heading">
                             Documents <i class="ft-file"></i>
                         </h4>

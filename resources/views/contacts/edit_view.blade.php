@@ -2,17 +2,17 @@
     @csrf
     <div class="form-body">
         <div class="row">
+            <input type="hidden" name="contact_id" value="{{$contacts->id}}">
             <div class="col-md-4">
                 <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
                     <label for="role">{{ __('Role') }}</label>
                     <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ old('email') }}" required>
                         <option value="">Select Role</option>
-                        <option {{($contacts->contact_title == 'PSC Member')  ? "selected":""}} value="PSC Member">PSC Member (country)</option>
-                        <option {{($contacts->contact_title == 'Focal Person')  ? "selected":""}} value="Focal Person">Focal Person (country)</option>
-                        <option {{($contacts->contact_title == 'Country TTL')  ? "selected":""}} value="Country TTL">Country TTL (country)</option>
-                        <option {{($contacts->contact_title == 'Vice Chancellor')  ? "selected":""}} value="Vice Chancellor">Vice Chancellor (institution) </option>
-                        <option {{($contacts->contact_title == 'Primary Expert')  ? "selected":""}} value="Primary Expert">Primary Expert (thematic area)</option>
-                        <option {{($contacts->contact_title == 'Secondary expert')  ? "selected":""}} value="Secondary expert">Secondary expert (thematic area)</option>
+
+                        @foreach($roles as $role)
+                            <option {{($contacts->position_id == $role->id)  ? "selected":""}}  value="{{$role->id}}">{{$role->position_title}}</option>
+                        @endforeach
+
                     </select>
 
                     @if ($errors->has('role'))
@@ -28,7 +28,7 @@
                     <select id="institution" class="form-control{{ $errors->has('institution') ? ' is-invalid' : '' }}" name="institution" value="{{ old('institution') }}">
                         <option value="">Select Institution</option>
                         @foreach($institutions as $institution)
-                            <option {{($contacts->institution == $institution->id)  ? "selected":""}}  value="{{$institution->id}}">{{$institution->name}}</option>
+                            <option value="{{$institution->id}}">{{$institution->name}}</option>
                         @endforeach
                     </select>
 

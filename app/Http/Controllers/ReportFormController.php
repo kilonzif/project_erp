@@ -410,8 +410,9 @@ class ReportFormController extends Controller {
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
 
-        }elseif(in_array('english',collect($get_form)->toArray()))
-        {
+        }
+//        elseif(in_array('english',collect($get_form)->toArray()))
+//        {
             $pdo_1 = $this->generateAggregatedIndicator3Results($id);
 
             $pdo_2 = $this->generateAggregatedIndicator73Results($id);
@@ -420,7 +421,7 @@ class ReportFormController extends Controller {
 
             $pdo_41 = $this->generateAggregatedIndicator41Results($id);
 
-        }
+
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -605,8 +606,9 @@ class ReportFormController extends Controller {
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
 
-        }elseif(in_array('english',collect($get_form)->toArray()))
-        {
+        }
+//        elseif(in_array('english',collect($get_form)->toArray()))
+
             $pdo_1 = $this->generateAggregatedIndicator3Results($id);
 
             $pdo_2 = $this->generateAggregatedIndicator73Results($id);
@@ -614,8 +616,6 @@ class ReportFormController extends Controller {
             $pdo_52 = $this->generateAggregatedIndicator52Results($id);
 
             $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-
-        }
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -640,12 +640,14 @@ class ReportFormController extends Controller {
                     'report_id' => 'required|string|min:100',
                     'indicators' => 'required|array|min:1',
                     'indicators.*' => 'required|numeric|min:0',
+                    'fiduciary_report' => 'required|min:1',
                 ]);
 
                 $report_id = Crypt::decrypt($request->report_id);
 
                 $report = Report::find($report_id);
                 $report->reporting_period_id = $request->reporting_period;
+                $report->fiduciary_report = $request->fiduciary_report;
 
                 $report->status = 1;
                 if (isset($request->ace_officer)) {
@@ -694,14 +696,14 @@ class ReportFormController extends Controller {
 
                 $emails = array_merge($email_ace->pluck('email')->toArray(),[config('mail.aau_email')]);
 
-//                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
-//                    function ($message) use($emails) {
-//                        $message->to($emails)
-//                            ->subject("Report Submitted");
-//                    });
+                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
+                    function ($message) use($emails) {
+                        $message->to($emails)
+                            ->subject("Report Submitted");
+                    });
 
 
-                notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
+                notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
             });
             return redirect()->route('report_submission.reports');
         }
@@ -713,6 +715,7 @@ class ReportFormController extends Controller {
                 $report_id = Crypt::decrypt($request->report_id);
                 $report = Report::find($report_id);
                 $report->reporting_period_id = $request->reporting_period;
+                $report->fiduciary_report = $request->fiduciary_report;
                 $report->status = 99;
                 if (isset($request->ace_officer)) {
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
@@ -776,7 +779,6 @@ class ReportFormController extends Controller {
                 notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
             });
             if (isset($request->continue)){
-//                return redirect()->route('report_submission.upload_indicator',$request->report_id);
                 return redirect()->route('report_submission.reports');
             }
 

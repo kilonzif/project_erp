@@ -163,7 +163,6 @@
                                 @foreach($workplans as $wp)
                                     <tr>
                                         <td>
-                                            {{--<strong>{{}}</strong>--}}
                                             <a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">
                                                 <span class="fa fa-file"></span>   {{$wp->wp_file}}
                                             </a>
@@ -260,12 +259,9 @@
                                                     <label for="mailing_title">Position <span class="required">*</span></label>
                                                     <select class="form-control" name="mailing_title">
                                                         <option value="" selected disabled>Select Title</option>
-                                                        <option value="Center Leader">Center Leader</option>
-                                                        <option value="Deputy Center Leader">Deputy Center Leader</option>
-                                                        <option value="Finance Officer">Finance Officer</option>
-                                                        <option value="Procurement Officer">Procurement Officer</option>
-                                                        <option value="Project / Program Manager">Project / Program Manager</option>
-                                                        <option value="PSC Member">MEL Officer</option>
+                                                        @foreach($roles as $role)
+                                                            <option value="{{$role->id}}">{{$role->position_title}}</option>
+                                                        @endforeach
                                                     </select>
 
                                                     @if ($errors->has('mailing_title'))
@@ -323,7 +319,12 @@
                                         <td>{{$contact->contact_name}}</td>
                                         <td>{{$contact->email}}</td>
                                         <td>{{$contact->contact_phone}}</td>
-                                        <td>{{$contact->contact_title}}</td>
+                                        <td>
+                                            @php
+                                                $title = \App\Position::where('id',$contact->position_id)->first();
+                                            @endphp
+
+                                            {{$title->position_title}}
                                         <td>
                                             <div class="btn-group" role="group" aria-label="Basic example">
 

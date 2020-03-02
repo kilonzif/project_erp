@@ -186,11 +186,11 @@
                                             @php
                                                 $indicator_identifier = (string)$sub_indicator->identifier;
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
-                                               $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
+                                              $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
 
                                             @endphp
 
-                                            @if(!empty($child_drl))
+                                            @if($child_dlr->isNotEmpty())
 
                                             <table class="table table-bordered table-striped">
 
@@ -236,9 +236,11 @@
                                                     @endforeach
 
 
-
                                             </table>
                                             @else
+                                                {{--@php dd($pdo_41); @endphp--}}
+
+
                                                 <table class="table table-bordered table-striped">
 
                                                     <tr>

@@ -30,7 +30,7 @@
 
     <div class="content-body">
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-content" style="">
                         <div class="card-body">
@@ -56,6 +56,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-content" style="">
                         <div class="card-body">
@@ -81,6 +83,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-content" style="">
                         <div class="card-body">
@@ -115,112 +119,191 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Set Reporting Period</h4>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-content" style="">
+                    <div class="card-header bg-dark bgsize-darken-4 white card-header">
+                        <h4 class="card-title">Add Contact Positions</h4>
                     </div>
-                    <div class="card-content" style="">
-                        <div class="card-body">
-                            <div id="form_template">
-                                <form action="{{route('settings.app_settings.save_reporting_period')}}" method="post">
-                                    <div class="row">
-                                        @csrf
-                                        <div class="col-md-5 form-group">
-                                            <label>Starting Period<span class="required">*</span></label>
-                                            <div class="input-group">
-                                                <input type='text' name="period_start"  class="form-control datepicker" value="{{ old('period_start') }}" placeholder="Month &amp; Year" required
-                                                />
-                                                <div class="input-group-append">
+                    <div class="card-body">
+                        <div id="position_template">
+                            <form action="{{route('settings.app_settings.save_position')}}" method="post">
+                                <div class="row">
+                                    @csrf
+                                    <div class="col-md-5 form-group {{ $errors->has('position_title') ? ' form-control-warning' : '' }}">
+                                        <label>Position Title<span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <input type='text' name="position_title"  class="form-control" value="{{ old('position_title') }}" placeholder="Role" required
+                                            />
+                                        </div>
+                                        @if ($errors->has('position_title'))
+                                            <p class="text-right mb-0">
+                                                <small class="warning text-muted">{{ $errors->first('position_title') }}</small>
+                                            </p>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-5 form-group{{ $errors->has('position_rank') ? ' form-control-warning' : '' }}">
+                                        <label>Position Rank<span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <input type='text' name="position_rank" class="form-control" value="{{ old('position_rank') }}" placeholder="Rank e.g 1" required
+                                            />
+                                        </div>
+                                        @if ($errors->has('position_rank'))
+                                            <p class="text-right mb-0">
+                                                <small class="warning text-muted">{{ $errors->first('position_rank') }}</small>
+                                            </p>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <button class="btn btn-primary" style="margin-top: 1.7rem;" type="submit"><i class="ft-save"></i> Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {{--table--}}
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th style="width: 100px">Position #</th>
+                                <th>Title</th>
+                                <th>Rank</th>
+                                <th>Actions</th>
+                            </tr>
+                            @php
+                                $counter=0;
+                            @endphp
+                            @foreach($roles as $role)
+                                @php
+                                    $counter=$counter+1;
+                                @endphp
+                                <tr>
+                                    <td>{{$counter}}</td>
+                                    <td>{{$role->position_title}}</td>
+                                    <td>{{$role->rank}}</td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <a href="#position_template" onclick="edit_position('{{\Illuminate\Support\Facades\Crypt::encrypt($role->id)}}')" class="btn btn-s btn-secondary">
+                                                <i class="ft-edit"></i></a>
+                                            <a href="{{route('settings.app_settings.delete_position',[\Illuminate\Support\Facades\Crypt::encrypt($role->id)])}}"
+                                               class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Period?');"
+                                               title="Delete Report"><i class="ft-trash-2"></i></a>
+
+
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header bg-dark bgsize-darken-4 white card-header">
+                    <h4 class="card-title">Set Reporting Period</h4>
+                </div>
+                <div class="card-content" style="">
+                    <div class="card-body">
+                        <div id="form_template">
+                            <form action="{{route('settings.app_settings.save_reporting_period')}}" method="post">
+                                <div class="row">
+                                    @csrf
+                                    <div class="col-md-5 form-group">
+                                        <label>Starting Period<span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <input type='text' name="period_start"  class="form-control datepicker" value="{{ old('period_start') }}" placeholder="Month &amp; Year" required
+                                            />
+                                            <div class="input-group-append">
                                                     <span class="input-group-text">
                                                       <span class="fa fa-calendar-o"></span>
                                                     </span>
-                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-5 form-group">
-                                            <label>Ending Period<span class="required">*</span></label>
-                                            <div class="input-group">
-                                                <input type='text' name="period_end" class="form-control datepicker" value="{{ old('period_end') }}" placeholder="Month &amp; Year" required
-                                                />
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text">
-                                                      <span class="fa fa-calendar-o"></span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2 form-group">
-                                            <button class="btn btn-primary" style="margin-top: 1.7rem;" type="submit"><i class="ft-save"></i> Save</button>
                                         </div>
                                     </div>
-                                </form>
-                            </div>
-
-                            {{--table--}}
-                            <div class="row">
-                                <div class="col-md-12 offset">
-                                    <table class="table table-bordered table-striped">
-                                        <tr>
-                                            <th style="width: 100px">Reporting Period #</th>
-                                            <th>Start</th>
-                                            <th>End</th>
-                                            <th>Active Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        @php
-                                            $counter=0;
-                                        @endphp
-                                        @foreach($periods as $period)
-                                            @php
-                                                $counter=$counter+1;
-                                                $monthNum1=date('m',strtotime($period->period_start));
-                                                $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
-                                                $year1 = date('Y',strtotime($period->period_start));
-                                                $start = $monthName1 .', '.$year1;
-
-                                                $monthNum2=date('m',strtotime($period->period_end));
-                                                $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
-                                                $year2 = date('Y',strtotime($period->period_start));
-                                                $end = $monthName2 .', '.$year2;
-
-                                            @endphp
-                                            <tr>
-                                                <td>{{$counter}}</td>
-                                                <td>{{$start}}</td>
-                                                <td>{{$end}}</td>
-                                                <td>
-                                                    @php
-                                                        $type = "success";
-                                                        $text = "Active";
-                                                        if ($period->active_period == false) {$type = "danger"; $text = "Closed";};
-                                                    @endphp<span class="badge badge-{{$type}}">{{$text}}</span>
-                                                </td>
-                                                <td>
-                                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                                        <a href="#form_template" onclick="edit_period('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')" class="btn btn-s btn-secondary">
-                                                            <i class="ft-edit"></i></a>
-                                                        <a href="{{route('settings.app_settings.delete_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}"
-                                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Period?');"
-                                                           title="Delete Report"><i class="ft-trash-2"></i></a>
-
-
-                                                    </div>
-
-
-                                                </td>
-                                            </tr>
-                                        @endforeach
-
-                                    </table>
+                                    <div class="col-md-5 form-group">
+                                        <label>Ending Period<span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <input type='text' name="period_end" class="form-control datepicker" value="{{ old('period_end') }}" placeholder="Month &amp; Year" required
+                                            />
+                                            <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                      <span class="fa fa-calendar-o"></span>
+                                                    </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 form-group">
+                                        <button class="btn btn-primary" style="margin-top: 1.7rem;" type="submit"><i class="ft-save"></i> Save</button>
+                                    </div>
                                 </div>
+                            </form>
+                        </div>
+
+                        {{--table--}}
+                        <div class="row">
+                            <div class="col-md-12 offset">
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <th style="width: 100px">Reporting Period #</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                        <th>Active Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    @php
+                                        $counter=0;
+                                    @endphp
+                                    @foreach($periods as $period)
+                                        @php
+                                            $counter=$counter+1;
+                                            $monthNum1=date('m',strtotime($period->period_start));
+                                            $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
+                                            $year1 = date('Y',strtotime($period->period_start));
+                                            $start = $monthName1 .', '.$year1;
+
+                                            $monthNum2=date('m',strtotime($period->period_end));
+                                            $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
+                                            $year2 = date('Y',strtotime($period->period_start));
+                                            $end = $monthName2 .', '.$year2;
+
+                                        @endphp
+                                        <tr>
+                                            <td>{{$counter}}</td>
+                                            <td>{{$start}}</td>
+                                            <td>{{$end}}</td>
+                                            <td>
+                                                @php
+                                                    $type = "success";
+                                                    $text = "Active";
+                                                    if ($period->active_period == false) {$type = "danger"; $text = "Closed";};
+                                                @endphp<span class="badge badge-{{$type}}">{{$text}}</span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <a href="#form_template" onclick="edit_period('{{\Illuminate\Support\Facades\Crypt::encrypt($period->id)}}')" class="btn btn-s btn-secondary">
+                                                        <i class="ft-edit"></i></a>
+                                                    <a href="{{route('settings.app_settings.delete_reporting_period',[\Illuminate\Support\Facades\Crypt::encrypt($period->id)])}}"
+                                                       class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Period?');"
+                                                       title="Delete Report"><i class="ft-trash-2"></i></a>
+
+
+                                                </div>
+
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 @endsection
@@ -242,6 +325,53 @@
 
         });
         $('.datepicker').attr('autocomplete', 'off');
+
+        function edit_position(key) {
+
+            var path = "{{route('settings.app_settings.edit_position')}}";
+            $.ajaxSetup(    {
+                headers: {
+                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
+                }
+            });
+            $.ajax({
+                url: path,
+                type: 'GET',
+                data: {id:key},
+                beforeSend: function(){
+                    $('#position_template').block({
+                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                        overlayCSS: {
+                            backgroundColor: '#ccc',
+                            opacity: 0.8,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });;
+                },
+                success: function(data){
+                    $('#position_template').empty();
+                    $('#position_template').html(data.theView);
+                    // console.log(data)
+                },
+                complete:function(){
+                    $('#position_template').unblock();
+                }
+                ,
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+
+
+
+
+
         //Script to call the edit view for period
         function edit_period(key) {
 

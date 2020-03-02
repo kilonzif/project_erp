@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Classes\ToastNotification;
+use App\Position;
 use App\Report;
 use App\ReportingPeriod;
 use App\SystemOption;
@@ -24,7 +25,8 @@ class ApplicationSettingsController extends Controller
 
         $periods = ReportingPeriod::all()->sortByDesc('id');
         $periods = ReportingPeriod::all()->sortByDesc('id');
-        return view('settings.app.settings', compact('apps', 'periods'));
+        $roles = Position::orderBy('rank','ASC')->get();
+        return view('settings.app.settings', compact('apps', 'periods','roles'));
     }
 
     public function setName(Request $request)
@@ -154,6 +156,81 @@ class ApplicationSettingsController extends Controller
         }
         return back();
     }
+
+
+//    position contacts
+
+    public function savePosition(Request $request){
+
+        $this->validate($request, [
+            'position_title' => 'required|unique:positions,position_title|string',
+            'position_rank' => 'required|unique:positions,rank|string'
+        ]);
+        $position_saved = Position::updateOrCreate(
+            [
+                'position_title' => $request->position_title
+            ], [
+                'rank' => $request->position_rank,
+            ]
+        );
+        if ($position_saved) {
+            notify(new ToastNotification('Successful', 'Contact Position updated.', 'success'));
+        } else {
+            notify(new ToastNotification('Error', 'Please try again.', 'error'));
+        }
+        return back();
+
+    }
+
+
+    public function deletePosition($id)
+    {
+        $id = Crypt::decrypt($id);
+        $position_count = Position::where('id','=',$id)->get();
+        if(empty($position_count)){
+            notify(new ToastNotification('Sorry!', 'The positions cannot be deleted!', 'warning'));
+        }else{
+            Position::destroy($id);
+            notify(new ToastNotification('Successful!', 'The Position has been Deleted!', 'success'));
+        }
+
+        return back();
+    }
+
+
+    public function editPosition(Request $request)
+    {
+
+        $id = Crypt::decrypt($request->id);
+
+        $update_this_position= Position::find($id);
+
+        $view = view('settings.app.edit_position', compact('update_this_position'))->render();
+        return response()->json(['theView' => $view]);
+    }
+
+
+    public function updatePosition(Request $request)
+    {
+        $update_id =  Crypt::decrypt($request->id);
+            $updatePosition= Position::find($update_id);
+            $updated = $updatePosition->update([
+                'position_title' => $request->position_title,
+                'rank' => $request->position_rank,
+            ]);
+            if ($updated) {
+                notify(new ToastNotification('Successful', 'Position updated.', 'success'));
+                return back();
+            }
+            notify(new ToastNotification('Error', 'Please try again.', 'error'));
+            return back()->withInput();
+
+    }
+
+
+
+
+
 
     public function saveReportingPeriod(Request $request)
     {

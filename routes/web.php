@@ -192,6 +192,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
 //    central contacts
 
     Route::get('contacts', 'ContactsController@index')->name('contacts');
+    Route::get('contacts/get_role', 'ContactsController@get_role')->name('contacts.get_role');
     Route::get('contacts/edit_view', 'ContactsController@edit_view')->name('contacts.edit_view');
     Route::post('contacts/save', 'ContactsController@save_contact')->name('contacts.save');
     Route::post('contacts/update/{id}', 'ContactsController@update_contact')->name('contacts.update');
@@ -238,6 +239,16 @@ Route::prefix('settings')->name('settings.')->group(function () {
     Route::post('application/change-deadline', 'ApplicationSettingsController@setDeadline')->name('app_settings.save_deadline');
     Route::post('application/generation_status', 'ApplicationSettingsController@generation_status')->name('app_settings.save_generation_status');
     Route::get('application/change-deadline-status', 'ApplicationSettingsController@changeDeadlineStatus')->name('app_settings.change_deadline_status');
+
+
+    //contact position settings
+
+     Route::post('application/position', 'ApplicationSettingsController@savePosition')->name('app_settings.save_position');
+    Route::get('position/delete/{id}', 'ApplicationSettingsController@deletePosition')->name('app_settings.delete_position');
+    Route::get('position/edit-view', 'ApplicationSettingsController@editPosition')->name('app_settings.edit_position');
+    Route::post('position/update', 'ApplicationSettingsController@updatePosition')->name('app_settings.update_position');
+
+
 
     //reporting period
 

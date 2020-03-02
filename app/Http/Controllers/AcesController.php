@@ -16,6 +16,7 @@ use App\Currency;
 use App\Indicator;
 use App\IndicatorOne;
 use App\Institution;
+use App\Position;
 use App\Project;
 use App\SectoralBoard;
 use App\WorkPlan;
@@ -86,8 +87,6 @@ class AcesController extends Controller {
         $addAce->active = $request->active;
         $addAce->ace_type = $request->ace_type;
         $addAce->ace_state = $request->ace_state;
-
-
         $addAce->save();
 
         if (isset($addAce->id)) {
@@ -161,8 +160,6 @@ class AcesController extends Controller {
      */
     public  function indicator_one_save(Request $request, $id)
     {
-
-
         $this->validate($request, [
             'file_one.*' => 'nullable|file|mimes:xls,pdf,docx|max:10000',
             'file_two.*' => 'nullable|mimes:xls,docx,pdf|max:10000',
@@ -417,6 +414,7 @@ class AcesController extends Controller {
         $aceemails= $this->getContactGroup($id);
 
         $workplans=WorkPlan::where('ace_id',$ace->id)->get();
+        $roles = Position::whereNotIn('rank',[1,2,3,4])->get();
 
 
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
@@ -424,21 +422,21 @@ class AcesController extends Controller {
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
-        return view('aces.profile', compact('ace','workplans','currency1','currency2','dlr_unit_costs', 'target_years',
+        return view('aces.profile', compact('ace','workplans','roles','currency1','currency2','dlr_unit_costs', 'target_years',
             'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
     }
 
     public function getContactGroup($ace_id){
         $the_ace = Ace::find($ace_id);
-        $country =Institution::find($the_ace->institution_id)->pluck('country_id')->first();
-        $institution = Institution::find($the_ace->institution_id)->pluck('id')->first();
-
-        $contacts = Contacts::orWhere('institution', '=', $institution)->orWhere('ace_id', '=', $ace_id)
-            ->orWhere('country',$country)
-            ->orWhere('thematic_field','=',$the_ace->field)->get();
+        $contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
+            ->rightJoin('positions','positions.id','contacts.position_id')
+            ->where('ace_contacts.ace_id','=',$ace_id)
+            ->select('contacts.*','positions.position_title')
+            ->get();
 
         return $contacts;
     }
+
 
 //    Workplan
 

@@ -162,7 +162,7 @@
 
                                             @endphp
 
-                                            @if(!empty($child_dlr))
+                                            @if($child_dlr->isNotEmpty())
 
                                                 <table class="table table-bordered table-striped">
 
@@ -206,7 +206,6 @@
                                                             $counter += 1;
                                                         @endphp
                                                     @endforeach
-
 
 
                                                 </table>
