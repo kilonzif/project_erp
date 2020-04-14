@@ -567,6 +567,7 @@ class ReportFormController extends Controller {
      */
     public function edit_report($id) {
         $id = Crypt::decrypt($id);
+        $the_indicator = null;
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
         $report = Report::find($id);
 
@@ -600,6 +601,7 @@ class ReportFormController extends Controller {
         $comment = AceComment::where('report_id',$id)->first();
 
         $language = collect($get_form)->toArray();
+        $pdo_41 = $pdo_2 =[];
 
         if(in_array('french',collect($get_form)->toArray())){
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
