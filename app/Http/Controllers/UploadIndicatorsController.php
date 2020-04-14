@@ -267,6 +267,20 @@ class UploadIndicatorsController extends Controller
 
     public function saveWebForm(Request $request,$dlr_id){
 
+        $this->validate($request, [
+            'programmetitle' => 'required|string|unique:mongodb.indicator_form_details,programmetitle',
+//            'level' => 'required|string',
+//            'typeofaccreditation' => 'nullable|string',
+//            "accreditationreference" => "required|string|min:1",
+//            "accreditationagency" => "required|string",
+//            'agencyname' => 'required|string|min:100',
+//            'agencyemail' => 'required|email',
+//            'agencycontact' => 'nullable|string|date',
+//            "dateofaccreditation" => "required|date|min:1",
+//            "exp_accreditationdate" => "required|date",
+        ]);
+
+
         $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
         $table_name = Str::snake("indicator_".$this_dlr->identifier);
         $report = Report::where('id','=',$request->report_id)->first();
@@ -279,13 +293,14 @@ class UploadIndicatorsController extends Controller
         $upload_values['created_at'] = date('Y-m-d H:i:s');
         $upload_values['updated_at'] = date('Y-m-d H:i:s');
 
+
         $row = DB::connection('mongodb')
             ->collection('indicator_form_details')
             ->where('report_id','=', $upload_values['report_id'])->where('indicator_id','=', $upload_values['indicator_id'])->first();
         $item = (object)$row;
 
-        if ($row) {
 
+        if ($row) {
             DB::connection('mongodb')
                 ->collection('indicator_form_details')
                 ->where('_id', $item->_id)
@@ -296,7 +311,6 @@ class UploadIndicatorsController extends Controller
                 ->collection('indicator_form_details')
                 ->insert($upload_values);
         }
-//        dd($table_name);
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);

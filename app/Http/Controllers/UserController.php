@@ -409,6 +409,7 @@ class UserController extends Controller
             ->select('contacts.*','positions.position_title')
             ->get();
 
+
         return $contacts;
     }
 

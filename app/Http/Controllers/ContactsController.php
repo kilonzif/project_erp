@@ -61,17 +61,18 @@ class ContactsController extends Controller
         if(isset($thematic_field)){
             $aces = Ace::where('field','=',$thematic_field)->get();
         }
+        $new_contact = new Contacts();
 
-        $contact_saved = Contacts::create([
-            'contact_name' => $request->mailing_name,
-            'position_id' => $request->role,
-            'contact_phone' => $request->mailing_phone,
-            'email' => $request->mailing_email,
-            'contact_status'=>1,
-        ]);
+        $new_contact->contact_name = $request->mailing_name;
+            $new_contact->position_id =$request->role;
+            $new_contact->contact_phone = $request->mailing_phone;
+            $new_contact->email = $request->mailing_email;
+            $new_contact->contact_status=1;
+
+        $contact_saved =  $new_contact->save();
         if($contact_saved) {
             foreach ($aces as $ace){
-                $data=array('ace_id'=>$ace->id,"contact_id"=>$contact_saved->id);
+                $data=array('ace_id'=>$ace->id,"contact_id"=>$new_contact->id);
                 DB::table('ace_contacts')->insert($data);
             }
             notify(new ToastNotification('Successful!', 'Contact Person Added!', 'success'));
@@ -156,10 +157,16 @@ class ContactsController extends Controller
 
 
         if ($contact_update) {
-//            foreach ($aces as $ace){
-//                $data=array('ace_id'=>$ace->id,"contact_id"=>$request->contact_id);
-//                DB::table('ace_contacts')->update($data);
-//            }
+            $acecontacts = AceContact::where('contact_id','=',$this_contact->id)->get();
+            foreach ($acecontacts as $ac) {
+                foreach ($aces as $ace){
+                    $ac->Update([
+                        'ace_id'=>$ace->id,
+                        "contact_id"=>$request->contact_id,
+                    ]);
+                }
+            }
+
             notify(new ToastNotification('Successful!', 'Contact Person Updated!', 'success'));
 
         } else {
@@ -187,17 +194,20 @@ class ContactsController extends Controller
             'mailing_email' => 'required|string|min:1',
         ]);
 
-        $saved= Contacts::create([
-            'contact_name' => $request->mailing_name,
-            'position_id' => $request->mailing_title,
-            'contact_phone' => $request->mailing_phone,
-            'edit_status' =>'1',
-            'email' => $request->mailing_email
-        ]);
+
+
+        $new_contact = new Contacts();
+        $new_contact->contact_name = $request->mailing_name;
+        $new_contact->position_id =$request->mailing_title;
+        $new_contact->contact_phone = $request->mailing_phone;
+        $new_contact->email = $request->mailing_email;
+        $new_contact->contact_status=1;
+
+        $saved =  $new_contact->save();
 
         if($saved){
 
-            $data=array('ace_id'=>$request->ace_id,"contact_id"=>$saved->id);
+            $data=array('ace_id'=>$request->ace_id,"contact_id"=>$new_contact->id);
             DB::table('ace_contacts')->insert($data);
             notify(new ToastNotification('Successful!', 'Contact Person Added!', 'success'));
         }else{
@@ -235,8 +245,7 @@ class ContactsController extends Controller
      */
     public function update_mailinglist(Request $request,$id){
 
-        $contacts = Contacts::find($id);
-
+        $this_contact = Contacts::find($id);
 
         $this->validate($request,[
             'ace_id' => 'required|string|min:1',
@@ -246,7 +255,7 @@ class ContactsController extends Controller
             'mailing_email' => 'required|string|min:1',
         ]);
 
-        $updated= $contacts->Update([
+        $updated= $this_contact->Update([
             'contact_name' => $request->mailing_name,
             'position_id' => $request->mailing_title,
             'contact_phone' => $request->mailing_phone,
@@ -255,9 +264,13 @@ class ContactsController extends Controller
         ]);
 
         if($updated){
-//            $data=array('ace_id'=>$request->ace_id,"contact_id"=>$contacts->id);
-//
-//            DB::table('ace_contacts')->update($data);
+            $acecontacts = AceContact::where('contact_id','=',$this_contact->id)->get();
+            foreach ($acecontacts as $ac) {
+                    $ac->Update([
+                        'ace_id'=>$request->ace_id,
+                        "contact_id"=>$request->contact_id,
+                    ]);
+            }
             notify(new ToastNotification('Successful!', 'Contact Person Updated!', 'success'));
         }else{
             notify(new ToastNotification('error!', 'Error occurred while updated contact', 'ERROR'));

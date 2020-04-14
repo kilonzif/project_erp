@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @push('vendor-styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/extended/form-extended.css')}}">
 @endpush
 @push('other-styles')
@@ -91,7 +92,7 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-bordered all_indicators">
+                                <table class="table table-striped table-bordered all_indicators" id="uploads-table">
                                     <thead>
                                     <tr>
                                         <th>Title</th>
@@ -128,10 +129,14 @@
     </div>
 @endsection
 @push('vendor-script')
-@endpush
-@push('vendor-script')
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/extended/inputmask/jquery.inputmask.bundle.min.js')}}" type="text/javascript"></script>
 @endpush
 @push('end-script')
     <script src="{{asset('js/scripts/forms/extended/form-inputmask.js')}}" type="text/javascript"></script>
+    <script>
+        $('#uploads-table').dataTable( {
+            "ordering": false
+        } );
+    </script>
 @endpush

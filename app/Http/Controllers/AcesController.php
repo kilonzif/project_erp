@@ -447,11 +447,14 @@ class AcesController extends Controller {
         $file1 = $request->file('wp_file');
         $wp_year=$request->wp_year;
 
+
+
         $year_exists = WorkPlan::where('ace_id','=',$ace_id)->where('wp_year','=',$wp_year)->get();
 
-        if($year_exists){
-            notify(new ToastNotification('Notice', 'You have already submitted a workplan for this year.', 'info'));
-            return back();
+
+        if($year_exists->isNotEmpty()){
+            notify(new ToastNotification('error', 'You have already submitted a workplan for this year.', 'error'));
+            return back()->withInput();
         }
         if (isset($file1)) {
             $file1->move($destinationPath, $file1->getClientOriginalName());
@@ -470,7 +473,7 @@ class AcesController extends Controller {
             notify(new ToastNotification('Successful!', 'WorkPlan Added', 'success'));
             return back();
         } else {
-            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+            notify(new ToastNotification('Warning', 'Something might have happened. Please try again.', 'warning'));
             return back();
         }
 

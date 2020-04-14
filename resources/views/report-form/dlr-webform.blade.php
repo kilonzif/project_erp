@@ -56,10 +56,16 @@
                                         <input type="hidden" name="report_id" value="{{$d_report_id}}">
                                         <input type="hidden" name="indicator_id" value="{{$indicators->id}}">
                                         <div class="col-md-4">
-                                            <fieldset class="form-group">
+                                            <fieldset class="form-group{{ $errors->has('programmetitle') ? ' form-control-warning' : '' }}">
                                                 <label for="basicInputFile">PROGRAMME TITLE <span class="required">*</span></label>
                                                 <input type="text" class="form-control"  required name="programmetitle">
+                                                @if ($errors->has('programmetitle'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('programmetitle') }}</small>
+                                                    </p>
+                                                @endif
                                             </fieldset>
+
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
@@ -103,32 +109,31 @@
                                                 <input class="form-control" required type="text" name="agencyname">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
                                                 <label for="basicInputFile">AGENCY CONTACT EMAIL <span class="required">*</span></label>
                                                 <input type="email" class="form-control" required name="agencyemail">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
                                                 <label for="basicInputFile">AGENCY CONTACT PHONE NUMBER <span class="required">*</span></label>
                                                 <input type="text" min="10" name="agencycontact" required class="form-control">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
                                                 <label for="basicInputFile">DATE OF ACCREDITATION <span class="required">*</span></label>
                                                 <input type="date" class="form-control" required name="dateofaccreditation">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
                                                 <label for="basicInputFile">EXPIRY DATE OF ACCREDITATION <span class="required">*</span></label>
                                                 <input type="date" name="exp_accreditationdate"  required class="form-control">
                                             </fieldset>
                                         </div>
-
-                                        <div class="col-md-6 offset-5">
+                                        <div class="form-group col-12">
                                             <button type="submit" class="btn btn-secondary square"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
                                         </div>
 
@@ -145,7 +150,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header p-1 card-head-inverse bg-primary">
                         <h2>Program Accreditation</h2>
                     </div>
                     <div class="card-content">
@@ -162,27 +167,27 @@
                                         <th>Contact Name</th>
                                         <th>Email</th>
                                         <th>Phone Number</th>
-                                        <th>PAccreditation Date</th>
+                                        <th>Accreditation Date</th>
                                         <th>Accreditation Expiry Date</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
                                         @php
-                                        $d=(object)$d;
+                                            $d=(object)$d;
                                         @endphp
 
-                                    <tr>
-                                        <td>{{$d->programmetitle}}</td>
-                                        <td>{{$d->level}}</td>
-                                        <td>{{$d->typeofaccreditation}}</td>
-                                        <td>{{$d->accreditationreference}}</td>
-                                        <td>{{$d->accreditationagency}}</td>
-                                        <td>{{$d->agencyname}}</td>
-                                        <td>{{$d->agencyemail}}</td>
-                                        <td>{{$d->agencycontact}}</td>
-                                        <td>{{$d->dateofaccreditation}}</td>
-                                        <td>{{$d->exp_accreditationdate}}</td>
-                                    </tr>
-                                        @endforeach
+                                        <tr>
+                                            <td>{{$d->programmetitle}}</td>
+                                            <td>{{$d->level}}</td>
+                                            <td>{{$d->typeofaccreditation}}</td>
+                                            <td>{{$d->accreditationreference}}</td>
+                                            <td>{{$d->accreditationagency}}</td>
+                                            <td>{{$d->agencyname}}</td>
+                                            <td>{{$d->agencyemail}}</td>
+                                            <td>{{$d->agencycontact}}</td>
+                                            <td>{{$d->dateofaccreditation}}</td>
+                                            <td>{{$d->exp_accreditationdate}}</td>
+                                        </tr>
+                                    @endforeach
                                 </table>
                             </div>
                         </div>

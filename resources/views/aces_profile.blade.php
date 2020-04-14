@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@push('vendor-styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
+@endpush
 
 @section('content')
 
@@ -62,7 +65,7 @@
                     </div>
                     <div class="card-content collapse show">
                         <div class="card-body">
-                            <table class="table table-striped table-bordered all_indicators">
+                            <table class="table table-striped table-bordered contacts_table" id="contacts_table">
                                 <thead>
                                 <tr>
 
@@ -73,12 +76,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {{--$contact_positions--}}
                                 @foreach($positions as $position)
                                     @php $count = 0; @endphp
                                     @foreach($contacts as $key=>$contact)
-
-                                        {{--@if(in_array($contact->contact_title,$contact_positions))--}}
                                         @if($position->id == $contact->position_id)
                                             @php $count++; @endphp
                                             <tr>
@@ -116,10 +116,10 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header bg-primary bg-primary-4 white">
-                        <h4 class="card-title">Institutional READINESS</h4>
+                        <h4 class="card-title">Institutional Readiness</h4>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" id="inst_readiness">
                             <tr>
                                 <td><strong>Requirement</strong></td>
                                 <td><strong>Files</strong></td>
@@ -128,54 +128,70 @@
                                 <td><strong>Submission Date</strong></td>
 
                             </tr>
-                            @foreach($indicator_ones as $key=>$data)
+                            <tbody>
+                            @foreach($labels as $requirement)
+                                @php $count = 0; @endphp
+                                @foreach($indicator_ones as $key=>$data)
+                                    @if($requirement == $data->requirement)
+                                        @php $count++; @endphp
+                                        <tr>
+                                            <td>
+                                                {{$requirement}}
+                                            </td>
+                                            <td>
+                                                @if($data->file_one !="")
+                                                    <strong>File 1</strong>
+                                                    <a href="{{asset('indicator1/'.$data->file_one)}}" target="_blank">
+                                                        <span class="fa fa-file"></span> Download uploaded file
+                                                    </a>
+                                                    <br>
+                                                @endif
+                                                @if($data->file_two !="")
+                                                    <strong>File 2</strong>
+                                                    <a href="{{asset('indicator1/'.$data->file_two)}}" target="_blank">
+                                                        <span class="fa fa-file"></span> Download uploaded file
+                                                    </a>
+                                                @endisset
+                                            </td>
+                                            <td> @isset($data->url)
+                                                    {{$data->url}}
+                                                @endisset
+                                            </td>
+                                            <td>
+                                                @if(!empty($data->comments))
+                                                    {{$data->comments}}
+                                                @endif
 
-                                @if(in_array($data->requirement,$labels))
+                                            </td>
+                                            <td>
+                                                @isset($data->submission_date)
+                                                    {{$data->submission_date}}
+                                                @endisset
+                                            </td>
+                                        </tr>
+                                    @endif
 
+                                @endforeach
+
+                                @if($count == 0)
                                     <tr>
                                         <td>
-                                            {{$data->requirement}}
+                                            {{$requirement}}
                                         </td>
-                                        <td>
-                                            @if($data->file_one !="")
-                                                <strong>File 1</strong>
-                                                <a href="{{asset('indicator1/'.$data->file_one)}}" target="_blank">
-                                                    <span class="fa fa-file"></span> Download uploaded file
-                                                </a>
-                                                <br>
-                                            @endif
-                                            @if($data->file_two !="")
-                                                <strong>File 2</strong>
-                                                <a href="{{asset('indicator1/'.$data->file_two)}}" target="_blank">
-                                                    <span class="fa fa-file"></span> Download uploaded file
-                                                </a>
-                                            @endisset
-                                        </td>
-                                        <td>
-                                            @isset($data->url)
-                                                {{$data->url}}
-                                            @endisset
-
-                                        </td>
-                                        <td>
-                                            @if(!empty($data->comments))
-                                                {{$data->comments}}
-                                            @endif
-
-                                        </td>
-                                        <td>
-                                            @isset($data->submission_date)
-                                                {{$data->submission_date}}
-                                            @endisset
-                                        </td>
+                                        <td> ---</td>
+                                        <td> ---</td>
+                                        <td> ---</td>
+                                        <td> ---</td>
                                     </tr>
                                 @endif
-                                <tr>
-                                    <td>@if($data->requirement !=$labels[$key])
-                                            {{$labels[$key]}}@endif</td>
-                                </tr>
-
                             @endforeach
+                            </tbody>
+
+
+
+
+
+
                         </table>
                     </div>
                 </div>
@@ -193,7 +209,7 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             @if(sizeof($board_members) > 0)
-                                <table class="table table-striped table-bordered all_indicators">
+                                <table class="table table-striped table-bordered" id="sectoral_board">
                                     <thead>
                                     <tr>
                                         <th>Name</th>
@@ -229,3 +245,20 @@
     </div>
 
 @endsection
+@push('vendor-script')
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+@endpush
+@push('end-script')
+    <script>
+        $('#sectoral_board').dataTable( {
+            "ordering": false
+        } );
+        $('#contacts_table').dataTable( {
+            "ordering": false
+        } );
+        $('#inst_readiness').dataTable( {
+            "ordering": false
+        } );
+
+        </script>
+    @endpush

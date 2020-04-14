@@ -41,18 +41,24 @@ class ReportFormController extends Controller {
                 $notsubmitted = True;
             }
         }
-        if (Auth::user()->hasRole('webmaster|super-admin')) {
-            $ace_reports = Report::orderBy('reporting_period_id','desc')->get();
-        } elseif (Auth::user()->hasRole('admin')) {
-            $ace_reports = Report::submitted()->orderBy('reporting_period_id','desc')->get();
-        } else {
-            $ace_reports = Report::SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->orderBy('reporting_period_id','desc')->get();
-        }
+
+        $periods = ReportingPeriod::orderBy('id','desc')->get();
 
 
-
-        return view('report-form.index', compact('ace_reports', 'me','notsubmitted'));
+        return view('report-form.index', compact('me','notsubmitted','periods'));
     }
+
+    public static function aceReports($reporting_period){
+        if (Auth::user()->hasRole('webmaster|super-admin')) {
+            $ace_reports = Report::where('reporting_period_id','=',$reporting_period)->orderBy('reporting_period_id','desc')->get();
+        } elseif (Auth::user()->hasRole('admin')) {
+            $ace_reports = Report::where('reporting_period_id','=',$reporting_period)->submitted()->orderBy('reporting_period_id','desc')->get();
+        } else {
+            $ace_reports = Report::where('reporting_period_id','=',$reporting_period)->SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->orderBy('reporting_period_id','desc')->get();
+        }
+        return $ace_reports;
+    }
+
 
 
     /**
@@ -201,7 +207,6 @@ class ReportFormController extends Controller {
                 $report->project_id = $project_id;
                 $report->ace_id = $ace_id;
                 $report->status = 1;
-                $report->fiduciary_report = $request->fiduciary_report;
                 $report->editable =False;
                 $report->reporting_period_id = $request->reporting_period;
                 $report->submission_date = $submission_date;
@@ -263,7 +268,6 @@ class ReportFormController extends Controller {
                 $report->reporting_period_id = $request->reporting_period;
                 $report->submission_date = $submission_date;
                 $report->status = 99;
-                $report->fiduciary_report = $request->fiduciary_report;
                 if (isset($request->ace_officer)) {
                     $report->user_id = Crypt::decrypt($request->ace_officer);
                 } else {
@@ -640,14 +644,12 @@ class ReportFormController extends Controller {
                     'report_id' => 'required|string|min:100',
                     'indicators' => 'required|array|min:1',
                     'indicators.*' => 'required|numeric|min:0',
-                    'fiduciary_report' => 'required|min:1',
                 ]);
 
                 $report_id = Crypt::decrypt($request->report_id);
 
                 $report = Report::find($report_id);
                 $report->reporting_period_id = $request->reporting_period;
-                $report->fiduciary_report = $request->fiduciary_report;
 
                 $report->status = 1;
                 if (isset($request->ace_officer)) {
@@ -715,7 +717,6 @@ class ReportFormController extends Controller {
                 $report_id = Crypt::decrypt($request->report_id);
                 $report = Report::find($report_id);
                 $report->reporting_period_id = $request->reporting_period;
-                $report->fiduciary_report = $request->fiduciary_report;
                 $report->status = 99;
                 if (isset($request->ace_officer)) {
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;

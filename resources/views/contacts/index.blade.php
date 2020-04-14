@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @push('vendor-styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">
@@ -152,7 +153,7 @@
                         <br>
                     </div>
 
-                    <table class="table table-striped table-bordered all_indicators">
+                    <table class="table table-striped table-bordered all_indicators" id="all_indicators">
                         <thead>
                         <tr>
                             <th> Name</th>
@@ -162,8 +163,9 @@
                             <th style="width: 100px;">Action</th>
                         </tr>
                         </thead>
-                        <tbody>
+
                         @foreach($all_contacts as $contact)
+                            <tbody>
                             <tr>
                                 <td>{{$contact->contact_name}}</td>
                                 <td>{{$contact->email}}</td>
@@ -185,8 +187,9 @@
                                     </div>
                                 </td>
                             </tr>
+                            </tbody>
                         @endforeach
-                        </tbody>
+
                     </table>
                 </div>
             </div>
@@ -199,8 +202,15 @@
 
 
 @endsection
-@push('end-script')
-    <script>
+    @push('vendor-script')
+        <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+    @endpush
+    @push('end-script')
+        <script>
+            $('#all_indicators').dataTable( {
+                "ordering": false
+            } );
+
         function changeOnRole(){
             var e = document.getElementById("role");
             var role = e.options[e.selectedIndex].value;
@@ -214,21 +224,6 @@
                 url: path,
                 type: 'GET',
                 data: {id:role},
-                // beforeSend: function(){
-                //     $('#edit_view').block({
-                //         message: '<div class="ft-loader icon-spin font-large-1"></div>',
-                //         overlayCSS: {
-                //             backgroundColor: '#ccc',
-                //             opacity: 0.8,
-                //             cursor: 'wait'
-                //         },
-                //         css: {
-                //             border: 0,
-                //             padding: 0,
-                //             backgroundColor: 'transparent'
-                //         }
-                //     });;
-                // },
                 success: function(data){
                     getCategory(data);
                 },

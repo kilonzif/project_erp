@@ -128,23 +128,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="label">Fiduciary Report Submitted <span class="required">  *</span>  </label>
-                                                <select name="fiduciary_report" id="fiduciary_report" class="form-control" required>
-                                                    <option  value="">Select One</option>
-                                                    <option {{($report->fiduciary_report == '1')  ? "selected":""}} value="1">YES</option>
-                                                    <option {{($report->fiduciary_report == '0')  ? "selected":""}} value="0">NO</option>
-                                                </select>
-                                                @if ($errors->has('fiduciary_report'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('fiduciary_report') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
 
-
-                                        </div>
 
                                     </div>
                                 </div>
