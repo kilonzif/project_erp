@@ -41,18 +41,24 @@ class ReportFormController extends Controller {
                 $notsubmitted = True;
             }
         }
-        if (Auth::user()->hasRole('webmaster|super-admin')) {
-            $ace_reports = Report::orderBy('reporting_period_id','desc')->get();
-        } elseif (Auth::user()->hasRole('admin')) {
-            $ace_reports = Report::submitted()->orderBy('reporting_period_id','desc')->get();
-        } else {
-            $ace_reports = Report::SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->orderBy('reporting_period_id','desc')->get();
-        }
+
+        $periods = ReportingPeriod::orderBy('id','desc')->get();
 
 
-
-        return view('report-form.index', compact('ace_reports', 'me','notsubmitted'));
+        return view('report-form.index', compact('me','notsubmitted','periods'));
     }
+
+    public static function aceReports($reporting_period){
+        if (Auth::user()->hasRole('webmaster|super-admin')) {
+            $ace_reports = Report::where('reporting_period_id','=',$reporting_period)->orderBy('reporting_period_id','desc')->get();
+        } elseif (Auth::user()->hasRole('admin')) {
+            $ace_reports = Report::where('reporting_period_id','=',$reporting_period)->submitted()->orderBy('reporting_period_id','desc')->get();
+        } else {
+            $ace_reports = Report::where('reporting_period_id','=',$reporting_period)->SubmittedAndUncompleted()->where('user_id', '=', Auth::id())->orderBy('reporting_period_id','desc')->get();
+        }
+        return $ace_reports;
+    }
+
 
 
     /**
@@ -201,7 +207,6 @@ class ReportFormController extends Controller {
                 $report->project_id = $project_id;
                 $report->ace_id = $ace_id;
                 $report->status = 1;
-                $report->fiduciary_report = $request->fiduciary_report;
                 $report->editable =False;
                 $report->reporting_period_id = $request->reporting_period;
                 $report->submission_date = $submission_date;
@@ -263,7 +268,6 @@ class ReportFormController extends Controller {
                 $report->reporting_period_id = $request->reporting_period;
                 $report->submission_date = $submission_date;
                 $report->status = 99;
-                $report->fiduciary_report = $request->fiduciary_report;
                 if (isset($request->ace_officer)) {
                     $report->user_id = Crypt::decrypt($request->ace_officer);
                 } else {
@@ -410,8 +414,9 @@ class ReportFormController extends Controller {
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
 
-        }elseif(in_array('english',collect($get_form)->toArray()))
-        {
+        }
+//        elseif(in_array('english',collect($get_form)->toArray()))
+//        {
             $pdo_1 = $this->generateAggregatedIndicator3Results($id);
 
             $pdo_2 = $this->generateAggregatedIndicator73Results($id);
@@ -420,7 +425,7 @@ class ReportFormController extends Controller {
 
             $pdo_41 = $this->generateAggregatedIndicator41Results($id);
 
-        }
+
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -607,8 +612,9 @@ class ReportFormController extends Controller {
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
 
-        }elseif(in_array('english',collect($get_form)->toArray()))
-        {
+        }
+//        elseif(in_array('english',collect($get_form)->toArray()))
+
             $pdo_1 = $this->generateAggregatedIndicator3Results($id);
 
             $pdo_2 = $this->generateAggregatedIndicator73Results($id);
@@ -616,8 +622,6 @@ class ReportFormController extends Controller {
             $pdo_52 = $this->generateAggregatedIndicator52Results($id);
 
             $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-
-        }
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
 			->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -696,14 +700,14 @@ class ReportFormController extends Controller {
 
                 $emails = array_merge($email_ace->pluck('email')->toArray(),[config('mail.aau_email')]);
 
-//                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
-//                    function ($message) use($emails) {
-//                        $message->to($emails)
-//                            ->subject("Report Submitted");
-//                    });
+                Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
+                    function ($message) use($emails) {
+                        $message->to($emails)
+                            ->subject("Report Submitted");
+                    });
 
 
-                notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
+                notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
             });
             return redirect()->route('report_submission.reports');
         }
@@ -778,7 +782,6 @@ class ReportFormController extends Controller {
                 notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
             });
             if (isset($request->continue)){
-//                return redirect()->route('report_submission.upload_indicator',$request->report_id);
                 return redirect()->route('report_submission.reports');
             }
 

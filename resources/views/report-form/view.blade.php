@@ -82,45 +82,28 @@
                                 <div class="card-body">
                                     <div class="row">
                                         @if (\Auth::user()->hasRole('webmaster|super-admin'))
-                                            <div class="col-md-8">
+                                            <div class="col-md-3">
                                                 <h6>
                                                     ACE Name
                                                 </h6>
                                                 <p><strong>{{$report->ace->name." (".$report->ace->acronym.")"}}</strong></p>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <h6>
                                                     ACE Officer
                                                 </h6>
                                                 <p><strong>{{$report->user->name}}</strong></p>
                                             </div>
                                         @endif
-
-                                        @php
-                                            $start_period = date('m-Y',strtotime($reporting_period->period_start));
-                                            $end_period = date('m-Y',strtotime($reporting_period->period_end));
-                                            $monthNum1=date('m',strtotime($reporting_period->period_start));
-                                            $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
-                                            $year1 = date('Y',strtotime($reporting_period->period_start));
-                                            $start = $monthName1 .', '.$year1;
-                                            $monthNum2=date('m',strtotime($reporting_period->period_end));
-                                            $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
-                                            $year2 = date('Y',strtotime($reporting_period->period_end));
-                                            $end =$monthName2 .', '.$year2;
-                                            $full_period = $start ."    -  ". $end;
-                                        @endphp
-
-
-
-                                        <div class="col-md-4">
-                                            <h6>Reporting Period (Start) </h6>
-                                            <p><strong>{{$start}}</strong></p>
+                                            @php
+                                                $full_period = \App\Http\Controllers\ReportFormController::getReportingName($reporting_period->id);
+                                            @endphp
+                                        <div class="col-md-3">
+                                            <h6>Reporting Period </h6>
+                                            <p><strong>{{$full_period}}</strong></p>
                                         </div>
-                                        <div class="col-md-4">
-                                            <h6>Reporting Period (End)</h6>
-                                            <p><strong>{{$end}}</strong></p>
-                                        </div>
-                                        <div class="col-md-4">
+
+                                        <div class="col-md-3">
                                             <h6>Date Submitted</h6>
                                             <p><strong>{{date('M d, Y', strtotime($report->submission_date))}}</strong></p>
                                         </div>
@@ -162,7 +145,7 @@
 
                                             @endphp
 
-                                            @if(!empty($child_dlr))
+                                            @if($child_dlr->isNotEmpty())
 
                                                 <table class="table table-bordered table-striped">
 
@@ -206,7 +189,6 @@
                                                             $counter += 1;
                                                         @endphp
                                                     @endforeach
-
 
 
                                                 </table>

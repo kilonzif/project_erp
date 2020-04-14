@@ -11,6 +11,7 @@ use App\Currency;
 use App\IndicatorOne;
 use App\Institution;
 use App\Permission;
+use App\Position;
 use App\Role;
 use App\SectoralBoard;
 use App\SystemOption;
@@ -276,7 +277,6 @@ class UserController extends Controller
     public function remove_user(Request $request, $id){
         $user = User::find(Crypt::decrypt($request->user));
 
-//        dd($user->reports->count());
         if ($user->reports->count() >= 1){
             notify(new ToastNotification('Sorry!', 'User cannot be deleted! This user has a report submitted.', 'warning'));
         }else{
@@ -383,6 +383,7 @@ class UserController extends Controller
         }
         $ace= Ace::find($ace_id);
         $contacts = $this->getContactGroup($ace_id);
+        $positions = Position::orderBy('rank','ASC')->get();
 
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
@@ -398,19 +399,22 @@ class UserController extends Controller
 //        board members
         $board_members=$this->getSectorialAdvisoryBoardMembers($ace_id);
 
-        return view('aces_profile',compact('ace','contacts','contact_positions','board_members','currency1','currency2','labels','indicator_ones'));
+        return view('aces_profile',compact('ace','contacts','positions','contact_positions','board_members','currency1','currency2','labels','indicator_ones'));
     }
     public function getContactGroup($ace_id){
         $the_ace = Ace::find($ace_id);
-        $country =Institution::find($the_ace->institution_id)->pluck('country_id')->first();
-        $institution = Institution::find($the_ace->institution_id)->pluck('id')->first();
+        $contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
+            ->rightJoin('positions','positions.id','contacts.position_id')
+            ->where('ace_contacts.ace_id','=',$ace_id)
+            ->select('contacts.*','positions.position_title')
+            ->get();
 
-        $contacts = Contacts::orWhere('institution', '=', $institution)->orWhere('ace_id', '=', $ace_id)
-            ->orWhere('country',$country)
-            ->orWhere('thematic_field','=',$the_ace->field)->get();
 
         return $contacts;
     }
+
+
+
 
     public function getSectorialAdvisoryBoardMembers($ace_id){
         $members = SectoralBoard::where('ace_id','=',$ace_id)->get();

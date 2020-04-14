@@ -1,5 +1,6 @@
 @extends('layouts.user-management')
 @push('vendor-styles')
+        <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
 @endpush
 @push('other-styles')
 @endpush
@@ -97,7 +98,7 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-borderless mb-0">
+                                <table class="table table-borderless mb-0" id="permissions_table">
                                     <thead>
                                     <tr>
                                         <th>Permission Name</th>
@@ -140,9 +141,14 @@
     </div>
 @endsection
 @push('vendor-script')
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
 @endpush
+
 @push('end-script')
     <script>
+        $('#permissions_table').dataTable( {
+            "ordering": false
+        } );
         function editPermission(key) {
             var path = "{{route('user-management.permissions.edit')}}";
             var path_update = "{{route('user-management.permissions.update')}}";

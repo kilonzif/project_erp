@@ -128,23 +128,7 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                <label class="label">Fiduciary Report Submitted <span class="required">  *</span>  </label>
-                                                <select name="fiduciary_report" id="fiduciary_report" class="form-control" required>
-                                                    <option  value="">Select One</option>
-                                                    <option {{($report->fiduciary_report == '1')  ? "selected":""}} value="1">YES</option>
-                                                    <option {{($report->fiduciary_report == '0')  ? "selected":""}} value="0">NO</option>
-                                                </select>
-                                                @if ($errors->has('fiduciary_report'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('fiduciary_report') }}</small>
-                                                    </p>
-                                                @endif
-                                            </div>
 
-
-                                        </div>
 
                                     </div>
                                 </div>
@@ -186,11 +170,11 @@
                                             @php
                                                 $indicator_identifier = (string)$sub_indicator->identifier;
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
-                                               $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
+                                              $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
 
                                             @endphp
 
-                                            @if(!empty($child_drl))
+                                            @if($child_dlr->isNotEmpty())
 
                                             <table class="table table-bordered table-striped">
 
@@ -236,9 +220,11 @@
                                                     @endforeach
 
 
-
                                             </table>
                                             @else
+                                                {{--@php dd($pdo_41); @endphp--}}
+
+
                                                 <table class="table table-bordered table-striped">
 
                                                     <tr>

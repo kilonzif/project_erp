@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @push('vendor-styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">
@@ -48,12 +49,9 @@
                                             <label for="role">{{ __('Role') }}</label>
                                             <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ old('email') }}" required>
                                                 <option value="">Select Role</option>
-                                                <option value="PSC Member">PSC Member (country)</option>
-                                                <option value="Focal Person">Focal Person (country)</option>
-                                                <option value="Country TTL">Country TTL (country)</option>
-                                                <option value="Vice Chancellor">Vice Chancellor (institution) </option>
-                                                <option value="Primary Expert">Primary Expert (thematic area)</option>
-                                                <option value="Secondary expert">Secondary expert (thematic area)</option>
+                                                @foreach($roles as $role)
+                                                    <option value="{{$role->id}}">{{$role->position_title}}</option>
+                                                @endforeach
                                             </select>
 
                                             @if ($errors->has('role'))
@@ -155,7 +153,7 @@
                         <br>
                     </div>
 
-                    <table class="table table-striped table-bordered all_indicators">
+                    <table class="table table-striped table-bordered all_indicators" id="all_indicators">
                         <thead>
                         <tr>
                             <th> Name</th>
@@ -165,19 +163,19 @@
                             <th style="width: 100px;">Action</th>
                         </tr>
                         </thead>
-                        <tbody>
+
                         @foreach($all_contacts as $contact)
+                            <tbody>
                             <tr>
                                 <td>{{$contact->contact_name}}</td>
                                 <td>{{$contact->email}}</td>
                                 <td>{{$contact->contact_phone}}</td>
                                 <td>
-                                    {{$contact->contact_title}}
-                                        @if($contact->contact_status==0)
-                                        <strong>-Former</strong>
-                                    @else
-                                        <strong>-Current</strong>
-                                    @endif
+                                    @php
+                                    $title = \App\Position::where('id',$contact->position_id)->first();
+                                    @endphp
+
+                                    {{$title->position_title}}
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Basic example">
@@ -189,8 +187,9 @@
                                     </div>
                                 </td>
                             </tr>
+                            </tbody>
                         @endforeach
-                        </tbody>
+
                     </table>
                 </div>
             </div>
@@ -203,16 +202,50 @@
 
 
 @endsection
-@push('end-script')
-    <script>
+    @push('vendor-script')
+        <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+    @endpush
+    @push('end-script')
+        <script>
+            $('#all_indicators').dataTable( {
+                "ordering": false
+            } );
+
         function changeOnRole(){
             var e = document.getElementById("role");
             var role = e.options[e.selectedIndex].value;
-            if(role == 'Vice Chancellor'){
+            var path = "{{route('user-management.contacts.get_role')}}";
+            $.ajaxSetup(    {
+                headers: {
+                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
+                }
+            });
+            $.ajax({
+                url: path,
+                type: 'GET',
+                data: {id:role},
+                success: function(data){
+                    getCategory(data);
+                },
+                complete:function(){
+
+                }
+                ,
+                error: function (data) {
+                    console.log("error");
+                    console.log(data)
+                }
+            });
+
+
+        }
+
+        function getCategory(data) {
+            if(data === 'Vice Chancellor'){
                 $('#institution_toggle').css("display", "block");
                 $('#thematic_field_toggle').css("display", "none");
                 $('#country_toggle').css("display", "none");
-            }else if(role =='PSC Member' || role=='Focal Person' || role=='Country TTL'){
+            }else if(data === 'PSC Member' || data === 'Focal Person' || data === 'Country TTL'){
                 $('#country_toggle').css("display","block");
                 $('#institution_toggle').css("display", "none");
                 $('#thematic_field_toggle').css("display", "none");
@@ -224,6 +257,8 @@
             }
 
         }
+
+
 
         function edit_view(key) {
             var path = "{{route('user-management.contacts.edit_view')}}";

@@ -2,6 +2,7 @@
 @push('vendor-styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('app-assets/vendors/css/tables/datatable/datatables.min.css')}}">
 @endpush
 @push('other-styles')
 @endpush
@@ -60,12 +61,14 @@
                                  </div>
                             </div>
 
-                            <table class="table table-bordered table-striped">
+                            <table class="table table-bordered table-striped" id="templates_table">
                                 <tr>
                                     <th>Indicator Identifier</th>
                                     <th>Identifier Name</th>
                                     <th>Download</th>
                                 </tr>
+
+                                <tbody>
 
 
                                 @foreach($indicators as $indicator)
@@ -102,6 +105,7 @@
                                         </tr>
                                     @endif
                                 @endforeach
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -113,5 +117,13 @@
     </div>
 @endsection
 @push('vendor-script')
+    <script src="{{asset('app-assets/vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
+@endpush
+@push('end-script')
+    <script>
+        $('#templates_table').dataTable( {
+            "ordering": false
+        } );
+    </script>
 @endpush

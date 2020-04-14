@@ -1,4 +1,7 @@
 @extends('layouts.app')
+@push('vendor-styles')
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
+@endpush
 
 @section('content')
     <div class="content-header row">
@@ -20,7 +23,7 @@
         <div class="row">
             <div class="col-xl-12 col-lg-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header bg-primary bg-primary-4 white">
                         <h4 class="card-title">Upload Additional Files Here</h4>
                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
@@ -117,59 +120,65 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-heading">
-                            Documents <i class="ft-file"></i>
-                        </h4>
+                    <div class="card-header bg-primary bg-primary-4 white">
+                        <h4 class="card-title"><i class="fa fa-file-zip-o font-medium-3"></i>    Uploaded Documents  </h4>
+                        <a class="heading-elements-toggle"><i class="fa fa-file-zip-o font-medium-3"></i></a>
                     </div>
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th>ACE</th>
-                            <th>Category</th>
-                            <th>Files</th>
-                            <th>Comment Section</th>
-                            <th style="width: 100px;">Action</th>
-                        </tr>
-                        @foreach($uploads as $up)
+                    <div class="card-body">
+                        <table class="table table-striped table-bordered" id="documents_table">
+                            <thead>
                             <tr>
-                                @php
-                                    $aces = \App\Ace::where('id','=',$up->ace_id)->first();
-                                $ace_name=$aces->name;
-
-                                @endphp
-                                <td>{{$ace_name}}</td>
-                                <td>{{$up->file_category}}</td>
-                                <td>
-                                    @isset($up->file_one)
-                                    <a href="{{asset('indicator1/'.$up->file_one)}}" target="_blank">
-                                        <span class="fa fa-file"></span>   {{$up->file_one}}
-                                    </a>
-                                    @endisset
-
-                                <br>
-                                        @isset($up->file_two)
-                                    <a href="{{asset('indicator1/'.$up->file_two)}}" target="_blank">
-                                        <span class="fa fa-file"></span>   {{$up->file_two}}
-                                    </a>
-                                            @endisset
-
-                                </td>
-                                <td>{{$up->comments}}</td>
-                                <td>
-                                    {{--<a href="#edit_contact" onclick="edit_workplan('{{\Illuminate\Support\Facades\Crypt::encrypt($wp->id)}}')" >--}}
-                                    {{--<i class="ft-edit blue"></i></a>--}}
-                                    <a class="danger" href="{{route('file-uploads.delete',[\Illuminate\Support\Facades\Crypt::encrypt($up->id)])}}"
-                                       data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
-                                       title="Delete Report"><i class="ft-trash-2"></i></a>
-                                </td>
+                                <th>ACE</th>
+                                <th>Category</th>
+                                <th>Files</th>
+                                <th>Comment Section</th>
+                                <th style="width: 100px;">Action</th>
                             </tr>
+                            @foreach($uploads as $up)
+                                <tbody>
+                                <tr>
+                                    @php
+                                        $aces = \App\Ace::where('id','=',$up->ace_id)->first();
 
-                        @endforeach
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                                    $ace_name=$aces->name;
+
+                                    @endphp
+                                    <td>{{$ace_name}}</td>
+                                    <td>{{$up->file_category}}</td>
+                                    <td>
+                                        @isset($up->file_one)
+                                            <a href="{{asset('indicator1/'.$up->file_one)}}" target="_blank">
+                                                <span class="fa fa-file"></span>   {{$up->file_one}}
+                                            </a>
+                                        @endisset
+
+                                        <br>
+                                        @isset($up->file_two)
+                                            <a href="{{asset('indicator1/'.$up->file_two)}}" target="_blank">
+                                                <span class="fa fa-file"></span>   {{$up->file_two}}
+                                            </a>
+                                        @endisset
+
+                                    </td>
+                                    <td>{{$up->comments}}</td>
+                                    <td>
+                                        {{--<a href="#edit_contact" onclick="edit_workplan('{{\Illuminate\Support\Facades\Crypt::encrypt($wp->id)}}')" >--}}
+                                        {{--<i class="ft-edit blue"></i></a>--}}
+                                        <a class="danger" href="{{route('file-uploads.delete',[\Illuminate\Support\Facades\Crypt::encrypt($up->id)])}}"
+                                           data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
+                                           title="Delete Report"><i class="ft-trash-2"></i></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+
+
+                            @endforeach
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
 
 
@@ -178,7 +187,13 @@
     </div>
 
 @endsection
-
+@push('vendor-script')
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+@endpush
 @push('end-script')
-
+    <script>
+    $('#documents_table').dataTable( {
+    "ordering": false
+    } );
+    </script>
 @endpush

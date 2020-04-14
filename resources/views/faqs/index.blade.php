@@ -39,7 +39,7 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped mb-0 faqs-list">
+                                <table class="table table-bordered table-striped mb-0 faqs-list" id="faqs-table">
                                     <thead>
                                     <tr>
                                         <th width="30px">FAQ #</th>
@@ -99,6 +99,10 @@
 @endpush
 @push('end-script')
     <script>
+        $('#faqs-table').dataTable( {
+            "ordering": false
+        } );
+
         function trashRequest(key) {
             if (confirm("Data will be lost after Deletion. Delete?")){
                 $('form#delete-faq-'+key).submit();

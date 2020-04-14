@@ -56,74 +56,85 @@
                                         <input type="hidden" name="report_id" value="{{$d_report_id}}">
                                         <input type="hidden" name="indicator_id" value="{{$indicators->id}}">
                                         <div class="col-md-4">
-                                            <fieldset class="form-group">
-                                                <label for="basicInputFile">PROGRAMME TITLE</label>
-                                                <input type="text" class="form-control" name="programmetitle">
+                                            <fieldset class="form-group{{ $errors->has('programmetitle') ? ' form-control-warning' : '' }}">
+                                                <label for="basicInputFile">PROGRAMME TITLE <span class="required">*</span></label>
+                                                <input type="text" class="form-control"  required name="programmetitle">
+                                                @if ($errors->has('programmetitle'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('programmetitle') }}</small>
+                                                    </p>
+                                                @endif
                                             </fieldset>
+
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">LEVEL</label>
+                                                <label for="basicInputFile">LEVEL<span class="required">*</span></label>
                                                 <select name="level" required class="form-control" id="language">
                                                     <option value="">select LEVEL</option>
                                                     <option value="MASTERS">MASTERS</option>
-                                                    <option value="PHD">PHD</option>
-                                                    <option value="BSC">BACHELORS</option>
-                                                    <option value="SHORT COURSES">Professional Short Courses</option>
+                                                    <option value="PHD">PhD</option>
                                                 </select>
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">TYPE OF ACCREDITATION</label>
-                                                <input type="text" class="form-control" name="typeofaccreditation">
+                                                <label for="basicInputFile">TYPE OF ACCREDITATION <span class="required">*</span></label>
+                                                <select name="typeofaccreditation" required class="form-control" id="language">
+                                                    <option value="">select one</option>
+                                                    <option value="National">National</option>
+                                                    <option value="Regional">Regional</option>
+                                                    <option value="International">International</option>
+                                                    <option value="Gap Assessment">Gap Assessment</option>
+                                                    <option value="Self-Evaluation">Self-Evaluation</option>
+                                                </select>
+
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">ACCREDITATION REFERENCE </label>
-                                                <input type="text" name="accreditationreference" class="form-control">
+                                                <label for="basicInputFile">ACCREDITATION REFERENCE <span class="required">*</span></label>
+                                                <input type="text" name="accreditationreference"  required class="form-control">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">Accreditation Agency</label>
+                                                <label for="basicInputFile">ACCREDITATION AGENCY <span class="required">*</span></label>
                                                 <input type="text" class="form-control" name="accreditationagency">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">Agency contact Name </label>
-                                                <input class="form-control" type="text" name="agencyname">
+                                                <label for="basicInputFile">AGENCY CONTACT NAME<span class="required">*</span> </label>
+                                                <input class="form-control" required type="text" name="agencyname">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">Agency contact Email</label>
-                                                <input type="email" class="form-control" name="agencyemail">
+                                                <label for="basicInputFile">AGENCY CONTACT EMAIL <span class="required">*</span></label>
+                                                <input type="email" class="form-control" required name="agencyemail">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">Agency contact Phone number </label>
-                                                <input type="text" min="10" name="agencycontact" class="form-control">
+                                                <label for="basicInputFile">AGENCY CONTACT PHONE NUMBER <span class="required">*</span></label>
+                                                <input type="text" min="10" name="agencycontact" required class="form-control">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">DATE OF ACCREDITATION</label>
-                                                <input type="date" class="form-control" name="dateofaccreditation">
+                                                <label for="basicInputFile">DATE OF ACCREDITATION <span class="required">*</span></label>
+                                                <input type="date" class="form-control" required name="dateofaccreditation">
                                             </fieldset>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">EXPIRY DATE OF ACCREDITATION</label>
-                                                <input type="date" name="exp_accreditationdate" class="form-control">
+                                                <label for="basicInputFile">EXPIRY DATE OF ACCREDITATION <span class="required">*</span></label>
+                                                <input type="date" name="exp_accreditationdate"  required class="form-control">
                                             </fieldset>
                                         </div>
-
-                                        <div class="col-md-6 offset-5">
-                                            <button type="submit" class="btn btn-secondary square"><i class="fa fa-save">   Save</i>     Records</button>
+                                        <div class="form-group col-12">
+                                            <button type="submit" class="btn btn-secondary square"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
                                         </div>
 
                                     </div>
@@ -139,45 +150,44 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header p-1 card-head-inverse bg-primary">
                         <h2>Program Accreditation</h2>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
                             <div class="col-md-12">
 
-                                <table class="table-bordered responsive">
+                                <table class="table table-striped table-bordered">
                                     <tr>
                                         <th>Program Title</th>
+                                        <th>Level</th>
+                                        <th>Type</th>
+                                        <th>Reference</th>
+                                        <th>Agency</th>
+                                        <th>Contact Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
                                         <th>Accreditation Date</th>
-                                        <th>Program Title</th>
-                                        <th>Accreditation Date</th>
-                                        <th>Program Title</th>
-                                        <th>Accreditation Date</th>
-                                        <th>Program Title</th>
-                                        <th>Accreditation Date</th>
-                                        <th>Program Title</th>
-                                        <th>Accreditation Date</th>
-                                        <th></th>
+                                        <th>Accreditation Expiry Date</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
                                         @php
-                                        $d=(object)$d;
+                                            $d=(object)$d;
                                         @endphp
 
-                                    <tr>
-                                        <td>{{$d->programmetitle}}</td>
-                                        <td>{{$d->level}}</td>
-                                        <td>{{$d->typeofaccreditation}}</td>
-                                        <td>{{$d->accreditationreference}}</td>
-                                        <td>{{$d->accreditationagency}}</td>
-                                        <td>{{$d->agencyname}}</td>
-                                        <td>{{$d->agencyemail}}</td>
-                                        <td>{{$d->agencycontact}}</td>
-                                        <td>{{$d->dateofaccreditation}}</td>
-                                        <td>{{$d->exp_accreditationdate}}</td>
-                                    </tr>
-                                        @endforeach
+                                        <tr>
+                                            <td>{{$d->programmetitle}}</td>
+                                            <td>{{$d->level}}</td>
+                                            <td>{{$d->typeofaccreditation}}</td>
+                                            <td>{{$d->accreditationreference}}</td>
+                                            <td>{{$d->accreditationagency}}</td>
+                                            <td>{{$d->agencyname}}</td>
+                                            <td>{{$d->agencyemail}}</td>
+                                            <td>{{$d->agencycontact}}</td>
+                                            <td>{{$d->dateofaccreditation}}</td>
+                                            <td>{{$d->exp_accreditationdate}}</td>
+                                        </tr>
+                                    @endforeach
                                 </table>
                             </div>
                         </div>

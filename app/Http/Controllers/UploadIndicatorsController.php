@@ -31,6 +31,7 @@ class UploadIndicatorsController extends Controller
         $d_report_id = Crypt::decrypt($report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
         $report = Report::find($d_report_id);
+        
         if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return back();
@@ -92,16 +93,17 @@ class UploadIndicatorsController extends Controller
     public function getFields(Request $request)
     {
 
-
         $getHeaders = IndicatorForm::query()
             ->where('indicator','=',(integer)$request->id)
             ->orderBy('order','asc')->get();
+
 
         $maindata = collect($getHeaders)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
         })->pluck('fields')->toArray();
 
         $data=$maindata;
+
 
         $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->where('language','=',$request->language)->first();
         $theView = view('report-form.field-list', compact('data','excel_upload'))->render();
@@ -150,24 +152,14 @@ class UploadIndicatorsController extends Controller
         //row headers
         $headers = array();
         $error = $success = "";
-//
-//        $getHeaders = IndicatorForm::query()
-//            ->filter(function ($query) use($request){
-//            return in_array($request->language,collect($query)->get('language'));
-//        })->pluck('fields')->toArray();
 
         $getIndicator = IndicatorForm::query()
             ->where('indicator','=',(integer)$request->indicator)
             ->orderBy('order','asc')->get();
 
-//        dd($getHeaders);
-
-
         $getHeaders = collect($getIndicator)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
         })->pluck('fields')->toArray();
-
-
 
         if (sizeof($getHeaders) < 1){
             notify(new ToastNotification('Sorry!','This indicator is not available for uploads yet.','info'));
@@ -197,21 +189,15 @@ class UploadIndicatorsController extends Controller
 
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); // e.g. 5
                 $highestColumnIndex = (integer)$highestColumnIndex; // e.g. 5
-//                dd("Column: ".$highestColumnIndex." <br> Row:".$highestRow);
 
                 //Checks if the total columns equals the total columns required
                 if ($highestColumnIndex < sizeof($headers)){
-//                    dd($worksheet->getHighestRow());
-//                    dd($highestColumnIndex."== $highestColumn ==".sizeof($headers));
                     $error = "There is a mismatch in the fields required for this indicator or the total number of fields 
                     for this indicator is not equal to that of the uploaded file.";
-                    notify(new ToastNotification('Upload Error!', $error, 'warning'));
-                    return back();
+
                 }
-//                dd($highestColumnIndex);
 
                 $table_name = Str::snake("indicator_".$indicator_info->identifier);
-//                dd($table_name);
 
                 //Loops through the excel sheet to get the values;
                 DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
@@ -244,10 +230,7 @@ class UploadIndicatorsController extends Controller
                         ->collection('indicator_form_details')
                         ->where('_id', $item->_id)
                         ->update($upload_values);
-
                     $success = "The upload was successful.";
-                    notify(new ToastNotification('Successful', $success, 'success'));
-                    return back();
                 }
                 else{
                     $insert = DB::connection('mongodb')
@@ -256,26 +239,47 @@ class UploadIndicatorsController extends Controller
 
                     if ($insert){
                         $success = "The upload was successful.";
-                        notify(new ToastNotification('Successful', $success, 'success'));
-                        return back();
                     }else{
                         $error = "The upload failed.";
-                        notify(new ToastNotification('Upload Error!', $error, 'warning'));
-                        return back();
                     }
                 }
             }else{
                 $error = "The upload supports only xlsx or xls files!";
-                notify(new ToastNotification('Upload Error!', $error, 'warning'));
             }
         }
+       // dd("eric yalfdjoid");
 
-        return back()->withInput(['error'=>$error,'success'=>$success]);
+        $d_report_id = Crypt::decrypt($request->report_id);
+        $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
+
+//        dd($indicator_details);
+
+
+
+
+
+
+            return view ('report-form.uploaded-dlrs',compact('indicator_details'));
+//        return back()->withInput(['error'=>$error,'success'=>$success]);
     }
 
 
 
     public function saveWebForm(Request $request,$dlr_id){
+
+        $this->validate($request, [
+            'programmetitle' => 'required|string|unique:mongodb.indicator_form_details,programmetitle',
+//            'level' => 'required|string',
+//            'typeofaccreditation' => 'nullable|string',
+//            "accreditationreference" => "required|string|min:1",
+//            "accreditationagency" => "required|string",
+//            'agencyname' => 'required|string|min:100',
+//            'agencyemail' => 'required|email',
+//            'agencycontact' => 'nullable|string|date',
+//            "dateofaccreditation" => "required|date|min:1",
+//            "exp_accreditationdate" => "required|date",
+        ]);
+
 
         $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
         $table_name = Str::snake("indicator_".$this_dlr->identifier);
@@ -289,13 +293,14 @@ class UploadIndicatorsController extends Controller
         $upload_values['created_at'] = date('Y-m-d H:i:s');
         $upload_values['updated_at'] = date('Y-m-d H:i:s');
 
+
         $row = DB::connection('mongodb')
             ->collection('indicator_form_details')
             ->where('report_id','=', $upload_values['report_id'])->where('indicator_id','=', $upload_values['indicator_id'])->first();
         $item = (object)$row;
 
-        if ($row) {
 
+        if ($row) {
             DB::connection('mongodb')
                 ->collection('indicator_form_details')
                 ->where('_id', $item->_id)
@@ -306,7 +311,6 @@ class UploadIndicatorsController extends Controller
                 ->collection('indicator_form_details')
                 ->insert($upload_values);
         }
-//        dd($table_name);
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
