@@ -421,6 +421,7 @@ class AcesController extends Controller {
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
+//        dd($ace);
 
         return view('aces.profile', compact('ace','workplans','roles','currency1','currency2','dlr_unit_costs', 'target_years',
             'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
@@ -463,7 +464,7 @@ class AcesController extends Controller {
 
         $saveWorkPlan = WorkPlan::updateOrCreate(
             ['ace_id' => $ace_id,
-                'submission_date' => $request->submission_date,
+                'submission_date' => date('Y-m-d', strtotime($request->submission_date)),
                 'wp_file' => $the_wpfile,
                 'wp_year' => $request->wp_year
             ]
