@@ -421,7 +421,6 @@ class AcesController extends Controller {
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
-//        dd($ace);
 
         return view('aces.profile', compact('ace','workplans','roles','currency1','currency2','dlr_unit_costs', 'target_years',
             'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
@@ -447,8 +446,6 @@ class AcesController extends Controller {
         $destinationPath = base_path() . '/public/WorkPlan/';
         $file1 = $request->file('wp_file');
         $wp_year=$request->wp_year;
-
-
 
         $year_exists = WorkPlan::where('ace_id','=',$ace_id)->where('wp_year','=',$wp_year)->get();
 

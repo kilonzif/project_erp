@@ -59,8 +59,8 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong><br>{{$ace->email}}</td>
-                                    <td><strong>Grant Amount1</strong><br>{{$ace->grant1}} - </td>
-                                    <td><strong>Grant Amount2</strong><br>{{$ace->grant2}} - </td>
+                                    <td><strong>Grant Amount1</strong><br>{{$ace->grant1}} - {{$currency1->name}}</td>
+                                    <td><strong>Grant Amount2</strong><br>{{$ace->grant2}} - {{$currency2->name}}</td>
                                     <td><strong>Field</strong><br>{{$ace->field}}</td>
                                 </tr>
                             </table>
