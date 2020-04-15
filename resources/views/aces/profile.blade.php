@@ -107,8 +107,8 @@
                                     <div class="col-md-6">
                                         <div class="form-group{{ $errors->has('submission_date') ? ' form-control-warning' : '' }}">
                                             <label for="ss_submission_date">Submission Date <span class="required">*</span></label>
-                                            <input type="date" class="form-control" required name="submission_date"
-                                                   id="submission_date" value="#">
+                                            <input type="text" class="form-control datepicker-submission" required name="submission_date"
+                                                   id="submission_date" value="{{date('d-m-Y',strtotime(now()))}}">
                                             @if ($errors->has('submission_date'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('submission_date') }}</small>
@@ -117,6 +117,20 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
+                                        <div class="form-group{{ $errors->has('wp_year') ? ' form-control-warning' : '' }}">
+                                        <label for="wp_year">Year <span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <input type='text' name="wp_year"  class="form-control datepicker" value="{{ old('wp_year') }}" placeholder="Year" required
+                                            />
+                                            <div class="input-group-append">
+                                                    <span class="input-group-text">
+                                                      <span class="fa fa-calendar-o"></span>
+                                                    </span>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
                                         <div class="form-group {{ $errors->has('wp_file')? 'form-control-warning':'' }}">
                                             <label for="wp_file">Work Plan File <span class="required">*</span></label>
                                             <input type="file" class="form-control" name="wp_file" required  id="wp_file"
@@ -130,18 +144,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="input-group">
-                                            <input type='text' name="wp_year"  class="form-control datepicker" value="{{ old('wp_year') }}" placeholder="Year" required
-                                            />
-                                            <div class="input-group-append">
-                                                    <span class="input-group-text">
-                                                      <span class="fa fa-calendar-o"></span>
-                                                    </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
                                                 Save</button>
@@ -150,37 +153,52 @@
 
                                 </div>
 
-                            </form><br>
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>WorkPlan Document</th>
-                                        <th>Year</th>
-                                        <th style="width: 100px;">Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                @foreach($workplans as $wp)
-                                    <tr>
-                                        <td>
-                                            <a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">
-                                                <span class="fa fa-file"></span>   {{$wp->wp_file}}
-                                            </a>
+                            </form>
+                            @if($workplans->count() > 0)
+                            <hr>
+                            <p><strong>Download Work-plan</strong></p>
+                            @endif
+                            @foreach($workplans as $wp)
+                            <p>
+                                <a class="danger mr-2" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"
+                                  data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
+                                  title="Delete Report"><i class="ft-trash-2"></i></a>
+                                <a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">
+                                    <span class="fa fa-file"></span>   {{$wp->wp_year}} Work-plan
+                                </a>
 
-                                            </td>
-                                        <td>{{$wp->wp_year}}</td>
-                                        <td>
+                            </p>
+                            @endforeach
+                                {{--<table class="table table-striped table-bordered">--}}
+                                    {{--<thead>--}}
+                                    {{--<tr>--}}
+                                        {{--<th>WorkPlan Document</th>--}}
+                                        {{--<th>Year</th>--}}
+                                        {{--<th style="width: 100px;">Action</th>--}}
+                                    {{--</tr>--}}
+                                    {{--</thead>--}}
+                                    {{--<tbody>--}}
+                                {{--@foreach($workplans as $wp)--}}
+                                    {{--<tr>--}}
+                                        {{--<td>--}}
+                                            {{--<a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">--}}
+                                                {{--<span class="fa fa-file"></span>   {{$wp->wp_file}}--}}
+                                            {{--</a>--}}
+
+                                            {{--</td>--}}
+                                        {{--<td>{{$wp->wp_year}}</td>--}}
+                                        {{--<td>--}}
                                             {{--<a href="#edit_contact" onclick="edit_workplan('{{\Illuminate\Support\Facades\Crypt::encrypt($wp->id)}}')" >--}}
                                                 {{--<i class="ft-edit blue"></i></a>--}}
-                                            <a class="danger" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"
-                                                data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
-                                               title="Delete Report"><i class="ft-trash-2"></i></a>
-                                        </td>
-                                    </tr>
+                                            {{--<a class="danger" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"--}}
+                                                {{--data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"--}}
+                                               {{--title="Delete Report"><i class="ft-trash-2"></i></a>--}}
+                                        {{--</td>--}}
+                                    {{--</tr>--}}
 
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                    {{--@endforeach--}}
+                                    {{--</tbody>--}}
+                                {{--</table>--}}
 
                         </div>
 
@@ -453,6 +471,13 @@
     <script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>
     <script src="{{asset('app-assets/datepicker/bootstrap-datepicker.js')}}" type="text/javascript"></script>
     <script>
+        $('.datepicker-submission').datepicker({
+            format: "dd-mm-yyyy",
+            autoclose: true,
+            // changeMonth: false,
+            changeYear: true,
+            yearRange: '1900:+0'
+        });
         $('.datepicker').datepicker({
             format: "yyyy",
             autoclose: true,

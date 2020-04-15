@@ -447,8 +447,6 @@ class AcesController extends Controller {
         $file1 = $request->file('wp_file');
         $wp_year=$request->wp_year;
 
-
-
         $year_exists = WorkPlan::where('ace_id','=',$ace_id)->where('wp_year','=',$wp_year)->get();
 
 
@@ -463,7 +461,7 @@ class AcesController extends Controller {
 
         $saveWorkPlan = WorkPlan::updateOrCreate(
             ['ace_id' => $ace_id,
-                'submission_date' => $request->submission_date,
+                'submission_date' => date('Y-m-d', strtotime($request->submission_date)),
                 'wp_file' => $the_wpfile,
                 'wp_year' => $request->wp_year
             ]
