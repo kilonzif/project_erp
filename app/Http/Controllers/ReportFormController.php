@@ -413,6 +413,7 @@ class ReportFormController extends Controller {
         if(in_array('french',collect($get_form)->toArray())){
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
+            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
 
         }
 //        elseif(in_array('english',collect($get_form)->toArray()))
@@ -605,6 +606,7 @@ class ReportFormController extends Controller {
         if(in_array('french',collect($get_form)->toArray())){
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
+            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
 
         }
 
@@ -1869,6 +1871,97 @@ class ReportFormController extends Controller {
 
         return $indicator_4_1_values;
     }
+
+
+    /**
+     * Generate Aggregated results for Indicator 4.1
+     * @param $report_id
+     * @return array
+     */
+    public function generateAggregatedIndicator41Results_fr($report_id)
+    {
+        $indicator_4_1_values = array();
+
+
+        $national= DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('typeofaccreditation','=', "National")
+                    ->orWhere('typeofaccreditation','=', "national")
+                    ->orWhere('typeofaccreditation','like', "n%")
+                    ->orWhere('typeofaccreditation','like', "N%");
+            })->count();
+
+        $regional = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('typeofaccreditation','=', "Regional")
+                    ->orWhere('typeofaccreditation','=', "regional")
+                    ->orWhere('typeofaccreditation','like', "r%")
+                    ->orWhere('typeofaccreditation','like', "R%");
+            })->count();
+
+        $international = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('typeofaccreditation','=', "International")
+                    ->orWhere('typeofaccreditation','=', "international")
+                    ->orWhere('typeofaccreditation','like', "i%")
+                    ->orWhere('typeofaccreditation','like', "I%");
+            })->count();
+
+        $gap_assessment = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('typeofaccreditation','=', "Gap")
+                    ->orWhere('typeofaccreditation','=', "gap")
+                    ->orWhere('typeofaccreditation','like', "gap%")
+                    ->orWhere('typeofaccreditation','like', "Gap%");
+            })->count();
+
+        $self_evaluation = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('typeofaccreditation','=', "Self Fvaluation")
+                    ->orWhere('typeofaccreditation','=', "self evaluation")
+                    ->orWhere('typeofaccreditation','like', "self%")
+                    ->orWhere('typeofaccreditation','like', "Self%");
+            })->count();
+
+        $course = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id','=', $report_id)
+            ->where(function($query)
+            {
+                $query->where('typeofaccreditation','=', "New Course")
+                    ->orWhere('typeofaccreditation','=', "new course")
+                    ->orWhere('typeofaccreditation','like', "new%")
+                    ->orWhere('typeofaccreditation','like', "New%");
+            })->count();
+
+        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
+        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
+        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
+        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] =$self_evaluation;
+        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] =$gap_assessment;
+        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+
+
+
+        return $indicator_4_1_values;
+    }
+
+
 
     /**
      * Generate Aggregated results for Indicator 4.1
