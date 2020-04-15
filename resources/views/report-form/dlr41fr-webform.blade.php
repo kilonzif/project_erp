@@ -5,12 +5,12 @@
 @endpush
 @push('other-styles')
     <style>
-        table{
-            border-collapse: collapse;
-            width: 300px;
-            overflow-x: scroll;
-            display: block;
-        }
+       table{
+           border-collapse: collapse;
+           width: 300px;
+           overflow-x: scroll;
+           display: block;
+       }
     </style>
 @endpush
 @section('content')
@@ -65,7 +65,7 @@
                                         <input type="hidden" name="indicator_id" value="{{$indicators->id}}">
                                         <div class="col-md-4">
                                             <fieldset class="form-group{{ $errors->has('programmetitle') ? ' form-control-warning' : '' }}">
-                                                <label for="basicInputFile">PROGRAMME TITLE <span class="required">*</span></label>
+                                                <label for="basicInputFile">Titre du programme<span class="required">*</span></label>
                                                 <input type="text" class="form-control"  required name="programmetitle">
                                                 @if ($errors->has('programmetitle'))
                                                     <p class="text-right mb-0">
@@ -77,8 +77,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">LEVEL<span class="required">*</span></label>
-                                                <select name="level" required class="form-control" id="language">
+                                                <label for="basicInputFile">Niveau<span class="required">*</span></label>
+                                                <select name="level" required class="form-control" id="level">
                                                     <option value="">select LEVEL</option>
                                                     <option value="MASTERS">MASTERS</option>
                                                     <option value="PHD">PhD</option>
@@ -87,7 +87,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">TYPE OF ACCREDITATION <span class="required">*</span></label>
+                                                <label for="basicInputFile">Type d'accreditation <span class="required">*</span></label>
                                                 <select name="typeofaccreditation" required class="form-control" id="language">
                                                     <option value="">select one</option>
                                                     <option value="National">National</option>
@@ -101,43 +101,43 @@
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">ACCREDITATION REFERENCE <span class="required">*</span></label>
+                                                <label for="basicInputFile">Référence de l'accréditation <span class="required">*</span></label>
                                                 <input type="text" name="accreditationreference"  required class="form-control">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">ACCREDITATION AGENCY <span class="required">*</span></label>
+                                                <label for="basicInputFile">Agence d'accréditation <span class="required">*</span></label>
                                                 <input type="text" class="form-control" name="accreditationagency">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">AGENCY CONTACT NAME<span class="required">*</span> </label>
+                                                <label for="basicInputFile">Personne contact de l'agence<span class="required">*</span> </label>
                                                 <input class="form-control" required type="text" name="agencyname">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">AGENCY CONTACT EMAIL <span class="required">*</span></label>
+                                                <label for="basicInputFile">Couriel du personne contact <span class="required">*</span></label>
                                                 <input type="email" class="form-control" required name="agencyemail">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">AGENCY CONTACT PHONE NUMBER <span class="required">*</span></label>
+                                                <label for="basicInputFile">Numéro de téléphone du personne contact <span class="required">*</span></label>
                                                 <input type="text" min="10" name="agencycontact" required class="form-control">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">DATE OF ACCREDITATION <span class="required">*</span></label>
+                                                <label for="basicInputFile">Date d'accréditation <span class="required">*</span></label>
                                                 <input type="date" class="form-control" required name="dateofaccreditation">
                                             </fieldset>
                                         </div>
                                         <div class="col-md-4">
                                             <fieldset class="form-group">
-                                                <label for="basicInputFile">EXPIRY DATE OF ACCREDITATION <span class="required">*</span></label>
+                                                <label for="basicInputFile">Date d'expiration de l'accréditation<span class="required">*</span></label>
                                                 <input type="date" name="exp_accreditationdate"  required class="form-control">
                                             </fieldset>
                                         </div>
@@ -165,7 +165,7 @@
                         <div class="card-body">
                             <div class="col-md-12 table-responsive">
 
-                                <table class="table table-striped table-bordered">
+                                <table class="table table-scrollable table-striped table-bordered">
                                     <tr>
                                         <th>Program Title</th>
                                         <th>Level</th>

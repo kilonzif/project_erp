@@ -87,9 +87,6 @@
                                                                 {{$report->ace->name}} <strong>{{'('.$report->ace->acronym.')'}}</strong>
                                                             @endif
                                                         </td>
-                                                        {{--<td>--}}
-                                                            {{--{{$reporting_period}}--}}
-                                                        {{--</td>--}}
                                                         <td>{{date('M d, Y', strtotime($report->submission_date))}}</td>
                                                         <td>{!! $me->reportStatusTag($report->status) !!}</td>
                                                         <td>

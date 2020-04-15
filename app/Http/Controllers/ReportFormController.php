@@ -589,16 +589,10 @@ class ReportFormController extends Controller {
             return redirect()->route('report_submission.reports');
         }
         $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
-//        $indicators = Indicator::where('is_parent','=', 1)
-//            ->where('status','=', 1)
-//            ->where('show_on_report','=', 1)
-//            ->where('parent_id','=',$report->indicator_id)
-//            ->orderBy('identifier','asc')
-//            ->get();
+
 
         $indicators = Indicator::where('id','=',$report->indicator_id)->orderBy('identifier','asc')->first();
 
-//        dd($the_indicator);
 
 
 
@@ -611,7 +605,7 @@ class ReportFormController extends Controller {
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
 
         }
-//        elseif(in_array('english',collect($get_form)->toArray()))
+
 
             $pdo_1 = $this->generateAggregatedIndicator3Results($id);
 
@@ -697,6 +691,8 @@ class ReportFormController extends Controller {
                 $email_ace = Ace::query()->where('id',$report->ace_id);
 
                 $emails = array_merge($email_ace->pluck('email')->toArray(),[config('mail.aau_email')]);
+
+              
 
                 Mail::send('mail.report-mail',['the_ace'=>$email_ace,'report'=>$report],
                     function ($message) use($emails) {
@@ -2021,4 +2017,15 @@ class ReportFormController extends Controller {
 
 
     }
+
+
+
+
+
+
+
+
+
+
+
 }

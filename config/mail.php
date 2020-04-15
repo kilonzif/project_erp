@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('MAIL_DRIVER', 'smtp'),
+    'driver' => env('MAIL_DRIVER', 'sendmail'),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,6 +58,10 @@ return [
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'info@aau.org'),
         'name' => env('MAIL_FROM_NAME', 'no-reply@aau.org'),
+    ],
+    'reply_to' => [
+        'address' => 'info@aau.org',
+        'name' => 'ACE IMPACT -Association of African Universities'
     ],
 
     'aau_email' => 'info@aau.org',
@@ -101,7 +105,7 @@ return [
     |
     */
 
-    'sendmail' => env('MAIL_SENDMAIL', '/usr/sbin/sendmail -bs'),
+    'sendmail' => '/usr/sbin/sendmail -bs',
 
     /*
     |--------------------------------------------------------------------------

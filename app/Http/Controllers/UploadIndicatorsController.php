@@ -51,6 +51,9 @@ class UploadIndicatorsController extends Controller
             $data = DB::connection('mongodb')
                 ->collection("$table_name")
                 ->where('report_id','=', (integer)$d_report_id)->get();
+            if($report->language=="french" && $indicators->identifier =='4.1' ){
+                return view('report-form.dlr41fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            }
 
             return view('report-form.dlr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
         }
