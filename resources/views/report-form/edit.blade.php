@@ -166,10 +166,7 @@
                                             $pdo_indicator_41 = config('app.indicator_41');
                                             $pdo_indicator_52 = config('app.indicator_52');
 
-
-
-
-                                       $counter_one = 0;
+                                            $counter_one = 0;
                                         @endphp
                                         @foreach($sub_indicators as $sub_indicator)
                                             @php
@@ -215,13 +212,15 @@
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
 
                                                                 @elseif($sub_indicator->parent_id == 6)
+                                                                    @php
+                                                                        $pdo_indicator = 'pdo_indicator_52';
+                                                                    @endphp
                                                                     {{--internships 5.2--}}
                                                                     <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
                                                                          style="margin-bottom: 0;">
                                                                         <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
-                                                                               value="0"
+                                                                               value="{{!empty($pdo_52) ?$pdo_52[$pdo_indicator][$pdo_indicator_52[$pdo_indicator][$counter]]:0}}"
                                                                                class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-
                                                                     </div>
 
 
