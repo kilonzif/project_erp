@@ -180,6 +180,15 @@
                                                                                value="{{!empty($pdo_41) ?$pdo_41[$pdo_indicator][$pdo_indicator_41[$pdo_indicator][$counter]]:0}}"
                                                                                class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
 
+                                                                @elseif($sub_indicator->parent_id == 6)
+                                                                    {{--internships 5.2--}}
+                                                                    <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
+                                                                         style="margin-bottom: 0;">
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
+                                                                               value="0"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+
+                                                                    </div>
 
                                                                 @endif
 

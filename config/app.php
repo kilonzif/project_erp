@@ -304,8 +304,9 @@ return [
         ]
 
     ],
-    'indicator_5' => [
-        'pdo_indicator_5' => [
+
+    'indicator_52' => [
+        'pdo_indicator_52' => [
             'total_number_of_interns','students','faculty'
         ]
 
