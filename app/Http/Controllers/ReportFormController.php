@@ -1968,6 +1968,8 @@ class ReportFormController extends Controller
             ->where('report_id', '=', $report_id)
             ->count();
 
+//        dd($total_publications);
+
 
         $regional_publications =  DB::connection('mongodb')
             ->collection('indicator_4.2')
@@ -2073,8 +2075,6 @@ class ReportFormController extends Controller
     public static function getReportingName($id)
     {
         $period = ReportingPeriod::find($id);
-//        dd($period);
-        $start_period = date('m-Y', strtotime($period->period_start));
         $monthNum1 = date('m', strtotime($period->period_start));
         $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
         $year1 = date('Y', strtotime($period->period_start));
