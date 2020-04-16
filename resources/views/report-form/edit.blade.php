@@ -66,17 +66,7 @@
                                                     <select class="form-control" name="reporting_period">
                                                         @foreach($reporting_periods as $period)
                                                             @php
-                                                                $start_period = date('m-Y',strtotime($period->period_start));
-                                                                $end_period = date('m-Y',strtotime($period->period_end));
-                                                                $monthNum1=date('m',strtotime($period->period_start));
-                                                                $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
-                                                                $year1 = date('Y',strtotime($period->period_start));
-                                                                $start = $monthName1 .', '.$year1;
-                                                                $monthNum2=date('m',strtotime($period->period_end));
-                                                                $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
-                                                                $year2 = date('Y',strtotime($period->period_end));
-                                                                $end =$monthName2 .', '.$year2;
-                                                                $full_period = $start ."    -  ". $end;
+                                                  $full_period = \App\Http\Controllers\ReportFormController::getReportingName($period->id);
                                                             @endphp
                                                             <option {{($report->reporting_period_id == $period->id)  ? "selected":""}} value="{{$period->id}}">{{$full_period}}</option>
                                                         @endforeach
@@ -95,17 +85,7 @@
                                                 <div class="form-group">
                                                     <label for="reporting_period">Reporting Period<span class="required">*</span></label>
                                                     @php
-                                                        $start_period = date('m-Y',strtotime($reporting_period->period_start));
-                                                        $end_period = date('m-Y',strtotime($reporting_period->period_end));
-                                                        $monthNum1=date('m',strtotime($start_period));
-                                                        $monthName1 = date("M", mktime(0, 0, 0, $monthNum1, 10));
-                                                        $year1 =date('Y',strtotime($reporting_period->period_start));
-                                                        $start = $monthName1 .', '.$year1;
-                                                        $monthNum2=date('m',strtotime($reporting_period->period_end));
-                                                        $monthName2 = date("M", mktime(0, 0, 0, $monthNum2, 10));
-                                                        $year2 = date('Y',strtotime($reporting_period->period_end));
-                                                        $end =$monthName2 .', '.$year2;
-                                                        $full_period = $start ."    -  ". $end;
+                                                        $full_period = \App\Http\Controllers\ReportFormController::getReportingName($reporting_period->id);
                                                     @endphp
                                                     <h6>{{$full_period}}</h6>
                                                     <input type="hidden" name="reporting_period" value="{{$reporting_period->id}}">
@@ -165,6 +145,9 @@
                                             $pdo_indicator_1 = config('app.indicator_3');
                                             $pdo_indicator_41 = config('app.indicator_41');
                                             $pdo_indicator_52 = config('app.indicator_52');
+                                            $pdo_indicator_42 = config('app.indicator_42');
+
+
 
                                             $counter_one = 0;
                                         @endphp
@@ -173,6 +156,7 @@
                                                 $indicator_identifier = (string)$sub_indicator->identifier;
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
                                               $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
+
 
                                             @endphp
 
@@ -210,6 +194,15 @@
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{!empty($pdo_41) ?$pdo_41[$pdo_indicator][$pdo_indicator_41[$pdo_indicator][$counter]]:0}}"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
+
+
+                                                                @elseif($sub_indicator->parent_id == 3)
+                                                                    {{--4.2 publications--}}
+                                                                    <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{!empty($pdo_42) ?$pdo_42[$pdo_indicator][$pdo_indicator_42[$pdo_indicator][$counter]]:0}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
+
 
                                                                 @elseif($sub_indicator->parent_id == 6)
                                                                     @php

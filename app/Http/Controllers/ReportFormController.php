@@ -618,6 +618,8 @@ class ReportFormController extends Controller
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
             $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
+            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
+
 
         }
 
@@ -629,6 +631,7 @@ class ReportFormController extends Controller
         $pdo_52 = $this->generateAggregatedIndicator52Results($id);
 
         $pdo_41 = $this->generateAggregatedIndicator41Results($id);
+        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -636,7 +639,7 @@ class ReportFormController extends Controller
         $aces = Ace::where('active', '=', 1)->get();
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52'));
+            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42'));
     }
 
 
@@ -1915,11 +1918,18 @@ class ReportFormController extends Controller
      * @param $report_id
      * @return array
      */
-    public function generateAggregatedIndicator42Results($report_id)
+    public function generateAggregatedIndicator42Results_fr($report_id)
     {
         $indicator_4_2_values = array();
 
-        $indicator_4_2_values['non-regional'] = DB::connection('mongodb')
+
+        $total_publications = DB::connection('mongodb')
+            ->collection('indicator_4.2')
+            ->where('report_id', '=', $report_id)
+            ->count();
+
+
+        $regional_publications =  DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
@@ -1929,7 +1939,7 @@ class ReportFormController extends Controller
 //                    ->orWhere('type-of-accreditation2','like', "N%");
             })->count();
 
-        $indicator_4_2_values['regional'] = DB::connection('mongodb')
+        $national_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
@@ -1938,6 +1948,50 @@ class ReportFormController extends Controller
 //                    ->orWhere('type-of-accreditation2','like', "r%")
 //                    ->orWhere('type-of-accreditation2','like', "R%");
             })->count();
+
+        $indicator_4_2_values["ir_indicator_2"]["total_publications"] = $total_publications;
+        $indicator_4_2_values["ir_indicator_2"]["regional_publications"] = $regional_publications;
+        $indicator_4_2_values["ir_indicator_2"]["national_publications"] = $national_publications;
+
+        return $indicator_4_2_values;
+    }
+
+
+
+    public function generateAggregatedIndicator42Results($report_id)
+    {
+        $indicator_4_2_values = array();
+
+
+        $total_publications = DB::connection('mongodb')
+            ->collection('indicator_4.2')
+            ->where('report_id', '=', $report_id)
+            ->count();
+
+
+        $regional_publications =  DB::connection('mongodb')
+            ->collection('indicator_4.2')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('country', '<>', "Regional")
+                    ->orWhere('country', '<>', "regional");
+//                    ->orWhere('type-of-accreditation2','like', "n%")
+//                    ->orWhere('type-of-accreditation2','like', "N%");
+            })->count();
+
+        $national_publications = DB::connection('mongodb')
+            ->collection('indicator_4.2')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('country', '=', "Regional")
+                    ->orWhere('country', '=', "regional");
+//                    ->orWhere('type-of-accreditation2','like', "r%")
+//                    ->orWhere('type-of-accreditation2','like', "R%");
+            })->count();
+
+        $indicator_4_2_values["ir_indicator_2"]["total_publications"] = $total_publications;
+        $indicator_4_2_values["ir_indicator_2"]["regional_publications"] = $regional_publications;
+        $indicator_4_2_values["ir_indicator_2"]["national_publications"] = $national_publications;
 
         return $indicator_4_2_values;
     }

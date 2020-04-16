@@ -318,6 +318,12 @@ return [
         ]
 
     ],
+    'indicator_42' => [
+        'ir_indicator_2' => [
+            'total_publications','regional_publications','national_publications'
+        ]
+
+    ],
 
 
 
