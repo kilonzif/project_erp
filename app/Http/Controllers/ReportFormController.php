@@ -449,36 +449,6 @@ class ReportFormController extends Controller
 
         return view('report-form.view', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
-//        $id = Crypt::decrypt($id);
-//        $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
-//        $report = Report::find($id);
-//        $comment = AceComment::where('report_id',$id)->first();
-//        $indicators = Indicator::where('is_parent','=', 1)
-//            ->where('status','=', 1)
-//            ->where('parent_id','=',$report->indicator_id)
-//            ->where('show_on_report','=', 1)
-//            ->orderBy('identifier','asc')
-//            ->get();
-//
-//        $reporting_period = ReportingPeriod::where('id',$report->reporting_period_id)->first();
-//
-//        if (Auth::id() == $report->user_id || Auth::user()->hasRole(['webmaster|super-admin|admin|manager'])){
-//
-//            //Get the aggregated result for Indicator 3
-//            $result = $this->generateAggregatedIndicator3Results($id);
-//            $indicator_5_2 = $this->generateAggregatedIndicator52Results($id);
-//            $indicator_4_1 = $this->generateAggregatedIndicator41Results($id);
-//            $indicator_7_3 = $this->generateAggregatedIndicator73Results($id);
-//
-//            $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
-//            $aces = Ace::where('active', '=', 1)->get();
-//
-//            return view('report-form.view', compact('project', 'report', 'reporting_period','comment','aces', 'values', 'indicators'
-//                , 'result', 'indicator_5_2','indicator_4_1','indicator_7_3'));
-//
-//        }else{
-//            notify(new ToastNotification('Sorry!', 'The report does not exist', 'alert'));
-//        }
 
     }
 
@@ -2078,79 +2048,6 @@ class ReportFormController extends Controller
 
         return $indicator_4_2_values;
     }
-
-//    public function generateAggregatedIndicator42Results($report_id)
-//    {
-//        $indicator_4_2_values = array();
-//
-//        $indicator_4_2_values['national']= DB::connection('mongodb')
-//            ->collection('indicator_4.2')
-//            ->where('report_id','=', $report_id)
-//            ->where(function($query)
-//            {
-//                $query->where('type-of-accreditation2','=', "National")
-//                    ->orWhere('type-of-accreditation2','=', "national")
-//                    ->orWhere('type-of-accreditation2','like', "n%")
-//                    ->orWhere('type-of-accreditation2','like', "N%");
-//            })->count();
-//
-//        $indicator_4_2_values['regional'] = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id','=', $report_id)
-//            ->where(function($query)
-//            {
-//                $query->where('type-of-accreditation2','=', "Regional")
-//                    ->orWhere('type-of-accreditation2','=', "regional")
-//                    ->orWhere('type-of-accreditation2','like', "r%")
-//                    ->orWhere('type-of-accreditation2','like', "R%");
-//            })->count();
-//
-//        $indicator_4_2_values['international'] = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id','=', $report_id)
-//            ->where(function($query)
-//            {
-//                $query->where('type-of-accreditation2','=', "International")
-//                    ->orWhere('type-of-accreditation2','=', "international")
-//                    ->orWhere('type-of-accreditation2','like', "i%")
-//                    ->orWhere('type-of-accreditation2','like', "I%");
-//            })->count();
-//
-//        $indicator_4_2_values['gap-assessment'] = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id','=', $report_id)
-//            ->where(function($query)
-//            {
-//                $query->where('type-of-accreditation2','=', "Gap")
-//                    ->orWhere('type-of-accreditation2','=', "gap")
-//                    ->orWhere('type-of-accreditation2','like', "gap%")
-//                    ->orWhere('type-of-accreditation2','like', "Gap%");
-//            })->count();
-//
-//        $indicator_4_2_values['self-evaluation'] = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id','=', $report_id)
-//            ->where(function($query)
-//            {
-//                $query->where('type-of-accreditation2','=', "Self Fvaluation")
-//                    ->orWhere('type-of-accreditation2','=', "self evaluation")
-//                    ->orWhere('type-of-accreditation2','like', "self%")
-//                    ->orWhere('type-of-accreditation2','like', "Self%");
-//            })->count();
-//
-//        $indicator_4_2_values['course'] = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id','=', $report_id)
-//            ->where(function($query)
-//            {
-//                $query->where('type-of-accreditation2','=', "New Course")
-//                    ->orWhere('type-of-accreditation2','=', "new course")
-//                    ->orWhere('type-of-accreditation2','like', "new%")
-//                    ->orWhere('type-of-accreditation2','like', "New%");
-//            })->count();
-//
-//        return $indicator_4_2_values;
-//    }
 
 
     public static function getReportingName($id)

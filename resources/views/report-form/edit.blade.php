@@ -215,9 +215,7 @@
 
 
                                                                 @elseif($sub_indicator->parent_id == 6)
-                                                                    @php
-                                                                        $pdo_indicator = 'pdo_indicator_52';
-                                                                    @endphp
+
                                                                     {{--internships 5.2--}}
                                                                     <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
                                                                          style="margin-bottom: 0;">
