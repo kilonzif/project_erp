@@ -53,6 +53,13 @@ class UploadIndicatorsController extends Controller
                 ->where('report_id','=', (integer)$d_report_id)->get();
             if($report->language=="french" && $indicators->identifier =='4.1' ){
                 return view('report-form.dlr41fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            }else if($report->language=="french" && $indicators->identifier =='5.1'){
+                return view('report-form.dlr51fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+
+            }
+            else if($report->language=="english" && $indicators->identifier =='5.1'){
+                return view('report-form.dlr51en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+
             }
 
             return view('report-form.dlr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
@@ -276,8 +283,10 @@ class UploadIndicatorsController extends Controller
 
     public function saveWebForm(Request $request,$dlr_id){
 
-        $this->validate($request, [
-            'programmetitle' => 'required|string|unique:mongodb.indicator_form_details,programmetitle',
+
+
+//        $this->validate($request, [
+//            'programmetitle' => 'required|string|unique:mongodb.indicator_form_details,programmetitle',
 //            'level' => 'required|string',
 //            'typeofaccreditation' => 'nullable|string',
 //            "accreditationreference" => "required|string|min:1",
@@ -287,7 +296,7 @@ class UploadIndicatorsController extends Controller
 //            'agencycontact' => 'nullable|string|date',
 //            "dateofaccreditation" => "required|date|min:1",
 //            "exp_accreditationdate" => "required|date",
-        ]);
+//        ]);
 
 
         $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
@@ -321,20 +330,43 @@ class UploadIndicatorsController extends Controller
                 ->insert($upload_values);
         }
 
+
+
+
+
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
-        $indicator_details['report_id'] = (integer)$report_id;
-        $indicator_details['indicator_id'] = $request->indicator_id;
-        $indicator_details['programmetitle'] = $request->programmetitle;
-        $indicator_details['level'] = $request->level;
-        $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
-        $indicator_details['accreditationreference'] = $request->accreditationreference;
-        $indicator_details['accreditationagency'] = $request->accreditationagency;
-        $indicator_details['agencyname'] = $request->agencyname;
-        $indicator_details['agencyemail'] = $request->agencyemail;
-        $indicator_details['agencycontact'] = $request->agencycontact;
-        $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
-        $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+
+
+        if($this_dlr->identifier =="4.1") {
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['programmetitle'] = $request->programmetitle;
+            $indicator_details['level'] = $request->level;
+            $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+            $indicator_details['accreditationreference'] = $request->accreditationreference;
+            $indicator_details['accreditationagency'] = $request->accreditationagency;
+            $indicator_details['agencyname'] = $request->agencyname;
+            $indicator_details['agencyemail'] = $request->agencyemail;
+            $indicator_details['agencycontact'] = $request->agencycontact;
+            $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+            $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+
+        }
+        else if ($this_dlr->identifier =="5.1"){
+
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['amountindollars'] = $request->amountindollars;
+            $indicator_details['originalamount'] = $request->originalamount;
+            $indicator_details['source'] = $request->source;
+            $indicator_details['datereceived'] = $request->datereceived;
+            $indicator_details['bankdetails'] = $request->bankdetails;
+            $indicator_details['region'] = $request->region;
+            $indicator_details['fundingreason'] = $request->fundingreason;
+        }
+
+
 
 
         $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);

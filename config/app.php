@@ -311,6 +311,13 @@ return [
         ]
 
     ],
+    'indicator_51' => [
+        'ir_indicator_4' => [
+            'total_revenue','national_sources','regional_sources'
+        ]
+
+    ],
+
     'indicator_41' => [
         'pdo_indicator_41' => [
             'national','regional','international',
@@ -319,7 +326,7 @@ return [
 
     ],
     'indicator_42' => [
-        'ir_indicator_2' => [
+        'ir_indicator_4' => [
             'total_publications','regional_publications','national_publications'
         ]
 

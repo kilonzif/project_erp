@@ -136,6 +136,7 @@
                                             $pdo_indicator_41 = config('app.indicator_41');
                                             $pdo_indicator_52 = config('app.indicator_52');
                                             $pdo_indicator_42 = config('app.indicator_42');
+                                            $pdo_indicator_51 = config('app.indicator_51');
 
                                        $counter_one = 0;
                                         @endphp
@@ -189,10 +190,13 @@
                                                                                value="{{!empty($pdo_42) ?$pdo_42[$pdo_indicator][$pdo_indicator_42[$pdo_indicator][$counter]]:0}}"
                                                                                class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
 
+                                                                @elseif($sub_indicator->parent_id == 5)
+                                                                    {{--5.1 external revenue--}}
 
-
-
-
+                                                                    <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{!empty($pdo_51) ?$pdo_51[$pdo_indicator][$pdo_indicator_51[$pdo_indicator][$counter]]:0}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
 
 
                                                                 @elseif($sub_indicator->parent_id == 6)

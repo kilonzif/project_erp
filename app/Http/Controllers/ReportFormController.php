@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
+
 class ReportFormController extends Controller
 {
     //
@@ -421,18 +422,22 @@ class ReportFormController extends Controller
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
             $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
+            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
+            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
+
 
         }
-//        elseif(in_array('english',collect($get_form)->toArray()))
-//        {
+
+
         $pdo_1 = $this->generateAggregatedIndicator3Results($id);
 
         $pdo_2 = $this->generateAggregatedIndicator73Results($id);
 
         $pdo_52 = $this->generateAggregatedIndicator52Results($id);
 
-
         $pdo_41 = $this->generateAggregatedIndicator41Results($id);
+        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
+        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
 
 
 
@@ -443,7 +448,7 @@ class ReportFormController extends Controller
         $aces = Ace::where('active', '=', 1)->get();
 
         return view('report-form.view', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52'));
+            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
 //        $id = Crypt::decrypt($id);
 //        $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 //        $report = Report::find($id);
@@ -619,6 +624,7 @@ class ReportFormController extends Controller
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
             $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
             $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
+            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
 
 
         }
@@ -632,6 +638,7 @@ class ReportFormController extends Controller
 
         $pdo_41 = $this->generateAggregatedIndicator41Results($id);
         $pdo_42 = $this->generateAggregatedIndicator42Results($id);
+        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -639,7 +646,7 @@ class ReportFormController extends Controller
         $aces = Ace::where('active', '=', 1)->get();
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42'));
+            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
     }
 
 
@@ -1748,6 +1755,83 @@ class ReportFormController extends Controller
 
         return $indicator_5_2_values;
     }
+
+
+    /**
+     * Generate Aggregated results for Indicator 5.1 on revenue sources
+     * @param $report_id
+     * @return array
+     */
+    public function generateAggregatedIndicator51Results($report_id)
+    {
+
+        $indicator_5_1_values = array();
+
+        $query =  DB::connection('mongodb')
+            ->collection('indicator_5.1')
+            ->where('report_id', '=', $report_id)
+            ->select('amountindollars')
+            ->get();
+
+        $total_revenue=collect($query)->sum('amountindollars');;
+
+
+        $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
+            ->where('report_id', $report_id)
+            ->where(function ($query) {
+                $query->where('source', 'like', "N%")
+                    ->orWhere('source', 'like', "n%");
+            });
+        $regional_sources = DB::connection('mongodb')->collection('indicator_5.1')
+            ->where('report_id', $report_id)
+            ->where(function ($query) {
+                $query->where('source', 'like', "R%")
+                    ->orWhere('source', 'like', "r%");
+            });
+
+        $indicator_5_1_values["ir_indicator_4"]["total_revenue"] = $total_revenue;
+        $indicator_5_1_values["ir_indicator_4"]["national_sources"] = $national_sources->count();
+        $indicator_5_1_values["ir_indicator_4"]["regional_sources"] = $regional_sources->count();
+
+
+        return $indicator_5_1_values;
+    }
+
+    public function generateAggregatedIndicator51Results_fr($report_id)
+    {
+
+        $indicator_5_1_values = array();
+
+        $query =  DB::connection('mongodb')
+            ->collection('indicator_5.1')
+            ->where('report_id', '=', $report_id)
+            ->select('amountindollars')
+            ->get();
+
+        $total_revenue=collect($query)->sum('amountindollars');
+
+       $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
+            ->where('report_id', $report_id)
+            ->where(function ($query) {
+                $query->where('source', 'like', "N%")
+                    ->orWhere('source', 'like', "n%");
+            });
+        $regional_sources = DB::connection('mongodb')->collection('indicator_5.1')
+            ->where('report_id', $report_id)
+            ->where(function ($query) {
+                $query->where('source', 'like', "R%")
+                    ->orWhere('source', 'like', "r%");
+            });
+
+        $indicator_5_1_values["ir_indicator_4"]["total_revenue"] = $total_revenue;
+        $indicator_5_1_values["ir_indicator_4"]["national_sources"] = $national_sources->count();
+        $indicator_5_1_values["ir_indicator_4"]["regional_sources"] = $regional_sources->count();
+
+
+        return $indicator_5_1_values;
+    }
+
+
 
     /**
      * Generate Aggregated results for Indicator 4.1
