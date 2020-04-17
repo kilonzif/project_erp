@@ -175,6 +175,7 @@ class UploadIndicatorsController extends Controller
 
         if ($request->file('upload_file')->isValid()) {
 
+
             $extension = \File::extension($request->upload_file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file('upload_file')->getRealPath();
@@ -187,7 +188,7 @@ class UploadIndicatorsController extends Controller
                 // Get the highest row and column numbers referenced in the worksheet
                 $highestRow = $worksheet->getHighestRow(); // e.g. 10
                 $highestRow = (integer)$highestRow; // e.g. 10
-//                dd($highestRow);
+
                 $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
 
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); // e.g. 5
@@ -202,21 +203,31 @@ class UploadIndicatorsController extends Controller
 
                 $table_name = Str::snake("indicator_".$indicator_info->identifier);
 
+//                dd($table_name);
+
                 //Loops through the excel sheet to get the values;
                 DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
+
+
+
+
+
+
                 for ($row = $data_start; $row <= $highestRow; $row++) {
+
+
 
                     echo PHP_EOL;
 
                     for ($col = 1; $col < $highestColumnIndex; $col++) {
                         $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
-                        $line = $row - $data_start;
-//                        dd($headers);
-                        $upload_values['data'][$line][$headers[$col-1]] = $value;
 
+                        $line = $row - $data_start;
+                        $upload_values['data'][$line][$headers[$col-1]] = $value;
                         $indicator_details[$headers[$col-1]] = $value;
                         echo  PHP_EOL;
                     }
+
                     DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
                     echo PHP_EOL;
@@ -250,15 +261,10 @@ class UploadIndicatorsController extends Controller
                 $error = "The upload supports only xlsx or xls files!";
             }
         }
-       // dd("eric yalfdjoid");
+
 
         $d_report_id = Crypt::decrypt($request->report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
-
-//        dd($indicator_details);
-
-
-
 
 
 

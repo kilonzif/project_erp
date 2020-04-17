@@ -1933,20 +1933,20 @@ class ReportFormController extends Controller
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('country', '<>', "Regional")
-                    ->orWhere('country', '<>', "regional");
-//                    ->orWhere('type-of-accreditation2','like', "n%")
-//                    ->orWhere('type-of-accreditation2','like', "N%");
+                $query->where('collaboration', 'LIKE', "%Regional")
+                    ->where('collaboration', 'LIKE', "regional")
+                    ->orWhere('collaboration','like', "r%")
+                    ->orWhere('collaboration','like', "R%");
             })->count();
 
         $national_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('country', '=', "Regional")
-                    ->orWhere('country', '=', "regional");
-//                    ->orWhere('type-of-accreditation2','like', "r%")
-//                    ->orWhere('type-of-accreditation2','like', "R%");
+                $query->where('collaboration', 'LIKE', "%National")
+                    ->where('collaboration', 'LIKE', "%National")
+                    ->orWhere('collaboration','like', "n%")
+                    ->orWhere('collaboration','like', "N%");
             })->count();
 
         $indicator_4_2_values["ir_indicator_2"]["total_publications"] = $total_publications;
@@ -1966,29 +1966,26 @@ class ReportFormController extends Controller
         $total_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
-            ->count();
-
-//        dd($total_publications);
-
+              ->count();
 
         $regional_publications =  DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('country', '<>', "Regional")
-                    ->orWhere('country', '<>', "regional");
-//                    ->orWhere('type-of-accreditation2','like', "n%")
-//                    ->orWhere('type-of-accreditation2','like', "N%");
+                $query->where('collaboration', 'LIKE', "%Regional")
+                    ->where('collaboration', 'LIKE', "regional")
+                    ->orWhere('collaboration','like', "r%")
+                    ->orWhere('collaboration','like', "R%");
             })->count();
 
         $national_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('country', '=', "Regional")
-                    ->orWhere('country', '=', "regional");
-//                    ->orWhere('type-of-accreditation2','like', "r%")
-//                    ->orWhere('type-of-accreditation2','like', "R%");
+                $query->where('collaboration', 'LIKE', "%National")
+                    ->where('collaboration', 'LIKE', "%National")
+                    ->orWhere('collaboration','like', "n%")
+                    ->orWhere('collaboration','like', "N%");
             })->count();
 
         $indicator_4_2_values["ir_indicator_2"]["total_publications"] = $total_publications;
