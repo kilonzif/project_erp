@@ -18,9 +18,9 @@ class ContactsController extends Controller
 {
     public function index(){
         $all_contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
-                        ->distinct('ace_contacts.id')
-                        ->select('contacts.*')
-                       ->get();
+            ->distinct('ace_contacts.id')
+            ->select('contacts.*')
+            ->get();
 
         $countries = Country::all();
         $aces = Ace::all();
@@ -38,7 +38,9 @@ class ContactsController extends Controller
             'institution' => 'nullable|integer|min:1',
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
+            'type_of_contact' => 'required|string',
             'mailing_name' => 'required|string|min:1',
+            'gender' => 'required|string|min:1',
             'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
 
@@ -64,10 +66,12 @@ class ContactsController extends Controller
         $new_contact = new Contacts();
 
         $new_contact->contact_name = $request->mailing_name;
-            $new_contact->position_id =$request->role;
-            $new_contact->contact_phone = $request->mailing_phone;
-            $new_contact->email = $request->mailing_email;
-            $new_contact->contact_status=1;
+        $new_contact->gender = $request->gender;
+        $new_contact->type_of_contact = $request->type_of_contact;
+        $new_contact->position_id =$request->role;
+        $new_contact->contact_phone = $request->mailing_phone;
+        $new_contact->email = $request->mailing_email;
+        $new_contact->contact_status=1;
 
         $contact_saved =  $new_contact->save();
         if($contact_saved) {
@@ -119,12 +123,15 @@ class ContactsController extends Controller
             'institution' => 'nullable|integer|min:1',
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
+            'type_of_contact' => 'required|string',
             'mailing_name' => 'required|string|min:1',
+            'gender' => 'required|string|min:1',
             'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
             'contact_status'=>'required'
 
         ]);
+
         $institution = $request->institution;
         $country = $request->country;
         $thematic_field = $request->thematic_field;
@@ -146,14 +153,20 @@ class ContactsController extends Controller
 
         $this_contact = Contacts::find($id);
 
+
+
         $contact_update = $this_contact->Update([
             'contact_name' => $request->mailing_name,
             'position_id' => $request->role,
+            'type_of_contact' => $request->type_of_contact,
+            'gender' => $request->gender,
             'contact_phone' => $request->mailing_phone,
             'email' => $request->mailing_email,
             'contact_status'=>$request->contact_status,
 
         ]);
+
+
 
 
         if ($contact_update) {
@@ -179,7 +192,7 @@ class ContactsController extends Controller
 
 
 
-/**
+    /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
@@ -266,10 +279,10 @@ class ContactsController extends Controller
         if($updated){
             $acecontacts = AceContact::where('contact_id','=',$this_contact->id)->get();
             foreach ($acecontacts as $ac) {
-                    $ac->Update([
-                        'ace_id'=>$request->ace_id,
-                        "contact_id"=>$request->contact_id,
-                    ]);
+                $ac->Update([
+                    'ace_id'=>$request->ace_id,
+                    "contact_id"=>$request->contact_id,
+                ]);
             }
             notify(new ToastNotification('Successful!', 'Contact Person Updated!', 'success'));
         }else{
@@ -277,7 +290,7 @@ class ContactsController extends Controller
         }
 
         return back();
-  }
+    }
 
     /**
      * @param $id

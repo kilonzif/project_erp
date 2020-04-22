@@ -76,6 +76,7 @@
 
                                         @php
                                             $excel_uploads =\App\ExcelUpload::where('indicator_id','=',(integer)$indicator->id)->get();
+
                                         @endphp
 
 

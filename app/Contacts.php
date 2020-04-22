@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class Contacts extends Model
 {
-	    protected $fillable = ['ace_id','position_id','edit_status','contact_name','contact_phone','email'];
+	    protected $fillable = ['ace_id','position_id','edit_status', 'type_of_contact','contact_name','gender','contact_phone','email'];
 
 	    protected $table = 'contacts';
 

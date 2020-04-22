@@ -90,6 +90,24 @@
                 </div>
             </div>
         </div>
+            <div class="col-md-4">
+                <div class="form-group{{ $errors->has('type_of_contact') ? ' form-control-warning' : '' }}">
+                    <label for="email">Type of Contact <span class="required">*</span></label>
+                    <select name="type_of_contact" required class="form-control">
+                        <option value="">Select One</option>
+                        <option {{($contacts->type_of_contact == 'ACE level')  ? "selected":""}} value="ACE level"> ACE level</option>
+                        <option {{($contacts->type_of_contact == 'Institutional level')  ? "selected":""}} value="Institutional level">Institutional level</option>
+                        <option {{($contacts->type_of_contact == 'Country level')  ? "selected":""}} value="Country level"> Country level</option>
+                        <option {{($contacts->type_of_contact == 'Experts level')  ? "selected":""}} value="Experts level">Experts level</option>
+                        <option {{($contacts->type_of_contact == 'Sectoral Board level')  ? "selected":""}} value="Sectoral Board level">Sectoral Board level</option>
+                    </select>
+                    @if ($errors->has('type_of_contact'))
+                        <p class="text-right">
+                            <small class="warning text-muted">{{ $errors->first('type_of_contact') }}</small>
+                        </p>
+                    @endif
+                </div>
+            </div>
 
             <div class="col-md-4">
                 <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
@@ -98,6 +116,21 @@
                     @if ($errors->has('mailing_name'))
                         <p class="text-right">
                             <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
+                        </p>
+                    @endif
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group{{ $errors->has('gender') ? ' form-control-warning' : '' }}">
+                    <label for="email">Gender <span class="required">*</span></label>
+                    <select name="gender" required class="form-control">
+                        <option value="">Select Gender</option>
+                        <option {{($contacts->gender == 'male')  ? "selected":""}} value="male">Male</option>
+                        <option {{($contacts->gender == 'female')  ? "selected":""}} value="female">Female</option>
+                    </select>
+                    @if ($errors->has('gender'))
+                        <p class="text-right">
+                            <small class="warning text-muted">{{ $errors->first('gender') }}</small>
                         </p>
                     @endif
                 </div>

@@ -111,13 +111,45 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4">
-                                        {{--<input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">--}}
-                                        <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
+                                        <div class="form-group{{ $errors->has('type_of_contact') ? ' form-control-warning' : '' }}">
+                                            <label for="email">Type of Contact <span class="required">*</span></label>
+                                            <select name="type_of_contact" required class="form-control">
+                                                <option value="">Select One</option>
+                                                <option value="ACE level"> ACE level</option>
+                                                <option value="Institutional level">Institutional level</option>
+                                                <option value="Country level"> Country level</option>
+                                                <option value="Experts level">Experts level</option>
+                                                <option value="Sectoral Board level">Sectoral Board level</option>
+                                            </select>
+                                            @if ($errors->has('type_of_contact'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('type_of_contact') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                       <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
                                             <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
                                             @if ($errors->has('mailing_name'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group{{ $errors->has('gender') ? ' form-control-warning' : '' }}">
+                                            <label for="email">Gender <span class="required">*</span></label>
+                                            <select name="gender" required class="form-control">
+                                                <option value="">Select Gender</option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                            </select>
+                                            @if ($errors->has('gender'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('gender') }}</small>
                                                 </p>
                                             @endif
                                         </div>
@@ -157,6 +189,7 @@
                         <thead>
                         <tr>
                             <th> Name</th>
+                            <th>Gender</th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Title</th>
@@ -165,9 +198,12 @@
                         </thead>
 
                         @foreach($all_contacts as $contact)
+
+
                             <tbody>
                             <tr>
                                 <td>{{$contact->contact_name}}</td>
+                                <td>{{$contact->gender}}</td>
                                 <td>{{$contact->email}}</td>
                                 <td>{{$contact->contact_phone}}</td>
                                 <td>
