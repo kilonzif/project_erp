@@ -170,10 +170,10 @@
                                 <table class="table table-scrollable table-striped table-bordered">
                                     <tr>
                                         <th>Amount (USD)</th>
-                                        <th>Montant original</th>
+                                        <th>Original Amount</th>
                                         <th>Source</th>
                                         <th>Date of Receipt (dd/mm/yyyy)</th>
-                                        <th>Coordonnées bancaires</th>
+                                        <th>Bank Details</th>
                                         <th>Region</th>
                                         <th>Purpose of Funds</th>
                                     </tr>

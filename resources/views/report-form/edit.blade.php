@@ -91,6 +91,7 @@
                                                     <input type="hidden" name="reporting_period" value="{{$reporting_period->id}}">
                                                 </div>
                                             </div>
+
                                         @endif
                                         <div class="col-md-4">
                                             <div class="form-group">
@@ -104,7 +105,8 @@
                                                         </p>
                                                     @endif
                                                 @else
-                                                    <input type="text" disabled="disabled" readonly value="{{ $report->submission_date }}" class="form-control">
+                                                    <h6>{{ $report->submission_date }}</h6>
+                                                    <input type="hidden" name="submission_date" value="{{ $report->submission_date }}" class="form-control">
                                                 @endif
                                             </div>
                                         </div>

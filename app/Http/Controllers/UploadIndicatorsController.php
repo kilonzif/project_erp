@@ -57,12 +57,16 @@ class UploadIndicatorsController extends Controller
                 return view('report-form.dlr51fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
 
             }
+            else if($report->language=="english" && $indicators->identifier =='4.1'){
+                return view('report-form.dlr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+
+            }
             else if($report->language=="english" && $indicators->identifier =='5.1'){
                 return view('report-form.dlr51en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
 
             }
 
-            return view('report-form.dlr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            return view('report-form.blank-dlr', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
         }
         $indicators = Indicator::where('is_parent','=', 1)
             ->where('id','=',$report->indicator_id)
