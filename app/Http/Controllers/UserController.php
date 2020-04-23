@@ -153,6 +153,8 @@ class UserController extends Controller
                 $user->ace = $request->ace;
                 $user->remember_token = substr(Crypt::encrypt($request->email), 0, 30);
 
+
+
            $saved= $user->save();
             $user->attachRole($request->role);
             if($saved) {

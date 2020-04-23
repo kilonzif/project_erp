@@ -248,9 +248,9 @@ return [
 
     'filters'     =>  [
         'phd_text'                      => 'PhD',
-        'masters_text'                  => 'Master',
+        'masters_text'                  => 'Masters',
         'bachelors_text'                => 'Bachelors',
-        'Course_text'                   => 'Course',
+        'Course_text'                   => 'Prof. Short Course',
     ],
 
 //    french filters

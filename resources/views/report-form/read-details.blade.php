@@ -51,8 +51,10 @@
                                     <tbody>
                                     @php
                                         $counter = 1;
+                                        $data = $indicator_details->data;
+
                                     @endphp
-                                    @foreach($indicator_details->data as $indicator_detail)
+                                    @foreach($data as $indicator_detail)
                                         <tr>
                                             <td>{{$counter++}}</td>
                                             @foreach($slugs as $slug)

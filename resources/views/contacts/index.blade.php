@@ -32,220 +32,264 @@
     </div>
 
     <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
-                Central Contact Management
-            </h6>
-            <div class="card-content">
-                <div class="card-body table-responsive">
-                    <div id="edit_view">
-                        <form class="form" action="{{route('user-management.contacts.save')}}" method="post">
-                            @csrf
-                            <div class="form-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
-                                            <label for="role">{{ __('Role') }}</label>
-                                            <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ old('email') }}" required>
-                                                <option value="">Select Role</option>
-                                                @foreach($roles as $role)
-                                                    <option value="{{$role->id}}">{{$role->position_title}}</option>
-                                                @endforeach
-                                            </select>
+        <div class="col-md-8">
+            <div class="card">
+                <h6 class="card-header p-2 card-head-inverse bg-secondary" style="border-radius:0">
+                    Add Contacts Using Web Form
+                </h6>
+                <div class="card-content">
+                    <div class="card-body table-responsive">
+                        <div id="edit_view">
+                            <form class="form" action="{{route('user-management.contacts.save')}}" method="post">
+                                @csrf
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
+                                                <label for="role">{{ __('Role') }}</label>
+                                                <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ old('email') }}" required>
+                                                    <option value="">Select Role</option>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{$role->id}}">{{$role->position_title}}</option>
+                                                    @endforeach
+                                                </select>
 
-                                            @if ($errors->has('role'))
-                                                <p class="text-right mb-0">
-                                                    <small class="warning text-muted">{{ $errors->first('role') }}</small>
-                                                </p>
-                                            @endif
+                                                @if ($errors->has('role'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('role') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('institution') ? ' form-control-warning' : '' }}" style="display: block;" id="institution_toggle">
-                                            <label for="institution">{{ __('Select Institution') }}</label>
-                                            <select id="institution" class="form-control{{ $errors->has('institution') ? ' is-invalid' : '' }}" name="institution" value="{{ old('institution') }}">
-                                                <option value="">Select Institution</option>
-                                                @foreach($institutions as $institution)
-                                                    <option value="{{$institution->id}}">{{$institution->name}}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('institution') ? ' form-control-warning' : '' }}" style="display: block;" id="institution_toggle">
+                                                <label for="institution">{{ __('Select Institution') }}</label>
+                                                <select id="institution" class="form-control{{ $errors->has('institution') ? ' is-invalid' : '' }}" name="institution" value="{{ old('institution') }}">
+                                                    <option value="">Select Institution</option>
+                                                    @foreach($institutions as $institution)
+                                                        <option value="{{$institution->id}}">{{$institution->name}}</option>
+                                                    @endforeach
+                                                </select>
 
-                                            @if ($errors->has('institution'))
-                                                <p class="text-right mb-0">
-                                                    <small class="warning text-muted">{{ $errors->first('institution') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                        <div class="form-group{{ $errors->has('country') ? ' form-control-warning' : '' }}" id="country_toggle" style="display: none;">
-                                            <label for="ace">{{ __('Select Country') }}</label>
-                                            <select id="country" class="form-control{{ $errors->has('ace') ? ' is-invalid' : '' }}" name="country" value="{{ old('country') }}">
-                                                <option value="">Select Country</option>
-                                                @foreach($countries as $country)
-                                                    <option {{old('country') == $country->id ? 'selected': ''}} value="{{$country->id}}">{{$country->country}}</option>
-                                                @endforeach
-                                            </select>
+                                                @if ($errors->has('institution'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('institution') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                            <div class="form-group{{ $errors->has('country') ? ' form-control-warning' : '' }}" id="country_toggle" style="display: none;">
+                                                <label for="ace">{{ __('Select Country') }}</label>
+                                                <select id="country" class="form-control{{ $errors->has('ace') ? ' is-invalid' : '' }}" name="country" value="{{ old('country') }}">
+                                                    <option value="">Select Country</option>
+                                                    @foreach($countries as $country)
+                                                        <option {{old('country') == $country->id ? 'selected': ''}} value="{{$country->id}}">{{$country->country}}</option>
+                                                    @endforeach
+                                                </select>
 
-                                            @if ($errors->has('country'))
-                                                <p class="text-right mb-0">
-                                                    <small class="warning text-muted">{{ $errors->first('country') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
-                                        <div class="form-group{{ $errors->has('thematic_field') ? ' form-control-warning' : '' }}" id="thematic_field_toggle" style="display: none;">
-                                            <label for="thematic_field">{{ __('Select Thematic Field') }}</label>
-                                            <select id="thematic_field" class="form-control{{ $errors->has('thematic_field') ? ' is-invalid' : '' }}" name="thematic_field" value="{{ old('thematic_field') }}">
-                                                <option value="">Select Field of Study</option>
-                                                <option value="Agriculture">Agriculture</option>
-                                                <option value="Health">Health</option>
-                                                <option value="STEM">STEM</option>
-                                                <option value="Education">Education</option>
-                                                <option value="Applied Soc. Sc.">Applied Soc. Sc.</option>
-                                            </select>
+                                                @if ($errors->has('country'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('country') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                            <div class="form-group{{ $errors->has('thematic_field') ? ' form-control-warning' : '' }}" id="thematic_field_toggle" style="display: none;">
+                                                <label for="thematic_field">{{ __('Select Thematic Field') }}</label>
+                                                <select id="thematic_field" class="form-control{{ $errors->has('thematic_field') ? ' is-invalid' : '' }}" name="thematic_field" value="{{ old('thematic_field') }}">
+                                                    <option value="">Select Field of Study</option>
+                                                    <option value="Agriculture">Agriculture</option>
+                                                    <option value="Health">Health</option>
+                                                    <option value="STEM">STEM</option>
+                                                    <option value="Education">Education</option>
+                                                    <option value="Applied Soc. Sc.">Applied Soc. Sc.</option>
+                                                </select>
 
-                                            @if ($errors->has('thematic_field'))
-                                                <p class="text-right mb-0">
-                                                    <small class="warning text-muted">{{ $errors->first('thematic_field') }}</small>
-                                                </p>
-                                            @endif
+                                                @if ($errors->has('thematic_field'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('thematic_field') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('type_of_contact') ? ' form-control-warning' : '' }}">
-                                            <label for="email">Type of Contact <span class="required">*</span></label>
-                                            <select name="type_of_contact" required class="form-control">
-                                                <option value="">Select One</option>
-                                                <option value="ACE level"> ACE level</option>
-                                                <option value="Institutional level">Institutional level</option>
-                                                <option value="Country level"> Country level</option>
-                                                <option value="Experts level">Experts level</option>
-                                                <option value="Sectoral Board level">Sectoral Board level</option>
-                                            </select>
-                                            @if ($errors->has('type_of_contact'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('type_of_contact') }}</small>
-                                                </p>
-                                            @endif
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('type_of_contact') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Type of Contact <span class="required">*</span></label>
+                                                <select name="type_of_contact" required class="form-control">
+                                                    <option value="">Select One</option>
+                                                    <option value="ACE level"> ACE level</option>
+                                                    <option value="Institutional level">Institutional level</option>
+                                                    <option value="Country level"> Country level</option>
+                                                    <option value="Experts level">Experts level</option>
+                                                    <option value="Sectoral Board level">Sectoral Board level</option>
+                                                </select>
+                                                @if ($errors->has('type_of_contact'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('type_of_contact') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                       <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
-                                            <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
-                                            @if ($errors->has('mailing_name'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
-                                                </p>
-                                            @endif
+                                                <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
+                                                @if ($errors->has('mailing_name'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('gender') ? ' form-control-warning' : '' }}">
-                                            <label for="email">Gender <span class="required">*</span></label>
-                                            <select name="gender" required class="form-control">
-                                                <option value="">Select Gender</option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
-                                            </select>
-                                            @if ($errors->has('gender'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('gender') }}</small>
-                                                </p>
-                                            @endif
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('gender') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Gender <span class="required">*</span></label>
+                                                <select name="gender" required class="form-control">
+                                                    <option value="">Select Gender</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                </select>
+                                                @if ($errors->has('gender'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('gender') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
-                                            <label for="email">Phone </label><input type="text"  placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
-                                            @if ($errors->has('mailing_phone'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
-                                                </p>
-                                            @endif
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Phone </label><input type="text"  placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
+                                                @if ($errors->has('mailing_phone'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
-                                            <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
-                                            @if ($errors->has('mailing_email'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
-                                                </p>
-                                            @endif
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
+                                                @if ($errors->has('mailing_email'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button type="submit" class="btn btn-primary fa fa-save" style="margin-top: 1.9rem">
-                                              Save Contact
-                                        </button><br><br>
+                                        <div class="col-md-4">
+                                            <button type="submit" class="btn btn-primary fa fa-save" style="margin-top: 1.9rem">
+                                                Save Contact
+                                            </button><br><br>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                        <br>
+                            </form>
+                            <br>
+                        </div>
                     </div>
-
-                    <table class="table table-striped table-bordered all_indicators" id="all_indicators">
-                        <thead>
-                        <tr>
-                            <th> Name</th>
-                            <th>Gender</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Title</th>
-                            <th style="width: 100px;">Action</th>
-                        </tr>
-                        </thead>
-
-                        @foreach($all_contacts as $contact)
-
-
-                            <tbody>
-                            <tr>
-                                <td>{{$contact->contact_name}}</td>
-                                <td>{{$contact->gender}}</td>
-                                <td>{{$contact->email}}</td>
-                                <td>{{$contact->contact_phone}}</td>
-                                <td>
-                                    @php
-                                    $title = \App\Position::where('id',$contact->position_id)->first();
-                                    @endphp
-
-                                    {{$title->position_title}}
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                        <a href="#edit_view" onclick="edit_view('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
-                                            <i class="ft-edit"></i></a>
-                                        <a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"
-                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"
-                                           title="Delete Report"><i class="ft-trash-2"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        @endforeach
-
-                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <h6 class="card-header p-2 card-head-inverse bg-secondary" style="border-radius:0">
+                    Upload Contacts in Bulk
+                </h6>
+                <div class="card-content">
+                    <div class="card-body table-responsive">
+                        <form action="{{route('user-management.contacts.upload-contacts')}}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <fieldset class="form-group">
+                                <label for="upload_file">Browse File <span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span></label>
+                                <input type="file" style="padding: 8px;" required class="form-control" name="upload_file" id="upload_file">
+                                @if ($errors->has('upload_file'))
+                                    <p class="text-right mb-0">
+                                        <small class="danger text-muted" id="file-error">{{ $errors->first('upload_file') }}</small>
+                                    </p>
+                                @endif
+                            </fieldset>
+                            <button style="margin-top: 2rem;" type="submit" class="btn btn-primary"
+                                    id="uploadData">
+                                <i class="ft-upload mr-1"></i> Upload Contacts
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <h6 class="card-header p-2 card-head-inverse bg-secondary" style="border-radius:0">
+                    List of All Contacts
+                </h6>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered all_indicators" id="all_indicators">
+                            <thead>
+                            <tr>
+                                <th> Name</th>
+                                <th>Gender</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Title</th>
+                                <th style="width: 100px;">Action</th>
+                            </tr>
+                            </thead>
+
+                            @foreach($all_contacts as $contact)
+
+
+                                <tbody>
+                                <tr>
+                                    <td>{{$contact->contact_name}}</td>
+                                    <td>{{$contact->gender}}</td>
+                                    <td>{{$contact->email}}</td>
+                                    <td>{{$contact->contact_phone}}</td>
+                                    <td>
+                                        @php
+                                            $title = \App\Position::where('id',$contact->position_id)->first();
+                                        @endphp
+
+                                        {{$title->position_title}}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <a href="#edit_view" onclick="edit_view('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
+                                                <i class="ft-edit"></i></a>
+                                            <a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"
+                                               class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"
+                                               title="Delete Report"><i class="ft-trash-2"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            @endforeach
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
     </div>
+
+
 
 
 
 
 
 @endsection
-    @push('vendor-script')
-        <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
-    @endpush
-    @push('end-script')
-        <script>
-            $('#all_indicators').dataTable( {
-                "ordering": false
-            } );
+@push('vendor-script')
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
+@endpush
+@push('end-script')
+    <script>
+        $('#all_indicators').dataTable( {
+            "ordering": false
+        } );
 
         function changeOnRole(){
             var e = document.getElementById("role");
@@ -337,7 +381,7 @@
             });
         }
 
-        
+
     </script>
 
 @endpush

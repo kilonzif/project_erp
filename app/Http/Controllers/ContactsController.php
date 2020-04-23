@@ -13,6 +13,12 @@ use App\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
+use vendor\project\StatusTest;
+//use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Facades\File;
+use File;
 
 class ContactsController extends Controller
 {
@@ -310,6 +316,103 @@ class ContactsController extends Controller
         }
 
         return redirect()->back();
+    }
+
+
+
+//    bulk uploads usig excel form
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function save_bulk_contacts(Request $request)
+    {
+
+        $this->validate($request, [
+            'upload_file' => 'required|file|mimes:xls,xlsx',
+        ]);
+
+
+        $file_one=$request->upload_file;
+        $destinationPath = base_path() . '/public/Contacts/';
+        $thefile_one = "";
+
+        $file1 = $request->file('upload_file');
+
+
+        if (isset($file1)) {
+            $dd = $this->extractMembers($file1);
+
+            if ($dd) {
+                $file1->move($destinationPath, $file1->getClientOriginalName());
+                $thefile_one = $file_one->getClientOriginalName();
+                notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
+            return back();
+            }else{
+                notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
+                return back();
+            }
+        }
+//        $save = DB::table('contacts')::updateOrCreate(
+//                'file_one' => $thefile_one]
+//        );
+
+//        if (isset($save)) {
+//
+////            where you extract the members
+//            notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
+//            return back();
+//        } else {
+//            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
+//            return back();
+//        }
+    }
+
+    public function extractMembers($file){
+        try {
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet        = $spreadsheet->getActiveSheet();
+            $row_limit    = $sheet->getHighestDataRow();
+            $column_limit = $sheet->getHighestDataColumn();
+            $row_range    = range( 2, $row_limit );
+            $column_range = range( 'J', $column_limit );
+            $startcount = 2;
+            foreach ( $row_range as $row ) {
+                $data[] = [
+                    'type_of_contact' => $sheet->getCell( 'A' . $row )->getValue(),
+                    'role' => $sheet->getCell( 'B' . $row )->getValue(),
+                    'ace' => $sheet->getCell( 'C' . $row )->getValue(),
+                    'institution' => $sheet->getCell( 'D' . $row )->getValue(),
+                    'country' => $sheet->getCell( 'E' . $row )->getValue(),
+                    'field' =>$sheet->getCell( 'F' . $row )->getValue(),
+                     'name' => $sheet->getCell( 'G' . $row )->getValue(),
+                     'gender' => $sheet->getCell( 'H' . $row )->getValue(),
+                     'phone' => $sheet->getCell( 'I' . $row )->getValue(),
+                     'email' => $sheet->getCell( 'J' . $row )->getValue()
+                ];
+                $startcount++;
+            }
+
+
+            // Unique data without duplicates
+            $unique = array_unique($data, SORT_REGULAR);
+
+
+
+
+            DB::table('all_contacts')->insert($unique);
+
+//
+
+
+        } catch (Exception $e) {
+            $error_code = $e->errorInfo[1];
+            return false;
+        }
+
+        return true;
     }
 
 

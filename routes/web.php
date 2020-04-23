@@ -197,6 +197,9 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('contacts/save', 'ContactsController@save_contact')->name('contacts.save');
     Route::post('contacts/update/{id}', 'ContactsController@update_contact')->name('contacts.update');
 
+  //upload bulk contacts
+    Route::post('contacts/upload-contacts', 'ContactsController@save_bulk_contacts')->name('contacts.upload-contacts');
+
 
 });
 

@@ -75,8 +75,9 @@
                                     @if($indicator->IsUploadable($indicator->id))
 
                                         @php
-                                            $excel_uploads =\App\ExcelUpload::where('indicator_id','=',(integer)$indicator->id)->get();
-
+                                            $excel_uploads =\App\ExcelUpload::where('indicator_id','=',(integer)$indicator->id)
+                                            ->orderBy('language', 'asc')
+                                            ->get();
                                         @endphp
 
 

@@ -88,6 +88,7 @@ class UploadIndicatorsController extends Controller
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')->where('indicator','=',$indicator_details->indicator_id)->pluck('fields');
 
         $headers = array();
+//        $table_name = Str::snake("indicator_".$indicator_info->identifier);
 
         for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
             $headers[] = $getHeaders[0][$a]['label'];
@@ -142,6 +143,8 @@ class UploadIndicatorsController extends Controller
             return in_array($request->language,collect($query)->get('language'));
         })
             ->pluck('start_row')->first();
+
+
 
 
         //Assign 3 which is row 3 if no data is found
@@ -235,10 +238,14 @@ class UploadIndicatorsController extends Controller
                         echo  PHP_EOL;
                     }
 
+
+
                     DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
                     echo PHP_EOL;
                 }//end of loop
+
+
 
                 echo PHP_EOL;
                 $row = DB::connection('mongodb')
