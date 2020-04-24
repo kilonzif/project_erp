@@ -85,7 +85,11 @@
                             <span class="menu-title" data-i18n="">{{__('General Report')}}</span>
                         </a>
                     </li>
-
+                    <li class="{{isRouteActive('report_generation.dlrs')}}">
+                        <a href="{{route('report_generation.dlrs')}}">
+                            <span class="menu-title" data-i18n="">{{__('DLR Report')}}</span>
+                        </a>
+                    </li>
                     <li class="{{isRouteActive('report_generation.indicator_status')}}">
                         <a href="{{route('report_generation.indicator_status')}}">
                             <span class="menu-title" data-i18n="">{{__('Indicator Status Report')}}</span>

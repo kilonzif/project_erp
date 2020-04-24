@@ -34,6 +34,19 @@ class GenerateReportController extends Controller {
 		return view('generate-report.general-report', compact('indicators', 'aces', 'countries', 'fields'));
 	}
 
+	public function dlrs() {
+		$aces = Ace::orderBy('aces.name', 'asc')->get();
+		$options = [
+		    'dlr_3_1'=> 'New PhD students',
+		    'dlr_3_2'=> 'New Masters students',
+		    'dlr_3_3'=> 'Professional Short Courses students',
+		    'dlr_3_4'=> 'New Bachelors students',
+		    'dlr_4_2'=> 'Publications',
+		    'dlr_5_2'=> 'Internships',
+        ];
+		return view('generate-report.dlr-report', compact('aces', 'options'));
+	}
+
 	public function milestones_report_page() {
 		$indicators = Indicator::mainIndicators()->get();
 		$aces = Ace::orderBy('aces.name', 'asc')->get();

@@ -339,6 +339,7 @@ Route::name('report_generation.')->group(function () {
 
         Route::get('general/generate-table', 'GenerateReportController@general_report_table')->name('general_report_table');
 
+        Route::get('dlrs', 'GenerateReportController@dlrs')->name('dlrs');
 // 		Route::get('general/generate-table/export', 'GenerateReportController@generalspreadsheetexport
         // ')->name('general_report_table.generalspreadsheetexport');
 
