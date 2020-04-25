@@ -1,12 +1,7 @@
 @extends('layouts.app')
 @push('vendor-styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">
-@endpush
-@push('other-styles')
-        <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
 @endpush
 @section('content')
     <div class="content-header row">
@@ -27,7 +22,7 @@
     <div class="content-body">
         <h5>Generate Report</h5>
 
-        <form action="#" method="GET">
+        <form action="{{route('report_generation.dlrs')}}" method="GET">
             @csrf
             <div class="card">
                 <div class="card-content">
@@ -55,12 +50,12 @@
                                     <label for="reporting_year">Reporting Year<span class="required">*</span></label>
                                     <select name="reporting_year" id="reporting_year" class="form-control" required>
                                         <option value="">Choose Year</option>
-                                        <option value="">2019</option>
-                                        <option value="">2020</option>
-                                        <option value="">2021</option>
-                                        <option value="">2022</option>
-                                        <option value="">2023</option>
-                                        <option value="">2024</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
                                     </select>
                                     @if ($errors->has('reporting_year'))
                                         <p class="text-right">
@@ -88,7 +83,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <button type="submit" class="btn btn-secondary square">
+                                <button type="submit" name="generate" value="1" class="btn btn-secondary square">
                                     <i class="ft-list mr-sm-1"></i>{{__('Generate')}}</button>
                             </div>
                         </div>
@@ -97,92 +92,71 @@
             </div>
         </form>
 
+        @if(isset($indicator_details))
+            <div id="action-loader" style="padding: 1rem 0; margin: 2rem 0;">
+                @include('generate-report.dlrs-result-list')
+            </div>
+        @endif
     </div>
 @endsection
 @push('vendor-script')
-    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
-    <script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/tables/datatable/datatables.min.js')}}" type="text/javascript"></script>
 @endpush
 @push('end-script')
-    <script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>
     <script>
+        function loadFields() {
+            let dlr = $('#dlr').val();
+            let reporting_year = $('#reporting_year').val();
+            let ace = $('#ace').val();
+            // alert($selected);
+            let path = "{{route('report_generation.dlrs.result')}}"
+            $.ajaxSetup(    {
+                headers: {
+                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
+                }
+            });
+            $.ajax({
+                url: path,
+                type: 'GET',
+                data: {dlr:dlr,reporting_year:reporting_year,ace:ace},
+                beforeSend: function(){
+                    $('#action-loader').block({
+                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                        // timeout: 2000, //unblock after 2 seconds
+                        overlayCSS: {
+                            backgroundColor: '#ccc',
+                            opacity: 0.8,
+                            cursor: 'wait'
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'transparent'
+                        }
+                    });
+                    $('#action-card').empty();
+                },
+                success: function(data){
+                    // console.log(data);
+                    $('#action-card').html(data.theView);
+                },
+                complete:function(){
+                    $('#action-loader').unblock();
+                    $.getScript("{{asset('vendors/js/tables/datatable/datatables.min.js')}}")
+                }
+                ,
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        }
 
-        // $('input[name=filter]').on('change', function() {
-        //     var filter = $('input[name=filter]:checked').val();
-        //
-        //     if (filter == 'aces'){
-        //         $("#forFieldCountry").css('display','none');
-        //         $("#forACE").css('display','block');
-        //     }
-        //
-        //     if (filter == 'field_country'){
-        //         $("#forFieldCountry").css('display','block');
-        //         $("#forACE").css('display','none');
-        //     }
-        //
-        // });
-        {{--function loadFields() {--}}
-            {{--var selected = $('#indicator').val();--}}
-            {{--// alert($selected);--}}
-            {{--var path = "{{route('getIndicatorFields')}}"--}}
-            {{--$.ajaxSetup(    {--}}
-                {{--headers: {--}}
-                    {{--'X-CSRF-Token': $('meta[name=_token]').attr('content')--}}
-                {{--}--}}
-            {{--});--}}
-            {{--$.ajax({--}}
-                {{--url: path,--}}
-                {{--type: 'GET',--}}
-                {{--data: {id:selected},--}}
-                {{--beforeSend: function(){--}}
-                    {{--$('#action-loader').block({--}}
-                        {{--message: '<div class="ft-loader icon-spin font-large-1"></div>',--}}
-                        {{--// timeout: 2000, //unblock after 2 seconds--}}
-                        {{--overlayCSS: {--}}
-                            {{--backgroundColor: '#ccc',--}}
-                            {{--opacity: 0.8,--}}
-                            {{--cursor: 'wait'--}}
-                        {{--},--}}
-                        {{--css: {--}}
-                            {{--border: 0,--}}
-                            {{--padding: 0,--}}
-                            {{--backgroundColor: 'transparent'--}}
-                        {{--}--}}
-                    {{--});--}}
-                    {{--$('#action-card').empty();--}}
-                {{--},--}}
-                {{--success: function(data){--}}
-                    {{--console.log(data)--}}
-                    {{--$('#action-card').html(data.theView);--}}
-                {{--},--}}
-                {{--complete:function(){--}}
-                    {{--$('#action-loader').unblock();--}}
-                    {{--$.getScript("http://127.0.0.1:8000/vendors/js/forms/select/select2.full.min.js")--}}
-                {{--}--}}
-                {{--,--}}
-                {{--error: function (data) {--}}
-                    {{--console.log(data)--}}
-                {{--}--}}
-            {{--});--}}
-        {{--}--}}
-
-        {{--$('.select2').select2({--}}
-            {{--placeholder: "Select Indicator",--}}
-            {{--allowClear: true--}}
-        {{--});--}}
-
-        {{--$("#checkAllACEs").change(function(){--}}
-            {{--$('input[type=checkbox].forACES').not(this).prop('checked', this.checked);--}}
-        {{--});--}}
-
-        {{--//Enable or disable the bulk sms button when more than 1 checkbox is selected--}}
-        {{--$("input[type=checkbox].forACES").change(function() {--}}
-            {{--var NotChecked = $('input[type=checkbox].forACES:not(":checked")').length;--}}
-            {{--if (NotChecked > 0){--}}
-                {{--$("#checkAllACEs").prop('checked', false);--}}
-            {{--}else{--}}
-                {{--$("#checkAllACEs").prop('checked', true);--}}
-            {{--}--}}
-        {{--});--}}
+        $('.dlr-info').DataTable({
+            // responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'print','colvis'
+            ]
+        });
     </script>
 @endpush

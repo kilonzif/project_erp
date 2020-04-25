@@ -7,9 +7,12 @@ use App\Classes\ToastNotification;
 use App\Country;
 use App\Exports\ReportsExport;
 use App\Indicator;
+use App\IndicatorDetails;
+use App\IndicatorForm;
 use App\Milestone;
 use App\Project;
 use App\Report;
+use App\ReportingPeriod;
 use App\SystemOption;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +37,7 @@ class GenerateReportController extends Controller {
 		return view('generate-report.general-report', compact('indicators', 'aces', 'countries', 'fields'));
 	}
 
-	public function dlrs() {
+	public function dlrs(Request $request) {
 		$aces = Ace::orderBy('aces.name', 'asc')->get();
 		$options = [
 		    'dlr_3_1'=> 'New PhD students',
@@ -44,7 +47,125 @@ class GenerateReportController extends Controller {
 		    'dlr_4_2'=> 'Publications',
 		    'dlr_5_2'=> 'Internships',
         ];
-		return view('generate-report.dlr-report', compact('aces', 'options'));
+        $indicator_details = null;
+        $headers = $englishSlugs = $frenchSlugs = array();
+
+		if ($request->generate) {
+
+            $dlrs_options = [
+                'dlr_3_1'=> '3',
+                'dlr_3_2'=> '3',
+                'dlr_3_3'=> '3',
+                'dlr_3_4'=> '3',
+                'dlr_4_2'=> '4.2',
+                'dlr_5_2'=> '5.2',
+            ];
+            $year = $request->reporting_year;
+            $indicator_identifier = $dlrs_options[$request->dlr];
+            $indicator_id = Indicator::where('identifier','=',$indicator_identifier)->pluck('id')->first();
+            $reporting_year = ReportingPeriod::where('period_start','like',"%$year%")->pluck('id');
+            if ($reporting_year->count() < 1) {
+                notify(new ToastNotification('Sorry!', "No record for reports available.", 'info'));
+                return back();
+            }
+
+            $report_ids = Report::
+            where('ace_id','=',(int)$request->ace)
+                ->where('indicator_id','=',$indicator_id)
+                ->whereIn('reporting_period_id',$reporting_year)
+                ->pluck('id');
+
+            $indicator_details = IndicatorDetails::whereIn('report_id',$report_ids)->get();
+            $getEnglishHeaders = IndicatorForm::where('indicator','=',$indicator_id)
+                ->where('language.Text','=','english')
+                ->pluck('fields')
+                ->first();
+            $getFrenchHeaders = IndicatorForm::where('indicator','=',$indicator_id)
+                ->where('language.Text','=','french')
+                ->pluck('fields')
+                ->first();
+
+            if ($indicator_details->count() < 1) {
+                notify(new ToastNotification('Sorry!', "No record for reports available.", 'info'));
+                return back();
+            }
+
+            for ($a = 0; $a < sizeof($getEnglishHeaders); $a++){
+                $headers[] = $getEnglishHeaders[$a]['label'];
+            }
+
+            for ($a = 0; $a < sizeof($getEnglishHeaders); $a++){
+                $englishSlugs[] = $getEnglishHeaders[$a]['slug'];
+            }
+
+            for ($a = 0; $a < sizeof($getFrenchHeaders); $a++){
+                $frenchSlugs[] = $getFrenchHeaders[$a]['slug'];
+            }
+        }
+
+        return view('generate-report.dlr-report', compact('aces', 'options', 'headers',
+            'englishSlugs','frenchSlugs','indicator_details'))->render();
+	}
+
+	public function selectedDlrsReport(Request $request) {
+
+        dd($request->all());
+        $dlrs_options = [
+            'dlr_3_1'=> '3',
+            'dlr_3_2'=> '3',
+            'dlr_3_3'=> '3',
+            'dlr_3_4'=> '3',
+            'dlr_4_2'=> '4.2',
+            'dlr_5_2'=> '5.2',
+        ];
+        $year = $request->reporting_year;
+        $indicator_identifier = $dlrs_options[$request->dlr];
+        $indicator_id = Indicator::where('identifier','=',$indicator_identifier)->pluck('id')->first();
+        $reporting_year = ReportingPeriod::where('period_start','like',"%$year%")->pluck('id');
+        if ($reporting_year->count() < 1) {
+            notify(new ToastNotification('Sorry!', "No record for reports available.", 'info'));
+            return back();
+        }
+
+	    $report_ids = Report::
+            where('ace_id','=',(int)$request->ace)
+            ->where('indicator_id','=',$indicator_id)
+            ->whereIn('reporting_period_id',$reporting_year)
+            ->pluck('id');
+
+        $indicator_details = IndicatorDetails::whereIn('report_id',$report_ids)->get();
+        $getEnglishHeaders = IndicatorForm::where('indicator','=',$indicator_id)
+            ->where('language.Text','=','english')
+            ->pluck('fields')
+            ->first();
+        $getFrenchHeaders = IndicatorForm::where('indicator','=',$indicator_id)
+            ->where('language.Text','=','french')
+            ->pluck('fields')
+            ->first();
+
+        if ($indicator_details->count() < 1) {
+            notify(new ToastNotification('Sorry!', "No record for reports available.", 'info'));
+            return back();
+        }
+        $headers = $englishSlugs = $frenchSlugs = array();
+
+        for ($a = 0; $a < sizeof($getEnglishHeaders); $a++){
+            $headers[] = $getEnglishHeaders[$a]['label'];
+        }
+
+        for ($a = 0; $a < sizeof($getEnglishHeaders); $a++){
+            $englishSlugs[] = $getEnglishHeaders[$a]['slug'];
+        }
+
+        for ($a = 0; $a < sizeof($getFrenchHeaders); $a++){
+            $frenchSlugs[] = $getFrenchHeaders[$a]['slug'];
+        }
+//        dd($indicator_details);
+//        $indicator = Indicator::find($indicator_details->indicator_id);
+
+        $view = view('generate-report.dlrs-result-list', compact('headers',
+            'englishSlugs','frenchSlugs','indicator_details'))->render();
+        return response()->json(['theView'=>$view]);
 	}
 
 	public function milestones_report_page() {
@@ -171,7 +292,7 @@ class GenerateReportController extends Controller {
 			return $this->generalspreadsheet($report_values, $baseline_values, $target_values, $reports, $project);
 		}
 
-		return view('generate-report.general-f-table',
+		return view('generate-report.general-report-table',
 			compact('project', 'report_values', 'start', 'end', 'baseline_values', 'target_values', 'export', 'reports'));
 	}
 
