@@ -47,8 +47,14 @@ class GenerateReportController extends Controller {
 		    'dlr_4_2'=> 'Publications',
 		    'dlr_5_2'=> 'Internships',
         ];
-        $indicator_details = null;
-        $headers = $englishSlugs = $frenchSlugs = array();
+		$dlr_filter_options = [
+		    'dlr_3_1'=> ['Doctorat','Doctorate','PhD'],
+		    'dlr_3_2'=> ['Masters'],
+		    'dlr_3_3'=> ['Programme de courte durée','Prof. Short Course'],
+		    'dlr_3_4'=> ['Premier cycle','Bachelors']
+        ];
+        $indicator_details = $dlr_options_selected = null;
+        $headers = $englishSlugs = $frenchSlugs = $dlr_filter_option_selected = array();
 
 		if ($request->generate) {
 
@@ -62,11 +68,22 @@ class GenerateReportController extends Controller {
             ];
             $year = $request->reporting_year;
             $indicator_identifier = $dlrs_options[$request->dlr];
+            if ($indicator_identifier == '3'){
+                $dlr_filter_option_selected = $dlr_filter_options[$request->dlr];
+            }
+
+            $dlr_options_selected = $options[$request->dlr];
             $indicator_id = Indicator::where('identifier','=',$indicator_identifier)->pluck('id')->first();
             $reporting_year = ReportingPeriod::where('period_start','like',"%$year%")->pluck('id');
             if ($reporting_year->count() < 1) {
-                notify(new ToastNotification('Sorry!', "No record for reports available.", 'info'));
-                return back();
+                notify(new ToastNotification('Sorry!', "No records available.", 'info'));
+                return back()->withInput();
+            }
+
+            $ace_object = Ace::find($request->ace);
+            $ace_name = $ace_object->name;
+            if ($ace_object->acronym != null) {
+                $ace_name = $ace_object->name." - ".$ace_object->acronym;
             }
 
             $report_ids = Report::
@@ -76,6 +93,7 @@ class GenerateReportController extends Controller {
                 ->pluck('id');
 
             $indicator_details = IndicatorDetails::whereIn('report_id',$report_ids)->get();
+
             $getEnglishHeaders = IndicatorForm::where('indicator','=',$indicator_id)
                 ->where('language.Text','=','english')
                 ->pluck('fields')
@@ -86,8 +104,8 @@ class GenerateReportController extends Controller {
                 ->first();
 
             if ($indicator_details->count() < 1) {
-                notify(new ToastNotification('Sorry!', "No record for reports available.", 'info'));
-                return back();
+                notify(new ToastNotification('Sorry!', "No records available.", 'info'));
+                return back()->withInput();
             }
 
             for ($a = 0; $a < sizeof($getEnglishHeaders); $a++){
@@ -103,8 +121,8 @@ class GenerateReportController extends Controller {
             }
         }
 
-        return view('generate-report.dlr-report', compact('aces', 'options', 'headers',
-            'englishSlugs','frenchSlugs','indicator_details'))->render();
+        return view('generate-report.dlr-report', compact('aces', 'options', 'headers','year','ace_name',
+            'englishSlugs','frenchSlugs','indicator_details','dlr_filter_option_selected','dlr_options_selected'));
 	}
 
 	public function selectedDlrsReport(Request $request) {

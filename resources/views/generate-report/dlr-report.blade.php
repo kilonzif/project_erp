@@ -34,7 +34,7 @@
                                     <select name="ace" id="ace" class="form-control" required>
                                         <option value="">Choose ACE</option>
                                         @foreach($aces as $ace)
-                                            <option value="{{$ace->id}}">{{$ace->name}}</option>
+                                            <option {{(old('ace')==$ace->id)?"selected":""}} value="{{$ace->id}}">{{$ace->name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('ace'))
@@ -50,12 +50,12 @@
                                     <label for="reporting_year">Reporting Year<span class="required">*</span></label>
                                     <select name="reporting_year" id="reporting_year" class="form-control" required>
                                         <option value="">Choose Year</option>
-                                        <option value="2019">2019</option>
-                                        <option value="2020">2020</option>
-                                        <option value="2021">2021</option>
-                                        <option value="2022">2022</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2024">2024</option>
+                                        <option value="2019" {{(old('reporting_year')=="2019")?"selected":""}}>2019</option>
+                                        <option value="2020" {{(old('reporting_year')=="2020")?"selected":""}}>2020</option>
+                                        <option value="2021" {{(old('reporting_year')=="2021")?"selected":""}}>2021</option>
+                                        <option value="2022" {{(old('reporting_year')=="2022")?"selected":""}}>2022</option>
+                                        <option value="2023" {{(old('reporting_year')=="2023")?"selected":""}}>2023</option>
+                                        <option value="2024" {{(old('reporting_year')=="2024")?"selected":""}}>2024</option>
                                     </select>
                                     @if ($errors->has('reporting_year'))
                                         <p class="text-right">
@@ -71,7 +71,7 @@
                                     <select name="dlr" id="dlr" class="form-control" required>
                                         <option value="">Choose DLR</option>
                                         @foreach($options as $key => $name)
-                                            <option value="{{$key}}">{{$name}}</option>
+                                            <option {{(old('dlr')==$key)?"selected":""}} value="{{$key}}">{{$name}}</option>
                                         @endforeach
                                     </select>
                                     @if ($errors->has('dlr'))
