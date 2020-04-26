@@ -58,7 +58,7 @@ class AcesController extends Controller {
     {
         $this->validate($request, [
             'name' => 'required|string|min:3|unique:aces,name',
-            'contact' => 'required|numeric|digits_between:10,17',
+            'contact' => 'nullable|numeric|digits_between:10,17',
             'email' => 'required|string|email|min:3',
             'university' => 'required|integer|min:1',
             'field' => 'required|string',
@@ -66,7 +66,7 @@ class AcesController extends Controller {
             'grant1' => 'nullable|numeric',
             'currency1' =>'required|numeric',
             'grant2' => 'nullable|numeric',
-            'currency2' =>'required|numeric',
+            'currency2' =>'nullable|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
             'ace_state' => 'string|min:2',
@@ -362,7 +362,7 @@ class AcesController extends Controller {
 
         $this->validate($request, [
             'name' => 'required|string|min:3:aces,name',
-            'contact' => 'required|numeric|digits_between:10,17',
+            'contact' => 'nullable|numeric|digits_between:10,17',
             'email' => 'required|string|email|min:3',
             'university' => 'required|integer|min:1',
             'field' => 'required|string',
