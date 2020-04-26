@@ -53,7 +53,7 @@ class GenerateReportController extends Controller {
 		    'dlr_3_3'=> ['Programme de courte durée','Prof. Short Course'],
 		    'dlr_3_4'=> ['Premier cycle','Bachelors']
         ];
-        $indicator_details = $dlr_options_selected = null;
+        $indicator_details = $dlr_options_selected = $year = $ace_name = null;
         $headers = $englishSlugs = $frenchSlugs = $dlr_filter_option_selected = array();
 
 		if ($request->generate) {
