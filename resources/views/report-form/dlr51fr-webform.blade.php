@@ -176,6 +176,7 @@
                                         <th>Coordonnées bancaires</th>
                                         <th>Region</th>
                                         <th>Destination des fonds</th>
+                                        <th style="min-width: 180px">Action</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
                                         @php
@@ -186,10 +187,17 @@
                                             <td>{{$d->amountindollars}}</td>
                                             <td>{{$d->originalamount}}</td>
                                             <td>{{$d->source}}</td>
-                                            <td>{{$d->datereceived}}</td>
+                                            <td>{{date("d/m/Y", strtotime($d->datereceived))}}</td>
                                             <td>{{$d->bankdetails}}</td>
                                             <td>{{$d->region}}</td>
                                             <td>{{$d->fundingreason}}</td>
+                                            <td>
+                                                {{--<a href="#form-card" onclick="editRecord('{{$d->_id}}')" class="btn btn-s btn-secondary">--}}
+                                                    {{--{{__('Edit')}}</a>--}}
+                                                <a href="{{route('report_submission.web_form_remove_record',[\Illuminate\Support\Facades\Crypt::encrypt($indicators->id),$d->_id])}}"
+                                                   class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this record?');"
+                                                   title="Delete Record"><i class="ft-trash-2"></i></a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </table>

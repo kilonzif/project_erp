@@ -67,7 +67,9 @@ return [
             'driver'   => 'mongodb',
             'host'     => 'localhost',
             'port'     => 27017,
-            'database' => 'ace-impact'
+            'database' => 'ace-impact',
+//            'username' => 'root',
+//            'password' => '!@#$.Gh@n@1',
         ],
 
         'pgsql' => [
