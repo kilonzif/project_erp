@@ -78,10 +78,17 @@ class InstitutionsController extends Controller
      */
     public function delete_institution($id){
         $institution_id = Crypt::decrypt($id);
-        if (Institution::destroy($institution_id)){
-            notify(new ToastNotification('Successful!', '  Institution deleted!', 'success'));
-        } else {
-            notify(new ToastNotification('Sorry!', 'Something went wrong. Please try again', 'warning'));
+        $institution = Institution::find($institution_id);
+
+        if ($institution->reports->count() > 0 || $institution->users->count() > 0) {
+            notify(new ToastNotification('Sorry!', "This Institution cannot be deleted since it has active Reports or Users", 'warning'));
+        }
+        else {
+            if (Institution::destroy($institution_id)){
+                notify(new ToastNotification('Successful!', '  Institution deleted!', 'success'));
+            } else {
+                notify(new ToastNotification('Sorry!', 'Something went wrong. Please try again', 'warning'));
+            }
         }
 
         return redirect()->back();

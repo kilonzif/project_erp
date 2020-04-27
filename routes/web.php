@@ -339,6 +339,8 @@ Route::name('report_generation.')->group(function () {
 
         Route::get('general/generate-table', 'GenerateReportController@general_report_table')->name('general_report_table');
 
+        Route::get('dlrs', 'GenerateReportController@dlrs')->name('dlrs');
+        Route::get('dlrs/result', 'GenerateReportController@selectedDlrsReport')->name('dlrs.result');
 // 		Route::get('general/generate-table/export', 'GenerateReportController@generalspreadsheetexport
         // ')->name('general_report_table.generalspreadsheetexport');
 
@@ -446,6 +448,7 @@ Route::name('report_submission.')->group(function () {
 
         //webforms
         Route::post('webforms/{indicator_id}/saveform','UploadIndicatorsController@saveWebForm')->name('save_webform');
+        Route::get('webforms/{indicator_id}/{record_id}/delete','UploadIndicatorsController@removeRecord')->name('web_form_remove_record');
 
 
 

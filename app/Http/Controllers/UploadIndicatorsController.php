@@ -400,6 +400,17 @@ class UploadIndicatorsController extends Controller
 
     }
 
+    public function removeRecord($indicator_id,$record_id)
+    {
+        $this_dlr = Indicator::find(Crypt::decrypt($indicator_id));
+        $table_name = Str::snake("indicator_".$this_dlr->identifier);
+
+        if (DB::connection('mongodb')->collection("$table_name")->delete($record_id)) {
+            notify(new ToastNotification('Successful!', 'Record Deleted!', 'success'));
+        }
+        notify(new ToastNotification('Sorry!', 'Something went wrong!', 'warning'));
+        return back();
+    }
 
 //    public function insertIntoDb(){
 //        $table_name = Str::snake("indicator_".$indicator_info->identifier);

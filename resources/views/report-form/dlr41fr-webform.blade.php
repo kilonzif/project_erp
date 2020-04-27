@@ -79,9 +79,9 @@
                                             <fieldset class="form-group">
                                                 <label for="basicInputFile">Niveau<span class="required">*</span></label>
                                                 <select name="level" required class="form-control" id="level">
-                                                    <option value="">select LEVEL</option>
-                                                    <option value="MASTERS">MASTERS</option>
-                                                    <option value="PHD">PhD</option>
+                                                    <option value="">Sélectionner</option>
+                                                    <option value="Masters">Masters</option>
+                                                    <option value="Doctorat">Doctorat</option>
                                                 </select>
                                             </fieldset>
                                         </div>
@@ -89,7 +89,7 @@
                                             <fieldset class="form-group">
                                                 <label for="basicInputFile">Type d'accreditation <span class="required">*</span></label>
                                                 <select name="typeofaccreditation" required class="form-control" id="language">
-                                                    <option value="">select one</option>
+                                                    <option value="">Sélectionner</option>
                                                     <option value="National">National</option>
                                                     <option value="Regional">Regional</option>
                                                     <option value="International">International</option>
@@ -177,6 +177,7 @@
                                         <th>Phone Number</th>
                                         <th>Accreditation Date</th>
                                         <th>Accreditation Expiry Date</th>
+                                        <th style="min-width: 180px">Action</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
                                         @php
@@ -192,8 +193,15 @@
                                             <td>{{$d->agencyname}}</td>
                                             <td>{{$d->agencyemail}}</td>
                                             <td>{{$d->agencycontact}}</td>
-                                            <td>{{$d->dateofaccreditation}}</td>
-                                            <td>{{$d->exp_accreditationdate}}</td>
+                                            <td>{{date("d/m/Y", strtotime($d->dateofaccreditation))}}</td>
+                                            <td>{{date("d/m/Y", strtotime($d->exp_accreditationdate))}}</td>
+                                            <td>
+                                                {{--<a href="#form-card" onclick="editRecord('{{$d->_id}}')" class="btn btn-s btn-secondary">--}}
+                                                    {{--{{__('Edit')}}</a>--}}
+                                                <a href="{{route('report_submission.web_form_remove_record',[\Illuminate\Support\Facades\Crypt::encrypt($indicators->id),$d->_id])}}"
+                                                   class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this record?');"
+                                                   title="Delete Record"><i class="ft-trash-2"></i></a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </table>

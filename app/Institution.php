@@ -15,4 +15,14 @@ class Institution extends Model
         return $this->belongsTo('App\Country');
     }
 
+    public function reports()
+    {
+        return $this->hasManyThrough('App\Report','App\Ace','institution_id','ace_id');
+    }
+
+    public function users()
+    {
+        return $this->hasMany('App\User','institution');
+    }
+
 }
