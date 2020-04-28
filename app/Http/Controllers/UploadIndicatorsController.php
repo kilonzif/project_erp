@@ -51,6 +51,7 @@ class UploadIndicatorsController extends Controller
             $data = DB::connection('mongodb')
                 ->collection("$table_name")
                 ->where('report_id','=', (integer)$d_report_id)->get();
+
             if($report->language=="french" && $indicators->identifier =='4.1' ){
                 return view('report-form.webforms.dlr41fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
             }else if($report->language=="french" && $indicators->identifier =='5.1'){
@@ -361,9 +362,6 @@ class UploadIndicatorsController extends Controller
             $indicator_details['fundingreason'] = $request->fundingreason;
         }
 
-
-
-
         $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
         if(!$saved){
@@ -383,6 +381,76 @@ class UploadIndicatorsController extends Controller
         }
 
     }
+
+    public function uploadWebForm(Request $request,$dlr_id){
+
+
+        $this->validate($request, [
+            'upload_file' => 'required|file|mimes:xls,xlsx',
+        ]);
+
+        $this_dlr = Indicator::where('id','=',$dlr_id)->first();
+        $table_name = Str::snake("indicator_".$this_dlr->identifier);
+        $report = Report::where('id','=',$request->report_id)->first();
+
+        $file_one=$request->upload_file;
+        $destinationPath = base_path() . '/public/DLRs/';
+        $file1 = $request->file('upload_file');
+
+
+        if (isset($file1)) {
+
+            try {
+                $spreadsheet = IOFactory::load($file1->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $row_limit = $sheet->getHighestDataRow();
+                $row_range = range(2, $row_limit);
+                $startcount = 2;
+                $indicator_details = array(); //An array to holds the indicator details
+                foreach ($row_range as $row) {
+
+                    if($this_dlr->identifier =='5.1' ){
+                        $indicator_details[] =[ 'report_id' => (integer)$request->report_id,
+                        'indicator_id' => $dlr_id,
+                        'amountindollars' => $sheet->getCell('A' . $row)->getValue(),
+                        'originalamount' => $sheet->getCell('B' . $row)->getValue(),
+                        'source' => $sheet->getCell('C' . $row)->getValue(),
+                        'datereceived' => $sheet->getCell('D' . $row)->getValue(),
+                        'bankdetails' => $sheet->getCell('E' . $row)->getValue(),
+                        'region' => $sheet->getCell('F' . $row)->getValue(),
+                        'fundingreason' => $sheet->getCell('G' . $row)->getValue()
+                        ];
+
+                    }
+                    $startcount++;
+
+
+                }
+                $saved = DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
+                if ($saved) {
+                    $file1->move($destinationPath, $file1->getClientOriginalName());
+                    $thefile_one = $file_one->getClientOriginalName();
+                    notify(new ToastNotification('Successful!', 'DLR data Added', 'success'));
+                    return back();
+                }else{
+                    notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
+                    return back();
+                }
+
+
+            }catch (Exception $e) {
+                $error_code = $e->errorInfo[1];
+
+            }
+
+        }
+        notify(new ToastNotification('Notice', 'Could not upload the file', 'info'));
+        return back();
+
+    }
+
+
+
 
     public function removeRecord($indicator_id,$record_id)
     {
