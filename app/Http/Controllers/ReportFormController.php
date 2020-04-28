@@ -1205,8 +1205,8 @@ class ReportFormController extends Controller
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
-                ->orWhere('gender', 'like', "f%")
-                ->orWhere('gender', 'like', "F%");
+                    ->orWhere('gender', 'like', "f%")
+                    ->orWhere('gender', 'like', "F%");
             })
             ->where(function ($query) {
                 $query->where('regional-status', '=', "National")
@@ -1733,9 +1733,9 @@ class ReportFormController extends Controller
                     ->orWhere('studentfaculty', 'like', "f%");
             });
 
-        $indicator_5_2_values["pdo_indicator_52"]["total_number_of_interns"] = $total_number_of_interns;
-        $indicator_5_2_values["pdo_indicator_52"]["students"] = $students->count();
-        $indicator_5_2_values["pdo_indicator_52"]["faculty"] = $faculty->count();
+        $indicator_5_2_values["pdo_indicator_5"]["total_number_of_interns"] = $total_number_of_interns;
+        $indicator_5_2_values["pdo_indicator_5"]["students"] = $students->count();
+        $indicator_5_2_values["pdo_indicator_5"]["faculty"] = $faculty->count();
 
 
         return $indicator_5_2_values;
@@ -1766,9 +1766,9 @@ class ReportFormController extends Controller
                     ->orWhere('Etudiant/ Professeur', 'like', "p%");
             });
 
-        $indicator_5_2_values["pdo_indicator_52"]["total_number_of_interns"] = $total_number_of_interns;
-        $indicator_5_2_values["pdo_indicator_52"]["students"] = $students->count();
-        $indicator_5_2_values["pdo_indicator_52"]["faculty"] = $faculty->count();
+        $indicator_5_2_values["pdo_indicator_5"]["total_number_of_interns"] = $total_number_of_interns;
+        $indicator_5_2_values["pdo_indicator_5"]["students"] = $students->count();
+        $indicator_5_2_values["pdo_indicator_5"]["faculty"] = $faculty->count();
 
 
         return $indicator_5_2_values;
@@ -1828,7 +1828,7 @@ class ReportFormController extends Controller
 
         $total_revenue=collect($query)->sum('amountindollars');
 
-       $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
+        $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
             ->where('report_id', $report_id)
             ->where(function ($query) {
                 $query->where('source', 'like', "N%")
@@ -2068,7 +2068,7 @@ class ReportFormController extends Controller
         $total_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
-              ->count();
+            ->count();
 
         $regional_publications =  DB::connection('mongodb')
             ->collection('indicator_4.2')
