@@ -5,12 +5,12 @@
 @endpush
 @push('other-styles')
     <style>
-       table{
-           border-collapse: collapse;
-           width: 300px;
-           overflow-x: scroll;
-           display: block;
-       }
+        table{
+            border-collapse: collapse;
+            width: 300px;
+            overflow-x: scroll;
+            display: block;
+        }
     </style>
 @endpush
 @section('content')
@@ -151,7 +151,7 @@
                                     </form>
 
                                 </div>
-                                </div>
+                            </div>
                         </div>
 
 
@@ -170,16 +170,16 @@
 
                                 <table class="table table-scrollable table-striped table-bordered">
                                     <tr>
-                                        <th>Program Title</th>
-                                        <th>Level</th>
-                                        <th>Type</th>
-                                        <th>Reference</th>
-                                        <th>Agency</th>
-                                        <th>Contact Name</th>
-                                        <th>Email</th>
-                                        <th>Phone Number</th>
-                                        <th>Accreditation Date</th>
-                                        <th>Accreditation Expiry Date</th>
+                                        <th>Titre du programme</th>
+                                        <th>Niveau</th>
+                                        <th>Type d'accreditation</th>
+                                        <th>Référence de l'accréditation</th>
+                                        <th>Agence d'accréditation</th>
+                                        <th>Personne contact de l'agence</th>
+                                        <th>Couriel du personne contact</th>
+                                        <th>Numéro de téléphone du personne contact</th>
+                                        <th>Date d'accréditation</th>
+                                        <th>Date d'expiration de l'accréditation</th>
                                         <th style="min-width: 180px">Action</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
