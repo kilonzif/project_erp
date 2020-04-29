@@ -451,7 +451,7 @@ Route::name('report_submission.')->group(function () {
 
 //        //upload webforms
 
-        Route::post('webforms/{indicator_id}/upload-webform','UploadIndicatorsController@uploadWebForm')->name('upload_webform');
+        Route::post('webforms/{indicator_id}/upload-webform','UploadIndicatorsController@uploadWebForm')->name('save_webform');
 
         Route::get('webforms/{indicator_id}/{record_id}/delete','UploadIndicatorsController@removeRecord')->name('web_form_remove_record');
 

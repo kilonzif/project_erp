@@ -309,7 +309,10 @@
 
                             </div>
                             <div class="col-md-3 text-right">
-                                <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"> <i class="ft-check-circle"></i> Submit Full Report</button>
+                                <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"
+                                   onclick="return show_confirm();">
+                                    <i class="ft-check-circle"></i> Submit Full Report
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -330,10 +333,16 @@
     <script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
 
     <script type="text/javascript" >
+        function show_confirm(){
+            return confirm('You are about to submit a final report.' +
+                'You cannot edit this report after submission. ' +
+                'Proceed to submit? ');
+        }
 
         $('.customizer-toggle').on('click',function(){
             $('.customizer').toggleClass('open');
         });
+
 
     </script>
 @endpush

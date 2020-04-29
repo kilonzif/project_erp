@@ -632,12 +632,14 @@ class ReportFormController extends Controller
     {
 
         if (isset($request->submit)) {
+
             DB::transaction(function () use ($request) {
                 $this->validate($request, [
                     'report_id' => 'required|string|min:100',
                     'indicators' => 'required|array|min:1',
                     'indicators.*' => 'required|numeric|min:0',
                 ]);
+
 
                 $report_id = Crypt::decrypt($request->report_id);
 
@@ -692,17 +694,19 @@ class ReportFormController extends Controller
                 $emails = array_merge($email_ace->pluck('email')->toArray(), [config('mail.aau_email')]);
 
 
-                Mail::send('mail.report-mail', ['the_ace' => $email_ace, 'report' => $report],
+               Mail::send('mail.report-mail', ['the_ace' => $email_ace, 'report' => $report],
                     function ($message) use ($emails) {
                         $message->to($emails)
                             ->subject("Report Submitted");
                     });
 
 
-                notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
+
+                notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
             });
             return redirect()->route('report_submission.reports');
-        } else {
+        }
+        else {
             $this->validate($request, [
                 'report_id' => 'required|string|min:100',
             ]);
