@@ -355,19 +355,6 @@ class ContactsController extends Controller
                 return back();
             }
         }
-//        $save = DB::table('contacts')::updateOrCreate(
-//                'file_one' => $thefile_one]
-//        );
-
-//        if (isset($save)) {
-//
-////            where you extract the members
-//            notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
-//            return back();
-//        } else {
-//            notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-//            return back();
-//        }
     }
 
     public function extractMembers($file){
@@ -394,18 +381,10 @@ class ContactsController extends Controller
                 ];
                 $startcount++;
             }
-
-
             // Unique data without duplicates
             $unique = array_unique($data, SORT_REGULAR);
 
-
-
-
             DB::table('all_contacts')->insert($unique);
-
-//
-
 
         } catch (Exception $e) {
             $error_code = $e->errorInfo[1];

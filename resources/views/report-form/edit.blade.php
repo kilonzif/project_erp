@@ -66,7 +66,7 @@
                                                     <select class="form-control" name="reporting_period">
                                                         @foreach($reporting_periods as $period)
                                                             @php
-                                                  $full_period = \App\Http\Controllers\ReportFormController::getReportingName($period->id);
+                                                                $full_period = \App\Http\Controllers\ReportFormController::getReportingName($period->id);
                                                             @endphp
                                                             <option {{($report->reporting_period_id == $period->id)  ? "selected":""}} value="{{$period->id}}">{{$full_period}}</option>
                                                         @endforeach
@@ -118,9 +118,9 @@
                         </div>
 
                         <div style="display: inline; margin-right:10px;">
-                                <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
-                                    <i class="ft-upload"></i> Upload Indicators</a>
-                                <a  class="pb-1 pt-1 mt-1 text-danger text-uppercase" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" style="margin-left:10px;">Preview and scroll down this page to submit the report</a>
+                            <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
+                                <i class="ft-upload"></i> Upload Indicators</a>
+                            <a  class="pb-1 pt-1 mt-1 text-danger text-uppercase" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" style="margin-left:10px;">Preview and scroll down this page to submit the report</a>
                         </div>
                         {{--indicators3--}}
                         <div class="card mb-1">
@@ -163,7 +163,7 @@
 
                                             @if($child_dlr->isNotEmpty())
 
-                                            <table class="table table-bordered table-striped">
+                                                <table class="table table-bordered table-striped">
 
                                                     @if($sub_indicator->status == 0) @continue @endif
 
@@ -184,19 +184,19 @@
 
                                                                 @if($sub_indicator->parent_id == 1)
 
-                                                                <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
-                                                                     style="margin-bottom: 0;">
-                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
-                                                                           value="{{!empty($pdo_1) ?$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]:0}}"
-                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                    <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
+                                                                         style="margin-bottom: 0;">
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
+                                                                               value="{{!empty($pdo_1) ?$pdo_1[$pdo_indicator][$pdo_indicator_1[$pdo_indicator][$counter]]:0}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
-                                                                </div>
+                                                                    </div>
                                                                 @elseif($sub_indicator->parent_id == 2)
                                                                     {{--programme accreditation--}}
                                                                     <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
-                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                           value="{{!empty($pdo_41) ?$pdo_41[$pdo_indicator][$pdo_indicator_41[$pdo_indicator][$counter]]:0}}"
-                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
+                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               value="{{!empty($pdo_41) ?$pdo_41[$pdo_indicator][$pdo_indicator_41[$pdo_indicator][$counter]]:0}}"
+                                                                               class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
 
 
                                                                 @elseif($sub_indicator->parent_id == 3)
@@ -209,6 +209,8 @@
 
                                                                 @elseif($sub_indicator->parent_id == 5)
                                                                     {{--5.1 external revenue--}}
+
+
 
                                                                     <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
                                                                         <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
@@ -239,7 +241,7 @@
                                                     @endforeach
 
 
-                                            </table>
+                                                </table>
                                             @else
                                                 {{--@php dd($pdo_41); @endphp--}}
 
@@ -307,7 +309,10 @@
 
                             </div>
                             <div class="col-md-3 text-right">
-                                <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"> <i class="ft-check-circle"></i> Submit Full Report</button>
+                                <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"
+                                   onclick="return show_confirm();">
+                                    <i class="ft-check-circle"></i> Submit Full Report
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -328,10 +333,16 @@
     <script src="{{ asset("js/scripts/pages/chat-application.js")}}" type="text/javascript"></script>
 
     <script type="text/javascript" >
+        function show_confirm(){
+            return confirm('You are about to submit a final report.' +
+                'You cannot edit this report after submission. ' +
+                'Proceed to submit? ');
+        }
 
         $('.customizer-toggle').on('click',function(){
             $('.customizer').toggleClass('open');
         });
+
 
     </script>
 @endpush

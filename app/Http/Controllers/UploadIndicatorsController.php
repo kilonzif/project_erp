@@ -31,7 +31,7 @@ class UploadIndicatorsController extends Controller
         $d_report_id = Crypt::decrypt($report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
         $report = Report::find($d_report_id);
-        
+
         if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return back();
@@ -43,30 +43,31 @@ class UploadIndicatorsController extends Controller
 
         if(empty($indicator_type)){
             $indicators = Indicator::where('is_parent','=', 1)
-            ->where('id','=',$report->indicator_id)
-            ->where('status','=', 1)
-            ->orderBy('identifier','asc')->first();
+                ->where('id','=',$report->indicator_id)
+                ->where('status','=', 1)
+                ->orderBy('identifier','asc')->first();
             $table_name = Str::snake("indicator_".$indicators->identifier);
 
             $data = DB::connection('mongodb')
                 ->collection("$table_name")
                 ->where('report_id','=', (integer)$d_report_id)->get();
+
             if($report->language=="french" && $indicators->identifier =='4.1' ){
-                return view('report-form.dlr41fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                return view('report-form.webforms.dlr41fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
             }else if($report->language=="french" && $indicators->identifier =='5.1'){
-                return view('report-form.dlr51fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                return view('report-form.webforms.dlr51fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
 
             }
             else if($report->language=="english" && $indicators->identifier =='4.1'){
-                return view('report-form.dlr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                return view('report-form.webforms.dlr41en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
 
             }
             else if($report->language=="english" && $indicators->identifier =='5.1'){
-                return view('report-form.dlr51en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                return view('report-form.webforms.dlr51en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
 
             }
 
-            return view('report-form.blank-dlr', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            return view('report-form.webforms.blank-dlr', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
         }
         $indicators = Indicator::where('is_parent','=', 1)
             ->where('id','=',$report->indicator_id)
@@ -286,29 +287,13 @@ class UploadIndicatorsController extends Controller
 
 
 
-            return view ('report-form.uploaded-dlrs',compact('indicator_details'));
+        return view ('report-form.uploaded-dlrs',compact('indicator_details'));
 //        return back()->withInput(['error'=>$error,'success'=>$success]);
     }
 
 
 
     public function saveWebForm(Request $request,$dlr_id){
-
-
-
-//        $this->validate($request, [
-//            'programmetitle' => 'required|string|unique:mongodb.indicator_form_details,programmetitle',
-//            'level' => 'required|string',
-//            'typeofaccreditation' => 'nullable|string',
-//            "accreditationreference" => "required|string|min:1",
-//            "accreditationagency" => "required|string",
-//            'agencyname' => 'required|string|min:100',
-//            'agencyemail' => 'required|email',
-//            'agencycontact' => 'nullable|string|date',
-//            "dateofaccreditation" => "required|date|min:1",
-//            "exp_accreditationdate" => "required|date",
-//        ]);
-
 
         $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
         $table_name = Str::snake("indicator_".$this_dlr->identifier);
@@ -377,9 +362,6 @@ class UploadIndicatorsController extends Controller
             $indicator_details['fundingreason'] = $request->fundingreason;
         }
 
-
-
-
         $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
         if(!$saved){
@@ -400,6 +382,76 @@ class UploadIndicatorsController extends Controller
 
     }
 
+    public function uploadWebForm(Request $request,$dlr_id){
+
+
+        $this->validate($request, [
+            'upload_file' => 'required|file|mimes:xls,xlsx',
+        ]);
+
+        $this_dlr = Indicator::where('id','=',$dlr_id)->first();
+        $table_name = Str::snake("indicator_".$this_dlr->identifier);
+        $report = Report::where('id','=',$request->report_id)->first();
+
+        $file_one=$request->upload_file;
+        $destinationPath = base_path() . '/public/DLRs/';
+        $file1 = $request->file('upload_file');
+
+
+        if (isset($file1)) {
+
+            try {
+                $spreadsheet = IOFactory::load($file1->getRealPath());
+                $sheet = $spreadsheet->getActiveSheet();
+                $row_limit = $sheet->getHighestDataRow();
+                $row_range = range(2, $row_limit);
+                $startcount = 2;
+                $indicator_details = array(); //An array to holds the indicator details
+                foreach ($row_range as $row) {
+
+                    if($this_dlr->identifier =='5.1' ){
+                        $indicator_details[] =[ 'report_id' => (integer)$request->report_id,
+                        'indicator_id' => $dlr_id,
+                        'amountindollars' => $sheet->getCell('A' . $row)->getValue(),
+                        'originalamount' => $sheet->getCell('B' . $row)->getValue(),
+                        'source' => $sheet->getCell('C' . $row)->getValue(),
+                        'datereceived' => $sheet->getCell('D' . $row)->getValue(),
+                        'bankdetails' => $sheet->getCell('E' . $row)->getValue(),
+                        'region' => $sheet->getCell('F' . $row)->getValue(),
+                        'fundingreason' => $sheet->getCell('G' . $row)->getValue()
+                        ];
+
+                    }
+                    $startcount++;
+
+
+                }
+                $saved = DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
+                if ($saved) {
+                    $file1->move($destinationPath, $file1->getClientOriginalName());
+                    $thefile_one = $file_one->getClientOriginalName();
+                    notify(new ToastNotification('Successful!', 'DLR data Added', 'success'));
+                    return back();
+                }else{
+                    notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
+                    return back();
+                }
+
+
+            }catch (Exception $e) {
+                $error_code = $e->errorInfo[1];
+
+            }
+
+        }
+        notify(new ToastNotification('Notice', 'Could not upload the file', 'info'));
+        return back();
+
+    }
+
+
+
+
     public function removeRecord($indicator_id,$record_id)
     {
         $this_dlr = Indicator::find(Crypt::decrypt($indicator_id));
@@ -412,62 +464,105 @@ class UploadIndicatorsController extends Controller
         return back();
     }
 
-//    public function insertIntoDb(){
-//        $table_name = Str::snake("indicator_".$indicator_info->identifier);
-////                dd($table_name);
-//
-//        //Loops through the excel sheet to get the values;
-//        DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
-//        for ($row = $data_start; $row <= $highestRow; $row++) {
-//
-//            echo PHP_EOL;
-//
-//            for ($col = 1; $col < $highestColumnIndex; $col++) {
-//                $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
-//                $line = $row - $data_start;
-////                        dd($headers);
-//                $upload_values['data'][$line][$headers[$col-1]] = $value;
-//
-//                $indicator_details[$headers[$col-1]] = $value;
-//                echo  PHP_EOL;
-//            }
-//            DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
-//
-//            echo PHP_EOL;
-//        }//end of loop
-//
-//        echo PHP_EOL;
-//        $row = DB::connection('mongodb')
-//            ->collection('indicator_form_details')
-//            ->where('report_id','=', $upload_values['report_id'])->where('indicator_id','=', $upload_values['indicator_id'])->first();
-//        $item = (object)$row;
-//
-//        if ($row){
-//            DB::connection('mongodb')
-//                ->collection('indicator_form_details')
-//                ->where('_id', $item->_id)
-//                ->update($upload_values);
-//
-//            $success = "The upload was successful.";
-//            notify(new ToastNotification('Successful', $success, 'success'));
-//            return back();
-//        }
-//        else{
-//            $insert = DB::connection('mongodb')
-//                ->collection('indicator_form_details')
-//                ->insert($upload_values);
-//
-//            if ($insert){
-//                $success = "The upload was successful.";
-//                notify(new ToastNotification('Successful', $success, 'success'));
-//                return back();
-//            }else{
-//                $error = "The upload failed.";
-//                notify(new ToastNotification('Upload Error!', $error, 'warning'));
-//                return back();
-//            }
-//        }
-//    }
+    public function editRecord(Request $request){
+        $this_indicator = Indicator::find($request->indicator_id);
+        $table_name = Str::snake("indicator_".$this_indicator->identifier);
+
+        $record_id = $request->record_id;
+
+        $the_record = DB::connection('mongodb')->collection("$table_name")
+            ->where('_id','=',$record_id)
+            ->first();
+
+        $report = Report::find($the_record['report_id']);
+
+
+        if($report->language=="english" && $this_indicator->identifier =='4.1' ){
+            $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id','this_indicator'))->render();
+        }
+        elseif ($report->language=="french" && $this_indicator->identifier =='4.1' ){
+            $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id','this_indicator'))->render();
+        }
+        elseif($report->language=="english" && $this_indicator->identifier =='5.1' ){
+            $view = view ('report-form.webforms.edit_dlr51en',compact('the_record','record_id','this_indicator'))->render();
+        }
+        elseif($report->language=="french" && $this_indicator->identifier =='5.1' ){
+            $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id','this_indicator'))->render();
+        }
+
+
+        return response()->json(['theView' => $view]);
+
+
+
+    }
+
+    public function updateRecord(Request $request,$indicator_id,$record_id){
+
+        $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
+        $table_name = Str::snake("indicator_".$this_dlr->identifier);
+        $report = Report::where('id','=',$request->report_id)->first();
+
+
+
+        $indicator_details = array(); //An array to holds the indicator details
+        $report_id = (integer)($request->report_id);
+
+
+        if($this_dlr->identifier =="4.1") {
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['programmetitle'] = $request->programmetitle;
+            $indicator_details['level'] = $request->level;
+            $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+            $indicator_details['accreditationreference'] = $request->accreditationreference;
+            $indicator_details['accreditationagency'] = $request->accreditationagency;
+            $indicator_details['agencyname'] = $request->agencyname;
+            $indicator_details['agencyemail'] = $request->agencyemail;
+            $indicator_details['agencycontact'] = $request->agencycontact;
+            $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+            $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+
+        }
+        else if ($this_dlr->identifier =="5.1"){
+
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['amountindollars'] = $request->amountindollars;
+            $indicator_details['originalamount'] = $request->originalamount;
+            $indicator_details['source'] = $request->source;
+            $indicator_details['datereceived'] = $request->datereceived;
+            $indicator_details['bankdetails'] = $request->bankdetails;
+            $indicator_details['region'] = $request->region;
+            $indicator_details['fundingreason'] = $request->fundingreason;
+        }
+
+        $updated = DB::connection('mongodb')->collection("$table_name")
+            ->where('_id','=',$record_id)
+            ->update($indicator_details);
+
+        if(!$updated){
+            $error_msg = "There was an error updating the data";
+            notify(new ToastNotification('error', $error_msg, 'warning'));
+            return back()->withInput();
+        }else if($updated) {
+            DB::connection('mongodb')
+                ->collection('indicator_form_details')
+                ->where('report_id', $report_id)
+                ->update($indicator_details);
+            $success = "The Update was successful.";
+            notify(new ToastNotification('Successful', $success, 'success'));
+            return back();
+
+
+        }
+
+
+
+    }
+
+
+
 
 
 

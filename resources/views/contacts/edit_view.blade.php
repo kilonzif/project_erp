@@ -112,7 +112,8 @@
             <div class="col-md-4">
                 <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
-                    <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ (old('mailing_name')) ? old('mailing_name') : $contacts->contact_name }}"  id="mailing_name">
+                    <label for="email">Name <span class="required">*</span></label>
+                    <input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ (old('mailing_name')) ? old('mailing_name') : $contacts->contact_name }}"  id="mailing_name">
                     @if ($errors->has('mailing_name'))
                         <p class="text-right">
                             <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
