@@ -326,10 +326,11 @@ class GenerateReportController extends Controller {
 		return view('generate-report.verification-indicator-status', compact('indicators', 'aces', 'countries', 'fields'));
 	}
 
-	/**
-	 * @param Request $request
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-	 */
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|void
+     * @throws \Illuminate\Validation\ValidationException
+     */
 
 	public function indicator_verification_report(Request $request) {
 
@@ -599,8 +600,6 @@ class GenerateReportController extends Controller {
 
 	}
 
-// '$start', '$end', '$reports', '$steps', '$process', '$type_indicator'
-	//, $process, $steps
 	private function indicatorspreadsheet($reports, $steps, $process, $type_indicator) {
 
 		$spreadsheet = new Spreadsheet();
