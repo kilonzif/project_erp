@@ -79,9 +79,12 @@
                                                 <fieldset class="form-group">
                                                     <label for="basicInputFile">Level<span class="required">*</span></label>
                                                     <select name="level" required class="form-control" id="language">
-                                                        <option value="">select LEVEL</option>
+                                                        <option value="">select one</option>
                                                         <option value="MASTERS">Masters</option>
                                                         <option value="PHD">PhD</option>
+                                                        <option value="bachelors">Bachelors</option>
+                                                        <option value="professional_course">Professional Short Course</option>
+
                                                     </select>
                                                 </fieldset>
                                             </div>

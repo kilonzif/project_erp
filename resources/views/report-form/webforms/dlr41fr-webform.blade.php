@@ -80,9 +80,11 @@
                                                 <fieldset class="form-group">
                                                     <label for="basicInputFile">Niveau<span class="required">*</span></label>
                                                     <select name="level" required class="form-control" id="level">
-                                                        <option value="">Sélectionner</option>
-                                                        <option value="Masters">Masters</option>
-                                                        <option value="Doctorat">Doctorat</option>
+                                                        <option value="">sélectionner un</option>
+                                                        <option  {{($the_record['level'] == 'MASTERS')  ? "selected":""}} value="MASTERS">Masters</option>
+                                                        <option  {{($the_record['level'] == 'PHD')  ? "selected":""}} value="PHD">Doctorat</option>
+                                                        <option  {{($the_record['level'] == 'bachelors')  ? "selected":""}} value="bachelors">Premier Cycle</option>
+                                                        <option  {{($the_record['level'] == 'professional_course')  ? "selected":""}} value="professional_course">Programme de courte durée</option>
                                                     </select>
                                                 </fieldset>
                                             </div>
@@ -90,12 +92,14 @@
                                                 <fieldset class="form-group">
                                                     <label for="basicInputFile">Type d'accreditation <span class="required">*</span></label>
                                                     <select name="typeofaccreditation" required class="form-control" id="language">
-                                                        <option value="">Sélectionner</option>
-                                                        <option value="National">National</option>
-                                                        <option value="Regional">Regional</option>
-                                                        <option value="International">International</option>
-                                                        <option value="Gap Assessment">Gap Assessment</option>
-                                                        <option value="Self-Evaluation">Self-Evaluation</option>
+                                                        <option value="">sélectionner un</option>
+                                                        <option {{($the_record['typeofaccreditation'] == 'National')  ? "selected":""}} value="National">Nationale</option>
+                                                        <option {{($the_record['typeofaccreditation'] == 'Regional')  ? "selected":""}} value="Regional">Régionale</option>
+                                                        <option {{($the_record['typeofaccreditation'] == 'International')  ? "selected":""}} value="International">Internationale</option>
+                                                        <option {{($the_record['typeofaccreditation'] == 'Gap Assessment')  ? "selected":""}} value="Gap Assessment">
+                                                            Évaluation des lacunes</option>
+                                                        <option {{($the_record['typeofaccreditation'] == 'Self-Evaluation')  ? "selected":""}} value="Self-Evaluation">
+                                                            Auto-évaluation</option>
                                                     </select>
 
                                                 </fieldset>

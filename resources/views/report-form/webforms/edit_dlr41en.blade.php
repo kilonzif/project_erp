@@ -20,9 +20,11 @@
             <fieldset class="form-group">
                 <label for="basicInputFile">Level<span class="required">*</span></label>
                 <select name="level" required class="form-control" id="language">
-                    <option value="">select LEVEL</option>
+                    <option value="">select one</option>
                     <option  {{($the_record['level'] == 'MASTERS')  ? "selected":""}} value="MASTERS">Masters</option>
                     <option  {{($the_record['level'] == 'PHD')  ? "selected":""}} value="PHD">PhD</option>
+                    <option  {{($the_record['level'] == 'bachelors')  ? "selected":""}} value="bachelors">Bachelors</option>
+                    <option  {{($the_record['level'] == 'professional_course')  ? "selected":""}} value="professional_course">Professional Short Course</option>
                 </select>
             </fieldset>
         </div>
