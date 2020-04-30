@@ -6,7 +6,7 @@
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('amountindollars') ? ' form-control-warning' : '' }}">
                 <label for="basicInputFile">Montant (Dollar US)<span class="required">*</span></label>
-                <input type="number" class="form-control"  min="0" required name="amountindollars"
+                <input type="number" class="form-control"  min="0"  step="0.01" required name="amountindollars"
                        value="{{ (old('amountindollars')) ? old('amountindollars') : $the_record['amountindollars'] }}">
                 @if ($errors->has('amountindollars'))
                     <p class="text-right mb-0">
@@ -19,7 +19,7 @@
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('originalamount') ? ' form-control-warning' : '' }}">
                 <label for="basicInputFile">Montant original<span class="required">*</span></label>
-                <input type="number" class="form-control"  min="0" required name="originalamount"
+                <input type="number" class="form-control"  min="0"  step="0.01" required name="originalamount"
                        value="{{ (old('originalamount')) ? old('originalamount') : $the_record['originalamount'] }}">
                 @if ($errors->has('originalamount'))
                     <p class="text-right mb-0">

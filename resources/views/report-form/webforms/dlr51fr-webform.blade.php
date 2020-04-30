@@ -213,8 +213,8 @@
                                         @endphp
 
                                         <tr>
-                                            <td>{{$d->amountindollars}}</td>
-                                            <td>{{$d->originalamount}}</td>
+                                            <td>{{number_format($d->amountindollars,2)}}</td>
+                                            <td>{{number_format($d->originalamount,2)}}</td>
                                             <td>{{$d->source}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->datereceived))}}</td>
                                             <td>{{$d->bankdetails}}</td>

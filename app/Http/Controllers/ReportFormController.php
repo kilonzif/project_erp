@@ -445,6 +445,7 @@ class ReportFormController extends Controller
 
 
 
+
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
@@ -617,6 +618,10 @@ class ReportFormController extends Controller
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
         $aces = Ace::where('active', '=', 1)->get();
+
+
+
+
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
@@ -1717,20 +1722,20 @@ class ReportFormController extends Controller
         $indicator_5_2_values = array();
 
         $total_number_of_interns = DB::connection('mongodb')
-            ->collection('indicator__p_d_o_indicator5')
+            ->collection('indicator_5.2')
             ->where('report_id', '=', $report_id)
             ->count();
 
 
-
-
-        $students = DB::connection('mongodb')->collection('indicator__p_d_o_indicator5')
+        $students = DB::connection('mongodb')
+            ->collection('indicator_5.2')
             ->where('report_id', $report_id)
             ->where(function ($query) {
                 $query->where('studentfaculty', 'like', "Student%")
                     ->orWhere('studentfaculty', 'like', "stud%");
             });
-        $faculty = DB::connection('mongodb')->collection('indicator__p_d_o_indicator5')
+        $faculty = DB::connection('mongodb')
+            ->collection('indicator_5.2')
             ->where('report_id', $report_id)
             ->where(function ($query) {
                 $query->where('studentfaculty', 'like', "F%")
@@ -1752,18 +1757,19 @@ class ReportFormController extends Controller
         $indicator_5_2_values = array();
 
         $total_number_of_interns = DB::connection('mongodb')
-            ->collection('indicator__p_d_o_indicator5')
+            ->collection('indicator_5.2')
             ->where('report_id', '=', $report_id)
             ->count();
 
 
-        $students = DB::connection('mongodb')->collection('indicator__p_d_o_indicator5')
+        $students = DB::connection('mongodb')
+            ->collection('indicator_5.2')
             ->where('report_id', $report_id)
             ->where(function ($query) {
                 $query->where('Etudiant/ Professeur', 'like', "Etudiant%")
                     ->orWhere('Etudiant/ Professeur', 'like', "etudiant%");
             });
-        $faculty = DB::connection('mongodb')->collection('indicator__p_d_o_indicator5')
+        $faculty = DB::connection('mongodb')->collection('indicator_5.2')
             ->where('report_id', $report_id)
             ->where(function ($query) {
                 $query->where('Etudiant/ Professeur', 'like', "Professeur%")
@@ -1786,7 +1792,6 @@ class ReportFormController extends Controller
      */
     public function generateAggregatedIndicator51Results($report_id)
     {
-
         $indicator_5_1_values = array();
 
         $query =  DB::connection('mongodb')
@@ -1795,7 +1800,7 @@ class ReportFormController extends Controller
             ->select('amountindollars')
             ->get();
 
-        $total_revenue=collect($query)->sum('amountindollars');;
+        $total_revenue=collect($query)->sum('amountindollars');
 
 
         $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
@@ -1821,7 +1826,6 @@ class ReportFormController extends Controller
 
     public function generateAggregatedIndicator51Results_fr($report_id)
     {
-
         $indicator_5_1_values = array();
 
         $query =  DB::connection('mongodb')
@@ -1830,7 +1834,10 @@ class ReportFormController extends Controller
             ->select('amountindollars')
             ->get();
 
-        $total_revenue=collect($query)->sum('amountindollars');
+        $total_revenue= collect($query)->sum('amountindollars');
+
+
+
 
         $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
             ->where('report_id', $report_id)

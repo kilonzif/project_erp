@@ -63,7 +63,7 @@
                                                         <div class="col-md-4">
                                                             <fieldset class="form-group{{ $errors->has('amountindollars') ? ' form-control-warning' : '' }}">
                                                                 <label for="basicInputFile">Amount (USD)<span class="required">*</span></label>
-                                                                <input type="number" class="form-control"  min="0" required name="amountindollars">
+                                                                <input type="number" class="form-control"  min="0" step="0.01" required name="amountindollars">
                                                                 @if ($errors->has('amountindollars'))
                                                                     <p class="text-right mb-0">
                                                                         <small class="warning text-muted">{{ $errors->first('amountindollars') }}</small>
@@ -75,7 +75,7 @@
                                                         <div class="col-md-4">
                                                             <fieldset class="form-group{{ $errors->has('originalamount') ? ' form-control-warning' : '' }}">
                                                                 <label for="basicInputFile">Original Amount<span class="required">*</span></label>
-                                                                <input type="number" class="form-control"  min="0" required name="originalamount">
+                                                                <input type="number" class="form-control"  min="0" step="0.01" required name="originalamount">
                                                                 @if ($errors->has('originalamount'))
                                                                     <p class="text-right mb-0">
                                                                         <small class="warning text-muted">{{ $errors->first('originalamount') }}</small>
@@ -209,8 +209,8 @@
                                             $d=(object)$d;
                                         @endphp
                                          <tr>
-                                            <td>{{$d->amountindollars}}</td>
-                                            <td>{{$d->originalamount}}</td>
+                                            <td>{{number_format($d->amountindollars,2)}}</td>
+                                            <td>{{number_format($d->originalamount,2)}}</td>
                                             <td>{{$d->source}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->datereceived))}}</td>
                                             <td>{{$d->bankdetails}}</td>

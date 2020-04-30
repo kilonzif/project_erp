@@ -209,12 +209,14 @@
 
                                                                 @elseif($sub_indicator->parent_id == 5)
                                                                     {{--5.1 external revenue--}}
-
-
-
+                                                                @php
+                                                                   $total_revenue = number_format($pdo_51[$pdo_indicator][$pdo_indicator_51[$pdo_indicator][$counter]],2);
+                                                                @endphp
                                                                     <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
-                                                                        <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                               value="{{!empty($pdo_51) ?$pdo_51[$pdo_indicator][$pdo_indicator_51[$pdo_indicator][$counter]]:0}}"
+                                                                        <input type="text" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                               @if($counter==0) value="{{!empty($pdo_51) ? $total_revenue:0.00}}" @else
+                                                                               value="{{!empty($pdo_51) ?$pdo_51[$pdo_indicator][$pdo_indicator_51[$pdo_indicator][$counter]]:0.00}}"
+                                                                               @endif
                                                                                class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
 
 
@@ -277,12 +279,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
 
 
                         <div class="row">

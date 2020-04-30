@@ -19,7 +19,7 @@
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('originalamount') ? ' form-control-warning' : '' }}">
                 <label for="basicInputFile">Original Amount<span class="required">*</span></label>
-                <input type="number" class="form-control"  min="0" required name="originalamount"
+                <input type="number" class="form-control"  min="0"  step="0.01" required name="originalamount"
                        value="{{ (old('originalamount')) ? old('originalamount') : $the_record['originalamount'] }}">
                 @if ($errors->has('originalamount'))
                     <p class="text-right mb-0">
@@ -33,7 +33,7 @@
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('source') ? ' form-control-warning' : '' }}">
                 <label for="basicInputFile">Source<span class="required">*</span></label>
-                <input type="text" class="form-control"  min="0" required name="source"
+                <input type="text" class="form-control"  min="0" step="0.01" required name="source"
                        value="{{ (old('source')) ? old('source') : $the_record['source'] }}">
                 @if ($errors->has('source'))
                     <p class="text-right mb-0">
