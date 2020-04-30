@@ -3,6 +3,8 @@
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
 @endpush
 @push('other-styles')
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/css/pickers/datetime/bootstrap-datetimepicker.css') }}">
+
 @endpush
 @section('content')
     <div class="content-header row">
@@ -86,43 +88,57 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="reporting_period">Reporting Period</label>
-                                                            <select class="form-control" name="reporting_period" readonly>
-                                                                @foreach($active_period as $period)
-                                                                    @php
-                                                                        $full_period = \App\Http\Controllers\ReportFormController::getReportingName($period->id);
-                                                                    @endphp
-                                                                    <option selected value="{{$period->id}}">{{$full_period}}</option>
-                                                                    @endforeach
+                                                        <select class="form-control" name="reporting_period" readonly>
+                                                            @foreach($active_period as $period)
+                                                                @php
+                                                                    $full_period = \App\Http\Controllers\ReportFormController::getReportingName($period->id);
+                                                                @endphp
+                                                                <option selected value="{{$period->id}}">{{$full_period}}</option>
+                                                            @endforeach
 
-                                                            </select>
+                                                        </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="date_submission">Date of Submission <span class="required">*</span></label>
-
-                                                        <input type="date" required min="5" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}"
-                                                               name="submission_date" class="form-control" id="submission_date" readonly>
-                                                        @if ($errors->has('date_submission'))
-                                                            <p class="text-right">
-                                                                <small class="warning text-muted">{{ $errors->first('date_submission') }}</small>
-                                                            </p>
-                                                        @endif
+                                                    <div class="col-md-6">
+                                                        <fieldset>
+                                                            <label for="date_submission">Date of Submission <span class="required">*</span></label>
+                                                            <div class="input-group">
+                                                                <input type="text" required name="submission_date" class="form-control form-control datepicker"
+                                                                       data-date-format="D-M-YYYY" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
+                                                                </div>
+                                                            </div>
+                                                        </fieldset>
                                                     </div>
-                                                </div>
+
+
+                                                {{--<div class="col-md-6">--}}
+                                                    {{--<div class="form-group">--}}
+                                                        {{--<label for="date_submission">Date of Submission <span class="required">*</span></label>--}}
+
+                                                        {{--<input type="date" required min="5" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}"--}}
+                                                               {{--name="submission_date" class="form-control" id="submission_date" readonly>--}}
+                                                        {{--@if ($errors->has('date_submission'))--}}
+                                                            {{--<p class="text-right">--}}
+                                                                {{--<small class="warning text-muted">{{ $errors->first('date_submission') }}</small>--}}
+                                                            {{--</p>--}}
+                                                        {{--@endif--}}
+                                                    {{--</div>--}}
+                                                {{--</div>--}}
                                             @endif
 
 
-                                                <div class="{{(\Auth::user()->hasRole('ace-officer'))?'col-md-6' :'col-md-4'}}">
-                                                    <fieldset class="form-group">
-                                                        <label>Language<span class="required">*</span></label>
-                                                        <select class="form-control" name="language" id="language">
-                                                            <option value="">Select One</option>
-                                                            <option value="english">English</option>
-                                                            <option value="french">French</option>
-                                                        </select>
-                                                    </fieldset>
-                                                </div>
+                                            <div class="{{(\Auth::user()->hasRole('ace-officer'))?'col-md-6' :'col-md-4'}}">
+                                                <fieldset class="form-group">
+                                                    <label>Language<span class="required">*</span></label>
+                                                    <select class="form-control" name="language" id="language">
+                                                        <option value="">Select One</option>
+                                                        <option value="english">English</option>
+                                                        <option value="french">French</option>
+                                                    </select>
+                                                </fieldset>
+                                            </div>
 
                                             <div class="col-md-6">
                                                 <fieldset class="form-group">
@@ -271,18 +287,40 @@
         </div>
     </div>
 @endsection
-@push('vendor-script')
-    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
-@endpush
-@push('end-script')
-    <script>
-        $('.select2').select2({
-            placeholder: "Select ACE",
-            allowClear: true
-        });
 
-        $('#save-button').on('click',function () {
-            console.log("Hello");
-        })
-    </script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+{{--<script src="../../../app-assets/js/scripts/forms/input-groups.min.js"></script>--}}
+
+
+
+@push('vendor-script')
+
+    <script src="{{ asset('vendors/js/pickers/dateTime/moment-with-locales.min.js') }}" type="text/javascript"></script>
+    <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
+    <script src="{{ asset('vendors/js/extensions/toastr.min.js') }}" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
 @endpush
+
+
+{{--@push('end-script')--}}
+
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>--}}
+
+<script>
+
+
+    $(function () {
+        $('.datepicker').datetimepicker();
+    });
+
+    $('.select2').select2({
+        placeholder: "Select ACE",
+        allowClear: true
+    });
+
+    $('#save-button').on('click',function () {
+        console.log("Hello");
+    })
+</script>

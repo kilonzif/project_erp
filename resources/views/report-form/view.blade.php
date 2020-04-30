@@ -105,7 +105,7 @@
 
                                     <div class="col-md-3">
                                         <h6>Date Submitted</h6>
-                                        <p><strong>{{date('M d, Y', strtotime($report->submission_date))}}</strong></p>
+                                        <p><strong>{{date('d M, Y', strtotime($report->submission_date))}}</strong></p>
                                     </div>
                                 </div>
                             </div>

@@ -123,6 +123,10 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+
+    'date_format_js' => 'dd/mm/yyyy',
+
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -228,6 +232,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+
 
 
     /*

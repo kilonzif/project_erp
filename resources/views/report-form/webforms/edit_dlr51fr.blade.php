@@ -44,11 +44,17 @@
 
         </div>
 
+
         <div class="col-md-4">
-            <fieldset class="form-group">
+            <fieldset>
                 <label for="basicInputFile">Date de réception<span class="required">*</span></label>
-                <input type="date" class="form-control" required name="datereceived"
-                       value="{{ (old('datereceived')) ? old('datereceived') : $the_record['datereceived'] }}">
+                <div class="input-group">
+                    <input type="text" required name="datereceived" class="form-control form-control datepicker"
+                           data-date-format="D-M-YYYY" value="{{ (old('datereceived')) ? old('datereceived') : $the_record['datereceived'] }}">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
             </fieldset>
         </div>
         <div class="col-md-4">

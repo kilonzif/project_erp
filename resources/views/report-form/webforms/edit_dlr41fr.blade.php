@@ -51,6 +51,7 @@
                        value="{{ (old('accreditationreference')) ? old('accreditationreference') : $the_record['accreditationreference'] }}">
             </fieldset>
         </div>
+
         <div class="col-md-4">
             <fieldset class="form-group">
                 <label for="basicInputFile">Agence d'accréditation <span class="required">*</span></label>
@@ -80,19 +81,32 @@
             </fieldset>
         </div>
         <div class="col-md-4">
-            <fieldset class="form-group">
-                <label for="basicInputFile">Date d'accréditation <span class="required">*</span></label>
-                <input type="date" class="form-control" required name="dateofaccreditation"
-                       value="{{ (old('dateofaccreditation')) ? old('dateofaccreditation') : $the_record['dateofaccreditation'] }}">
+            <fieldset>
+                <label for="basicInputFile">Date d'accréditation<span class="required">*</span></label>
+                <div class="input-group">
+                    <input type="text" required name="dateofaccreditation" class="form-control form-control datepicker"
+                           data-date-format="D-M-YYYY" value="{{ (old('dateofaccreditation')) ? old('dateofaccreditation') : $the_record['dateofaccreditation'] }}">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
             </fieldset>
         </div>
+
         <div class="col-md-4">
-            <fieldset class="form-group">
+
+        <fieldset>
                 <label for="basicInputFile">Date d'expiration de l'accréditation<span class="required">*</span></label>
-                <input type="date" name="exp_accreditationdate"  required class="form-control"
-                       value="{{ (old('exp_accreditationdate')) ? old('exp_accreditationdate') : $the_record['exp_accreditationdate'] }}">
+                <div class="input-group">
+                    <input type="text" required name="exp_accreditationdate" class="form-control form-control datepicker"
+                           data-date-format="D-M-YYYY"  value="{{ (old('exp_accreditationdate')) ? old('exp_accreditationdate') : $the_record['exp_accreditationdate'] }}">
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
             </fieldset>
         </div>
+
         <div class="form-group col-12">
             <button type="submit" class="btn btn-secondary square"><i class="fa fa-save">   Update </i>     Records</button>
         </div>

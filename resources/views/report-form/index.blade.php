@@ -87,7 +87,7 @@
                                                                 {{$report->ace->name}} <strong>{{'('.$report->ace->acronym.')'}}</strong>
                                                             @endif
                                                         </td>
-                                                        <td>{{date('M d, Y', strtotime($report->submission_date))}}</td>
+                                                        <td>{{date('d M, Y', strtotime($report->submission_date))}}</td>
                                                         <td>{!! $me->reportStatusTag($report->status) !!}</td>
                                                         <td>
                                                             <div class="btn-group" role="group" aria-label="Basic example">

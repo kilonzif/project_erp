@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
 @endpush
 @push('other-styles')
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendors/css/pickers/datetime/bootstrap-datetimepicker.css') }}">
+
     <style>
         table{
             border-collapse: collapse;
@@ -97,11 +99,16 @@
                                                         </fieldset>
 
                                                     </div>
-
                                                     <div class="col-md-4">
-                                                        <fieldset class="form-group">
-                                                            <label for="basicInputFile">Date de réception (jj/mm/aaaa)<span class="required">*</span></label>
-                                                            <input type="date" class="form-control" required name="datereceived">
+                                                        <fieldset>
+                                                            <label for="basicInputFile">Date de réception<span class="required">*</span></label>
+                                                            <div class="input-group">
+                                                                <input type="text" required name="datereceived" class="form-control form-control datepicker"
+                                                                       data-date-format="D-M-YYYY">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
+                                                                </div>
+                                                            </div>
                                                         </fieldset>
                                                     </div>
                                                     <div class="col-md-4">
@@ -248,12 +255,33 @@
 
 
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+{{--<script src="../../../app-assets/js/scripts/forms/input-groups.min.js"></script>--}}
+
+
+
 @push('vendor-script')
+
+    <script src="{{ asset('vendors/js/pickers/dateTime/moment-with-locales.min.js') }}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{ asset('vendors/js/extensions/toastr.min.js') }}" type="text/javascript"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
 @endpush
 
+
+{{--@push('end-script')--}}
+
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>--}}
+
 <script>
+
+
+    $(function () {
+        $('.datepicker').datetimepicker();
+    });
     function editRecord(indicator,record){
         var path = "{{route('report_submission.web_form_edit_record')}}";
         $.ajaxSetup(    {

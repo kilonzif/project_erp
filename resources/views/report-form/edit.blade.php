@@ -105,7 +105,7 @@
                                                         </p>
                                                     @endif
                                                 @else
-                                                    <h6>{{ $report->submission_date }}</h6>
+                                                    <h6>{{date("d/m/Y",strtotime($report->submission_date) }}</h6>
                                                     <input type="hidden" name="submission_date" value="{{ $report->submission_date }}" class="form-control">
                                                 @endif
                                             </div>
