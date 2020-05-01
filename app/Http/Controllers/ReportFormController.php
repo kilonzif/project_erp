@@ -136,7 +136,13 @@ class ReportFormController extends Controller
         $project_id = Crypt::decrypt($request->project_id);
         $dlr_id = $request->indicator;
 
-        $report_exists = Report::where('ace_id', $ace_id)->where('reporting_period_id', $request->reporting_period)->where('indicator_id', '=', $dlr_id)->where('language', '=', $request->language)->first();
+        #since dlrs 4.1,5.1,5.3 are submitted as at when, allow users to submit as many full reports of this DLR as possible.
+        $report_exists = Report::where('ace_id', $ace_id)->where('reporting_period_id', $request->reporting_period)
+            ->where('indicator_id', '=', $dlr_id)
+            ->where('identifier', '=', '4.1')
+            ->orWhere('identifier', '=', '5.1')
+            ->orWhere('identifier', '=', '5.3')
+            ->where('language', '=', $request->language)->first();
 
         if ($report_exists) {
             if ($report_exists->status != 1) {
