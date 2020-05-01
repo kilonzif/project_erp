@@ -50,10 +50,10 @@
                     </div>
 
                     @php
-                       $sub_indicator = \App\Indicator::query()->where('identifier','like','%'.'PDO Indicator 2')->first();
+                        $sub_indicator = \App\Indicator::query()->where('identifier','like','%'.'PDO Indicator 2')->first();
                     @endphp
 
-                        <h4 style="padding:10px">{{$sub_indicator->identifier}} : {{$sub_indicator->title}}</h4>
+
 
                     <div class="card-body">
                         <div class="row">
@@ -65,12 +65,12 @@
                                             <input type="hidden" name="report_id" value="{{$d_report_id}}">
                                             <input type="hidden" name="indicator_id" value="{{$indicators->id}}">
                                             <div class="col-md-4">
-                                                <fieldset class="form-group{{ $errors->has('programmetitle') ? ' form-control-warning' : '' }}">
-                                                    <label for="basicInputFile">Programme title <span class="required">*</span></label>
-                                                    <input type="text" class="form-control"  required name="programmetitle">
-                                                    @if ($errors->has('programmetitle'))
+                                                <fieldset class="form-group{{ $errors->has('institutionname') ? ' form-control-warning' : '' }}">
+                                                    <label for="basicInputFile">Institution Name <span class="required">*</span></label>
+                                                    <input type="text" class="form-control"  required name="institutionname">
+                                                    @if ($errors->has('institutionname'))
                                                         <p class="text-right mb-0">
-                                                            <small class="warning text-muted">{{ $errors->first('programmetitle') }}</small>
+                                                            <small class="warning text-muted">{{ $errors->first('institutionname') }}</small>
                                                         </p>
                                                     @endif
                                                 </fieldset>
@@ -78,27 +78,12 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <fieldset class="form-group">
-                                                    <label for="basicInputFile">Level<span class="required">*</span></label>
-                                                    <select name="level" required class="form-control" id="language">
-                                                        <option value="">select one</option>
-                                                        <option value="MASTERS">Masters</option>
-                                                        <option value="PHD">PhD</option>
-                                                        <option value="bachelors">Bachelors</option>
-                                                        <option value="professional_course">Professional Short Course</option>
-
-                                                    </select>
-                                                </fieldset>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <fieldset class="form-group">
                                                     <label for="basicInputFile">Type of Accreditation <span class="required">*</span></label>
                                                     <select name="typeofaccreditation" required class="form-control" id="language">
                                                         <option value="">select one</option>
                                                         <option value="National">National</option>
-                                                        <option value="Regional">Regional</option>
                                                         <option value="International">International</option>
                                                         <option value="Gap Assessment">Gap Assessment</option>
-                                                        <option value="Self-Evaluation">Self-Evaluation</option>
                                                     </select>
 
                                                 </fieldset>
@@ -111,26 +96,20 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <fieldset class="form-group">
-                                                    <label for="basicInputFile">Accreditation Agency <span class="required">*</span></label>
-                                                    <input type="text" class="form-control" name="accreditationagency">
+                                                    <label for="basicInputFile">Name of Contact Person In the Accreditation Agency<span class="required">*</span> </label>
+                                                    <input class="form-control" required type="text" name="contactname">
                                                 </fieldset>
                                             </div>
                                             <div class="col-md-4">
                                                 <fieldset class="form-group">
-                                                    <label for="basicInputFile">Agency Contact Name<span class="required">*</span> </label>
-                                                    <input class="form-control" required type="text" name="agencyname">
+                                                    <label for="basicInputFile">Email of Contact Person In the Accreditation Agency<span class="required">*</span></label>
+                                                    <input type="email" class="form-control" required name="contactemail">
                                                 </fieldset>
                                             </div>
                                             <div class="col-md-4">
                                                 <fieldset class="form-group">
-                                                    <label for="basicInputFile">Agency Contact Email <span class="required">*</span></label>
-                                                    <input type="email" class="form-control" required name="agencyemail">
-                                                </fieldset>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <fieldset class="form-group">
-                                                    <label for="basicInputFile">Agency Contact Phone Number <span class="required">*</span></label>
-                                                    <input type="text" min="10" name="agencycontact" required class="form-control">
+                                                    <label for="basicInputFile">Phone Number of Contact Person In the Accreditation Agency <span class="required">*</span></label>
+                                                    <input type="text" min="10" name="contactphone" required class="form-control">
                                                 </fieldset>
                                             </div>
                                             <div class="col-md-4">
@@ -166,7 +145,7 @@
                                     </form>
 
                                 </div>
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -181,16 +160,14 @@
 
                                 <table class="table table-striped table-bordered">
                                     <tr>
-                                        <th>Program Title</th>
-                                        <th>Level</th>
-                                        <th>Type</th>
-                                        <th>Reference</th>
-                                        <th>Agency</th>
-                                        <th>Contact Name</th>
-                                        <th>Email</th>
-                                        <th>Phone Number</th>
-                                        <th>Accreditation Date</th>
-                                        <th>Accreditation Expiry Date</th>
+                                        <th>Institution Name</th>
+                                        <th>Type of Accreditation</th>
+                                        <th>Accreditation Reference</th>
+                                        <th>Name of Contact Person In the Accreditation Agency</th>
+                                        <th>Email of Contact Person In the Accreditation Agency</th>
+                                        <th>Phone Number of Contact Person In the Accreditation Agency</th>
+                                        <th>Date of Accreditation </th>
+                                        <th>Expiry date of Accreditation</th>
                                         <th style="min-width: 180px">Action</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
@@ -199,16 +176,14 @@
                                         @endphp
 
                                         <tr>
-                                            <td>{{$d->programmetitle}}</td>
-                                            <td>{{$d->level}}</td>
+                                            <td>{{$d->institutionname}}</td>
                                             <td>{{$d->typeofaccreditation}}</td>
                                             <td>{{$d->accreditationreference}}</td>
-                                            <td>{{$d->accreditationagency}}</td>
-                                            <td>{{$d->agencyname}}</td>
-                                            <td>{{$d->agencyemail}}</td>
-                                            <td>{{$d->agencycontact}}</td>
-                                            <td>{{date("d/m/Y", strtotime($d->dateofaccreditation))}}</td>
-                                            <td>{{date("d/m/Y", strtotime($d->exp_accreditationdate))}}</td>
+                                            <td>{{$d->contactname}}</td>
+                                            <td>{{$d->contactemail}}</td>
+                                            <td>{{$d->contactphone}}</td>
+                                            <td>{{!empty($d->dateofaccreditation) ? date("d/m/Y", strtotime($d->dateofaccreditation)):"N/A"}}</td>
+                                            <td>{{!empty($d->exp_accreditationdate) ? date("d/m/Y", strtotime($d->exp_accreditationdate)):"N/A"}}</td>
                                             <td>
                                                 <a href="#form-card" onclick="editRecord('{{$indicators->id}}','{{$d->_id}}')" class="btn btn-s btn-secondary">
                                                     {{__('Edit')}}</a>
@@ -265,49 +240,49 @@
         $('.datepicker').datetimepicker();
     });
 
-        function editRecord(indicator,record){
-            var path = "{{route('report_submission.web_form_edit_record')}}";
-            $.ajaxSetup(    {
-                headers: {
-                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
-                }
-            });
-            $.ajax({
-                url: path,
-                type: 'GET',
-                data: {indicator_id:indicator,record_id:record},
-                beforeSend: function(){
-                    $('#form-card').block({
-                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
-                        overlayCSS: {
-                            backgroundColor: '#ccc',
-                            opacity: 0.8,
-                            cursor: 'wait'
-                        },
-                        css: {
-                            border: 0,
-                            padding: 0,
-                            backgroundColor: 'transparent'
-                        }
-                    });;
-                },
-                success: function(data){
-                    $('#form-card').empty();
-                    $('#form-card').html(data.theView);
-                    // console.log(data)
-                },
-                complete:function(){
-                    $('#form-card').unblock();
-                }
-                ,
-                error: function (data) {
-                    console.log(data)
-                }
-            });
+    function editRecord(indicator,record){
+        var path = "{{route('report_submission.web_form_edit_record')}}";
+        $.ajaxSetup(    {
+            headers: {
+                'X-CSRF-Token': $('meta[name=_token]').attr('content')
+            }
+        });
+        $.ajax({
+            url: path,
+            type: 'GET',
+            data: {indicator_id:indicator,record_id:record},
+            beforeSend: function(){
+                $('#form-card').block({
+                    message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                    overlayCSS: {
+                        backgroundColor: '#ccc',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });;
+            },
+            success: function(data){
+                $('#form-card').empty();
+                $('#form-card').html(data.theView);
+                // console.log(data)
+            },
+            complete:function(){
+                $('#form-card').unblock();
+            }
+            ,
+            error: function (data) {
+                console.log(data)
+            }
+        });
 
-        }
+    }
 
 
 
-    </script>
+</script>
 

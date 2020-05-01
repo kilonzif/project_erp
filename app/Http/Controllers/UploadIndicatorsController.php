@@ -66,6 +66,12 @@ class UploadIndicatorsController extends Controller
                 return view('report-form.webforms.dlr51en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
 
             }
+            else if($report->language=="english" && $indicators->identifier =='7.3'){
+                return view('report-form.webforms.dlr73en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            }
+            else if($report->language=="french" && $indicators->identifier =='7.3'){
+                return view('report-form.webforms.dlr73fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            }
 
             return view('report-form.webforms.blank-dlr', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
         }
@@ -361,6 +367,20 @@ class UploadIndicatorsController extends Controller
             $indicator_details['region'] = $request->region;
             $indicator_details['fundingreason'] = $request->fundingreason;
         }
+        else if ($this_dlr->identifier =="7.3"){
+
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['institutionname'] = $request->institutionname;
+            $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+            $indicator_details['accreditationreference'] = $request->accreditationreference;
+            $indicator_details['contactname'] = $request->contactname;
+            $indicator_details['contactemail'] = $request->contactemail;
+            $indicator_details['contactphone'] = $request->contactphone;
+            $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+            $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+
+        }
 
         $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
@@ -477,6 +497,7 @@ class UploadIndicatorsController extends Controller
         $report = Report::find($the_record['report_id']);
 
 
+
         if($report->language=="english" && $this_indicator->identifier =='4.1' ){
             $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id','this_indicator'))->render();
         }
@@ -489,6 +510,13 @@ class UploadIndicatorsController extends Controller
         elseif($report->language=="french" && $this_indicator->identifier =='5.1' ){
             $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id','this_indicator'))->render();
         }
+        elseif($report->language=="english" && $this_indicator->identifier =='7.3' ){
+            $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id','this_indicator'))->render();
+        }
+        elseif($report->language=="french" && $this_indicator->identifier =='7.3' ){
+            $view = view ('report-form.webforms.edit_dlr73fr',compact('the_record','record_id','this_indicator'))->render();
+        }
+
 
 
         return response()->json(['theView' => $view]);
@@ -535,6 +563,18 @@ class UploadIndicatorsController extends Controller
             $indicator_details['bankdetails'] = $request->bankdetails;
             $indicator_details['region'] = $request->region;
             $indicator_details['fundingreason'] = $request->fundingreason;
+        }
+        else if ($this_dlr->identifier =="7.3"){
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['institutionname'] = $request->institutionname;
+            $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+            $indicator_details['accreditationreference'] = $request->accreditationreference;
+            $indicator_details['contactname'] = $request->contactname;
+            $indicator_details['contactemail'] = $request->contactemail;
+            $indicator_details['contactphone'] = $request->contactphone;
+            $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+            $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
         }
 
         $updated = DB::connection('mongodb')->collection("$table_name")

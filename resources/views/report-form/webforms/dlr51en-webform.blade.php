@@ -148,7 +148,7 @@
 
                                                     </div>
                                                     <div class="form-group col-12">
-                                                        <button type="submit" class="btn btn-primary square"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
+                                                        <button type="submit" class="btn btn-primary square" style="margin-top: 20px"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
                                                     </div>
 
                                                 </div>

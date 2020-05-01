@@ -158,7 +158,7 @@
                                             </div>
 
                                             <div class="form-group col-12">
-                                                <button type="submit" class="btn btn-secondary square"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
+                                                <button type="submit" class="btn btn-secondary square" style="margin-top: 20px"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
                                             </div>
 
                                         </div>
@@ -211,7 +211,7 @@
                                             <td>{{$d->agencyname}}</td>
                                             <td>{{$d->agencyemail}}</td>
                                             <td>{{$d->agencycontact}}</td>
-                                            <td>{{date("d/m/Y", strtotime($d->dateofaccreditation))}}</td>
+                                            <td>{{date("d/m/Y", strtotim    e($d->dateofaccreditation))}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->exp_accreditationdate))}}</td>
                                             <td>
                                                 <a href="#form-card" onclick="editRecord('{{$indicators->id}}','{{$d->_id}}')" class="btn btn-s btn-secondary">

@@ -138,16 +138,21 @@ class ReportFormController extends Controller
 
         #since dlrs 4.1,5.1,5.3 are submitted as at when, allow users to submit as many full reports of this DLR as possible.
         $report_exists = Report::where('ace_id', $ace_id)->where('reporting_period_id', $request->reporting_period)
+           ->join('indicators','indicator_id','=','indicators.id')
             ->where('indicator_id', '=', $dlr_id)
-            ->where('identifier', '=', '4.1')
-            ->orWhere('identifier', '=', '5.1')
-            ->orWhere('identifier', '=', '5.3')
-            ->where('language', '=', $request->language)->first();
+            ->where('language', '=', $request->language)
+            ->where(function ($query) {
+                $query->where('indicators.identifier', '!=', '4.1')
+                    ->orWhere('indicators.identifier', '!=', '5.1')
+                    ->orWhere('indicators.identifier', '!=', '5.3');
 
-        if ($report_exists) {
-            if ($report_exists->status != 1) {
-                notify(new ToastNotification('Error!', 'You have a pending report on this DLR and period- Go and submit!', 'error'));
-            }
+            })
+            ->get();
+
+        if (empty($report_exists)) {
+//            if ($report_exists->status != 1) {
+//                notify(new ToastNotification('Error!', 'You have a pending report on this DLR and period- Go and submit!', 'error'));
+//            }
             notify(new ToastNotification('Error!', 'A report by this DLR this Period has already been created and submitted!', 'error'));
             return back()->withInput();
         }

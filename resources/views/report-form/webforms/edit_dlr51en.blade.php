@@ -97,7 +97,7 @@
 
         </div>
         <div class="form-group col-12">
-            <button type="submit" class="btn btn-secondary square"><i class="fa fa-save">   Update </i>     Record</button>
+            <button type="submit" class="btn btn-secondary square" style="margin-top: 20px"><i class="fa fa-save">   Update </i>     Record</button>
         </div>
 
     </div>
