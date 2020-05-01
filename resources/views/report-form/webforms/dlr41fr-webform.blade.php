@@ -46,16 +46,14 @@
 
                 <div class="card">
                     <div class="card-header p-1 card-head-inverse bg-teal">
-                        <h6>{{$ace->name}} - ({{$ace->acronym}})</h6>
+                        <h2>{{$ace->name}} ({{$ace->acronym}}) - {{$indicators->title}}</h2>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
 
-                            <div class="col-md-7">
-                                <h2>{{$indicators->title}}</h2>
-                            </div>
-                        </div>
-                    </div>
+                    @php
+                        $sub_indicator = \App\Indicator::query()->where('identifier','like','%'.'PDO Indicator 2')->first();
+                    @endphp
+
+                    <h4 style="padding:10px">{{$sub_indicator->identifier}} : {{$sub_indicator->title}}</h4>
 
                     <div class="card-body">
                         <div class="row">
