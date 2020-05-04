@@ -241,10 +241,9 @@ class GenerateReportController extends Controller {
 //		$export = route('report_generation.general_report_excel') . '?' . $Excelquery;
 
 		$this->validate($request, [
-			'reporting_year' => 'required|numeric',
+			'reporting_year' => 'required|array',
 		]);
-        $year = $request->reporting_year;
-//        return $request->all();
+        $years = $request->reporting_year;
 
 		$project = Project::find(1);
 
@@ -252,7 +251,6 @@ class GenerateReportController extends Controller {
         if (!isset($status)){
             $status = 101;
         }
-        $reporting_year = ReportingPeriod::where('period_start','like',"%$year%")->pluck('id');
 
 		$reports = DB::table('reports')
 //            ->join('report_values', 'reports.id', '=', 'report_values.report_id')
@@ -262,7 +260,7 @@ class GenerateReportController extends Controller {
 			->distinct('reports.id')
 			->select(DB::raw('reports.*,aces.id as aceID, aces.*,countries.id as countryID, countries.*,reports.id'))
 			->where('reports.status', '=', $status)
-			->whereIn('reports.reporting_period_id', $reporting_year)
+//			->whereIn('reports.reporting_period_id', $reporting_year)
 			->get();
 
 		//Filter by ACE
@@ -288,36 +286,41 @@ class GenerateReportController extends Controller {
 			}
 
 		}
+
+		//Variables
         $ace_ids = $reports->pluck('ace_id')->toArray();
-        $report_ids = $reports->pluck('id')->toArray();
+        $target_values = $report_values = null;
 
-		//Get aces target values by indicators
-		$target_values = DB::table('ace_indicators_targets')
-			->join('ace_indicators_target_years', 'ace_indicators_targets.target_year_id', '=', 'ace_indicators_target_years.id')
-			->select('indicator_id', DB::raw('SUM(ace_indicators_targets.target) as targets'))
-			->whereIn('ace_indicators_target_years.ace_id', $ace_ids)
-			->where('reporting_year', '=', $year)
-			->groupBy('indicator_id')
-			->pluck('targets', 'indicator_id');
+        //Get aces baselines by indicators
+        $baseline_values = DB::table('ace_indicators_baselines')
+            ->select('indicator_id', DB::raw('SUM(baseline) as baselines'))
+            ->whereIn('ace_id', $ace_ids)
+            ->groupBy('indicator_id')
+            ->pluck('baselines', 'indicator_id');
 
-		//Get aces baselines by indicators
-		$baseline_values = DB::table('ace_indicators_baselines')
-			->select('indicator_id', DB::raw('SUM(baseline) as baselines'))
-			->whereIn('ace_id', $ace_ids)
-			->groupBy('indicator_id')
-			->pluck('baselines', 'indicator_id');
+        foreach ($years as $key=>$year) {
+            $reporting_year = ReportingPeriod::where('reporting_year','=',(integer)$year)->pluck('id')->toArray();
+            $report_ids = $reports->whereIn('reporting_period_id', $reporting_year)->pluck('id')->toArray();
 
-		$report_values = DB::table('report_values')
-			->select('indicator_id', DB::raw('SUM(value) as ind_values'))
-			->whereIn('report_id', $report_ids)
-			->groupBy('indicator_id')
-			->get();
+            //Get aces target values by indicators
+            $target_values["$year"] = DB::table('ace_indicators_targets')
+                ->join('ace_indicators_target_years', 'ace_indicators_targets.target_year_id', '=',
+                    'ace_indicators_target_years.id')
+                ->select('indicator_id', DB::raw('SUM(ace_indicators_targets.target) as targets'))
+                ->whereIn('ace_indicators_target_years.ace_id', $ace_ids)
+                ->where('reporting_year', '=', $year)
+                ->groupBy('indicator_id')
+                ->pluck('targets', 'indicator_id');
+
+            $report_values["$year"] = DB::table('report_values')
+                ->select('indicator_id', DB::raw('SUM(value) as ind_values'))
+                ->whereIn('report_id', $report_ids)
+                ->groupBy('indicator_id')
+                ->get();
+        }
 //        dd($report_values);
 
-		$start = 2020;
-		$end = 2020;
-
-		if ($request->query->get('export')) {
+        if ($request->query->get('export')) {
 			return $this->generalspreadsheet($report_values, $baseline_values, $target_values, $reports, $project);
 		}
         $indicators = Indicator::where('is_parent','=',1)
@@ -328,7 +331,7 @@ class GenerateReportController extends Controller {
 //            ->get();
 
 		return view('generate-report.general-report-table',
-			compact('project', 'report_values', 'start', 'end', 'baseline_values', 'target_values',
+			compact('project', 'report_values', 'years', 'baseline_values', 'target_values',
                 'export', 'reports','indicators'));
 	}
 

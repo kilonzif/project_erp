@@ -36,75 +36,48 @@
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
+                                <div class="form-group">
+                                    <label for="submission_period">Select Reporting Year<span class="required">*</span></label>
+                                    <br>
+                                    @php
+                                        $reporting_year_start = config('app.reporting_year_start');
+                                        $reporting_year_length = config('app.reporting_year_length');
+                                    @endphp
+                                    @for($a=$reporting_year_start;$a < $reporting_year_length+$reporting_year_start; $a++)
+                                        <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                            <input type="checkbox" class="custom-control-input" value="{{$a}}" name="reporting_year[]"
+                                                   id="reporting_year{{$a}}">
+                                            <label class="custom-control-label" for="reporting_year{{$a}}">{{$a}}</label>
+                                        </div>
+                                    @endfor
+                                    @if ($errors->has('reporting_year'))
+                                        <p class="text-right">
+                                            <small class="warning text-muted">{{ $errors->first('reporting_year') }}</small>
+                                        </p>
+                                    @endif
+                                </div>
+                                <div class="form-group">
+                                    <label for="filters"> <i class="ft-filter"></i> Select Filters</label>
+                                    <hr style="margin-top: 5px;">
                                     <div class="form-group">
-                                        <label for="submission_period">Reporting Year<span class="required">*</span></label>
-
-                                        <select name="reporting_year" class="form-control" required id="reporting_year">
-                                            <option value="">Select Year</option>
-                                            @php
-                                                //$reporting_year_start = 2019;
-                                                $reporting_year_start = config('app.reporting_year_start');
-                                                $reporting_year_length = config('app.reporting_year_length');
-                                                //$reporting_year_length = 5;
-                                            @endphp
-                                            @for($a=$reporting_year_start;$a < $reporting_year_length+$reporting_year_start; $a++)
-                                            <option value="{{$a}}" {{(old('reporting_year') == "$a")?'selected':''}}>{{$a}}</option>
-                                            @endfor
-                                        </select>
-                                        @if ($errors->has('reporting_year'))
-                                            <p class="text-right">
-                                                <small class="warning text-muted">{{ $errors->first('reporting_year') }}</small>
-                                            </p>
-                                        @endif
-                                    </div>
-                                    {{--<div class="form-group">--}}
-                                        {{--<label for="submission_period">Reporting Period (Start Date)<span class="required">*</span></label>--}}
-                                        {{--<input type="date" required value="{{ old('start')? old('start') : '' }}"--}}
-                                               {{--name="start" class="form-control" id="start">--}}
-                                        {{--@if ($errors->has('submission_period'))--}}
-                                            {{--<p class="text-right">--}}
-                                                {{--<small class="warning text-muted">{{ $errors->first('submission_period') }}</small>--}}
-                                            {{--</p>--}}
-                                        {{--@endif--}}
-                                    {{--</div>--}}
-                                    {{--<div class="form-group">--}}
-                                        {{--<label for="submission_period">Reporting Period (End Date) <span class="required">*</span></label>--}}
-                                        {{--<input type="date" required value="{{ old('end')? old('end') : '' }}"--}}
-                                               {{--name="end" class="form-control" id="end">--}}
-                                        {{--@if ($errors->has('end'))--}}
-                                            {{--<p class="text-right">--}}
-                                                {{--<small class="warning text-muted">{{ $errors->first('end') }}</small>--}}
-                                            {{--</p>--}}
-                                        {{--@endif--}}
-                                    {{--</div>--}}
-                                    <div class="form-group">
-                                        <label for="filters"> <i class="ft-filter"></i> Select Filters</label>
-                                        <hr style="margin-top: 5px;">
-                                        {{--<div class="row">--}}
-                                            {{--<div class="col-md-4">--}}
-                                                <div class="form-group">
-                                                    <div clas="skin skin-square">
-                                                        <input type="radio" name="filter" checked value="aces" id="is_ace">
-                                                        <label for="is_ace" class="">By ACEs</label>
-                                                    </div>
-                                                </div>
-                                            {{--</div>--}}
-                                            {{--<div class="col-md-8">--}}
-                                                <div class="form-group">
-                                                    <div clas="skin skin-square">
-                                                        <input type="radio" name="filter" value="field_country" id="field_country">
-                                                        <label for="field_country" class="">By ACE Status / By Center Type / By Countries / By Fields </label>
-                                                    </div>
-                                                </div>
-                                            {{--</div>--}}
-                                        {{--</div>--}}
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <button type="submit" class="btn btn-secondary square">
-                                                <i class="ft-pie-chart mr-sm-1"></i>{{__('Generate')}}</button>
+                                        <div clas="skin skin-square">
+                                            <input type="radio" name="filter" checked value="aces" id="is_ace">
+                                            <label for="is_ace" class="">By ACEs</label>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <div clas="skin skin-square">
+                                            <input type="radio" name="filter" value="field_country" id="field_country">
+                                            <label for="field_country" class="">By ACE Status / By Center Type / By Countries / By Fields </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-secondary square">
+                                            <i class="ft-pie-chart mr-sm-1"></i>{{__('Generate')}}</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

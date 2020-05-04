@@ -41,14 +41,16 @@
                             <table class="table table-bordered table-striped">
                                 <tr>
 
-                                    <th style="width: 150px;">Reporting Period (Start Date)</th>
-                                    <td>{{date('F d, Y',strtotime($start))}}</td>
-                                    <th style="width: 150px;">Reporting Period (End Date)</th>
-                                    <td>{{date('F d, Y',strtotime($end))}}</td>
+                                    <th style="width: 150px;">Reporting Period</th>
+                                    <td>
+                                        @foreach($years as $key=>$year)
+                                            {{"$year | "}}
+                                        @endforeach
+                                    </td>
 
                                 </tr>
                             </table>
-                            @if(sizeof($report_values) > 1)
+                            @if(sizeof($report_values) > 0)
                                 @include('generate-report.gtable')
                             @else
                                 <h2 class="text-center danger mt-3 mb-3">No Report can be generated within the specified range</h2>

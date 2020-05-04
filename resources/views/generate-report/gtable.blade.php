@@ -11,13 +11,20 @@
     @endphp
     <thead>
     <tr>
-        <th width="300px" style="width: 300px">ACE Level Results Indicators</th>
-        <th style="width: 15px">Core</th>
-        <th style="width: 200px">Unit of Measure</th>
-        <th style="width: 200px">Specifics</th>
-        <th style="width: 50px">Baseline</th>
-        <th style="width: 50px">Annual Target Values</th>
-        <th style="width: 50px">Results as of<br> {{date('F Y',strtotime($end))}}</th>
+        <th style="width: 300px" rowspan="2" width="300px" >ACE Level Results Indicators</th>
+        <th style="width: 15px" rowspan="2">Core</th>
+        <th style="width: 200px" rowspan="2">Unit of Measure</th>
+        <th style="width: 200px" rowspan="2">Specifics</th>
+        <th style="width: 50px" rowspan="2">Baseline</th>
+        <th style="width: 50px" colspan="{{sizeof($years)}}">Annual Target Values</th>
+        @for($a = 1; $a <= sizeof($years); $a++)
+        <th style="width: 50px" rowspan="2">{{$years[$a-1]}}</th>
+        @endfor
+    </tr>
+    <tr>
+        @for($a = 1; $a <= sizeof($years); $a++)
+        <th style="width: 50px">{{"Year $a"}}</th>
+        @endfor
     </tr>
     </thead>
     <tbody>
@@ -43,15 +50,6 @@
                 @if($sub_indicators->count() > 1)
 
                     @foreach($sub_indicators as $sub_indicator)
-                        @php
-                            $count +=1;
-                            try{
-                                $value = $report_values->where('indicator_id','=',$sub_indicator->id)->pluck('ind_values')->first();
-                            }
-                            catch(Exception $exception){
-                                $value = 0;
-                            }
-                        @endphp
                         <td>
                             {{$sub_indicator->title}}
                         </td>
@@ -62,16 +60,29 @@
                                 0
                             @endif
                         </td>
-                        <td class="text-right">
-                            @if(sizeof($target_values) > 0)
-                                {{$target_values[$sub_indicator->id]}}
-                            @else
-                                0
-                            @endif
-                        </td>
-                        <td class="text-right">
-                            <strong>{{$value}}</strong>
-                        </td>
+                        @foreach($years as $key=>$year)
+                            <td class="text-right">
+                                @if(sizeof($target_values["$year"]) > 0)
+                                    {{$target_values["$year"][$sub_indicator->id]}}
+                                @else
+                                    0
+                                @endif
+                            </td>
+                        @endforeach
+                        @foreach($years as $key=>$year)
+                            @php
+                                $count +=1;
+                                try{
+                                    $value = $report_values["$year"]->where('indicator_id','=',$sub_indicator->id)->pluck('ind_values')->first();
+                                }
+                                catch(Exception $exception){
+                                    $value = 0;
+                                }
+                            @endphp
+                            <td class="text-right">
+                                <strong>{{$value}}</strong>
+                            </td>
+                        @endforeach
 
                         @if($count = 1)
                             </tr><tr>
@@ -80,35 +91,38 @@
                         @endif
                     @endforeach
                 @else
-                    @php
-                        try{
-                            $value = $report_values->where('indicator_id','=',$indicator->id)->pluck('ind_values')->first();
-                        }
-                        catch(Exception $exception){
-                            $value = 0;
-                        }
-                    @endphp
                     <td></td>
                     <td class="text-right">
                         @if(sizeof($baseline_values) > 0)
                             {{$baseline_values[$indicator->id]}}
-                            @else
-                            0
-                        @endif
-                    </td>
-                    <td class="text-right">
-                        @if(sizeof($target_values) > 0)
-                            {{$target_values[$indicator->id]}}
                         @else
                             0
                         @endif
                     </td>
-                    <td class="text-right">
-                        <strong>{{$value}}</strong>
-                    </td>
-
+                    @foreach($years as $key=>$year)
+                        <td class="text-right">
+                            @if(sizeof($target_values["$year"]) > 0)
+                                {{$target_values["$year"][$sub_indicator->id]}}
+                            @else
+                                0
+                            @endif
+                        </td>
+                    @endforeach
+                    @foreach($years as $key=>$year)
+                        @php
+                            $count +=1;
+                            try{
+                                $value = $report_values["$year"]->where('indicator_id','=',$sub_indicator->id)->pluck('ind_values')->first();
+                            }
+                            catch(Exception $exception){
+                                $value = 0;
+                            }
+                        @endphp
+                        <td class="text-right">
+                            <strong>{{$value}}</strong>
+                        </td>
+                    @endforeach
                     </tr>
-
                 @endif
         @endforeach
     </tbody>
