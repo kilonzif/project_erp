@@ -577,35 +577,36 @@ class AcesController extends Controller {
 
     public function targets_save(Request $request, $ace_id, $target_year_id = null) {
         $this->validate($request, [
-            'start' => 'required|date',
-            'end' => 'required|date',
+            'reporting_year' => 'required|integer',
             'indicators' => 'required|array',
         ]);
         $aceId = Crypt::decrypt($ace_id);
         if ($target_year_id != null) {
 
             AceIndicatorsTargetYear::find($target_year_id)->update([
-                'start_period' => $request->start,
-                'end_period' => $request->end,
+                'reporting_year' => $request->reporting_year,
                 'user_id' => Auth::id(),
             ]);
+            AceIndicatorsTarget::where('target_year_id', '=', (integer)$target_year_id)->delete();
 
+//            dd($request->reporting_year);
+//            dd((integer)$target_year_id);
+//            dd($request->all());
             foreach ($request->indicators as $indicator => $target) {
-                AceIndicatorsTarget::where('ace_id', '=', $aceId)
-                    ->where('target_year_id', '=', $target_year_id)
-                    ->where('indicator_id', '=', $indicator)
-                    ->update([
-                        'target' => $target,
-                    ]);
+                AceIndicatorsTarget::create([
+                    'ace_id' => (integer)$aceId,
+                    'target_year_id' => (integer)$target_year_id,
+                    'indicator_id' => (integer)$indicator,
+                    'target' => (integer)$target,
+                ]);
             }
 
             notify(new ToastNotification('Successful', 'Indicator Targets updated.', 'success'));
         } else {
             $target_year = new AceIndicatorsTargetYear();
-            $target_year->ace_id = $aceId;
-            $target_year->user_id = Auth::id();
-            $target_year->start_period = $request->start;
-            $target_year->end_period = $request->end;
+            $target_year->ace_id = (integer)$aceId;
+            $target_year->user_id = (integer)Auth::id();
+            $target_year->reporting_year = (integer)$request->reporting_year;
             $target_year->save();
 
             foreach ($request->indicators as $indicator => $target) {

@@ -66,39 +66,62 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="submission_period">Start Period<span class="required">*</span></label>
-                                                @if(isset($getYear))
-                                                    <input type="date" required value="{{old('start')?old('start'): $getYear->start_period}}"
-                                                           name="start" class="form-control" id="start">
-                                                @else
-                                                    <input type="date" required value="{{old('start')?old('start'):""}}"
-                                                           name="start" class="form-control" id="start">
-                                                @endif
-
-                                                @if ($errors->has('start'))
-                                                    <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('start') }}</small>
-                                                    </p>
-                                                @endif
+                                                <label for="reporting_year">Select Year <span class="required">*</span></label>
+                                                <select name="reporting_year" class="form-control" required id="reporting_year">
+                                                    <option value="">Select Year</option>
+                                                    @php
+                                                        $reporting_year_start = config('app.reporting_year_start');
+                                                        $reporting_year_length = config('app.reporting_year_length');
+                                                        $year = null;
+                                                        if(isset($getYear)) {
+                                                            $year = $getYear->reporting_year;
+                                                        }
+                                                    @endphp
+                                                    @for($a=$reporting_year_start;$a < $reporting_year_length+$reporting_year_start; $a++)
+                                                        @if($year)
+                                                            <option value="{{$a}}" {{($year == "$a")?'selected':''}}>{{$a}}</option>
+                                                        @else
+                                                            <option value="{{$a}}" {{(old('reporting_year') == "$a")?'selected':''}}>{{$a}}</option>
+                                                        @endif
+                                                    @endfor
+                                                </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <label for="submission_period">End Period <span class="required">*</span></label>
-                                            @if(isset($getYear))
-                                                <input type="date" required value="{{old('end')?old('end'): $getYear->end_period}}"
-                                                   name="end" class="form-control" id="end">
-                                            @else
-                                                <input type="date" required value="{{old('end')?old('end'):""}}"
-                                                       name="end" class="form-control" id="end">
-                                            @endif
-                                            @if ($errors->has('end'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('end') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
+                                        {{--<div class="col-md-3">--}}
+                                            {{--<div class="form-group">--}}
+                                                {{--<label for="submission_period">Start Period<span class="required">*</span></label>--}}
+                                                {{--@if(isset($getYear))--}}
+                                                    {{--<input type="date" required value="{{old('start')?old('start'): $getYear->start_period}}"--}}
+                                                           {{--name="start" class="form-control" id="start">--}}
+                                                {{--@else--}}
+                                                    {{--<input type="date" required value="{{old('start')?old('start'):""}}"--}}
+                                                           {{--name="start" class="form-control" id="start">--}}
+                                                {{--@endif--}}
+
+                                                {{--@if ($errors->has('start'))--}}
+                                                    {{--<p class="text-right">--}}
+                                                        {{--<small class="warning text-muted">{{ $errors->first('start') }}</small>--}}
+                                                    {{--</p>--}}
+                                                {{--@endif--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                        {{--<div class="col-md-3">--}}
+                                            {{--<label for="submission_period">End Period <span class="required">*</span></label>--}}
+                                            {{--@if(isset($getYear))--}}
+                                                {{--<input type="date" required value="{{old('end')?old('end'): $getYear->end_period}}"--}}
+                                                   {{--name="end" class="form-control" id="end">--}}
+                                            {{--@else--}}
+                                                {{--<input type="date" required value="{{old('end')?old('end'):""}}"--}}
+                                                       {{--name="end" class="form-control" id="end">--}}
+                                            {{--@endif--}}
+                                            {{--@if ($errors->has('end'))--}}
+                                                {{--<p class="text-right">--}}
+                                                    {{--<small class="warning text-muted">{{ $errors->first('end') }}</small>--}}
+                                                {{--</p>--}}
+                                            {{--@endif--}}
+                                        {{--</div>--}}
                                     </div>
                                 </div>
                             </div>

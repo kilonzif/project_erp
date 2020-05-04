@@ -161,7 +161,7 @@ class ReportFormController extends Controller
         $report->ace_id = $ace_id;
         $report->status = 99;
         $report->reporting_period_id = $request->reporting_period;
-        $report->submission_date = $submission_date;
+        $report->submission_date = date('y-m-d', strtotime($submission_date));
         $report->indicator_id = $dlr_id;
         $report->language = $request->language;
         if (isset($request->ace_officer)) {
@@ -182,7 +182,6 @@ class ReportFormController extends Controller
 
         return redirect()->route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report_id)]);
     }
-
 
     public function save_report_old(Request $request)
     {
@@ -1795,7 +1794,6 @@ class ReportFormController extends Controller
         return $indicator_5_2_values;
     }
 
-
     /**
      * Generate Aggregated results for Indicator 5.1 on revenue sources
      * @param $report_id
@@ -1870,8 +1868,6 @@ class ReportFormController extends Controller
 
         return $indicator_5_1_values;
     }
-
-
 
     /**
      * Generate Aggregated results for Indicator 4.1
@@ -1954,12 +1950,6 @@ class ReportFormController extends Controller
         return $indicator_4_1_values;
     }
 
-
-    /**
-     * Generate Aggregated results for Indicator 4.1
-     * @param $report_id
-     * @return array
-     */
     public function generateAggregatedIndicator41Results_fr($report_id)
     {
         $indicator_4_1_values = array();
@@ -2036,7 +2026,6 @@ class ReportFormController extends Controller
         return $indicator_4_1_values;
     }
 
-
     /**
      * Generate Aggregated results for Indicator 4.2 (Publications)
      * @param $report_id
@@ -2079,8 +2068,6 @@ class ReportFormController extends Controller
 
         return $indicator_4_2_values;
     }
-
-
 
     public function generateAggregatedIndicator42Results($report_id)
     {

@@ -243,6 +243,9 @@ return [
     |
     */
 
+    'reporting_year_start'  =>  2019,
+    'reporting_year_length'  =>  5,
+
     'phd_id'                        => '1',
     'masters_id'                    => '2',
     'bachelors_id'                  => '3',

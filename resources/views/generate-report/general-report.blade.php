@@ -37,46 +37,67 @@
                         <div class="card-content">
                             <div class="card-body">
                                     <div class="form-group">
-                                        <label for="submission_period">Reporting Period (Start Date)<span class="required">*</span></label>
-                                        <input type="date" required value="{{ old('start')? old('start') : '' }}"
-                                               name="start" class="form-control" id="start">
-                                        @if ($errors->has('submission_period'))
+                                        <label for="submission_period">Reporting Year<span class="required">*</span></label>
+
+                                        <select name="reporting_year" class="form-control" required id="reporting_year">
+                                            <option value="">Select Year</option>
+                                            @php
+                                                //$reporting_year_start = 2019;
+                                                $reporting_year_start = config('app.reporting_year_start');
+                                                $reporting_year_length = config('app.reporting_year_length');
+                                                //$reporting_year_length = 5;
+                                            @endphp
+                                            @for($a=$reporting_year_start;$a < $reporting_year_length+$reporting_year_start; $a++)
+                                            <option value="{{$a}}" {{(old('reporting_year') == "$a")?'selected':''}}>{{$a}}</option>
+                                            @endfor
+                                        </select>
+                                        @if ($errors->has('reporting_year'))
                                             <p class="text-right">
-                                                <small class="warning text-muted">{{ $errors->first('submission_period') }}</small>
+                                                <small class="warning text-muted">{{ $errors->first('reporting_year') }}</small>
                                             </p>
                                         @endif
                                     </div>
-                                    <div class="form-group">
-                                        <label for="submission_period">Reporting Period (End Date) <span class="required">*</span></label>
-                                        <input type="date" required value="{{ old('end')? old('end') : '' }}"
-                                               name="end" class="form-control" id="end">
-                                        @if ($errors->has('end'))
-                                            <p class="text-right">
-                                                <small class="warning text-muted">{{ $errors->first('end') }}</small>
-                                            </p>
-                                        @endif
-                                    </div>
+                                    {{--<div class="form-group">--}}
+                                        {{--<label for="submission_period">Reporting Period (Start Date)<span class="required">*</span></label>--}}
+                                        {{--<input type="date" required value="{{ old('start')? old('start') : '' }}"--}}
+                                               {{--name="start" class="form-control" id="start">--}}
+                                        {{--@if ($errors->has('submission_period'))--}}
+                                            {{--<p class="text-right">--}}
+                                                {{--<small class="warning text-muted">{{ $errors->first('submission_period') }}</small>--}}
+                                            {{--</p>--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
+                                    {{--<div class="form-group">--}}
+                                        {{--<label for="submission_period">Reporting Period (End Date) <span class="required">*</span></label>--}}
+                                        {{--<input type="date" required value="{{ old('end')? old('end') : '' }}"--}}
+                                               {{--name="end" class="form-control" id="end">--}}
+                                        {{--@if ($errors->has('end'))--}}
+                                            {{--<p class="text-right">--}}
+                                                {{--<small class="warning text-muted">{{ $errors->first('end') }}</small>--}}
+                                            {{--</p>--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
                                     <div class="form-group">
                                         <label for="filters"> <i class="ft-filter"></i> Select Filters</label>
                                         <hr style="margin-top: 5px;">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                {{--<div class="form-group">--}}
+                                        {{--<div class="row">--}}
+                                            {{--<div class="col-md-4">--}}
+                                                <div class="form-group">
                                                     <div clas="skin skin-square">
                                                         <input type="radio" name="filter" checked value="aces" id="is_ace">
                                                         <label for="is_ace" class="">By ACEs</label>
                                                     </div>
-                                                {{--</div>--}}
-                                            </div>
-                                            <div class="col-md-8">
-                                                {{--<div class="form-group">--}}
+                                                </div>
+                                            {{--</div>--}}
+                                            {{--<div class="col-md-8">--}}
+                                                <div class="form-group">
                                                     <div clas="skin skin-square">
                                                         <input type="radio" name="filter" value="field_country" id="field_country">
-                                                        <label for="field_country" class="">By Fields & Countries</label>
+                                                        <label for="field_country" class="">By ACE Status / By Center Type / By Countries / By Fields </label>
                                                     </div>
-                                                {{--</div>--}}
-                                            </div>
-                                        </div>
+                                                </div>
+                                            {{--</div>--}}
+                                        {{--</div>--}}
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3">
@@ -90,26 +111,46 @@
                 </div>
                 <div class="col-md-7">
                     <div class="card collapse-icon accordion-icon-rotate left" id="forFieldCountry" style="display:none">
-                        <div id="byField_1" class="card-header bg-amber bg-accent-4" style="padding: 0.7rem 1.5rem;">
-                            <a data-toggle="collapse" href="#byField" aria-expanded="false" aria-controls="byField"
-                               class="card-title lead white">Filter By Fields</a>
+
+                        <div id="byAceStatus_1" class="card-header bg-amber bg-darken-4" style="padding: 0.7rem 1.5rem;">
+                            <a data-toggle="collapse" href="#byAceStatus" aria-expanded="false" aria-controls="byAceStatus"
+                               class="card-title lead white">ACE Status</a>
                         </div>
-                        <div id="byField" role="tabpanel" aria-labelledby="byField_1" class="collapse show"
+                        <div id="byAceStatus" role="tabpanel" aria-labelledby="byAceStatus_1" class="collapse show"
                              aria-expanded="false">
                             <div class="card-content">
                                 <div class="card-body">
-                                    @foreach($fields as $key=>$field)
+                                    @foreach($ace_statuses as $key=>$ace_status)
                                         <div class="d-inline-block custom-control custom-checkbox mr-1">
-                                            <input type="checkbox" class="custom-control-input forField" value="{{$field}}" name="field[]" id="field{{$key}}">
-                                            <label class="custom-control-label" for="field{{$key}}">{{$field}}</label>
+                                            <input type="checkbox" class="custom-control-input" value="{{$ace_status}}" name="ace_status[]" id="ace_status{{$ace_status}}">
+                                            <label class="custom-control-label" for="ace_status{{$ace_status}}">{{$ace_status}}</label>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
                         </div>
+
+                        <div id="byCentreType_1" class="card-header bg-amber bg-darken-4" style="padding: 0.7rem 1.5rem;">
+                            <a data-toggle="collapse" href="#byCentreType" aria-expanded="false" aria-controls="byCentreType"
+                               class="card-title lead white">Type of Centres</a>
+                        </div>
+                        <div id="byCentreType" role="tabpanel" aria-labelledby="byCentreType_1" class="collapse show"
+                             aria-expanded="false">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    @foreach($ace_types as $key=>$field)
+                                        <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                            <input type="checkbox" class="custom-control-input forField" value="{{$field}}" name="ace_types[]" id="ace_type{{$key}}">
+                                            <label class="custom-control-label" for="ace_type{{$key}}">{{$field}}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="byCountry_1" class="card-header bg-amber bg-darken-4" style="padding: 0.7rem 1.5rem;">
                             <a data-toggle="collapse" href="#byCountry" aria-expanded="false" aria-controls="byCountry"
-                               class="card-title lead white">Filter By Country</a>
+                               class="card-title lead white">Countries</a>
                         </div>
                         <div id="byCountry" role="tabpanel" aria-labelledby="byCountry_1" class="collapse show"
                              aria-expanded="false">
@@ -124,6 +165,25 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div id="byField_1" class="card-header bg-amber bg-darken-4" style="padding: 0.7rem 1.5rem;">
+                            <a data-toggle="collapse" href="#byField" aria-expanded="false" aria-controls="byField"
+                               class="card-title lead white">Fields</a>
+                        </div>
+                        <div id="byField" role="tabpanel" aria-labelledby="byField_1" class="collapse show"
+                             aria-expanded="false">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    @foreach($fields as $key=>$field)
+                                        <div class="d-inline-block custom-control custom-checkbox mr-1">
+                                            <input type="checkbox" class="custom-control-input forField" value="{{$field}}" name="field[]" id="field{{$key}}">
+                                            <label class="custom-control-label" for="field{{$key}}">{{$field}}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="card collapse-icon accordion-icon-rotate left" id="forACE" style="display:block">
                         <div id="byAces_1" class="card-header bg-amber bg-darken-4" style="padding: 0.7rem 1.5rem;">

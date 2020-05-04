@@ -9,7 +9,7 @@ class AceIndicatorsTargetYear extends Model
     //
     protected $table = 'ace_indicators_target_years';
 
-    protected $fillable = ['user_id','start_period','end_period','ace_id'];
+    protected $fillable = ['user_id','reporting_year','ace_id'];
 
     public function target_values()
     {

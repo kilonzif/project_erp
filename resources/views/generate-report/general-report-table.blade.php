@@ -49,11 +49,9 @@
                                 </tr>
                             </table>
                             @if(sizeof($report_values) > 1)
-                            @include('generate-report.gtable')
+                                @include('generate-report.gtable')
                             @else
-
                                 <h2 class="text-center danger mt-3 mb-3">No Report can be generated within the specified range</h2>
-
                             @endif
                         </div>
                     </div>

@@ -33,8 +33,16 @@ class GenerateReportController extends Controller {
 			->distinct('countries.id')
 			->select('countries.*')
 			->get();
-		$fields = ['Agriculture', 'Health', 'STEM'];
-		return view('generate-report.general-report', compact('indicators', 'aces', 'countries', 'fields'));
+		$fields = ['Agriculture','Applied Soc. Sc.','Education', 'Health', 'STEM'];
+		$ace_statuses = ['NEW','RENEWED'];
+		$ace_types = [
+		    'engineering'=>'Colleges of Engineering',
+            'emerging'=>'Emerging Centre',
+            'ACE'=>'ACE',
+            'Add-on'=>'add-on',
+            ];
+		return view('generate-report.general-report', compact('indicators', 'aces', 'countries',
+            'fields','ace_types','ace_statuses'));
 	}
 
 	public function dlrs(Request $request) {
@@ -229,18 +237,22 @@ class GenerateReportController extends Controller {
 		$process = new CommonFunctions();
 
 		$Excelquery = $urii->currentUrl();
-		//$export = route('report_generation.general_report_excel') . '?' . $Excelquery;
+		$export = "";
+//		$export = route('report_generation.general_report_excel') . '?' . $Excelquery;
 
 		$this->validate($request, [
-			'start' => 'required|string',
-			'end' => 'required|string',
+			'reporting_year' => 'required|numeric',
 		]);
+        $year = $request->reporting_year;
 //        return $request->all();
+
 		$project = Project::find(1);
+
         $status = SystemOption::where('option_name', '=', 'generation_status')->pluck('option_value')->first();
         if (!isset($status)){
             $status = 101;
         }
+        $reporting_year = ReportingPeriod::where('period_start','like',"%$year%")->pluck('id');
 
 		$reports = DB::table('reports')
 //            ->join('report_values', 'reports.id', '=', 'report_values.report_id')
@@ -250,12 +262,10 @@ class GenerateReportController extends Controller {
 			->distinct('reports.id')
 			->select(DB::raw('reports.*,aces.id as aceID, aces.*,countries.id as countryID, countries.*,reports.id'))
 			->where('reports.status', '=', $status)
-			->where('reports.start_date', '>=', $request->start)
-			->where('reports.end_date', '<=', $request->end)
+			->whereIn('reports.reporting_period_id', $reporting_year)
 			->get();
 
 		//Filter by ACE
-
 		if ($request->filter == "aces") {
 			$reports = $reports->whereIn('ace_id', $request->aces);
 //			$steps = $process->getTitleProcess();
@@ -278,40 +288,48 @@ class GenerateReportController extends Controller {
 			}
 
 		}
+        $ace_ids = $reports->pluck('ace_id')->toArray();
+        $report_ids = $reports->pluck('id')->toArray();
 
 		//Get aces target values by indicators
 		$target_values = DB::table('ace_indicators_targets')
 			->join('ace_indicators_target_years', 'ace_indicators_targets.target_year_id', '=', 'ace_indicators_target_years.id')
 			->select('indicator_id', DB::raw('SUM(ace_indicators_targets.target) as targets'))
-			->whereIn('ace_indicators_target_years.ace_id', $reports->pluck('ace_id'))
-			->where('start_period', '>=', $request->start)
-			->where('end_period', '<=', $request->end)
+			->whereIn('ace_indicators_target_years.ace_id', $ace_ids)
+			->where('reporting_year', '=', $year)
 			->groupBy('indicator_id')
 			->pluck('targets', 'indicator_id');
 
 		//Get aces baselines by indicators
 		$baseline_values = DB::table('ace_indicators_baselines')
 			->select('indicator_id', DB::raw('SUM(baseline) as baselines'))
-			->whereIn('ace_id', $reports->pluck('ace_id'))
+			->whereIn('ace_id', $ace_ids)
 			->groupBy('indicator_id')
 			->pluck('baselines', 'indicator_id');
 
 		$report_values = DB::table('report_values')
 			->select('indicator_id', DB::raw('SUM(value) as ind_values'))
-			->whereIn('report_id', $reports->pluck('id'))
+			->whereIn('report_id', $report_ids)
 			->groupBy('indicator_id')
 			->get();
+//        dd($report_values);
 
-		$start = $request->start;
-		$end = $request->end;
+		$start = 2020;
+		$end = 2020;
 
 		if ($request->query->get('export')) {
-			// dd("hello");
 			return $this->generalspreadsheet($report_values, $baseline_values, $target_values, $reports, $project);
 		}
+        $indicators = Indicator::where('is_parent','=',1)
+            ->where('status','=',1)
+            ->where('parent_id','<>',0)
+            ->where('show_on_report','=',1)
+            ->orderBy('order_on_report','asc');
+//            ->get();
 
 		return view('generate-report.general-report-table',
-			compact('project', 'report_values', 'start', 'end', 'baseline_values', 'target_values', 'export', 'reports'));
+			compact('project', 'report_values', 'start', 'end', 'baseline_values', 'target_values',
+                'export', 'reports','indicators'));
 	}
 
 	public function indicator_verification() {

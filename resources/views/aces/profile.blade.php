@@ -76,7 +76,7 @@
                                     <div class="dropdown-menu">
                                         @foreach($target_years as $target_year)
                                             <a class="dropdown-item" href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$target_year->id])}}">
-                                            {{date('F Y',strtotime($target_year->start_period))." - ".date('F Y',strtotime($target_year->end_period))}}
+                                            {{$target_year->reporting_year}}
                                             </a>
                                         @endforeach
                                     </div>
