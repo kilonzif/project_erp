@@ -79,7 +79,7 @@
                                                 <fieldset class="form-group">
                                                     <label for="basicInputFile">Type d'accréditation <span class="required">*</span></label>
                                                     <select name="typeofaccreditation" required class="form-control" id="language">
-                                                        <option value="">select one</option>
+                                                        <option value="">sélectionnez</option>
                                                         <option value="National">National</option>
                                                         <option value="International">International</option>
                                                         <option value="Gap Assessment">Gap Assessment</option>

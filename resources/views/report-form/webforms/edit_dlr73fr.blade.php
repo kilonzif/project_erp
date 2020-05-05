@@ -20,7 +20,7 @@
             <fieldset class="form-group">
                 <label for="basicInputFile">Type d'accréditation <span class="required">*</span></label>
                 <select name="typeofaccreditation" required class="form-control" id="language">
-                    <option value="">select one</option>
+                    <option value="">sélectionnez</option>
                     <option {{($the_record['typeofaccreditation'] == 'National')  ? "selected":""}} value="National">National</option>
                     <option {{($the_record['typeofaccreditation'] == 'International')  ? "selected":""}} value="International">International</option>
                     <option {{($the_record['typeofaccreditation'] == 'Gap Assessment')  ? "selected":""}} value="Gap Assessment">Gap Assessment</option>

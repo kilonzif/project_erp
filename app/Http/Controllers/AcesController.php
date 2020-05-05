@@ -56,6 +56,8 @@ class AcesController extends Controller {
      */
     public function create(Request $request)
     {
+
+
         $this->validate($request, [
             'name' => 'required|string|min:3|unique:aces,name',
             'contact' => 'nullable|numeric|digits_between:10,17',
@@ -71,6 +73,9 @@ class AcesController extends Controller {
             'ace_type' => 'required|string|min:2',
             'ace_state' => 'string|min:2',
         ]);
+
+
+
 
 
         $addAce = new Ace();
@@ -89,12 +94,16 @@ class AcesController extends Controller {
         $addAce->ace_state = $request->ace_state;
         $addAce->save();
 
-        if (isset($addAce->id)) {
-            $currency1 =  Currency::where('id','=',$addAce->currency1_id)->orderBy('name', 'ASC')->first();
-            $currency2= Currency::where('id','=',$addAce->currency2_id)->orderBy('name', 'ASC')->first();
+
+
+        if ($addAce->save()) {
+            $this_ace = Ace::find($addAce->id)->first();
+
+            $currency1 =  Currency::where('id','=',$this_ace->currency1_id)->orderBy('name', 'ASC')->first();
+            $currency2= Currency::where('id','=',$this_ace->currency2_id)->orderBy('name', 'ASC')->first();
 
             notify(new ToastNotification('Successful!', 'New ACE Added', 'success'));
-            return redirect()->route('user-management.aces.profile', compact([Crypt::encrypt($addAce->id)],'currency1','currency2'));
+            return back();
         } else {
             notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
             return back();
@@ -160,13 +169,15 @@ class AcesController extends Controller {
      */
     public  function indicator_one_save(Request $request, $id)
     {
-        $this->validate($request, [
-            'file_one.*' => 'nullable|file|mimes:xls,pdf,docx|max:10000',
-            'file_two.*' => 'nullable|mimes:xls,docx,pdf|max:10000',
-            'url' => 'sometimes|required',
-            'submission_date' => 'sometimes|required',
-            'comments' => 'sometimes|required',
-        ]);
+
+//        $this->validate($request, [
+//            'file_one.*' => 'nullable|file|mimes:xls,pdf,docx|max:10000',
+//            'file_two.*' => 'nullable|mimes:xls,docx,pdf|max:10000',
+//            'url' => 'sometimes|required',
+//            'submission_date' => 'sometimes|required',
+//            'comments' => 'sometimes|required',
+//        ]);
+
 
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
@@ -447,7 +458,11 @@ class AcesController extends Controller {
         $file1 = $request->file('wp_file');
         $wp_year=$request->wp_year;
 
+
+
         $year_exists = WorkPlan::where('ace_id','=',$ace_id)->where('wp_year','=',$wp_year)->get();
+
+//        dd($year_exists->isNotEmpty());
 
 
         if($year_exists->isNotEmpty()){

@@ -204,7 +204,7 @@ class CommonFunctions {
 
     public function getRequirements( $code=null)
     {
-        $requirement = ['THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS','IMPLEMENTATION PLAN','PROCEDURES MANUALS',
+        $requirement = ['THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS','IMPLEMENTATION PLAN','PROCUREMENT MANUAL',
             'PROJECT MANAGEMENT CERTIFICATION', 'STUDENT HANDBOOK (INCLUDES SCHOLARSHIP AND ANTI-SEXUAL HARASSMENT POLICIES)',
             'PROJECT WEBSITE','SECTORAL ADVISORY BOARD'];
 
@@ -257,7 +257,7 @@ class CommonFunctions {
                 'comments' => FALSE,
                 'url' => FALSE
             ],
-            'PROCEDURES MANUALS'=>[
+            'PROCUREMENT MANUAL'=>[
                 'submission_date' => [
                     'show'  =>  true,
                     'required'  =>  true,

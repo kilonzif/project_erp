@@ -99,32 +99,32 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                    <div class="col-md-6">
-                                                        <fieldset>
-                                                            <label for="date_submission">Date of Submission <span class="required">*</span></label>
-                                                            <div class="input-group">
-                                                                <input type="text" required name="submission_date" class="form-control form-control datepicker"
-                                                                       data-date-format="D-M-YYYY" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}">
-                                                                <div class="input-group-append">
-                                                                    <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
-                                                                </div>
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <label for="date_submission">Date of Submission <span class="required">*</span></label>
+                                                        <div class="input-group">
+                                                            <input type="text" required name="submission_date" class="form-control form-control datepicker"
+                                                                   data-date-format="D-M-YYYY" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
                                                             </div>
-                                                        </fieldset>
-                                                    </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
 
 
                                                 {{--<div class="col-md-6">--}}
-                                                    {{--<div class="form-group">--}}
-                                                        {{--<label for="date_submission">Date of Submission <span class="required">*</span></label>--}}
+                                                {{--<div class="form-group">--}}
+                                                {{--<label for="date_submission">Date of Submission <span class="required">*</span></label>--}}
 
-                                                        {{--<input type="date" required min="5" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}"--}}
-                                                               {{--name="submission_date" class="form-control" id="submission_date" readonly>--}}
-                                                        {{--@if ($errors->has('date_submission'))--}}
-                                                            {{--<p class="text-right">--}}
-                                                                {{--<small class="warning text-muted">{{ $errors->first('date_submission') }}</small>--}}
-                                                            {{--</p>--}}
-                                                        {{--@endif--}}
-                                                    {{--</div>--}}
+                                                {{--<input type="date" required min="5" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}"--}}
+                                                {{--name="submission_date" class="form-control" id="submission_date" readonly>--}}
+                                                {{--@if ($errors->has('date_submission'))--}}
+                                                {{--<p class="text-right">--}}
+                                                {{--<small class="warning text-muted">{{ $errors->first('date_submission') }}</small>--}}
+                                                {{--</p>--}}
+                                                {{--@endif--}}
+                                                {{--</div>--}}
                                                 {{--</div>--}}
                                             @endif
 
@@ -142,17 +142,14 @@
 
                                             <div class="col-md-6">
                                                 <fieldset class="form-group">
-                                                    <label for="basicInputFile">What DLR will you like to report on?</label>
+                                                    <label for="basicInputFile">Which DLR will you like to report on?</label>
                                                     <select name="indicator" required class="select form-control" id="indicator" onchange=" loadFields()">
                                                         <option value="">Select One</option>
                                                         @foreach($indicators as $indicator)
-                                                            {{--@if($indicator->IsUploadable($indicator->id))--}}
                                                             <option value="{{$indicator->id}}">
                                                                 {{$indicator->title}}
 
                                                             </option>
-
-                                                            {{--@endif--}}
                                                         @endforeach
                                                     </select>
                                                     @if ($errors->has('indicator'))

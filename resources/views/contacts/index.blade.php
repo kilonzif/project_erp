@@ -46,7 +46,7 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
-                                                <label for="role">{{ __('Role') }}</label>
+                                                <label for="role">{{ __('Role/Position') }}</label>
                                                 <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ old('email') }}" required>
                                                     <option value="">Select Role</option>
                                                     @foreach($roles as $role)
@@ -234,7 +234,7 @@
                                 <th>Gender</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Title</th>
+                                <th>Role/Position</th>
                                 <th style="width: 100px;">Action</th>
                             </tr>
                             </thead>
