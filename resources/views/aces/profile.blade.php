@@ -160,45 +160,22 @@
                             @endif
                             @foreach($workplans as $wp)
                             <p>
-                                <a class="danger mr-2" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"
-                                  data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
-                                  title="Delete Report"><i class="ft-trash-2"></i></a>
-                                <a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">
+                                @php
+                                     $name = '/WorkPlan/'.$wp->wp_file;
+                                @endphp
+                                @if(is_file(public_path(($name))))
+                                <a href="{{asset($name)}}" target="_blank">
                                     <span class="fa fa-file"></span>   {{$wp->wp_year}} Work-plan
                                 </a>
+                                @endif
+                                <a class="danger mr-2 pull-right" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"
+                                   data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
+                                   title="Delete Report"><i class="ft-trash-2"></i></a>
 
                             </p>
+                                <hr>
                             @endforeach
-                                {{--<table class="table table-striped table-bordered">--}}
-                                    {{--<thead>--}}
-                                    {{--<tr>--}}
-                                        {{--<th>WorkPlan Document</th>--}}
-                                        {{--<th>Year</th>--}}
-                                        {{--<th style="width: 100px;">Action</th>--}}
-                                    {{--</tr>--}}
-                                    {{--</thead>--}}
-                                    {{--<tbody>--}}
-                                {{--@foreach($workplans as $wp)--}}
-                                    {{--<tr>--}}
-                                        {{--<td>--}}
-                                            {{--<a href="{{asset('indicator1/'.$wp->wp_file)}}" target="_blank">--}}
-                                                {{--<span class="fa fa-file"></span>   {{$wp->wp_file}}--}}
-                                            {{--</a>--}}
 
-                                            {{--</td>--}}
-                                        {{--<td>{{$wp->wp_year}}</td>--}}
-                                        {{--<td>--}}
-                                            {{--<a href="#edit_contact" onclick="edit_workplan('{{\Illuminate\Support\Facades\Crypt::encrypt($wp->id)}}')" >--}}
-                                                {{--<i class="ft-edit blue"></i></a>--}}
-                                            {{--<a class="danger" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"--}}
-                                                {{--data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"--}}
-                                               {{--title="Delete Report"><i class="ft-trash-2"></i></a>--}}
-                                        {{--</td>--}}
-                                    {{--</tr>--}}
-
-                                    {{--@endforeach--}}
-                                    {{--</tbody>--}}
-                                {{--</table>--}}
 
                         </div>
 
@@ -248,124 +225,124 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="card">
-                    <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
-                        Contact Group
-                    </h6>
-                    <div class="card-content">
-                        <div class="card-body table-responsive">
-                            <div id="edit_contact">
-                                <form class="form" action="{{route('user-management.mailinglist.save')}}" method="post">
-                                    @csrf
-                                    <div class="form-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">
-                                                <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
+            {{--<div class="col-md-12">--}}
+                {{--<div class="card">--}}
+                    {{--<h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">--}}
+                        {{--Contact Group--}}
+                    {{--</h6>--}}
+                    {{--<div class="card-content">--}}
+                        {{--<div class="card-body table-responsive">--}}
+                            {{--<div id="edit_contact">--}}
+                                {{--<form class="form" action="{{route('user-management.mailinglist.save')}}" method="post">--}}
+                                    {{--@csrf--}}
+                                    {{--<div class="form-body">--}}
+                                        {{--<div class="row">--}}
+                                            {{--<div class="col-md-6">--}}
+                                                {{--<input type="hidden" value="{{ $ace->id }}" name="ace_id" id="ace_id" class=" form-control">--}}
+                                                {{--<div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">--}}
 
-                                                    <label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">
-                                                    @if ($errors->has('mailing_name'))
-                                                        <p class="text-right">
-                                                            <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
-                                                        </p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group{{ $errors->has('mailing_title') ? ' form-control-warning' : '' }}">
-                                                    <label for="mailing_title">Position <span class="required">*</span></label>
-                                                    <select class="form-control" name="mailing_title">
-                                                        <option value="" selected disabled>Select Title</option>
-                                                        @foreach($roles as $role)
-                                                            <option value="{{$role->id}}">{{$role->position_title}}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    {{--<label for="email">Name <span class="required">*</span></label><input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ old('mailing_name') }}" id="mailing_name">--}}
+                                                    {{--@if ($errors->has('mailing_name'))--}}
+                                                        {{--<p class="text-right">--}}
+                                                            {{--<small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>--}}
+                                                        {{--</p>--}}
+                                                    {{--@endif--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
+                                            {{--<div class="col-md-6">--}}
+                                                {{--<div class="form-group{{ $errors->has('mailing_title') ? ' form-control-warning' : '' }}">--}}
+                                                    {{--<label for="mailing_title">Position <span class="required">*</span></label>--}}
+                                                    {{--<select class="form-control" name="mailing_title">--}}
+                                                        {{--<option value="" selected disabled>Select Title</option>--}}
+                                                        {{--@foreach($roles as $role)--}}
+                                                            {{--<option value="{{$role->id}}">{{$role->position_title}}</option>--}}
+                                                        {{--@endforeach--}}
+                                                    {{--</select>--}}
 
-                                                    @if ($errors->has('mailing_title'))
-                                                        <p class="text-right">
-                                                            <small class="warning text-muted">{{ $errors->first('mailing_title') }}</small>
-                                                        </p>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                                    {{--@if ($errors->has('mailing_title'))--}}
+                                                        {{--<p class="text-right">--}}
+                                                            {{--<small class="warning text-muted">{{ $errors->first('mailing_title') }}</small>--}}
+                                                        {{--</p>--}}
+                                                    {{--@endif--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
 
-                                            <div class="col-md-6">
-                                                <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
-                                                    <label for="email">Phone <span class="required">*</span></label><input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">
-                                                    @if ($errors->has('mailing_phone'))
-                                                        <p class="text-right">
-                                                            <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
-                                                        </p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
-                                                    <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
-                                                    @if ($errors->has('mailing_email'))
-                                                        <p class="text-right">
-                                                            <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
-                                                        </p>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <button type="submit" class="btn btn-primary" style="margin-top: 1.9rem">
-                                                    Submit
-                                                </button><br><br>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <br>
-                            </div>
+                                            {{--<div class="col-md-6">--}}
+                                                {{--<div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">--}}
+                                                    {{--<label for="email">Phone <span class="required">*</span></label><input type="text" required placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ old('mailing_phone') }}" id="mailing_phone">--}}
+                                                    {{--@if ($errors->has('mailing_phone'))--}}
+                                                        {{--<p class="text-right">--}}
+                                                            {{--<small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>--}}
+                                                        {{--</p>--}}
+                                                    {{--@endif--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
+                                            {{--<div class="col-md-6">--}}
+                                                {{--<div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">--}}
+                                                    {{--<label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">--}}
+                                                    {{--@if ($errors->has('mailing_email'))--}}
+                                                        {{--<p class="text-right">--}}
+                                                            {{--<small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>--}}
+                                                        {{--</p>--}}
+                                                    {{--@endif--}}
+                                                {{--</div>--}}
+                                            {{--</div>--}}
+                                            {{--<div class="col-md-6">--}}
+                                                {{--<button type="submit" class="btn btn-primary" style="margin-top: 1.9rem">--}}
+                                                    {{--Submit--}}
+                                                {{--</button><br><br>--}}
+                                            {{--</div>--}}
+                                        {{--</div>--}}
+                                    {{--</div>--}}
+                                {{--</form>--}}
+                                {{--<br>--}}
+                            {{--</div>--}}
 
-                            <table class="table table-striped table-bordered all_indicators">
-                                <thead>
-                                <tr>
-                                    <th> Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Title</th>
-                                    <th style="width: 100px;">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($aceemails as $contact)
-                                    <tr>
-                                        <td>{{$contact->contact_name}}</td>
-                                        <td>{{$contact->email}}</td>
-                                        <td>{{$contact->contact_phone}}</td>
-                                        <td>
-                                            @php
-                                                $title = \App\Position::where('id',$contact->position_id)->first();
-                                            @endphp
+                            {{--<table class="table table-striped table-bordered all_indicators">--}}
+                                {{--<thead>--}}
+                                {{--<tr>--}}
+                                    {{--<th> Name</th>--}}
+                                    {{--<th>Email</th>--}}
+                                    {{--<th>Phone</th>--}}
+                                    {{--<th>Title</th>--}}
+                                    {{--<th style="width: 100px;">Action</th>--}}
+                                {{--</tr>--}}
+                                {{--</thead>--}}
+                                {{--<tbody>--}}
+                                {{--@foreach($aceemails as $contact)--}}
+                                    {{--<tr>--}}
+                                        {{--<td>{{$contact->contact_name}}</td>--}}
+                                        {{--<td>{{$contact->email}}</td>--}}
+                                        {{--<td>{{$contact->contact_phone}}</td>--}}
+                                        {{--<td>--}}
+                                            {{--@php--}}
+                                                {{--$title = \App\Position::where('id',$contact->position_id)->first();--}}
+                                            {{--@endphp--}}
 
-                                            {{$title->position_title}}
-                                        <td>
-                                            <div class="btn-group" role="group" aria-label="Basic example">
+                                            {{--{{$title->position_title}}--}}
+                                        {{--<td>--}}
+                                            {{--<div class="btn-group" role="group" aria-label="Basic example">--}}
 
-                                                @if($contact->edit_status == true)
-                                                    <a href="#edit_contact" onclick="edit_contact('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
-                                                        <i class="ft-edit"></i></a>
-                                                    <a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"
-                                                       class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"
-                                                       title="Delete Report"><i class="ft-trash-2"></i></a>
-                                                @else
-                                                    <a href="#" class="btn btn-s btn-secondary">
-                                                        <i class="ft-eye"></i></a>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                                {{--@if($contact->edit_status == true)--}}
+                                                    {{--<a href="#edit_contact" onclick="edit_contact('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">--}}
+                                                        {{--<i class="ft-edit"></i></a>--}}
+                                                    {{--<a href="{{route('user-management.mailinglist.delete',[\Illuminate\Support\Facades\Crypt::encrypt($contact->id)])}}"--}}
+                                                       {{--class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Contact?');"--}}
+                                                       {{--title="Delete Report"><i class="ft-trash-2"></i></a>--}}
+                                                {{--@else--}}
+                                                    {{--<a href="#" class="btn btn-s btn-secondary">--}}
+                                                        {{--<i class="ft-eye"></i></a>--}}
+                                                {{--@endif--}}
+                                            {{--</div>--}}
+                                        {{--</td>--}}
+                                    {{--</tr>--}}
+                                {{--@endforeach--}}
+                                {{--</tbody>--}}
+                            {{--</table>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
         </div>
 
 

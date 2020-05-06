@@ -122,7 +122,7 @@
                                                 @if($labels[$key]['file1'])
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_one[]')? 'form-control-warning':'' }}">
-                                                            @if($key=="PROCEDURES MANUALS")<label>Financial Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Implementation Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
+                                                            @if($key=="PROCUREMENT MANUAL")<label>Financial Management Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Implementation Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
                                                             <input type="file" class="form-control" name="file_one[]" required  id="filename{{$key[0]}}"
                                                                    @if($labels[$key]['file1']['required']) required @endif
                                                                    value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
@@ -132,11 +132,12 @@
                                                                     <small class="warning text-muted">{{ $errors->first('file_one[]') }}</small>
                                                                 </p>
                                                             @endif
-                                                                @isset($values[0]['file_one'])
+
+                                                                @if(isset($values[0]['file_one']) && is_file('indicator1/'.$values[0]['file_one']))
                                                                     <a href="{{asset('indicator1/'.$values[0]['file_one'])}}" target="_blank">
                                                                         <span class="fa fa-file">  </span>   Download uploaded file
                                                                     </a>
-                                                                @endisset
+                                                                @endif
                                                         </div>
 
                                                     </div>
@@ -156,11 +157,11 @@
                                                                 </p>
                                                             @endif
 
-                                                                @isset($values[0]['file_two'])
+                                                                @if(isset($values[0]['file_two']) && is_file('indicator1/'.$values[0]['file_two']))
                                                                     <a href="{{asset('indicator1/'.$values[0]['file_two'])}}" target="_blank">
                                                                         <span class="fa fa-file"></span>    Download the uploaded file
                                                                     </a>
-                                                                @endisset
+                                                                @endif
                                                         </div>
                                                     </div>
                                                 @endif
@@ -183,7 +184,7 @@
                                                 @if($labels[$key]['comments'])
                                                     <div class="col-md-12">
                                                         <div class="form-group{{ $errors->has('comments[]') ? ' form-control-warning' : '' }}">
-                                                            <label for="comments1">Comments<span class="required">*</span></label>
+                                                            <label for="comments1">Comments</label>
                                                                 <textarea class="form-control" placeholder="Comments" id="comments1" name="comments[]">{{ old('comments',empty($values[0]['comments'])?"":$values[0]['comments'])}}</textarea>
                                                             @if ($errors->has('comments[]'))
                                                                 <p class="text-right">

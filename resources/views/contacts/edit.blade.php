@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <label for="mailing_title">Title <span class="required">*</span></label>
+                <label for="mailing_title">Role/Position <span class="required">*</span></label>
                 <select class="form-control" name="mailing_title" >
                     <option value="">Select Title</option>
                     @foreach($roles as $role)

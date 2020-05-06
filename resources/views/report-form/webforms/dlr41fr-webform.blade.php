@@ -80,7 +80,7 @@
                                                 <fieldset class="form-group">
                                                     <label for="basicInputFile">Niveau<span class="required">*</span></label>
                                                     <select name="level" required class="form-control" id="level">
-                                                        <option value="">sélectionner un</option>
+                                                        <option value="">sélectionnez</option>
                                                         <option  {{($the_record['level'] == 'MASTERS')  ? "selected":""}} value="MASTERS">Masters</option>
                                                         <option  {{($the_record['level'] == 'PHD')  ? "selected":""}} value="PHD">Doctorat</option>
                                                         <option  {{($the_record['level'] == 'bachelors')  ? "selected":""}} value="bachelors">Premier Cycle</option>
@@ -92,7 +92,7 @@
                                                 <fieldset class="form-group">
                                                     <label for="basicInputFile">Type d'accreditation <span class="required">*</span></label>
                                                     <select name="typeofaccreditation" required class="form-control" id="language">
-                                                        <option value="">sélectionner un</option>
+                                                        <option value="">sélectionnez</option>
                                                         <option {{($the_record['typeofaccreditation'] == 'National')  ? "selected":""}} value="National">Nationale</option>
                                                         <option {{($the_record['typeofaccreditation'] == 'Regional')  ? "selected":""}} value="Regional">Régionale</option>
                                                         <option {{($the_record['typeofaccreditation'] == 'International')  ? "selected":""}} value="International">Internationale</option>
