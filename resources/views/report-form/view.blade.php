@@ -264,7 +264,7 @@
             <div class="col-lg-12">
                 <div class="card mb-1">
                     <h6 class="card-header p-1 card-head-inverse bg-grey-blue" style="border-radius:0">
-                        <strong>Challenges faced(if any)</strong>
+                        <strong>Challenges faced / Additional Comments</strong>
                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">

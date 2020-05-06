@@ -285,7 +285,7 @@
                             <div class="col-lg-12">
                                 <div class="card mb-1">
                                     <div class="card-header p-1 card-head-inverse bg-grey-blue">
-                                        <strong>Challenges faced (if any)</strong>
+                                        <strong>Challenges faced / Additional Comments</strong>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group">
@@ -307,7 +307,7 @@
                             <div class="col-md-3 text-right">
                                 <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"
                                    onclick="return show_confirm();">
-                                    <i class="ft-check-circle"></i> Submit Full Report
+                                    <i class="ft-check-circle"></i> Submit DLR
                                 </button>
                             </div>
                         </div>
