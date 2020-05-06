@@ -236,26 +236,33 @@ class AcesController extends Controller {
     {
 
         $this->validate($request, [
-            'ss_file_one' => 'required|file|mimes:xls,xlsx',
+            'ss_file_one' => 'required|file|mimes:pdf,docx',
+            'ss_file_two' => 'required|file|mimes:xls,xlsx',
             'ss_submission_date' => 'required',
         ]);
+
+
 
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
         $requirement = $request->ss_requirement;
         $submission_date = $request->ss_submission_date;
         $file_one=$request->ss_file_one;
+        $file_two=$request->ss_file_two;
         $destinationPath = base_path() . '/public/indicator1/';
+        $thefile_two = "";
         $thefile_one = "";
 
+        $file2 = $request->file('ss_file_two');
         $file1 = $request->file('ss_file_one');
 
+        $thefile_one = $file_one->getClientOriginalName();
 
-        if (isset($file1)) {
-            $dd = $this->extractMembers($file1, $ace_id);
-            if ($dd) {
-                $file1->move($destinationPath, $file1->getClientOriginalName());
-                $thefile_one = $file_one->getClientOriginalName();
+        if (isset($file2)) {
+            $extracted = $this->extractMembers($file2, $ace_id);
+            if ($extracted) {
+                $file2->move($destinationPath, $file2->getClientOriginalName());
+                $thefile_two = $file_two->getClientOriginalName();
             }else{
                 notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
                 return back();
@@ -264,12 +271,13 @@ class AcesController extends Controller {
         $saveIndicatorOne = IndicatorOne::updateOrCreate(
             ['ace_id' => $ace_id, 'requirement' => $request->ss_requirement],
             ['submission_date' => $request->ss_submission_date,
-                'file_one' => $thefile_one]
+                'file_one' => $thefile_one,
+                'file_two' => $thefile_two,]
         );
 
         if (isset($saveIndicatorOne)) {
+            $file1->move($destinationPath, $file1->getClientOriginalName());
 
-//            where you extract the members
             notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
             return back();
         } else {

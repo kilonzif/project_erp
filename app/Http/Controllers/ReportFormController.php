@@ -1096,8 +1096,11 @@ class ReportFormController extends Controller
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('genre', '=', "F")
-                    ->orWhere('genre', '=', "Femme");
+                $query->where('genre','like', "f%")
+                    ->orWhere('genre', '=', "Femme")
+                     ->orWhere('gender', '=', "Female")
+                    ->orWhere('gender', 'like', "f%");
+
             });
 
         $bachelors_female = DB::connection('mongodb')
@@ -1105,8 +1108,9 @@ class ReportFormController extends Controller
             ->where('report_id', '=', $report_id)
             ->where("level", "=", $bachelors)
             ->where(function ($query) {
-                $query->where('genre', '=', "F")
-                    ->orWhere('genre', '=', "Femme");
+                $query->where('genre', 'like', "F%")
+                    ->orWhere('genre', '=', "Femme")
+                ->orWhere('gender', '=', "Female");
             });
 
         $course_female = DB::connection('mongodb')
@@ -1114,7 +1118,8 @@ class ReportFormController extends Controller
             ->where('report_id', '=', $report_id)
             ->where("level", 'like', "%$course%")
             ->where(function ($query) {
-                $query->where('genre', '=', "F")
+                $query->where('genre', 'like', "F%")
+                    ->orWhere('gender','=','Female')
                     ->orWhere('genre', '=', "Femme");
             });
 
