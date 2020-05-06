@@ -317,4 +317,58 @@ class CommonFunctions {
         }
 
 
+    /**
+     * @param string $language
+     * @return mixed
+     */
+    public function webFormLang($language)
+    {
+        switch ($language) {
+            case 'english':
+                $lang = $this->english_language();
+                break;
+            case 'french':
+                $lang = $this->french_language();
+                break;
+            default:
+                $lang = $this->english_language();
+        }
+        return $lang;
+    }
+
+    /**
+     * @return array
+     */
+    public function english_language()
+    {
+        return [
+            'Edit'                                          =>  'Edit',
+            'Save'                                          =>  'Save',
+            'File'                                          =>  'File',
+            'Action'                                        =>  'Action',
+            'Period covered by IFR'                         =>  'Period covered by IFR',
+            'Period covered by EFA'                         =>  'Period covered by EFA',
+            'File Upload'                                   =>  'File upload',
+            'Date of Submission'                            =>  'Date of Submission',
+            'Submission Date'                               =>  'Submission Date',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function french_language()
+    {
+        return [
+            'Edit'                                          =>  'Éditer',
+            'Save'                                          =>  'Sauver',
+            'File'                                          =>  'Fichier',
+            'Action'                                        =>  'Action',
+            'Period covered by IFR'                         =>  'Période couverte par IFR',
+            'Period covered by EFA'                         =>  'Période couverte par EFA',
+            'File Upload'                                   =>  'Téléchargement de fichiers',
+            'Date of Submission'                            =>  'Date de Soumission',
+            'Submission Date'                               =>  'Date de Soumission',
+        ];
+    }
 }

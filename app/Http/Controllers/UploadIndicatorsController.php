@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\ExcelUpload;
 use App\Indicator;
@@ -31,6 +32,8 @@ class UploadIndicatorsController extends Controller
         $d_report_id = Crypt::decrypt($report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
         $report = Report::find($d_report_id);
+        $select_language = new CommonFunctions();
+        $lang = $select_language->webFormLang($report->language);
 
         if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
@@ -38,9 +41,15 @@ class UploadIndicatorsController extends Controller
         }
         $ace = $report->ace;
 
-        $indicator_type= Indicator::where('id','=',$report->indicator_id)->where('upload','=',1)->first();
+        /**
+         * Checks if the DLR requires an upload.
+         */
+        $indicator_type = Indicator::where('id','=',$report->indicator_id)->where('upload','=',1)->first();
+        $indicator_info = Indicator::find($report->indicator_id);
 
-
+        /**
+         * If does not require an upload then it's a web-form
+         */
         if(empty($indicator_type)){
             $indicators = Indicator::where('is_parent','=', 1)
                 ->where('id','=',$report->indicator_id)
@@ -52,28 +61,50 @@ class UploadIndicatorsController extends Controller
                 ->collection("$table_name")
                 ->where('report_id','=', (integer)$d_report_id)->get();
 
-            if($report->language=="french" && $indicators->identifier =='4.1' ){
-                return view('report-form.webforms.dlr41fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
-            }else if($report->language=="french" && $indicators->identifier =='5.1'){
-                return view('report-form.webforms.dlr51fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+            if (isset($indicator_info->webForm)) {
+                $view_name = $indicator_info->webForm->view_name;
+                $table_name = $indicator_info->webForm->table_name;
 
-            }
-            else if($report->language=="english" && $indicators->identifier =='4.1'){
-                return view('report-form.webforms.dlr41en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                $data = DB::table("$table_name")
+                    ->where('report_id','=', (integer)$d_report_id)->get();
 
-            }
-            else if($report->language=="english" && $indicators->identifier =='5.1'){
-                return view('report-form.webforms.dlr51en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                if($report->language=="french" && $indicators->identifier =='4.1' ){
+                    return view('report-form.webforms.dlr41fr-webform', compact('indicators',
+                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+                    ,'indicator_info'));
+                }
+                else if($report->language=="french" && $indicators->identifier =='5.1'){
+                    return view('report-form.webforms.dlr51fr-webform', compact('indicators',
+                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+                        ,'indicator_info'));
 
-            }
-            else if($report->language=="english" && $indicators->identifier =='7.3'){
-                return view('report-form.webforms.dlr73en-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
-            }
-            else if($report->language=="french" && $indicators->identifier =='7.3'){
-                return view('report-form.webforms.dlr73fr-webform', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
-            }
+                }
+                else if($report->language=="english" && $indicators->identifier =='4.1'){
+                    return view('report-form.webforms.dlr41en-webform', compact('indicators',
+                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+                        ,'indicator_info'));
 
-            return view('report-form.webforms.blank-dlr', compact('indicators','indicator_type','data','d_report_id','report_id','indicator_details','report','ace'));
+                }
+                else if($report->language=="english" && $indicators->identifier =='5.1'){
+                    return view('report-form.webforms.dlr51en-webform', compact('indicators',
+                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+                        ,'indicator_info'));
+                }
+                else if($report->language=="english" && $indicators->identifier =='7.3'){
+                    return view('report-form.webforms.dlr73en-webform', compact('indicators',
+                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+                        ,'indicator_info'));
+                }
+                else if($report->language=="french" && $indicators->identifier =='7.3'){
+                    return view('report-form.webforms.dlr73fr-webform', compact('indicators',
+                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+                        ,'indicator_info'));
+                }
+                else {
+                    return view("report-form.webforms.$view_name", compact('indicator_type','lang',
+                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info'));
+                }
+            }
         }
         $indicators = Indicator::where('is_parent','=', 1)
             ->where('id','=',$report->indicator_id)
@@ -297,9 +328,121 @@ class UploadIndicatorsController extends Controller
 //        return back()->withInput(['error'=>$error,'success'=>$success]);
     }
 
-
-
     public function saveWebForm(Request $request,$dlr_id){
+
+        $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
+        $table_name = Str::snake("indicator_".$this_dlr->identifier);
+
+        $indicator_details = array(); //An array to holds the indicator details
+        $report_id = (integer)($request->report_id);
+
+        switch ($this_dlr->identifier) {
+            case "4.1":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['indicator_id'] = $request->indicator_id;
+                $indicator_details['programmetitle'] = $request->programmetitle;
+                $indicator_details['level'] = $request->level;
+                $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+                $indicator_details['accreditationreference'] = $request->accreditationreference;
+                $indicator_details['accreditationagency'] = $request->accreditationagency;
+                $indicator_details['agencyname'] = $request->agencyname;
+                $indicator_details['agencyemail'] = $request->agencyemail;
+                $indicator_details['agencycontact'] = $request->agencycontact;
+                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                break;
+            case "5.1":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['indicator_id'] = $request->indicator_id;
+                $indicator_details['amountindollars'] = $request->amountindollars;
+                $indicator_details['originalamount'] = $request->originalamount;
+                $indicator_details['source'] = $request->source;
+                $indicator_details['datereceived'] = $request->datereceived;
+                $indicator_details['bankdetails'] = $request->bankdetails;
+                $indicator_details['region'] = $request->region;
+                $indicator_details['fundingreason'] = $request->fundingreason;
+                break;
+            case "6.1":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ifr_period'] = $request->ifr_period;
+                $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
+                $indicator_details['efa_period'] = $request->efa_period;
+                $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
+                $table_name = $this_dlr->webForm->table_name;
+                break;
+            case "7.3":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['indicator_id'] = $request->indicator_id;
+                $indicator_details['institutionname'] = $request->institutionname;
+                $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+                $indicator_details['accreditationreference'] = $request->accreditationreference;
+                $indicator_details['contactname'] = $request->contactname;
+                $indicator_details['contactemail'] = $request->contactemail;
+                $indicator_details['contactphone'] = $request->contactphone;
+                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                break;
+            default:
+                "Nothing";
+        }
+
+        if($this_dlr->identifier =="4.1") {
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['programmetitle'] = $request->programmetitle;
+            $indicator_details['level'] = $request->level;
+            $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+            $indicator_details['accreditationreference'] = $request->accreditationreference;
+            $indicator_details['accreditationagency'] = $request->accreditationagency;
+            $indicator_details['agencyname'] = $request->agencyname;
+            $indicator_details['agencyemail'] = $request->agencyemail;
+            $indicator_details['agencycontact'] = $request->agencycontact;
+            $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+            $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+
+        }
+        else if ($this_dlr->identifier =="5.1"){
+
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['amountindollars'] = $request->amountindollars;
+            $indicator_details['originalamount'] = $request->originalamount;
+            $indicator_details['source'] = $request->source;
+            $indicator_details['datereceived'] = $request->datereceived;
+            $indicator_details['bankdetails'] = $request->bankdetails;
+            $indicator_details['region'] = $request->region;
+            $indicator_details['fundingreason'] = $request->fundingreason;
+        }
+        else if ($this_dlr->identifier =="7.3"){
+
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['indicator_id'] = $request->indicator_id;
+            $indicator_details['institutionname'] = $request->institutionname;
+            $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+            $indicator_details['accreditationreference'] = $request->accreditationreference;
+            $indicator_details['contactname'] = $request->contactname;
+            $indicator_details['contactemail'] = $request->contactemail;
+            $indicator_details['contactphone'] = $request->contactphone;
+            $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+            $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+
+        }
+
+        $saved= DB::table("$table_name")->insert($indicator_details);
+
+        if(!$saved){
+            $error_msg = "Data hasn't saved. Please try again.";
+            notify(new ToastNotification('Sorry', $error_msg, 'warning'));
+            return back()->withInput();
+        }else{
+            $success = "The data has been saved.";
+            notify(new ToastNotification('Successful', $success, 'success'));
+            return back();
+        }
+
+    }
+
+    public function saveWebForm_old(Request $request,$dlr_id){
 
         $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
         $table_name = Str::snake("indicator_".$this_dlr->identifier);
@@ -469,9 +612,6 @@ class UploadIndicatorsController extends Controller
 
     }
 
-
-
-
     public function removeRecord($indicator_id,$record_id)
     {
         $this_dlr = Indicator::find(Crypt::decrypt($indicator_id));
@@ -479,8 +619,12 @@ class UploadIndicatorsController extends Controller
 
         if (DB::connection('mongodb')->collection("$table_name")->delete($record_id)) {
             notify(new ToastNotification('Successful!', 'Record Deleted!', 'success'));
+        } elseif (DB::table("$table_name")->delete($record_id)){
+            notify(new ToastNotification('Successful!', 'Record Deleted!', 'success'));
+        } else {
+            notify(new ToastNotification('Sorry!', 'Something went wrong!', 'warning'));
         }
-        notify(new ToastNotification('Sorry!', 'Something went wrong!', 'warning'));
+
         return back();
     }
 
@@ -600,11 +744,6 @@ class UploadIndicatorsController extends Controller
 
 
     }
-
-
-
-
-
 
 }
 
