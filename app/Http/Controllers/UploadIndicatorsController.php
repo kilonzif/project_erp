@@ -10,6 +10,7 @@ use App\IndicatorDetails;
 use App\IndicatorForm;
 use App\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -335,6 +336,7 @@ class UploadIndicatorsController extends Controller
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
+        $data = Arr::except($request->all(), ['_token']);
 
         switch ($this_dlr->identifier) {
             case "4.1":
@@ -370,17 +372,26 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 $table_name = $this_dlr->webForm->table_name;
                 break;
-            case "7.3":
-                $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['indicator_id'] = $request->indicator_id;
-                $indicator_details['institutionname'] = $request->institutionname;
-                $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
-                $indicator_details['accreditationreference'] = $request->accreditationreference;
-                $indicator_details['contactname'] = $request->contactname;
-                $indicator_details['contactemail'] = $request->contactemail;
-                $indicator_details['contactphone'] = $request->contactphone;
-                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
-                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+            case "6.2":
+                dd($request->all());
+                break;
+            case "6.3":
+                dd($request->all());
+                break;
+            case "6.4":
+                dd($request->all());
+                break;
+            case "7.1":
+                dd($request->all());
+                break;
+            case "7.2":
+                dd($request->all());
+                break;
+            case "7.4":
+                dd($request->all());
+                break;
+            case "7.6":
+                dd($request->all());
                 break;
             default:
                 "Nothing";

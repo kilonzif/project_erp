@@ -12,7 +12,7 @@
             width: 300px;
             overflow-x: scroll;
             display: block;
-            font-size: 10pt;
+            font-size: 11pt;
         }
     </style>
 @endpush
@@ -90,7 +90,7 @@
                             padding: 0,
                             backgroundColor: 'transparent'
                         }
-                    });;
+                    });
                 },
                 success: function(data){
                     $('#form-card').empty();

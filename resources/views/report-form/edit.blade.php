@@ -254,7 +254,14 @@
                                                         <td>{{$sub_indicator->title}} <span class="required">*</span>
                                                         </td>
                                                         <td style="width: 200px">
-                                                            @if($sub_indicator->parent_id == 2)
+                                                            @if($sub_indicator->parent_id == 1)
+                                                                {{--programme accreditation--}}
+                                                                <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                           value="{{$pdo_1[$pdo_indicator]}}"
+                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                                </div>
+                                                            @elseif($sub_indicator->parent_id == 2)
                                                                 {{--programme accreditation--}}
                                                                 <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
@@ -285,7 +292,7 @@
                             <div class="col-lg-12">
                                 <div class="card mb-1">
                                     <div class="card-header p-1 card-head-inverse bg-grey-blue">
-                                        <strong>Challenges faced (if any)</strong>
+                                        <strong>Challenges faced / Additional Comments</strong>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group">
@@ -307,7 +314,7 @@
                             <div class="col-md-3 text-right">
                                 <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"
                                    onclick="return show_confirm();">
-                                    <i class="ft-check-circle"></i> Submit Full Report
+                                    <i class="ft-check-circle"></i> Submit DLR
                                 </button>
                             </div>
                         </div>

@@ -294,7 +294,8 @@ return [
         ],
         'pdo_indicator_1e'     =>  [
             'sc_regional_total','sc_regional_female','sc_national_total','sc_national_female'
-        ]
+        ],
+        'ir_indicator_7'
     ],
     'indicator_2'     =>  [
         'pdo_indicator_2' => [
