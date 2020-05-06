@@ -39,6 +39,11 @@ class Indicator extends Model
         return $this->belongsTo('App\UnitMeasure');
     }
 
+    public function webForm()
+    {
+        return $this->belongsTo('App\WebForm');
+    }
+
     public function indicators(){
         return $this->hasMany('App\Indicator','parent_id');
     }
