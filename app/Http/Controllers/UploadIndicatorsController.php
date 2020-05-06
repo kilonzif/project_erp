@@ -128,10 +128,12 @@ class UploadIndicatorsController extends Controller
     public function read($detail_id)
     {
         $indicator_details = IndicatorDetails::find($detail_id);
-        $getHeaders = DB::connection('mongodb')->collection('indicator_form')->where('indicator','=',$indicator_details->indicator_id)->pluck('fields');
+        $getHeaders = DB::connection('mongodb')->collection('indicator_form')
+            ->where('indicator','=',$indicator_details->indicator_id)
+            ->where('language.Text','=',$indicator_details->language)
+            ->pluck('fields');
 
         $headers = array();
-//        $table_name = Str::snake("indicator_".$indicator_info->identifier);
 
         for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
             $headers[] = $getHeaders[0][$a]['label'];
