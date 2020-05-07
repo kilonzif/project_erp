@@ -6,8 +6,15 @@
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('programmetitle') ? ' form-control-warning' : '' }}">
                 <label for="basicInputFile">Titre du programme<span class="required">*</span></label>
-                <input type="text" class="form-control"  required name="programmetitle"
-                       value="{{ (old('programmetitle')) ? old('programmetitle') : $the_record['programmetitle'] }}">
+                <select name="programmetitle" id="programmetitle" required  class="form-control">
+                    <option value="">Select</option>
+                    @foreach($ace_programmes as $key=>$ace_programme)
+                        @if($ace_programme != "")
+                            <option {{($the_record['programmetitle'] == $ace_programme)  ? "selected":""}}
+                                    value="{{$ace_programme}}">{{$ace_programme}}</option>
+                        @endif
+                    @endforeach
+                </select>
                 @if ($errors->has('programmetitle'))
                     <p class="text-right mb-0">
                         <small class="warning text-muted">{{ $errors->first('programmetitle') }}</small>
@@ -46,8 +53,8 @@
         </div>
         <div class="col-md-4">
             <fieldset class="form-group">
-                <label for="basicInputFile">Référence de l'accréditation <span class="required">*</span></label>
-                <input type="text" name="accreditationreference"  required class="form-control"
+                <label for="basicInputFile">Référence de l'accréditation</label>
+                <input type="text" name="accreditationreference" class="form-control"
                        value="{{ (old('accreditationreference')) ? old('accreditationreference') : $the_record['accreditationreference'] }}">
             </fieldset>
         </div>
@@ -103,6 +110,24 @@
                     <div class="input-group-append">
                         <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
                     </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="col-md-4">
+            <fieldset>
+                <label for="newly_accredited_programme">Programme nouvellement accrédité?<span class="required">*</span></label>
+                <div class="input-group">
+                    @php
+                        $newly_accredited_programme = "";
+                        if (isset($the_record->newly_accredited_programme)) {
+                            $newly_accredited_programme = $the_record->newly_accredited_programme;
+                        }
+                    @endphp
+                    <select name="newly_accredited_programme" class="form-control" required id="newly_accredited_programme">
+                        <option value="">Sélectionner</option>
+                        <option {{($newly_accredited_programme == 'Non')  ? "selected":""}} value="Non">Non</option>
+                        <option {{($newly_accredited_programme == 'Oui')  ? "selected":""}} value="Oui">Oui</option>
+                    </select>
                 </div>
             </fieldset>
         </div>

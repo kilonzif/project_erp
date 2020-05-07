@@ -12,6 +12,7 @@
             width: 300px;
             overflow-x: scroll;
             display: block;
+            font-size: 11pt;
         }
     </style>
 @endpush
@@ -45,9 +46,9 @@
             <div class="col-md-12">
 
                 <div class="card">
-                    <div class="card-header p-1 card-head-inverse bg-teal">
-                        <h2>{{$ace->name}} ({{$ace->acronym}}) - {{$indicators->title}}</h2>
-                    </div>
+                    <h5 class="card-header p-1 card-head-inverse bg-teal">
+                        {{$ace->name}} ({{$ace->acronym}}) - {{$indicators->title}}
+                    </h5>
 
                     @php
                         $sub_indicator = \App\Indicator::query()->where('identifier','like','%'.'PDO Indicator 2')->first();
@@ -67,7 +68,14 @@
                                             <div class="col-md-4">
                                                 <fieldset class="form-group{{ $errors->has('programmetitle') ? ' form-control-warning' : '' }}">
                                                     <label for="basicInputFile">Titre du programme<span class="required">*</span></label>
-                                                    <input type="text" class="form-control"  required name="programmetitle">
+                                                    <select name="programmetitle" id="programmetitle" required  class="form-control">
+                                                        <option value="">Select</option>
+                                                        @foreach($ace_programmes as $key=>$ace_programme)
+                                                            @if($ace_programme != "")
+                                                                <option value="{{$ace_programme}}">{{$ace_programme}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
                                                     @if ($errors->has('programmetitle'))
                                                         <p class="text-right mb-0">
                                                             <small class="warning text-muted">{{ $errors->first('programmetitle') }}</small>
@@ -106,8 +114,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <fieldset class="form-group">
-                                                    <label for="basicInputFile">Référence de l'accréditation <span class="required">*</span></label>
-                                                    <input type="text" name="accreditationreference"  required class="form-control">
+                                                    <label for="basicInputFile">Référence de l'accréditation</label>
+                                                    <input type="text" name="accreditationreference" class="form-control">
                                                 </fieldset>
                                             </div>
                                             <div class="col-md-4">
@@ -156,9 +164,21 @@
                                                     </div>
                                                 </fieldset>
                                             </div>
+                                            <div class="col-md-4">
+                                                <fieldset>
+                                                    <label for="newly_accredited_programme">Programme nouvellement accrédité?<span class="required">*</span></label>
+                                                    <div class="input-group">
+                                                        <select name="newly_accredited_programme" class="form-control" required id="newly_accredited_programme">
+                                                            <option value="">Sélectionner</option>
+                                                            <option value="Non">Non</option>
+                                                            <option value="Oui">Oui</option>
+                                                        </select>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
 
                                             <div class="form-group col-12">
-                                                <button type="submit" class="btn btn-secondary square" style="margin-top: 20px"><i class="fa fa-save">   SAVE </i>     RECORDS</button>
+                                                <button type="submit" class="btn btn-secondary square" style="margin-top: 20px"><i class="fa fa-save"></i> Sauver</button>
                                             </div>
 
                                         </div>
@@ -176,9 +196,9 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header p-1 card-head-inverse bg-primary">
-                        <h2>Program Accreditation</h2>
-                    </div>
+                    <h5 class="card-header p-1 card-head-inverse bg-primary">
+                        Program Accreditation
+                    </h5>
                     <div class="card-content">
                         <div class="card-body">
                             <div class="col-md-12 table-responsive">
@@ -195,6 +215,7 @@
                                         <th>Numéro de téléphone du personne contact</th>
                                         <th>Date d'accréditation</th>
                                         <th>Date d'expiration de l'accréditation</th>
+                                        <th>Nouvellement accrédité</th>
                                         <th style="min-width: 180px">Action</th>
                                     </tr>
                                     @foreach($data as $key=>$d)
@@ -211,8 +232,9 @@
                                             <td>{{$d->agencyname}}</td>
                                             <td>{{$d->agencyemail}}</td>
                                             <td>{{$d->agencycontact}}</td>
-                                            <td>{{date("d/m/Y", strtotim    e($d->dateofaccreditation))}}</td>
+                                            <td>{{date("d/m/Y", strtotime($d->dateofaccreditation))}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->exp_accreditationdate))}}</td>
+                                            <td>{{$d->newly_accredited_programme}}</td>
                                             <td>
                                                 <a href="#form-card" onclick="editRecord('{{$indicators->id}}','{{$d->_id}}')" class="btn btn-s btn-secondary">
                                                     {{__('Edit')}}</a>
