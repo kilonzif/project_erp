@@ -9,11 +9,13 @@ use App\Indicator;
 use App\IndicatorDetails;
 use App\IndicatorForm;
 use App\Report;
+use App\ReportUpload;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Collection;
 use phpDocumentor\Reflection\Types\Integer;
@@ -185,15 +187,11 @@ class UploadIndicatorsController extends Controller
             ->where('indicator','=',(integer)$request->indicator)
             ->orderBy('order','asc')->get();
 
-//        dd($getHeaders);
         //Get the start row of data inputs for the upload
         $data_start = collect($getHeaders)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
         })
             ->pluck('start_row')->first();
-
-
-
 
         //Assign 3 which is row 3 if no data is found
         if ($data_start == null){
@@ -209,6 +207,8 @@ class UploadIndicatorsController extends Controller
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)Crypt::decrypt($request->report_id);
         $indicator_details['report_id'] = (integer)$report_id;
+        $report = Report::find($report_id);
+//        dd($report->reporting_period);
 
         //row headers
         $headers = array();
@@ -233,10 +233,17 @@ class UploadIndicatorsController extends Controller
 
         if ($request->file('upload_file')->isValid()) {
 
-
             $extension = \File::extension($request->upload_file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls") {
                 $path = $request->file('upload_file')->getRealPath();
+
+                //Gather the file name and directory path
+                $acronym = strtoupper($report->ace->acronym);
+                $reporting_year = $report->reporting_period->first()->reporting_year;
+                $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
+                $directory = "public/reports/$acronym/$reporting_year/$identifier";
+                $month = date('M',strtotime($report->reporting_period->first()->period_end));
+                $file_name = "$acronym-$reporting_year-$identifier-$month.$extension";
 
                 $reader = IOFactory::createReader('Xlsx');
                 $reader->setReadDataOnly(true);
@@ -261,19 +268,10 @@ class UploadIndicatorsController extends Controller
 
                 $table_name = Str::snake("indicator_".$indicator_info->identifier);
 
-//                dd($table_name);
-
                 //Loops through the excel sheet to get the values;
                 DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
 
-
-
-
-
-
                 for ($row = $data_start; $row <= $highestRow; $row++) {
-
-
 
                     echo PHP_EOL;
 
@@ -286,14 +284,10 @@ class UploadIndicatorsController extends Controller
                         echo  PHP_EOL;
                     }
 
-
-
                     DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
                     echo PHP_EOL;
                 }//end of loop
-
-
 
                 echo PHP_EOL;
                 $row = DB::connection('mongodb')
@@ -306,6 +300,15 @@ class UploadIndicatorsController extends Controller
                         ->collection('indicator_form_details')
                         ->where('_id', $item->_id)
                         ->update($upload_values);
+
+                    $path = Storage::putFileAs("$directory", $request->file('upload_file'), $file_name);
+
+                    ReportUpload::updateOrCreate([
+                        'report_id' =>  $report_id
+                    ],[
+                        'file_name' =>  $file_name,
+                        'file_path' =>  $path,
+                    ]);
                     $success = "The upload was successful.";
                 }
                 else{
@@ -314,6 +317,16 @@ class UploadIndicatorsController extends Controller
                         ->insert($upload_values);
 
                     if ($insert){
+
+                        $path = Storage::putFileAs("$directory", $request->file('upload_file'), $file_name);
+
+                        ReportUpload::updateOrCreate([
+                            'report_id' =>  $report_id
+                        ],[
+                            'file_name' =>  $file_name,
+                            'file_path' =>  $path,
+                        ]);
+
                         $success = "The upload was successful.";
                     }else{
                         $error = "The upload failed.";
@@ -324,14 +337,10 @@ class UploadIndicatorsController extends Controller
             }
         }
 
-
         $d_report_id = Crypt::decrypt($request->report_id);
         $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
 
-
-
         return view ('report-form.uploaded-dlrs',compact('indicator_details'));
-//        return back()->withInput(['error'=>$error,'success'=>$success]);
     }
 
     public function saveWebForm(Request $request,$dlr_id){

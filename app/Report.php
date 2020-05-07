@@ -33,17 +33,21 @@ class Report extends Model {
 		return $this->hasMany('App\ReportIndicatorsStatus');
 	}
 
+	public function report_uploads() {
+		return $this->hasMany('App\ReportUpload');
+	}
+
 	public function report_status() {
 		return $this->hasOne('App\ReportStatusTracker');
 	}
 
 
 	public function reporting_period(){
-	    return $this->hasOne('App\ReportingPeriod');
+	    return $this->belongsTo('App\ReportingPeriod');
     }
 
     public function indicator(){
-        return $this->hasOne('App\Indicator');
+        return $this->belongsTo('App\Indicator');
     }
 
 
