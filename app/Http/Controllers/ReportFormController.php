@@ -1989,7 +1989,8 @@ class ReportFormController extends Controller
     public function generateAggregatedIndicator41Results($report_id)
     {
         $indicator_4_1_values = array();
-
+        $report = Report::find($report_id);
+        $emerging = 0;
 
         $national = DB::connection('mongodb')
             ->collection('indicator_4.1')
@@ -2051,18 +2052,20 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "New%");
             })->count();
 
-        $emerging = DB::connection('mongodb')
-            ->collection('indicator_4.1')
-            ->where('report_id', '=', $report_id)
-            ->where('newly_accredited_programme', '=', 'Yes')
-            ->where(function ($query) {
-                $query->where('level', 'like', "Master%")
-                    ->orWhere('level', 'like', "Bachelor%");
-            })
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Regional")
-                    ->orWhere('typeofaccreditation', '=', "National");
-            })->count();
+        if ($report->ace->ace_type == 'emerging') {
+            $emerging = DB::connection('mongodb')
+                ->collection('indicator_4.1')
+                ->where('report_id', '=', $report_id)
+                ->where('newly_accredited_programme', '=', 'Yes')
+                ->where(function ($query) {
+                    $query->where('level', 'like', "Master%")
+                        ->orWhere('level', 'like', "Bachelor%");
+                })
+                ->where(function ($query) {
+                    $query->where('typeofaccreditation', '=', "Regional")
+                        ->orWhere('typeofaccreditation', '=', "National");
+                })->count();
+        }
 
         $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
         $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;

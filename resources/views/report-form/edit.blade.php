@@ -119,7 +119,12 @@
 
                         <div style="display: inline; margin-right:10px;">
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
-                                <i class="ft-upload"></i> Upload Indicators</a>
+                                @if($the_indicator->upload)
+                                    <i class="ft-upload"></i> Upload Indicators
+                                @else
+                                    <i class="ft-edit"></i> Add Record
+                                @endif
+                            </a>
                             <a  class="pb-1 pt-1 mt-1 text-danger text-uppercase" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" style="margin-left:10px;">Preview and scroll down this page to submit the report</a>
                         </div>
                         {{--indicators3--}}

@@ -232,7 +232,11 @@
                                             <td>{{$d->agencycontact}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->dateofaccreditation))}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->exp_accreditationdate))}}</td>
-                                            <td>{{$d->newly_accredited_programme}}</td>
+                                            <td>
+                                                @isset($d->newly_accredited_programme)
+                                                {{$d->newly_accredited_programme}}
+                                                @endisset
+                                            </td>
                                             <td>
                                                 <a href="#form-card" onclick="editRecord('{{$indicators->id}}','{{$d->_id}}')" class="btn btn-s btn-secondary">
                                                     {{__('Edit')}}</a>

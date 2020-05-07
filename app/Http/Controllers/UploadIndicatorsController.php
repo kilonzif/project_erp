@@ -358,6 +358,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['agencycontact'] = $request->agencycontact;
                 $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
                 $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
             case "5.1":
                 $indicator_details['report_id'] = (integer)$report_id;
@@ -531,7 +532,7 @@ class UploadIndicatorsController extends Controller
                 ->first();
         }
         else {
-            $table_name = Str::snake("indicator_" . $this_indicator->identifier);
+            $table_name = Str::snake("indicator_".$this_indicator->identifier);
             $the_record = DB::connection('mongodb')->collection("$table_name")
                 ->where('_id','=',$record_id)
                 ->first();
@@ -539,7 +540,7 @@ class UploadIndicatorsController extends Controller
 
         $report = Report::find($the_record['report_id']);
         $ace = $report->ace;
-        $ace_programmes = $ace->programmes;
+        $ace_programmes = explode(';',$ace->programmes);
 
         if($report->language=="english" && $this_indicator->identifier =='4.1' ){
             $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id',
@@ -601,6 +602,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['agencycontact'] = $request->agencycontact;
                 $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
                 $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
             case "5.1":
                 $indicator_details['report_id'] = (integer)$report_id;
