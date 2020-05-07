@@ -569,7 +569,6 @@ class ReportFormController extends Controller
     public function edit_report($id)
     {
         $id = Crypt::decrypt($id);
-        $the_indicator = null;
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
         $report = Report::find($id);
 
@@ -590,6 +589,7 @@ class ReportFormController extends Controller
 
 
         $indicators = Indicator::where('id', '=', $report->indicator_id)->orderBy('identifier', 'asc')->first();
+        $the_indicator = $indicators;
 
 
         $comment = AceComment::where('report_id', $id)->first();
@@ -604,29 +604,20 @@ class ReportFormController extends Controller
             $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
             $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
             $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
-
-
         }
-
-
-        $pdo_1 = $this->generateAggregatedIndicator3Results($id);
-
-        $pdo_2 = $this->generateAggregatedIndicator73Results($id);
-
-        $pdo_52 = $this->generateAggregatedIndicator52Results($id);
-
-        $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
-        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
+        else {
+            $pdo_1 = $this->generateAggregatedIndicator3Results($id);
+            $pdo_2 = $this->generateAggregatedIndicator73Results($id);
+            $pdo_52 = $this->generateAggregatedIndicator52Results($id);
+            $pdo_41 = $this->generateAggregatedIndicator41Results($id);
+            $pdo_42 = $this->generateAggregatedIndicator42Results($id);
+            $pdo_51 = $this->generateAggregatedIndicator51Results($id);
+        }
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
         $aces = Ace::where('active', '=', 1)->get();
-
-
-
-
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
@@ -2060,12 +2051,26 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "New%");
             })->count();
 
+        $emerging = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where(function ($query) {
+                $query->where('level', 'like', "Master%")
+                    ->orWhere('level', 'like', "Bachelor%");
+            })
+            ->where(function ($query) {
+                $query->where('typeofaccreditation', '=', "Regional")
+                    ->orWhere('typeofaccreditation', '=', "National");
+            })->count();
+
         $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
         $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
         $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
         $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
         $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
 
         return $indicator_4_1_values;

@@ -267,7 +267,6 @@
                                                         </td>
                                                         <td style="width: 200px">
                                                             @if($sub_indicator->parent_id == 1)
-                                                                {{--programme accreditation--}}
                                                                 <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                            value="{{$pdo_1[$pdo_indicator]}}"

@@ -337,7 +337,7 @@ class UploadIndicatorsController extends Controller
     public function saveWebForm(Request $request,$dlr_id){
 
         $this_dlr = Indicator::find($request->indicator_id);
-        $table_name = Str::snake("indicator_".str_replace('.','_',$this_dlr->identifier));
+        $table_name = Str::snake("indicator_".$this_dlr->identifier);
 
 
         $indicator_details = array(); //An array to holds the indicator details
@@ -467,7 +467,7 @@ class UploadIndicatorsController extends Controller
                         'amountindollars' => $sheet->getCell('A' . $row)->getValue(),
                         'originalamount' => $sheet->getCell('B' . $row)->getValue(),
                         'currency'=> $sheet->getCell('C' . $row)->getValue(),
-                            'source' => $sheet->getCell('D' . $row)->getValue(),
+                        'source' => $sheet->getCell('D' . $row)->getValue(),
                         'datereceived' => $sheet->getCell('E' . $row)->getValue(),
                         'bankdetails' => $sheet->getCell('F' . $row)->getValue(),
                         'region' => $sheet->getCell('G' . $row)->getValue(),
@@ -476,10 +476,13 @@ class UploadIndicatorsController extends Controller
 
                     }
                     $startcount++;
-
-
                 }
-                $saved = DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
+                if (isset($this_dlr->web_form_id)) {
+                    $saved = DB::table("$table_name")->insert($indicator_details);
+                }
+                else{
+                    $saved = DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
+                }
                 if ($saved) {
                     $file1->move($destinationPath, $file1->getClientOriginalName());
                     $thefile_one = $file_one->getClientOriginalName();
@@ -489,23 +492,24 @@ class UploadIndicatorsController extends Controller
                     notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
                     return back();
                 }
-
-
             }catch (Exception $e) {
                 $error_code = $e->errorInfo[1];
 
             }
-
         }
         notify(new ToastNotification('Notice', 'Could not upload the file', 'info'));
         return back();
-
     }
 
     public function removeRecord($indicator_id,$record_id)
     {
         $this_dlr = Indicator::find(Crypt::decrypt($indicator_id));
-        $table_name = Str::snake("indicator_".$this_dlr->identifier);
+        if (isset($this_dlr->web_form_id)) {
+            $table_name = $this_dlr->webForm->table_name;
+        }
+        else {
+            $table_name = Str::snake("indicator_" . $this_dlr->identifier);
+        }
 
         if (DB::connection('mongodb')->collection("$table_name")->delete($record_id)) {
             notify(new ToastNotification('Successful!', 'Record Deleted!', 'success'));
@@ -514,25 +518,28 @@ class UploadIndicatorsController extends Controller
         } else {
             notify(new ToastNotification('Sorry!', 'Something went wrong!', 'warning'));
         }
-
         return back();
     }
 
     public function editRecord(Request $request){
         $this_indicator = Indicator::find($request->indicator_id);
-        $table_name = Str::snake("indicator_".$this_indicator->identifier);
-
         $record_id = $request->record_id;
-
-        $the_record = DB::connection('mongodb')->collection("$table_name")
-            ->where('_id','=',$record_id)
-            ->first();
+        if (isset($this_indicator->web_form_id)) {
+            $table_name = $this_indicator->webForm->table_name;
+            $the_record = DB::table("$table_name")
+                ->where('id','=',$record_id)
+                ->first();
+        }
+        else {
+            $table_name = Str::snake("indicator_" . $this_indicator->identifier);
+            $the_record = DB::connection('mongodb')->collection("$table_name")
+                ->where('_id','=',$record_id)
+                ->first();
+        }
 
         $report = Report::find($the_record['report_id']);
         $ace = $report->ace;
         $ace_programmes = $ace->programmes;
-
-
 
         if($report->language=="english" && $this_indicator->identifier =='4.1' ){
             $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id',
@@ -558,17 +565,23 @@ class UploadIndicatorsController extends Controller
             $view = view ('report-form.webforms.edit_dlr73fr',compact('the_record','record_id',
                 'this_indicator'))->render();
         }
-
+        elseif (isset($this_indicator->web_form_id)) {
+            $view_name = $this_indicator->webForm->view_name;
+            $view = view ("report-form.webforms.edit_$view_name",compact('the_record','record_id',
+                'this_indicator'))->render();
+        }
         return response()->json(['theView' => $view]);
-
-
-
     }
 
     public function updateRecord(Request $request,$indicator_id,$record_id){
 
         $this_dlr = Indicator::find($request->indicator_id);
-        $table_name = Str::snake("indicator_".str_replace('.','_',$this_dlr->identifier));
+        if (isset($this_dlr->web_form_id)) {
+            $table_name = $this_dlr->webForm->table_name;
+        }
+        else {
+            $table_name = Str::snake("indicator_".$this_dlr->identifier);
+        }
         $report = Report::find($request->report_id);
 
         $indicator_details = array(); //An array to holds the indicator details
@@ -607,7 +620,6 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
                 $indicator_details['efa_period'] = $request->efa_period;
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
-                $table_name = $this_dlr->webForm->table_name;
                 break;
             case "6.2":
                 dd($request->all());

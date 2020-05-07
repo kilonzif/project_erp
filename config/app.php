@@ -331,7 +331,7 @@ return [
     'indicator_41' => [
         'pdo_indicator_41' => [
             'national','regional','international',
-            'self_evaluation','gap_assessment','course'
+            'self_evaluation','gap_assessment','course','emerging'
         ]
 
     ],
