@@ -84,7 +84,22 @@
                                                                 </p>
                                                             @endif
                                                         </fieldset>
-
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <fieldset class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
+                                                            <label for="basicInputFile">Devise du montant d'origine<span class="required">*</span></label>
+                                                            <select class="form-control" required name="currency">
+                                                                <option value="">Select One</option>
+                                                                <option value="USD">US Dollar</option>
+                                                                <option value="EURO">Euro</option>
+                                                                <option value="SDR">SDR</option>
+                                                            </select>
+                                                            @if ($errors->has('currency'))
+                                                                <p class="text-right mb-0">
+                                                                    <small class="warning text-muted">{{ $errors->first('currency') }}</small>
+                                                                </p>
+                                                            @endif
+                                                        </fieldset>
                                                     </div>
 
                                                     <div class="col-md-4">
@@ -207,6 +222,7 @@
                                     <tr>
                                         <th>Montant (Dollar US)	</th>
                                         <th>Montant original</th>
+                                        <th>Devise du Montant original</th>
                                         <th>Source</th>
                                         <th>Date de réception</th>
                                         <th>Coordonnées bancaires</th>
@@ -222,6 +238,7 @@
                                         <tr>
                                             <td>{{number_format($d->amountindollars,2)}}</td>
                                             <td>{{number_format($d->originalamount,2)}}</td>
+                                            <td>{{$d->currency}}</td>
                                             <td>{{$d->source}}</td>
                                             <td>{{date("d/m/Y", strtotime($d->datereceived))}}</td>
                                             <td>{{$d->bankdetails}}</td>

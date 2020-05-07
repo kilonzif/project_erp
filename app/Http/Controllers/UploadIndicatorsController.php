@@ -48,6 +48,8 @@ class UploadIndicatorsController extends Controller
         $indicator_type = Indicator::where('id','=',$report->indicator_id)->where('upload','=',1)->first();
         $indicator_info = Indicator::find($report->indicator_id);
 
+
+
         /**
          * If does not require an upload then it's a web-form
          */
@@ -62,12 +64,14 @@ class UploadIndicatorsController extends Controller
                 ->collection("$table_name")
                 ->where('report_id','=', (integer)$d_report_id)->get();
 
-            if (isset($indicator_info->webForm)) {
-                $view_name = $indicator_info->webForm->view_name;
-                $table_name = $indicator_info->webForm->table_name;
-
-                $data = DB::table("$table_name")
-                    ->where('report_id','=', (integer)$d_report_id)->get();
+            if (!$indicator_info->upload) {
+                $view_name = '';
+                if (isset($indicator_info->webForm)) {
+                    $view_name = $indicator_info->webForm->view_name;
+                    $table_name = $indicator_info->webForm->table_name;
+                    $data = DB::table("$table_name")
+                        ->where('report_id','=', (integer)$d_report_id)->get();
+                }
 
                 if($report->language=="french" && $indicators->identifier =='4.1' ){
                     return view('report-form.webforms.dlr41fr-webform', compact('indicators',
@@ -336,6 +340,7 @@ class UploadIndicatorsController extends Controller
         $this_dlr = Indicator::where('id','=',$request->indicator_id)->first();
         $table_name = Str::snake("indicator_".$this_dlr->identifier);
 
+
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
         $data = Arr::except($request->all(), ['_token']);
@@ -360,6 +365,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['amountindollars'] = $request->amountindollars;
                 $indicator_details['originalamount'] = $request->originalamount;
+                $indicator_details['currency'] = $request->currency;
                 $indicator_details['source'] = $request->source;
                 $indicator_details['datereceived'] = $request->datereceived;
                 $indicator_details['bankdetails'] = $request->bankdetails;
@@ -420,6 +426,7 @@ class UploadIndicatorsController extends Controller
             $indicator_details['indicator_id'] = $request->indicator_id;
             $indicator_details['amountindollars'] = $request->amountindollars;
             $indicator_details['originalamount'] = $request->originalamount;
+            $indicator_details['currency'] = $request->currency;
             $indicator_details['source'] = $request->source;
             $indicator_details['datereceived'] = $request->datereceived;
             $indicator_details['bankdetails'] = $request->bankdetails;
@@ -440,8 +447,7 @@ class UploadIndicatorsController extends Controller
             $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
 
         }
-
-        $saved= DB::table("$table_name")->insert($indicator_details);
+        $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
 
         if(!$saved){
             $error_msg = "Data hasn't saved. Please try again.";
@@ -517,6 +523,7 @@ class UploadIndicatorsController extends Controller
             $indicator_details['indicator_id'] = $request->indicator_id;
             $indicator_details['amountindollars'] = $request->amountindollars;
             $indicator_details['originalamount'] = $request->originalamount;
+            $indicator_details['currency'] = $request->currency;
             $indicator_details['source'] = $request->source;
             $indicator_details['datereceived'] = $request->datereceived;
             $indicator_details['bankdetails'] = $request->bankdetails;
@@ -590,11 +597,12 @@ class UploadIndicatorsController extends Controller
                         'indicator_id' => $dlr_id,
                         'amountindollars' => $sheet->getCell('A' . $row)->getValue(),
                         'originalamount' => $sheet->getCell('B' . $row)->getValue(),
-                        'source' => $sheet->getCell('C' . $row)->getValue(),
-                        'datereceived' => $sheet->getCell('D' . $row)->getValue(),
-                        'bankdetails' => $sheet->getCell('E' . $row)->getValue(),
-                        'region' => $sheet->getCell('F' . $row)->getValue(),
-                        'fundingreason' => $sheet->getCell('G' . $row)->getValue()
+                        'currency'=> $sheet->getCell('C' . $row)->getValue(),
+                            'source' => $sheet->getCell('D' . $row)->getValue(),
+                        'datereceived' => $sheet->getCell('E' . $row)->getValue(),
+                        'bankdetails' => $sheet->getCell('F' . $row)->getValue(),
+                        'region' => $sheet->getCell('G' . $row)->getValue(),
+                        'fundingreason' => $sheet->getCell('H' . $row)->getValue()
                         ];
 
                     }
@@ -715,6 +723,7 @@ class UploadIndicatorsController extends Controller
             $indicator_details['indicator_id'] = $request->indicator_id;
             $indicator_details['amountindollars'] = $request->amountindollars;
             $indicator_details['originalamount'] = $request->originalamount;
+            $indicator_details['currency'] = $request->currency;
             $indicator_details['source'] = $request->source;
             $indicator_details['datereceived'] = $request->datereceived;
             $indicator_details['bankdetails'] = $request->bankdetails;
