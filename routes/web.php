@@ -413,6 +413,7 @@ Route::name('report_generation.')->group(function () {
 Route::name('report_submission.')->group(function () {
 
     Route::get('reports-submitted', 'ReportFormController@index')->name('reports');
+    Route::get('download/report-file/{report_id}', 'ReportFormController@downloadReportFile')->name('report.download_file');
     Route::get('reports-submitted/dereport_submission.view\'lete/{id}', 'ReportFormController@delete')->name('reports.delete');
 
 

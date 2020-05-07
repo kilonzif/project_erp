@@ -117,15 +117,25 @@
                             </div>
                         </div>
 
-                        <div style="display: inline; margin-right:10px;">
-                            <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" class="btn btn-secondary mb-2">
+                        <div style="margin-right:10px;">
+                            <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                               class="btn btn-secondary mb-2">
                                 @if($the_indicator->upload)
-                                    <i class="ft-upload"></i> Upload Indicators
+                                    <i class="ft-upload"></i> Upload Indicator
                                 @else
                                     <i class="ft-edit"></i> Add Record
                                 @endif
                             </a>
-                            <a  class="pb-1 pt-1 mt-1 text-danger text-uppercase" href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}" style="margin-left:10px;">Preview and scroll down this page to submit the report</a>
+                            @if($the_indicator->upload && isset($report->report_upload->file_name))
+                            <a href="{{route('report_submission.report.download_file', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                               class="btn btn-link mb-2 text-right">
+                                <i class="ft-download"></i> Download uploaded data
+                            </a>
+                            @endif
+                            <br>
+                            <p class="text-danger text-uppercase">
+                                Scroll down this page to submit the report
+                            </p>
                         </div>
                         {{--indicators3--}}
                         <div class="card mb-1">

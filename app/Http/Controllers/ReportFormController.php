@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 
 class ReportFormController extends Controller
@@ -496,6 +497,18 @@ class ReportFormController extends Controller
         notify(new ToastNotification('Successful!', 'Report Deleted!', 'success'));
         return back();
 
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function downloadReportFile($report_id)
+    {
+        $id = Crypt::decrypt($report_id);
+        $report = Report::find($id);
+
+        return Storage::download($report->report_upload->file_path);
     }
 
     /**

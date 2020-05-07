@@ -33,8 +33,8 @@ class Report extends Model {
 		return $this->hasMany('App\ReportIndicatorsStatus');
 	}
 
-	public function report_uploads() {
-		return $this->hasMany('App\ReportUpload');
+	public function report_upload() {
+		return $this->hasOne('App\ReportUpload');
 	}
 
 	public function report_status() {
