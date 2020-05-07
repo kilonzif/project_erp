@@ -137,19 +137,17 @@
                                         $pdo_indicator_52 = config('app.indicator_52');
                                         $pdo_indicator_42 = config('app.indicator_42');
                                         $pdo_indicator_51 = config('app.indicator_51');
-
-                                   $counter_one = 0;
+                                        //dd($sub_indicators);
+                                        $counter_one = 0;
                                     @endphp
                                     @foreach($sub_indicators as $sub_indicator)
                                         @php
                                             $indicator_identifier = (string)$sub_indicator->identifier;
                                             $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
                                            $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
-
                                         @endphp
 
                                         @if($child_dlr->isNotEmpty())
-
                                             <table class="table table-bordered table-striped">
 
                                                 @if($sub_indicator->status == 0) @continue @endif
@@ -176,6 +174,7 @@
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
 
                                                                 </div>
+
                                                             @elseif($sub_indicator->parent_id == 2)
                                                                 {{--programme accreditation--}}
                                                                 <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
@@ -224,17 +223,30 @@
                                             </table>
                                         @else
                                             <table class="table table-bordered table-striped">
-
                                                 <tr>
                                                     <td>{{$sub_indicator->title}} <span class="required">*</span>
                                                     </td>
                                                     <td style="width: 200px">
-                                                        @if($sub_indicator->parent_id == 2)
+                                                        @if($sub_indicator->parent_id == 1)
+                                                            {{--programme accreditation--}}
+                                                            <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                       value="{{!empty($pdo_1) ?$pdo_1[$pdo_indicator]:0}}"
+                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                            </div>
+                                                        @elseif($sub_indicator->parent_id == 2)
                                                             {{--programme accreditation--}}
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
                                                                 <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
                                                                        value="{{$pdo_41['pdo_indicator_41'][$pdo_indicator_41['pdo_indicator_41'][$counter_one]]}}"
-                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>
+                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                            </div>
+                                                        @elseif($sub_indicator->aau_only || $sub_indicator->parent_id == 84)
+                                                            <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
+                                                                <input type="number" min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
+                                                                       value="{{(array_key_exists($sub_indicator->id,$values))?$values[$sub_indicator->id]:''}}"
+                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                            </div>
                                                         @endif
                                                     </td>
                                             </table>

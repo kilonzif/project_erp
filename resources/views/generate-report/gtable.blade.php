@@ -18,8 +18,9 @@
         <th style="width: 50px" rowspan="2">Baseline</th>
         <th style="width: 50px" colspan="{{sizeof($years)}}">Annual Target Values</th>
         @for($a = 1; $a <= sizeof($years); $a++)
-        <th style="width: 50px" rowspan="2">{{$years[$a-1]}}</th>
+        <th style="width: 50px" rowspan="2">{{$years[$a-1]}} Results</th>
         @endfor
+        <th style="width: 50px" rowspan="2">Total Results</th>
     </tr>
     <tr>
         @for($a = 1; $a <= sizeof($years); $a++)
@@ -38,18 +39,21 @@
                 <td @if($counter > 0) rowspan="{{$counter}}" @endif>
                     <strong>{{"Indicator ".$indicator->identifier}}:</strong> {{$indicator->title}}
                 </td>
-
                 <td @if($counter > 0) rowspan="{{$counter}}" @endif></td>
                 <td @if($counter > 0) rowspan="{{$counter}}" @endif>
                     {{$indicator->unit_measure}}
                 </td>
                 @php
                     $sub_indicators = $indicator->indicators->where('status','=',1)->where('show_on_report','=',1);
-                    $count = 0;
-                @endphp
-                @if($sub_indicators->count() > 1)
 
+                    $count = 0;
+                    $total_result = 0;
+                @endphp
+                @if($sub_indicators->count() > 0)
                     @foreach($sub_indicators as $sub_indicator)
+                        @php
+                            $total_result = 0;
+                        @endphp
                         <td>
                             {{$sub_indicator->title}}
                         </td>
@@ -60,6 +64,8 @@
                                 0
                             @endif
                         </td>
+
+                        {{--Set targets--}}
                         @foreach($years as $key=>$year)
                             <td class="text-right">
                                 @if(sizeof($target_values["$year"]) > 0)
@@ -69,21 +75,26 @@
                                 @endif
                             </td>
                         @endforeach
+
+                        {{--Set Year Result--}}
                         @foreach($years as $key=>$year)
                             @php
                                 $count +=1;
                                 try{
-                                    $value = $report_values["$year"]->where('indicator_id','=',$sub_indicator->id)->pluck('ind_values')->first();
+                                    $value = $report_values["$year"]->where('indicator_id','=',$sub_indicator->id)
+                                    ->pluck('ind_values')->first();
+                                    $total_result += (integer)$value;
                                 }
                                 catch(Exception $exception){
                                     $value = 0;
                                 }
                             @endphp
                             <td class="text-right">
-                                <strong>{{$value}}</strong>
+                                <strong>{{($value== ""|| $value== 0)?0:$value}}</strong>
                             </td>
                         @endforeach
 
+                        <td class="text-right"><strong>{{$total_result}}</strong></td>
                         @if($count = 1)
                             </tr><tr>
                         @else
@@ -102,7 +113,7 @@
                     @foreach($years as $key=>$year)
                         <td class="text-right">
                             @if(sizeof($target_values["$year"]) > 0)
-                                {{$target_values["$year"][$sub_indicator->id]}}
+                                {{$target_values["$year"][$indicator->id]}}
                             @else
                                 0
                             @endif
@@ -112,16 +123,19 @@
                         @php
                             $count +=1;
                             try{
-                                $value = $report_values["$year"]->where('indicator_id','=',$sub_indicator->id)->pluck('ind_values')->first();
+                                $value = $report_values["$year"]->where('indicator_id','=',$indicator->id)
+                                ->pluck('ind_values')->first();
+                                $total_result += (integer)$value;
                             }
                             catch(Exception $exception){
                                 $value = 0;
                             }
                         @endphp
                         <td class="text-right">
-                            <strong>{{$value}}</strong>
+                            <strong>{{($value== ""|| $value== 0)?0:$value}}</strong>
                         </td>
                     @endforeach
+                    <td class="text-right"><strong>{{$total_result}}</strong></td>
                     </tr>
                 @endif
         @endforeach

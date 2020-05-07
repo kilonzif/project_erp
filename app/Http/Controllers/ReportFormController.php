@@ -440,28 +440,21 @@ class ReportFormController extends Controller
 
 
         }
-
-
         $pdo_1 = $this->generateAggregatedIndicator3Results($id);
-
         $pdo_2 = $this->generateAggregatedIndicator73Results($id);
-
         $pdo_52 = $this->generateAggregatedIndicator52Results($id);
-
         $pdo_41 = $this->generateAggregatedIndicator41Results($id);
         $pdo_42 = $this->generateAggregatedIndicator42Results($id);
         $pdo_51 = $this->generateAggregatedIndicator51Results($id);
-
-
-
-
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
         $aces = Ace::where('active', '=', 1)->get();
+        $the_indicator = $indicators;
 
-        return view('report-form.view', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
+        return view('report-form.view', compact('project', 'language', 'reporting_period',
+            'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
 
     }
@@ -1162,10 +1155,26 @@ class ReportFormController extends Controller
                     ->orWhere('genre', '=', "Femme");
             });
 
+        /**
+         * IR Indicator 7 (Emerging Centres)
+         */
+        $report = Report::find($report_id);
+        $value = 0;
+        if ($report->ace->ace_type == 'emerging') {
+            $value = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id', '=', $report_id)
+                ->where(function ($query) use($masters,$bachelors) {
+                    $query->where("level", 'like', "%$masters%")
+                        ->orWhere("level", 'like', "%$bachelors%");
+                })->count();
+        }
+
         $pdo_1_values["pdo_indicator_1e"]["sc_regional_total"] = $course_regional->count();
         $pdo_1_values["pdo_indicator_1e"]["sc_regional_female"] = $course_regional_female->count();
         $pdo_1_values["pdo_indicator_1e"]["sc_national_total"] = $course_national->count();
         $pdo_1_values["pdo_indicator_1e"]["sc_national_female"] = $course_national_female->count();
+        $pdo_1_values["ir_indicator_7"] = $value;
 
         return $pdo_1_values;
 
@@ -1529,10 +1538,28 @@ class ReportFormController extends Controller
                     ->orWhere('gender', 'like', "F%");
             });
 
+        /**
+         * IR Indicator 7 (Emerging Centres)
+         */
+        $report = Report::find($report_id);
+        $value = 0;
+        $masters = config('app.filters.masters_text');
+        $bachelors = config('app.filters.bachelors_text');
+        if ($report->ace->ace_type == 'emerging') {
+            $value = DB::connection('mongodb')
+                ->collection('indicator_3')
+                ->where('report_id', '=', $report_id)
+                ->where(function ($query) use($masters,$bachelors) {
+                    $query->where("level", 'like', "%$masters%")
+                        ->orWhere("level", 'like', "%$bachelors%");
+                })->count();
+        }
+
         $pdo_1_values["pdo_indicator_1e"]["sc_regional_total"] = $course_regional->count();
         $pdo_1_values["pdo_indicator_1e"]["sc_regional_female"] = $course_regional_female->count();
         $pdo_1_values["pdo_indicator_1e"]["sc_national_total"] = $course_national->count();
         $pdo_1_values["pdo_indicator_1e"]["sc_national_female"] = $course_national_female->count();
+        $pdo_1_values["ir_indicator_7"] = $value;
 
         return $pdo_1_values;
     }
