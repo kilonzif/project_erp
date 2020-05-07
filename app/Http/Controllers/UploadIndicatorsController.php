@@ -340,6 +340,7 @@ class UploadIndicatorsController extends Controller
         $this_dlr = Indicator::find($request->indicator_id);
         $table_name = Str::snake("indicator_".str_replace('.','_',$this_dlr->identifier));
 
+
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
         $data = Arr::except($request->all(), ['_token']);
@@ -394,6 +395,18 @@ class UploadIndicatorsController extends Controller
             case "7.2":
                 dd($request->all());
                 break;
+            case "7.3":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['indicator_id'] = $request->indicator_id;
+                $indicator_details['institutionname'] = $request->institutionname;
+                $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+                $indicator_details['accreditationreference'] = $request->accreditationreference;
+                $indicator_details['contactname'] = $request->contactname;
+                $indicator_details['contactemail'] = $request->contactemail;
+                $indicator_details['contactphone'] = $request->contactphone;
+                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
+                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                break;
             case "7.4":
                 dd($request->all());
                 break;
@@ -403,6 +416,7 @@ class UploadIndicatorsController extends Controller
             default:
                 "Nothing";
         }
+
         if (isset($this_dlr->web_form_id)) {
             $saved= DB::table("$table_name")->insert($indicator_details);
         } else {

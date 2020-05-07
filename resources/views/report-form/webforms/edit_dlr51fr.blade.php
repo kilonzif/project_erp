@@ -29,6 +29,22 @@
             </fieldset>
 
         </div>
+        <div class="col-md-4">
+            <fieldset class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
+                <label for="basicInputFile">Devise du montant d'origine<span class="required">*</span></label>
+                <select class="form-control" required name="currency">
+                    <option value="">Select One</option>
+                    <option {{($the_record['currency'] == 'USD')  ? "selected":""}} value="USD">US Dollar</option>
+                    <option {{($the_record['currency'] == 'EURO')  ? "selected":""}} value="EURO">Euro</option>
+                    <option {{($the_record['currency'] == 'SDR')  ? "selected":""}} value="SDR">SDR</option>
+                </select>
+                @if ($errors->has('currency'))
+                    <p class="text-right mb-0">
+                        <small class="warning text-muted">{{ $errors->first('currency') }}</small>
+                    </p>
+                @endif
+            </fieldset>
+        </div>
 
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('source') ? ' form-control-warning' : '' }}">

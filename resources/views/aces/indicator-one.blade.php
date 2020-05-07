@@ -245,9 +245,9 @@
                                                             @endif
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-4">
                                                         <div class="form-group {{ $errors->has('ss_file_one')? 'form-control-warning':'' }}">
-                                                            <label for="ss_file_one">Sectoral Board File <span class="required">*</span><span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span></label>
+                                                            <label for="ss_file_one">Minutes of 1st Sectorial Advisory Board meetings <span class="required">*</span><span class="warning text-muted">{{__('PDF file')}}</span></label>
                                                             <input type="file" class="form-control" name="ss_file_one" required  id="filename1"
                                                                    value="{{old('ss_file_one',empty($sectoral_board->file_one))?"":$sectoral_board->file_one}}">
                                                             @if ($errors->has('ss_file_one'))
@@ -256,7 +256,7 @@
                                                                 </p>
                                                             @endif
                                                             @if(!empty($sectoral_board) && $sectoral_board->file_one !="")
-                                                                <strong>Sectoral Advisory Board File</strong>
+                                                                <strong>Minutes of 1st Sectorial Advisory Board meetings</strong>
                                                                 <a href="{{asset('indicator1/'.$sectoral_board->file_one)}}" target="_blank">
                                                                     <span class="fa fa-file"></span>   Download file
                                                                 </a>
@@ -266,6 +266,27 @@
                                                         </div>
 
                                                     </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group {{ $errors->has('ss_file_two')? 'form-control-warning':'' }}">
+                                                        <label for="ss_file_one">List of Board Members<span class="required">*</span><span class="warning text-muted">{{__('Excel (.xlsx) file')}}</span></label>
+                                                        <input type="file" class="form-control" name="ss_file_two" required  id="filename2"
+                                                               value="{{old('ss_file_two',empty($sectoral_board->ss_file_two))?"":$sectoral_board->ss_file_two}}">
+                                                        @if ($errors->has('ss_file_two'))
+                                                            <p class="text-right">
+                                                                <small class="warning text-muted">{{ $errors->first('ss_file_two') }}</small>
+                                                            </p>
+                                                        @endif
+                                                        @if(!empty($sectoral_board) && $sectoral_board->file_two !="")
+                                                            <strong>List of the members of the board</strong>
+                                                            <a href="{{asset('indicator1/'.$sectoral_board->file_two)}}" target="_blank">
+                                                                <span class="fa fa-file"></span>   Download file
+                                                            </a>
+                                                            <br>
+                                                        @endif
+
+                                                    </div>
+
+                                                </div>
 
                                             </div>
 
