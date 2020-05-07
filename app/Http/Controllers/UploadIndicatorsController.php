@@ -41,8 +41,7 @@ class UploadIndicatorsController extends Controller
             return back();
         }
         $ace = $report->ace;
-        $ace_programmes = $ace->programmes;
-//        dd($ace_programmes);
+        $ace_programmes = explode(';',$ace->programmes);
 
         /**
          * Checks if the DLR requires an upload.
