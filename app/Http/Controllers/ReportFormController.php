@@ -433,6 +433,7 @@ class ReportFormController extends Controller
 
         if (in_array('french', collect($get_form)->toArray())) {
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
+            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
             $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
             $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
@@ -598,6 +599,7 @@ class ReportFormController extends Controller
 
         if (in_array('french', collect($get_form)->toArray())) {
             $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
+            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
             $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
             $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
             $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
@@ -1592,48 +1594,135 @@ class ReportFormController extends Controller
             ->collection('indicator_7.3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('type-of-accreditation2', '=', "International")
-                    ->orWhere('type-of-accreditation2', '=', "international")
-                    ->orWhere('type-of-accreditation2', 'like', "i%")
-                    ->orWhere('type-of-accreditation2', 'like', "I%");
+                $query->where('typeofaccreditation', '=', "International")
+                    ->orWhere('typeofaccreditation', '=', "international")
+                    ->orWhere('typeofaccreditation', 'like', "i%")
+                    ->orWhere('typeofaccreditation', 'like', "I%");
             });
-
         $national_accreditation = DB::connection('mongodb')
             ->collection('indicator_7.3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('type-of-accreditation2', '=', "National")
-                    ->orWhere('type-of-accreditation2', '=', "national")
-                    ->orWhere('type-of-accreditation2', 'like', "n%")
-                    ->orWhere('type-of-accreditation2', 'like', "N%");
+                $query->where('typeofaccreditation', '=', "National")
+                    ->orWhere('typeofaccreditation', '=', "national")
+                    ->orWhere('typeofaccreditation', 'like', "n%")
+                    ->orWhere('typeofaccreditation', 'like', "N%");
             });
-
         $self_evaluation = DB::connection('mongodb')
             ->collection('indicator_7.3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('type-of-accreditation2', '=', "Self-evaluation")
-                    ->orWhere('type-of-accreditation2', 'like', "self%")
-                    ->orWhere('type-of-accreditation2', 'like', "Self%");
+                $query->where('typeofaccreditation', '=', "Self-evaluation")
+                    ->orWhere('typeofaccreditation', 'like', "self%")
+                    ->orWhere('typeofaccreditation', 'like', "Self%");
             });
 
         $gap_assessment = DB::connection('mongodb')
             ->collection('indicator_7.3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('type-of-accreditation2', '=', "Gap Assessment")
-                    ->orWhere('type-of-accreditation2', 'like', "gap%")
-                    ->orWhere('type-of-accreditation2', 'like', "Gap%");
+                $query->where('typeofaccreditation', '=', "Gap Assessment")
+                    ->orWhere('typeofaccreditation', 'like', "gap%")
+                    ->orWhere('typeofaccreditation', 'like', "Gap%");
             });
 
         $regional_accreditation = DB::connection('mongodb')
             ->collection('indicator_7.3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('type-of-accreditation2', '=', "Regional")
-                    ->orWhere('type-of-accreditation2', '=', "regional")
-                    ->orWhere('type-of-accreditation2', 'like', "r%")
-                    ->orWhere('type-of-accreditation2', 'like', "R%");
+                $query->where('typeofaccreditation', '=', "Regional")
+                    ->orWhere('typeofaccreditation', '=', "regional")
+                    ->orWhere('typeofaccreditation', 'like', "r%")
+                    ->orWhere('typeofaccreditation', 'like', "R%");
+            });
+
+
+        $pdo_7_3_values["pdo_indicator_2"]["total_accreditations"] = $total_accreditations;
+        $pdo_7_3_values["pdo_indicator_2"]["international_accreditation"] = $international_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2"]["regional_accreditation"] = $regional_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2"]["national_accreditation"] = $national_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2"]["gap_assessment"] = $gap_assessment->count();
+        $pdo_7_3_values["pdo_indicator_2"]["self_evaluation"] = $self_evaluation->count();
+
+        $pdo_7_3_values["pdo_indicator_2a"]["total_accreditations"] = $total_accreditations;
+        $pdo_7_3_values["pdo_indicator_2a"]["international_accreditation"] = $international_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2a"]["regional_accreditation"] = $regional_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2a"]["national_accreditation"] = $national_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2a"]["gap_assessment"] = $gap_assessment->count();
+        $pdo_7_3_values["pdo_indicator_2a"]["self_evaluation"] = $self_evaluation->count();
+
+        $pdo_7_3_values["pdo_indicator_2b"]["total_accreditations"] = $total_accreditations;
+        $pdo_7_3_values["pdo_indicator_2b"]["international_accreditation"] = $international_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2b"]["regional_accreditation"] = $regional_accreditation->count();
+        $pdo_7_3_values["pdo_indicator_2b"]["gap_assessment"] = $gap_assessment->count();
+        $pdo_7_3_values["pdo_indicator_2b"]["self_evaluation"] = $self_evaluation->count();
+
+        return $pdo_7_3_values;
+    }
+
+    public function generateAggregatedIndicator73Results_fr($report_id)
+    {
+        $pdo_7_3_values = array();
+
+
+        /** pdo 2
+         *'pdo_indicaror_2' => [
+         * 'total_accreditations','international_accreditation','regional_accreditation','national_accreditation',
+         * 'gap_assessment','self_evaluation'
+         * ],
+         */
+
+
+        $total_accreditations = DB::connection('mongodb')
+            ->collection('indicator_7.3')
+            ->where('report_id', '=', $report_id)
+            ->count();
+
+
+        $international_accreditation = DB::connection('mongodb')
+            ->collection('indicator_7.3')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('typeofaccreditation', '=', "International")
+                    ->orWhere('typeofaccreditation', '=', "international")
+                    ->orWhere('typeofaccreditation', 'like', "i%")
+                    ->orWhere('typeofaccreditation', 'like', "I%");
+            });
+        $national_accreditation = DB::connection('mongodb')
+            ->collection('indicator_7.3')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('typeofaccreditation', '=', "National")
+                    ->orWhere('typeofaccreditation', '=', "national")
+                    ->orWhere('typeofaccreditation', 'like', "n%")
+                    ->orWhere('typeofaccreditation', 'like', "N%");
+            });
+        $self_evaluation = DB::connection('mongodb')
+            ->collection('indicator_7.3')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('typeofaccreditation', '=', "Self-evaluation")
+                    ->orWhere('typeofaccreditation', 'like', "self%")
+                    ->orWhere('typeofaccreditation', 'like', "Self%");
+            });
+
+        $gap_assessment = DB::connection('mongodb')
+            ->collection('indicator_7.3')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('typeofaccreditation', '=', "Gap Assessment")
+                    ->orWhere('typeofaccreditation', 'like', "gap%")
+                    ->orWhere('typeofaccreditation', 'like', "Gap%");
+            });
+
+        $regional_accreditation = DB::connection('mongodb')
+            ->collection('indicator_7.3')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('typeofaccreditation', '=', "Regional")
+                    ->orWhere('typeofaccreditation', '=', "regional")
+                    ->orWhere('typeofaccreditation', 'like', "r%")
+                    ->orWhere('typeofaccreditation', 'like', "R%");
             });
 
 
