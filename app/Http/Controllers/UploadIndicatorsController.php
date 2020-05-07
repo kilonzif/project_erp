@@ -41,14 +41,14 @@ class UploadIndicatorsController extends Controller
             return back();
         }
         $ace = $report->ace;
+        $ace_programmes = $ace->programmes;
+//        dd($ace_programmes);
 
         /**
          * Checks if the DLR requires an upload.
          */
         $indicator_type = Indicator::where('id','=',$report->indicator_id)->where('upload','=',1)->first();
         $indicator_info = Indicator::find($report->indicator_id);
-
-
 
         /**
          * If does not require an upload then it's a web-form
@@ -76,7 +76,7 @@ class UploadIndicatorsController extends Controller
                 if($report->language=="french" && $indicators->identifier =='4.1' ){
                     return view('report-form.webforms.dlr41fr-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                    ,'indicator_info'));
+                    ,'indicator_info','ace_programmes'));
                 }
                 else if($report->language=="french" && $indicators->identifier =='5.1'){
                     return view('report-form.webforms.dlr51fr-webform', compact('indicators',
@@ -87,7 +87,7 @@ class UploadIndicatorsController extends Controller
                 else if($report->language=="english" && $indicators->identifier =='4.1'){
                     return view('report-form.webforms.dlr41en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
+                        ,'indicator_info','ace_programmes'));
 
                 }
                 else if($report->language=="english" && $indicators->identifier =='5.1'){
@@ -530,29 +530,35 @@ class UploadIndicatorsController extends Controller
             ->first();
 
         $report = Report::find($the_record['report_id']);
+        $ace = $report->ace;
+        $ace_programmes = $ace->programmes;
 
 
 
         if($report->language=="english" && $this_indicator->identifier =='4.1' ){
-            $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id','this_indicator'))->render();
+            $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id',
+                'this_indicator','ace_programmes'))->render();
         }
         elseif ($report->language=="french" && $this_indicator->identifier =='4.1' ){
-            $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id','this_indicator'))->render();
+            $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id',
+                'this_indicator','ace_programmes'))->render();
         }
         elseif($report->language=="english" && $this_indicator->identifier =='5.1' ){
-            $view = view ('report-form.webforms.edit_dlr51en',compact('the_record','record_id','this_indicator'))->render();
+            $view = view ('report-form.webforms.edit_dlr51en',compact('the_record','record_id',
+                'this_indicator'))->render();
         }
         elseif($report->language=="french" && $this_indicator->identifier =='5.1' ){
-            $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id','this_indicator'))->render();
+            $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id',
+                'this_indicator'))->render();
         }
         elseif($report->language=="english" && $this_indicator->identifier =='7.3' ){
-            $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id','this_indicator'))->render();
+            $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id',
+                'this_indicator'))->render();
         }
         elseif($report->language=="french" && $this_indicator->identifier =='7.3' ){
-            $view = view ('report-form.webforms.edit_dlr73fr',compact('the_record','record_id','this_indicator'))->render();
+            $view = view ('report-form.webforms.edit_dlr73fr',compact('the_record','record_id',
+                'this_indicator'))->render();
         }
-
-
 
         return response()->json(['theView' => $view]);
 

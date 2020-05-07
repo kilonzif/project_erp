@@ -70,11 +70,13 @@
                                                     <label for="basicInputFile">Titre du programme<span class="required">*</span></label>
                                                     <select name="programmetitle" id="programmetitle" required  class="form-control">
                                                         <option value="">Select</option>
-                                                        @foreach($ace_programmes as $key=>$ace_programme)
-                                                            @if($ace_programme != "")
-                                                                <option value="{{$ace_programme}}">{{$ace_programme}}</option>
-                                                            @endif
-                                                        @endforeach
+                                                        @isset($ace_programmes)
+                                                            @foreach($ace_programmes as $key=>$ace_programme)
+                                                                @if($ace_programme != "")
+                                                                    <option value="{{$ace_programme}}">{{$ace_programme}}</option>
+                                                                @endif
+                                                            @endforeach
+                                                        @endisset
                                                     </select>
                                                     @if ($errors->has('programmetitle'))
                                                         <p class="text-right mb-0">
