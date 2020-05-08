@@ -258,6 +258,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Role/Position</th>
+                                <th>Status</th>
                                 <th>Country</th>
                                 <th>Institution</th>
                                 <th>ACE</th>
@@ -281,6 +282,17 @@
 
                                         {{$title->position_title}}
                                     </td>
+                                    <td>
+                                        @php
+                                            $status = "Current";
+
+                                            if($contact->new_contact==0){
+                                              $status="Former";
+                                            }
+                                        @endphp
+                                        {{$status}}
+                                    </td>
+
                                     <td>
                                         @isset($contact->country)
                                         @php
