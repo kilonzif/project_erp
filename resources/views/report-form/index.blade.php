@@ -64,7 +64,6 @@
                                                 <tr>
                                                     <th>DLR</th>
                                                     <th>ACE</th>
-                                                    {{--<th width="100px">Reporting Period</th>--}}
                                                     <th width="100px">Uploaded On</th>
                                                     <th width="100px">Status</th>
                                                     <th width="50px">Action</th>
