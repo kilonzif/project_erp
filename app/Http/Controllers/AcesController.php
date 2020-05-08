@@ -72,6 +72,7 @@ class AcesController extends Controller {
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
             'ace_state' => 'string|min:2',
+            'impact_no' => 'required|numeric|min:1',
         ]);
 
 
@@ -92,6 +93,7 @@ class AcesController extends Controller {
         $addAce->active = $request->active;
         $addAce->ace_type = $request->ace_type;
         $addAce->ace_state = $request->ace_state;
+        $addAce->impact_no = $request->impact_no;
         $addAce->save();
 
 
@@ -393,6 +395,7 @@ class AcesController extends Controller {
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
             'ace_state' => 'string|min:2',
+            'impact_no' => 'required|numeric|min:1',
         ]);
 
         $this_ace = Ace::find($id);
@@ -409,7 +412,8 @@ class AcesController extends Controller {
             'institution_id' => $request->university,
             'active' => $request->active,
             'ace_type' => $request->ace_type,
-            'ace_state' => $request->ace_state
+            'ace_state' => $request->ace_state,
+            'impact_no' => $request->impact_no
         ]);
 
 
