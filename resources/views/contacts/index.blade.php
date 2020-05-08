@@ -281,9 +281,36 @@
 
                                         {{$title->position_title}}
                                     </td>
-                                    <td>{{$contact->country}}</td>
-                                    <td>{{$contact->institution}}</td>
-                                    <td>{{$contact->ace}}</td>
+                                    <td>
+                                        @isset($contact->country)
+                                        @php
+                                            $country_name =\App\Http\Controllers\ContactsController::getCountryName($contact->country);
+                                        @endphp
+                                        {{$country_name}}
+                                             @else
+                                             -
+                                             @endisset
+                                    </td>
+                                    <td>
+                                        @isset($contact->institution)
+                                            @php
+                                                $institution_name =\App\Http\Controllers\ContactsController::getInstitutionName($contact->institution);
+                                            @endphp
+                                        {{$institution_name}}
+                                        @else
+                                            -
+                                        @endisset
+                                    </td>
+                                    <td>
+                                        @isset($contact->ace)
+                                            @php
+                                                $ace_name =\App\Http\Controllers\ContactsController::getAceName($contact->ace);
+                                            @endphp
+                                        {{$ace_name}}
+                                        @else
+                                            -
+                                        @endisset
+                                    </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="#edit_view" onclick="edit_view('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">

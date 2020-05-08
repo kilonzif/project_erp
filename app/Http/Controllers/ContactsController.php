@@ -23,11 +23,12 @@ use File;
 class ContactsController extends Controller
 {
     public function index(){
-//        $all_contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
-//            ->distinct('ace_contacts.id')
-//            ->select('contacts.*')
-//            ->get();
-        $all_contacts = Contacts::all();
+        $all_contacts =DB::table('contacts')
+            ->join('positions','positions.id','contacts.position_id')
+            ->select('contacts.*','positions.*')
+            ->orderBy('positions.rank','ASC')
+            ->get();
+
 
         $countries = Country::all();
         $aces = Ace::all();
@@ -76,10 +77,6 @@ class ContactsController extends Controller
             $aces = Ace::find($ace)->get();
         }
 
-//        dd($request->all());
-//        ['position_id','person_title', 'mailing_name','gender','mailing_phone',
-//            'mailing_email','insititution','ace','country','thematic_field','new_contact'];
-
         $new_contact = new Contacts();
 
 
@@ -96,10 +93,12 @@ class ContactsController extends Controller
         $new_contact->new_contact=$request->new_contact;
 
         $contact_saved =  $new_contact->save();
+
         if($contact_saved) {
             foreach ($aces as $ace){
-                $data=array('ace_id'=>$ace->id,"contact_id"=>$new_contact->id);
-                DB::table('ace_contacts')->insert($data);
+                DB::table('ace_contacts')->insert(
+                    ['ace_id'=>$ace->id,"contact_id"=>$new_contact->id]
+                );
             }
             notify(new ToastNotification('Successful!', 'Contact Person Added!', 'success'));
 
@@ -119,6 +118,19 @@ class ContactsController extends Controller
         return $type;
     }
 
+    public static function getCountryName($id){
+        $country = DB::table('countries')->where('id',$id)->first();
+        return $country->country;
+    }
+    public static function getInstitutionName($id){
+        $institution = DB::table('institution')->where('id',$id)->first();
+        return $institution->name;
+    }
+    public static function getAceName($id){
+        $ace = DB::table('aces')->where('id',$id)->first();
+        return $ace->name;
+    }
+
 
 
 
@@ -126,7 +138,11 @@ class ContactsController extends Controller
     public function edit_view(Request $request){
         $id = Crypt::decrypt($request->id);
         $contacts = Contacts::find($id);
-        $all_contacts = Contacts::all();
+        $all_contacts =DB::table('contacts')
+            ->join('positions','positions.id','contacts.position_id')
+            ->select('contacts.*','positions.position_title')
+            ->orderBy('positions.rank','ASC')
+            ->get();
         $countries = Country::all();
         $aces = Ace::all();
         $roles = Position::all();
@@ -181,17 +197,17 @@ class ContactsController extends Controller
 
 
         $contact_update = $this_contact->Update([
-          'position_id' =>$request->role,
-        'person_title' =>$request->person_title,
-        'mailing_name' =>$request->mailing_name,
-        'gender' => $request->gender,
-        'mailing_phone' => $request->mailing_phone,
-        'mailing_email' => $request->mailing_email,
-        'institution'=>$request->institution,
-        'ace'=>$request->ace,
-        'country'=>$request->country,
-       'thematic_field'=>$request->thematic_field,
-        'new_contact'=>$request->new_contact,
+            'position_id' =>$request->role,
+            'person_title' =>$request->person_title,
+            'mailing_name' =>$request->mailing_name,
+            'gender' => $request->gender,
+            'mailing_phone' => $request->mailing_phone,
+            'mailing_email' => $request->mailing_email,
+            'institution'=>$request->institution,
+            'ace'=>$request->ace,
+            'country'=>$request->country,
+            'thematic_field'=>$request->thematic_field,
+            'new_contact'=>$request->new_contact,
 
         ]);
         if ($contact_update) {
@@ -368,7 +384,7 @@ class ContactsController extends Controller
                 $file1->move($destinationPath, $file1->getClientOriginalName());
                 $thefile_one = $file_one->getClientOriginalName();
                 notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
-            return back();
+                return back();
             }else{
                 notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
                 return back();
@@ -393,10 +409,10 @@ class ContactsController extends Controller
                     'institution' => $sheet->getCell( 'D' . $row )->getValue(),
                     'country' => $sheet->getCell( 'E' . $row )->getValue(),
                     'field' =>$sheet->getCell( 'F' . $row )->getValue(),
-                     'name' => $sheet->getCell( 'G' . $row )->getValue(),
-                     'gender' => $sheet->getCell( 'H' . $row )->getValue(),
-                     'phone' => $sheet->getCell( 'I' . $row )->getValue(),
-                     'email' => $sheet->getCell( 'J' . $row )->getValue()
+                    'name' => $sheet->getCell( 'G' . $row )->getValue(),
+                    'gender' => $sheet->getCell( 'H' . $row )->getValue(),
+                    'phone' => $sheet->getCell( 'I' . $row )->getValue(),
+                    'email' => $sheet->getCell( 'J' . $row )->getValue()
                 ];
                 $startcount++;
             }
