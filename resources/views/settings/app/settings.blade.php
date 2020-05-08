@@ -131,7 +131,7 @@
                             <form action="{{route('settings.app_settings.save_position')}}" method="post">
                                 <div class="row">
                                     @csrf
-                                    <div class="col-md-5 form-group {{ $errors->has('position_title') ? ' form-control-warning' : '' }}">
+                                    <div class="col-md-4 form-group {{ $errors->has('position_title') ? ' form-control-warning' : '' }}">
                                         <label>Position Title<span class="required">*</span></label>
                                         <div class="input-group">
                                             <input type='text' name="position_title"  class="form-control" value="{{ old('position_title') }}" placeholder="Role" required
@@ -143,7 +143,23 @@
                                             </p>
                                         @endif
                                     </div>
-                                    <div class="col-md-5 form-group{{ $errors->has('position_rank') ? ' form-control-warning' : '' }}">
+                                    <div class="col-md-4 form-group {{ $errors->has('position_type') ? ' form-control-warning' : '' }}">
+                                        <label>Position Type<span class="required">*</span></label>
+                                        <select name="position_type" id="position_type" class="form-control" required>
+                                            <option value="">Select One</option>
+                                            <option value="ACE level"> ACE level</option>
+                                            <option value="Institutional level">Institutional level</option>
+                                            <option value="Country level"> Country level</option>
+                                            <option value="Experts level">Experts level</option>
+                                            <option value="Sectoral Board level">Sectoral Board level</option>
+                                        </select>
+                                        @if ($errors->has('position_type'))
+                                            <p class="text-right mb-0">
+                                                <small class="warning text-muted">{{ $errors->first('position_type') }}</small>
+                                            </p>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-2 form-group{{ $errors->has('position_rank') ? ' form-control-warning' : '' }}">
                                         <label>Position Rank<span class="required">*</span></label>
                                         <div class="input-group">
                                             <input type='text' name="position_rank" class="form-control" value="{{ old('position_rank') }}" placeholder="Rank e.g 1" required
@@ -168,6 +184,7 @@
                             <tr>
                                 <th style="width: 100px">Position #</th>
                                 <th>Title</th>
+                                <th>Position Type</th>
                                 <th>Rank</th>
                                 <th>Actions</th>
                             </tr>
@@ -181,6 +198,7 @@
                                 <tr>
                                     <td>{{$counter}}</td>
                                     <td>{{$role->position_title}}</td>
+                                    <td>{{$role->position_type}}</td>
                                     <td>{{$role->rank}}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">

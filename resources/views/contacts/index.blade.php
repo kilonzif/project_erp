@@ -62,7 +62,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="form-group{{ $errors->has('institution') ? ' form-control-warning' : '' }}" style="display: block;" id="institution_toggle">
+                                            <div class="form-group{{ $errors->has('institution') ? ' form-control-warning' : '' }}" style="display: none;" id="institution_toggle">
                                                 <label for="institution">{{ __('Select Institution') }}</label>
                                                 <select id="institution" class="form-control{{ $errors->has('institution') ? ' is-invalid' : '' }}" name="institution" value="{{ old('institution') }}">
                                                     <option value="">Select Institution</option>
@@ -74,6 +74,21 @@
                                                 @if ($errors->has('institution'))
                                                     <p class="text-right mb-0">
                                                         <small class="warning text-muted">{{ $errors->first('institution') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                            <div class="form-group{{ $errors->has('aces') ? ' form-control-warning' : '' }}" style="display: block;" id="aces_toggle">
+                                                <label for="institution">{{ __('Select Ace') }}</label>
+                                                <select id="institution" class="form-control{{ $errors->has('ace') ? ' is-invalid' : '' }}" name="ace" value="{{ old('ace') }}">
+                                                    <option value="">Select Ace</option>
+                                                    @foreach($aces as $ace)
+                                                        <option value="{{$ace->id}}">{{$ace->name}}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @if ($errors->has('aces'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('aces') }}</small>
                                                     </p>
                                                 @endif
                                             </div>
@@ -111,23 +126,16 @@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="form-group{{ $errors->has('type_of_contact') ? ' form-control-warning' : '' }}">
-                                                <label for="email">Type of Contact <span class="required">*</span></label>
-                                                <select name="type_of_contact" required class="form-control">
-                                                    <option value="">Select One</option>
-                                                    <option value="ACE level"> ACE level</option>
-                                                    <option value="Institutional level">Institutional level</option>
-                                                    <option value="Country level"> Country level</option>
-                                                    <option value="Experts level">Experts level</option>
-                                                    <option value="Sectoral Board level">Sectoral Board level</option>
-                                                </select>
-                                                @if ($errors->has('type_of_contact'))
+                                            <div class="form-group{{ $errors->has('person_title') ? ' form-control-warning' : '' }}">
+                                                <label for="email">Person Title <span class="required">*</span></label><input type="text" required placeholder="Title eg Mr., Ms, Mrs" min="2" name="person_title" class="form-control" value="{{ old('person_title') }}" id="person_title">
+                                                @if ($errors->has('person_title'))
                                                     <p class="text-right">
-                                                        <small class="warning text-muted">{{ $errors->first('type_of_contact') }}</small>
+                                                        <small class="warning text-muted">{{ $errors->first('person_title') }}</small>
                                                     </p>
                                                 @endif
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
@@ -166,10 +174,25 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group{{ $errors->has('email') ? ' form-control-warning' : '' }}">
-                                                <label for="email">Email <span class="required">*</span></label><input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
+                                                <label for="email">Email <span class="required">*</span></label>
+                                                <input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control" value="{{ old('mailing_email') }}" id="mailing_email">
                                                 @if ($errors->has('mailing_email'))
                                                     <p class="text-right">
                                                         <small class="warning text-muted">{{ $errors->first('mailing_email') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group{{ $errors->has('new_contact') ? ' form-control-warning' : '' }}">
+                                                <label for="email">New Contact ? <span class="required">*</span></label>
+                                                <select name="new_contact" class="form-control" required>
+                                                    <option selected value="1">Yes</option>
+                                                    <option value="0">No</option>
+                                                </select>
+                                                @if ($errors->has('new_contact'))
+                                                    <p class="text-right">
+                                                        <small class="warning text-muted">{{ $errors->first('new_contact') }}</small>
                                                     </p>
                                                 @endif
                                             </div>
@@ -230,11 +253,14 @@
                         <table class="table table-striped table-bordered all_indicators" id="all_indicators">
                             <thead>
                             <tr>
-                                <th> Name</th>
+                                <th>Name</th>
                                 <th>Gender</th>
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Role/Position</th>
+                                <th>Country</th>
+                                <th>Institution</th>
+                                <th>ACE</th>
                                 <th style="width: 100px;">Action</th>
                             </tr>
                             </thead>
@@ -244,10 +270,10 @@
 
                                 <tbody>
                                 <tr>
-                                    <td>{{$contact->contact_name}}</td>
+                                    <td>{{$contact->person_title}} {{$contact->mailing_name}}</td>
                                     <td>{{$contact->gender}}</td>
-                                    <td>{{$contact->email}}</td>
-                                    <td>{{$contact->contact_phone}}</td>
+                                    <td>{{$contact->mailing_email}}</td>
+                                    <td>{{$contact->mailing_phone}}</td>
                                     <td>
                                         @php
                                             $title = \App\Position::where('id',$contact->position_id)->first();
@@ -255,6 +281,9 @@
 
                                         {{$title->position_title}}
                                     </td>
+                                    <td>{{$contact->country}}</td>
+                                    <td>{{$contact->institution}}</td>
+                                    <td>{{$contact->ace}}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="#edit_view" onclick="edit_view('{{\Illuminate\Support\Facades\Crypt::encrypt($contact->id)}}')" class="btn btn-s btn-secondary">
@@ -291,6 +320,26 @@
             "ordering": false
         } );
 
+
+        function changeContactLevel(){
+            var level = document.getElementById('contact_type');
+            var level_value = level.options[e.selectedIndex].value;
+            if(level_value === 'ACE level') {
+                $('#ace_level_roles').css("display", "block");
+                $('#country_level_roles').css("display", "block");
+                $('#institution_level_roles').css("display", "block");
+            }else if(level_value === 'Institutional level'){
+
+
+            }else if(level_value === 'Country level'){
+                $('#country_toggle').css("display","block");
+
+            }else if(level_value === 'Experts level'){
+
+            }
+
+        }
+
         function changeOnRole(){
             var e = document.getElementById("role");
             var role = e.options[e.selectedIndex].value;
@@ -321,17 +370,26 @@
         }
 
         function getCategory(data) {
-            if(data === 'Vice Chancellor'){
+
+            if(data === 'Institutional level'){
                 $('#institution_toggle').css("display", "block");
                 $('#thematic_field_toggle').css("display", "none");
                 $('#country_toggle').css("display", "none");
-            }else if(data === 'PSC Member' || data === 'Focal Person' || data === 'Country TTL'){
+                $('#aces_toggle').css("display","none");
+            }else if(data === 'Country level'){
                 $('#country_toggle').css("display","block");
                 $('#institution_toggle').css("display", "none");
                 $('#thematic_field_toggle').css("display", "none");
+                $('#aces_toggle').css("display","none");
+            }else if(data === 'Experts level'){
+                $('#thematic_field_toggle').css("display","block");
+                $('#institution_toggle').css("display", "none");
+                $('#country_toggle').css("display", "none");
+                $('#aces_toggle').css("display","none");
             }
             else{
-                $('#thematic_field_toggle').css("display","block");
+                $('#aces_toggle').css("display","block");
+                $('#thematic_field_toggle').css("display","none");
                 $('#institution_toggle').css("display", "none");
                 $('#country_toggle').css("display", "none");
             }

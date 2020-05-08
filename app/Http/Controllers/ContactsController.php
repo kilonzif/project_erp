@@ -23,14 +23,15 @@ use File;
 class ContactsController extends Controller
 {
     public function index(){
-        $all_contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
-            ->distinct('ace_contacts.id')
-            ->select('contacts.*')
-            ->get();
+//        $all_contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
+//            ->distinct('ace_contacts.id')
+//            ->select('contacts.*')
+//            ->get();
+        $all_contacts = Contacts::all();
 
         $countries = Country::all();
         $aces = Ace::all();
-        $roles = Position::whereIn('rank',[1,2,3,4])->get();
+        $roles = Position::all();
         $institutions = Institution::all();
         return view('contacts.index',compact('all_contacts','roles','countries','institutions','aces'));
     }
@@ -44,16 +45,18 @@ class ContactsController extends Controller
             'institution' => 'nullable|integer|min:1',
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
-            'type_of_contact' => 'required|string',
+            'ace' => 'nullable|integer|min:1',
             'mailing_name' => 'required|string|min:1',
             'gender' => 'required|string|min:1',
             'mailing_phone' => 'string|min:10',
             'mailing_email' => 'required|string|min:1',
+            'new_contact' => 'required|min:1'
 
         ]);
         $institution = $request->institution;
         $country = $request->country;
         $thematic_field = $request->thematic_field;
+        $ace = $request->ace;
 
         if(isset($institution)){
             $aces = Ace::where('institution_id','=',$institution)->get();
@@ -69,15 +72,28 @@ class ContactsController extends Controller
         if(isset($thematic_field)){
             $aces = Ace::where('field','=',$thematic_field)->get();
         }
+        if(isset($ace)){
+            $aces = Ace::find($ace)->get();
+        }
+
+//        dd($request->all());
+//        ['position_id','person_title', 'mailing_name','gender','mailing_phone',
+//            'mailing_email','insititution','ace','country','thematic_field','new_contact'];
+
         $new_contact = new Contacts();
 
-        $new_contact->contact_name = $request->mailing_name;
-        $new_contact->gender = $request->gender;
-        $new_contact->type_of_contact = $request->type_of_contact;
+
         $new_contact->position_id =$request->role;
-        $new_contact->contact_phone = $request->mailing_phone;
-        $new_contact->email = $request->mailing_email;
-        $new_contact->contact_status=1;
+        $new_contact->person_title =$request->person_title;
+        $new_contact->mailing_name = $request->mailing_name;
+        $new_contact->gender = $request->gender;
+        $new_contact->mailing_phone = $request->mailing_phone;
+        $new_contact->mailing_email = $request->mailing_email;
+        $new_contact->institution=$request->institution;
+        $new_contact->ace=$request->ace;
+        $new_contact->country=$request->country;
+        $new_contact->thematic_field=$request->thematic_field;
+        $new_contact->new_contact=$request->new_contact;
 
         $contact_saved =  $new_contact->save();
         if($contact_saved) {
@@ -99,8 +115,8 @@ class ContactsController extends Controller
         $id = $request->id;
         $role = Position::find($id);
 
-        $title = $role->position_title;
-        return $title;
+        $type = $role->position_type;
+        return $type;
     }
 
 
