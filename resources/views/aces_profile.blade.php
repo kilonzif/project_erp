@@ -68,9 +68,9 @@
                             <table class="table table-striped table-bordered contacts_table" id="contacts_table">
                                 <thead>
                                 <tr>
-
-                                    <th>Title</th>
+                                    <th>Role/Position</th>
                                     <th>Name</th>
+                                    <th>Gender</th>
                                     <th>Email</th>
                                     <th>Phone</th>
                                 </tr>
@@ -86,11 +86,13 @@
                                                     @php
                                                         $title = \App\Position::where('id',$contact->position_id)->first();
                                                     @endphp
+
                                                     {{$title->position_title}}
                                                 </td>
-                                                <td>{{$contact->contact_name}}</td>
-                                                <td>{{$contact->email}}</td>
-                                                <td>{{$contact->contact_phone}}</td>
+                                                <td>{{$contact->person_title}} {{$contact->mailing_name}}</td>
+                                                <td>{{$contact->gender}}</td>
+                                                <td>{{$contact->mailing_email}}</td>
+                                                <td>{{$contact->mailing_phone}}</td>
                                             </tr>
                                         @endif
 
@@ -101,6 +103,7 @@
                                             <td>
                                                 {{ $position->position_title }}
                                             </td>
+                                            <td> ---</td>
                                             <td> ---</td>
                                             <td> ---</td>
                                             <td> ---</td>

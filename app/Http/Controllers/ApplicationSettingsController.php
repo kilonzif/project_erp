@@ -164,11 +164,14 @@ class ApplicationSettingsController extends Controller
 
         $this->validate($request, [
             'position_title' => 'required|unique:positions,position_title|string',
-            'position_rank' => 'required|unique:positions,rank|string'
+            'position_rank' => 'required|unique:positions,rank|string',
+            'position_type' =>'required|string'
         ]);
         $position_saved = Position::updateOrCreate(
             [
                 'position_title' => $request->position_title
+            ], [
+                'position_type' => $request->position_type
             ], [
                 'rank' => $request->position_rank,
             ]
@@ -216,6 +219,7 @@ class ApplicationSettingsController extends Controller
             $updatePosition= Position::find($update_id);
             $updated = $updatePosition->update([
                 'position_title' => $request->position_title,
+                'position_type' => $request->position_type,
                 'rank' => $request->position_rank,
             ]);
             if ($updated) {

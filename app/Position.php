@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class Position extends Model
 {
-    protected $fillable = ['position_title','rank'];
+    protected $fillable = ['position_title','position_type','rank'];
 
     protected $table = 'positions';
 

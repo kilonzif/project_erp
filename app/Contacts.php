@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class Contacts extends Model
+
 {
-	    protected $fillable = ['ace_id','position_id','edit_status', 'type_of_contact','contact_name','gender','contact_phone','email'];
+	    protected $fillable = ['position_id','person_title', 'mailing_name','gender','mailing_phone',
+            'mailing_email','insititution','ace','country','thematic_field','new_contact'];
 
 	    protected $table = 'contacts';
 

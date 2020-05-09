@@ -23,18 +23,33 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="form-group{{ $errors->has('institution') ? ' form-control-warning' : '' }}" style="display: block;" id="institution_toggle">
+                <div class="form-group{{ $errors->has('institution') ? ' form-control-warning' : '' }}" style="display: none;" id="institution_toggle">
                     <label for="institution">{{ __('Select Institution') }}</label>
                     <select id="institution" class="form-control{{ $errors->has('institution') ? ' is-invalid' : '' }}" name="institution" value="{{ old('institution') }}">
                         <option value="">Select Institution</option>
                         @foreach($institutions as $institution)
-                            <option value="{{$institution->id}}">{{$institution->name}}</option>
+                            <option {{($contacts->$institution == $institution->id)  ? "selected":""}} value="{{$institution->id}}">{{$institution->name}}</option>
                         @endforeach
                     </select>
 
                     @if ($errors->has('institution'))
                         <p class="text-right mb-0">
                             <small class="warning text-muted">{{ $errors->first('institution') }}</small>
+                        </p>
+                    @endif
+                </div>
+                <div class="form-group{{ $errors->has('aces') ? ' form-control-warning' : '' }}" style="display: block;" id="aces_toggle">
+                    <label for="ace">{{ __('Select Ace') }}</label>
+                    <select id="ace" class="form-control{{ $errors->has('ace') ? ' is-invalid' : '' }}" name="ace" value="{{ old('ace') }}">
+                        <option value="">Select Ace</option>
+                        @foreach($aces as $ace)
+                            <option {{($contacts->$ace ==$ace->id)  ? "selected":""}} value="{{$ace->id}}">{{$ace->name}}</option>
+                        @endforeach
+                    </select>
+
+                    @if ($errors->has('aces'))
+                        <p class="text-right mb-0">
+                            <small class="warning text-muted">{{ $errors->first('aces') }}</small>
                         </p>
                     @endif
                 </div>
@@ -72,38 +87,12 @@
                 </div>
             </div>
 
-        <div style="margin-top: 2rem;" class="col-md-2">
-            <label for="contact_status">Contact Status <span class="required">*</span></label><br>
-            <div class="form-group">
-                <div class="skin skin-square">
-                    <input type="radio" name="contact_status" value="1" {{ ($contacts->contact_status=="1")? "checked" : "" }} checked id="active">
-                    <label for="active" class="">Current</label>
-                </div>
-            </div>
-        </div>
-        <div style="margin-top: 2.5rem;" class="col-md-2">
-            <div class="form-group">
-                <label for="contact_status" class="hidden">Contact Status <span class="required">*</span></label><br>
-                <div class="skin skin-square">
-                    <input type="radio" name="contact_status" value="0" {{ ($contacts->contact_status=="0")? "checked" : "" }} id="inactive">
-                    <label for="inactive" class="">Former</label>
-                </div>
-            </div>
-        </div>
             <div class="col-md-4">
-                <div class="form-group{{ $errors->has('type_of_contact') ? ' form-control-warning' : '' }}">
-                    <label for="email">Type of Contact <span class="required">*</span></label>
-                    <select name="type_of_contact" required class="form-control">
-                        <option value="">Select One</option>
-                        <option {{($contacts->type_of_contact == 'ACE level')  ? "selected":""}} value="ACE level"> ACE level</option>
-                        <option {{($contacts->type_of_contact == 'Institutional level')  ? "selected":""}} value="Institutional level">Institutional level</option>
-                        <option {{($contacts->type_of_contact == 'Country level')  ? "selected":""}} value="Country level"> Country level</option>
-                        <option {{($contacts->type_of_contact == 'Experts level')  ? "selected":""}} value="Experts level">Experts level</option>
-                        <option {{($contacts->type_of_contact == 'Sectoral Board level')  ? "selected":""}} value="Sectoral Board level">Sectoral Board level</option>
-                    </select>
-                    @if ($errors->has('type_of_contact'))
+                <div class="form-group{{ $errors->has('person_title') ? ' form-control-warning' : '' }}">
+                    <label for="email">Person Title <span class="required">*</span></label><input type="text" required placeholder="Title eg Mr., Ms, Mrs" min="2" name="person_title" class="form-control" value="{{ (old('person_title')) ? old('person_title') : $contacts->person_title }}" id="person_title">
+                    @if ($errors->has('person_title'))
                         <p class="text-right">
-                            <small class="warning text-muted">{{ $errors->first('type_of_contact') }}</small>
+                            <small class="warning text-muted">{{ $errors->first('person_title') }}</small>
                         </p>
                     @endif
                 </div>
@@ -113,7 +102,7 @@
                 <div class="form-group{{ $errors->has('mailing_name') ? ' form-control-warning' : '' }}">
 
                     <label for="email">Name <span class="required">*</span></label>
-                    <input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ (old('mailing_name')) ? old('mailing_name') : $contacts->contact_name }}"  id="mailing_name">
+                    <input type="text" required placeholder="Name" min="2" name="mailing_name" class="form-control" value="{{ (old('mailing_name')) ? old('mailing_name') : $contacts->mailing_name }}"  id="mailing_name">
                     @if ($errors->has('mailing_name'))
                         <p class="text-right">
                             <small class="warning text-muted">{{ $errors->first('mailing_name') }}</small>
@@ -140,8 +129,8 @@
             <div class="col-md-4">
                 <div class="form-group{{ $errors->has('mailing_phone') ? ' form-control-warning' : '' }}">
                     <label for="mailing_phone">Phone Number</label>
-                    <input type="text"  placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ (old('mailing_phone')) ? old('mailing_phone') : $contacts->contact_phone }}" id="mailing_phone">
-                    @if ($errors->has('mailing_email'))
+                    <input type="text"  placeholder="Phone Number" min="2" name="mailing_phone" class="form-control" value="{{ (old('mailing_phone')) ? old('mailing_phone') : $contacts->mailing_phone }}" id="mailing_phone">
+                    @if ($errors->has('mailing_phone'))
                         <p class="text-right">
                             <small class="warning text-muted">{{ $errors->first('mailing_phone') }}</small>
                         </p>
@@ -152,7 +141,7 @@
             <div class="col-md-4">
                 <div class="form-group{{ $errors->has('mailing_email') ? ' form-control-warning' : '' }}">
                     <label for="email">Email <span class="required">*</span></label>
-                    <input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control"  value="{{ (old('mailing_email')) ? old('mailing_email') : $contacts->email}}" id="mailing_email">
+                    <input type="email" required placeholder="Email Address" min="2" name="mailing_email" class="form-control"  value="{{ (old('mailing_email')) ? old('mailing_email') : $contacts->mailing_email}}" id="mailing_email">
                     @if ($errors->has('mailing_email'))
                         <p class="text-right">
                             <small class="warning text-muted">{{ $errors->first('email') }}</small>
@@ -160,6 +149,21 @@
                     @endif
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="form-group{{ $errors->has('new_contact') ? ' form-control-warning' : '' }}">
+                    <label for="email">New Contact ? <span class="required">*</span></label>
+                    <select name="new_contact" class="form-control" required>
+                        <option {{$contacts->new_contact =='1'?"selected":""}} value="1">Yes</option>
+                        <option {{$contacts->new_contact =='0'?"selected": ""}} value="0">No</option>
+                    </select>
+                    @if ($errors->has('new_contact'))
+                        <p class="text-right">
+                            <small class="warning text-muted">{{ $errors->first('new_contact') }}</small>
+                        </p>
+                    @endif
+                </div>
+            </div>
+
             <div class="col-md-4">
                 <button type="submit" class="btn btn-primary fa fa-save" style="margin-top: 1.9rem">
                     Update Contact
