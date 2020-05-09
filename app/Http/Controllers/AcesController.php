@@ -420,7 +420,6 @@ class AcesController extends Controller {
         $dlr_currency = AceDlrIndicatorCost::where('ace_id', '=', $id)
             ->where('currency_id', '!=', null)
             ->pluck('currency_id','ace_dlr_indicator_id')->toArray();
-//        dd($dlr_currency);
         $dlr_max_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('max_cost','ace_dlr_indicator_id');
         $ace_dlrs = AceDlrIndicator::where('is_parent', '=', 1)->orderBy('order', 'asc')->get();
 
@@ -430,10 +429,8 @@ class AcesController extends Controller {
         $workplans=WorkPlan::where('ace_id',$ace->id)->get();
         $roles = Position::whereNotIn('rank',[1,2,3,4])->get();
 
-
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
-//        dd($currency1);
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
@@ -460,12 +457,7 @@ class AcesController extends Controller {
         $file1 = $request->file('wp_file');
         $wp_year=$request->wp_year;
 
-
-
         $year_exists = WorkPlan::where('ace_id','=',$ace_id)->where('wp_year','=',$wp_year)->get();
-
-//        dd($year_exists->isNotEmpty());
-
 
         if($year_exists->isNotEmpty()){
             notify(new ToastNotification('error', 'You have already submitted a workplan for this year.', 'error'));
@@ -491,10 +483,6 @@ class AcesController extends Controller {
             notify(new ToastNotification('Warning', 'Something might have happened. Please try again.', 'warning'));
             return back();
         }
-
-
-
-
     }
 
     public  function  destroyWorkPlan($id){
@@ -588,9 +576,6 @@ class AcesController extends Controller {
             ]);
             AceIndicatorsTarget::where('target_year_id', '=', (integer)$target_year_id)->delete();
 
-//            dd($request->reporting_year);
-//            dd((integer)$target_year_id);
-//            dd($request->all());
             foreach ($request->indicators as $indicator => $target) {
                 AceIndicatorsTarget::create([
                     'ace_id' => (integer)$aceId,
@@ -599,7 +584,6 @@ class AcesController extends Controller {
                     'target' => (integer)$target,
                 ]);
             }
-
             notify(new ToastNotification('Successful', 'Indicator Targets updated.', 'success'));
         } else {
             $target_year = new AceIndicatorsTargetYear();

@@ -26,7 +26,6 @@ class DlrIndicatorController extends Controller
      */
     public function indicators()
     {
-//        $dlrs = Indicator::where('')
         $indicators = AceDlrIndicator::where('is_parent','=', 1)
             ->orderBy('order','asc')
             ->orderBy('indicator_title','asc')
@@ -189,8 +188,6 @@ class DlrIndicatorController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function save_sub_indicator(Request $request){
-
-//        return $request->all();
         $this->validate($request,[
             'title' => 'required|string|min:3',
             'order' => 'required|string|min:1',
@@ -242,7 +239,7 @@ class DlrIndicatorController extends Controller
             'order' => 'required|numeric|min:1',
         ]);
 
-        $ind = AceDlrIndicator::where('id','=', $request->id)->update([
+        AceDlrIndicator::where('id','=', $request->id)->update([
             'indicator_title' => $request->title,
             'order' => $request->order,
         ]);
@@ -270,7 +267,7 @@ class DlrIndicatorController extends Controller
             AceDlrIndicatorCost::updateOrCreate([
                 'ace_id' => $ace_id,
                 'ace_dlr_indicator_id' => $request->parent_id,
-            ], [
+            ],[
                 'max_cost' => $request->max,
                 'currency_id' => $request->currency,
             ]);

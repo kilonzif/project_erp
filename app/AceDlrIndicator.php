@@ -40,13 +40,6 @@ class AceDlrIndicator extends Model
         }
     }
 
-    public function scopeParents($query, $id) {
-        $country = $query->where('aces.id', '=', $id)
-            ->pluck('countries.country');
-
-        return $country;
-    }
-
     public function ace_dli()
     {
         return $this->belongsTo('App\AceDli', 'ace_dli_id');

@@ -92,7 +92,6 @@
         </div>
 
         <div class="row">
-        {{--<div class="row">--}}
             <div class="col-md-6">
                 <div class="card">
                     <h6 class="card-header p-1 card-head-inverse bg-primary" style="border-radius:0">
@@ -171,14 +170,10 @@
                                 <a class="danger mr-2 pull-right" href="{{route('user-management.ace.workplan.delete',[\Illuminate\Support\Facades\Crypt::encrypt($wp->id)])}}"
                                    data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this Workplan?');"
                                    title="Delete Report"><i class="ft-trash-2"></i></a>
-
                             </p>
                                 <hr>
                             @endforeach
-
-
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -225,10 +220,7 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
-
 
         <div class="row">
             <div class="col-md-12">
@@ -308,7 +300,6 @@
                                                 <tr>
                                                     <th>DLR Indicators</th>
                                                     <th style="width: 200px;">Cost per Unit</th>
-                                                    {{--<th style="width: 200px;">Maximum SDR per DLR</th>--}}
                                                 </tr>
                                                 @php
                                                     $sub_indicators = $ace_dlr->indicators->where('status','=',1)->where('is_parent','=',0);
@@ -326,9 +317,6 @@
                                                             <fieldset class="form-group position-relative has-icon-left mb-0">
                                                                 <input type="number" step="0.01" class="form-control text-right" id="single_{{$sub_indicator->id}}"
                                                                        value="{{$unit}}" name="single[{{$sub_indicator->id}}]">
-                                                                {{--<div class="form-control-position">--}}
-                                                                    {{--<span class="symbol">{{$ace->currency->symbol}}</span>--}}
-                                                                {{--</div>--}}
                                                             </fieldset>
                                                         </td>
                                                     </tr>
