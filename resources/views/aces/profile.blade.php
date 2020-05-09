@@ -380,9 +380,6 @@
                                                 <fieldset class="form-group position-relative has-icon-left">
                                                     <input type="number" class="form-control" name="max"
                                                            value="{{isset($dlr_max_costs[$ace_dlr->id])?$dlr_max_costs[$ace_dlr->id]:0}}">
-                                                    {{--<div class="form-control-position">--}}
-                                                        {{--<span class="symbol">{{$ace->currency->symbol}}</span>--}}
-                                                    {{--</div>--}}
                                                 </fieldset>
                                             </div>
                                         </div>
@@ -415,9 +412,9 @@
                                                             <fieldset class="form-group position-relative has-icon-left mb-0">
                                                                 <input type="number" class="form-control" id="single_{{$sub_indicator->id}}"
                                                                        value="{{$unit}}" name="single[{{$sub_indicator->id}}]">
-                                                                <div class="form-control-position">
-                                                                    <span class="symbol">{{$ace->currency->symbol}}</span>
-                                                                </div>
+                                                                {{--<div class="form-control-position">--}}
+                                                                    {{--<span class="symbol">{{$ace->currency->symbol}}</span>--}}
+                                                                {{--</div>--}}
                                                             </fieldset>
                                                         </td>
                                                     </tr>

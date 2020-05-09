@@ -6,6 +6,7 @@ use App\AceDli;
 use App\AceDlrIndicator;
 use App\AceDlrIndicatorCost;
 use App\Classes\ToastNotification;
+use App\Indicator;
 use App\Project;
 use App\UnitMeasure;
 use Complex\Exception;
@@ -25,7 +26,8 @@ class DlrIndicatorController extends Controller
      */
     public function indicators()
     {
-        $indicators = AceDlrIndicator::where('parent_id','=', 0)
+//        $dlrs = Indicator::where('')
+        $indicators = AceDlrIndicator::where('is_parent','=', 1)
             ->orderBy('order','asc')
             ->orderBy('indicator_title','asc')
             ->get();
@@ -81,8 +83,12 @@ class DlrIndicatorController extends Controller
      */
     public function edit_indicator(Request $request)
     {
+        $indicators = AceDlrIndicator::where('parent_id','=', 0)
+            ->orderBy('order','asc')
+            ->orderBy('indicator_title','asc')
+            ->get();
         $indicator = AceDlrIndicator::find($request->id);
-        $view = view('settings.dlrs.edit', compact('indicator'))->render();
+        $view = view('settings.dlrs.edit', compact('indicator','indicators'))->render();
         return response()->json(['theView'=>$view]);
     }
 
@@ -96,15 +102,19 @@ class DlrIndicatorController extends Controller
 
         $this->validate($request,[
             'title' => 'required|string|min:5',
-            'order' => 'required|numeric|min:1'
+            'order' => 'required|numeric|min:1',
+            'parent_id' => 'nullable|numeric|min:0',
+            'set_max_dlr' => 'nullable|numeric|min:0|max:1'
         ]);
 
         AceDlrIndicator::updateOrCreate([
             'indicator_title' => $request->title,
         ],[
             'order' => $request->order,
-            'parent_id' => 0,
-            'status' => 1
+            'parent_id' => $request->parent_id,
+            'set_max_dlr' => $request->set_max_dlr,
+            'status' => 1,
+            'is_parent' => 1
         ]);
         notify(new ToastNotification('Successful!', 'DLR Indicator Added!', 'success'));
         return back();
@@ -120,12 +130,17 @@ class DlrIndicatorController extends Controller
 
         $this->validate($request,[
             'title' => 'required|string|min:3',
-            'order' => 'required|numeric|min:1'
+            'order' => 'required|numeric|min:1',
+            'parent_id' => 'nullable|numeric|min:0',
+            'set_max_dlr' => 'nullable|numeric|min:0|max:1'
         ]);
+//        dd($request->all());
 
         AceDlrIndicator::where('id','=', $request->id)->update([
             'indicator_title' => $request->title,
+            'parent_id' => $request->parent_id,
             'order' => $request->order,
+            'set_max_dlr' => $request->set_max_dlr,
         ]);
 
         notify(new ToastNotification('Successful!', 'DLR Indicator Updated!', 'success'));

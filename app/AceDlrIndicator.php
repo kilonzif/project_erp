@@ -9,7 +9,7 @@ class AceDlrIndicator extends Model
     //
     protected $table = 'ace_dlr_indicators';
     protected $fillable = [
-        'order', 'indicator_title','status','parent_id'
+        'order', 'indicator_title','status','parent_id','set_max_dlr','is_parent'
     ];
 
     public function indicators(){

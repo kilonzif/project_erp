@@ -40,14 +40,12 @@ class AcesController extends Controller {
         $this->middleware('auth');
     }
 
-
     public function index() {
         $aces = Ace::orderBy('name', 'ASC')->get();
         $currency = Currency::orderBy('name', 'ASC')->get();
         $universities = Institution::where('university', '=', 1)->orderBy('name', 'ASC')->get();
         return view('aces.index', compact('aces', 'universities','currency'));
     }
-
 
     /**
      * @param Request $request
@@ -322,7 +320,6 @@ class AcesController extends Controller {
         return true;
     }
 
-
     function insertOrUpdate($table,array $rows){
         $first = reset($rows);
         $columns = implode( ',',
@@ -340,16 +337,6 @@ class AcesController extends Controller {
         $sql = "INSERT INTO {$table}({$columns}) VALUES {$values} ON DUPLICATE KEY UPDATE {$updates}";
         return \DB::statement( $sql );
     }
-
-
-
-
-
-
-
-
-
-
 
     /**
      * @param Request $request
@@ -460,9 +447,7 @@ class AcesController extends Controller {
         return $contacts;
     }
 
-
 //    Workplan
-
     public function saveWorkPlan(Request $request,$ace_id){
         $ace_id = $request->ace_id;
         $wp_filename=$request->wp_file;
@@ -507,7 +492,6 @@ class AcesController extends Controller {
 
     }
 
-
     public  function  destroyWorkPlan($id){
         $wp_entry = WorkPlan::find(Crypt::decrypt($id));
 
@@ -517,23 +501,6 @@ class AcesController extends Controller {
         return back();
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public function baselines($id) {
         $ace_id = Crypt::decrypt($id);
