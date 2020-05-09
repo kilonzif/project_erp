@@ -66,9 +66,9 @@
 
                     <div class="col-md-3">
                         <div class="form-group{{ $errors->has('grant1') ? ' form-control-warning' : '' }}">
-                            <label for="grant1">Grant Amount 1</label>
+                            <label for="grant1">Grant Amount 1 <span class="required">*</span></label>
                             <input type="number" placeholder="SDR Grant Amount 1" min="0" name="grant1" class="form-control"
-                                   value="{{ $ace->grant1 }}" id="grant1" style="text-align: right;">
+                                   value="{{ $ace->grant1 }}" id="grant1" style="text-align: right;" required step="0.01">
                             @if ($errors->has('grant1'))
                                 <p class="text-right">
                                     <small class="warning text-muted">{{ $errors->first('grant1') }}</small>
@@ -78,8 +78,8 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group{{ $errors->has('currency1') ? ' form-control-warning' : '' }}">
-                            <label for="field">{{__('Currency 1')}}</label>
-                            <select class="form-control" name="currency1" id="currency1">
+                            <label for="currency1">{{__('Currency 1')}} <span class="required">*</span></label>
+                            <select class="form-control" name="currency1" id="currency1" required>
                                 <option value=""  disabled>--Choose--</option>
                                 @foreach($currency as $cc)
                                     <option {{($cc->id == old('currency1'))?"selected":""}} value="{{$cc->id}}">
@@ -96,9 +96,9 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group{{ $errors->has('grant2') ? ' form-control-warning' : '' }}">
-                            <label for="dlr">Grant Amount 2</label>
+                            <label for="grant2">Grant Amount 2</label>
                             <input type="number" placeholder="Grant Amount 2" min="0" name="grant2" class="form-control"
-                                   value="{{ $ace->grant2 }}" id="dlr" style="text-align: right;">
+                                   value="{{ $ace->grant2 }}" id="grant2" style="text-align: right;" step="0.01">
                             @if ($errors->has('grant2'))
                                 <p class="text-right">
                                     <small class="warning text-muted">{{ $errors->first('grant2') }}</small>
@@ -108,9 +108,9 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
-                            <label for="field">{{__('Currency 2')}}</label>
+                            <label for="currency2">{{__('Currency 2')}}</label>
                             <select class="form-control"  name="currency2" id="currency2">
-                                <option value=""  disabled>--Choose--</option>
+                                <option value="" disabled>--Choose--</option>
                                 @foreach($currency as $cc)
                                     <option {{($cc->id == old('currency2'))?"selected":""}} value="{{$cc->id}}">
                                         {{$cc->name.' - '.$cc->symbol}}

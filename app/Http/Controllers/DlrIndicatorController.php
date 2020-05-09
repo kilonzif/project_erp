@@ -259,8 +259,8 @@ class DlrIndicatorController extends Controller
     {
         $this->validate($request,[
             'single' => 'nullable|array|min:1',
-            'max' => 'nullable|integer|min:0',
-            'single.*' => 'nullable|integer|min:0',
+            'max' => 'nullable|numeric|min:0',
+            'single.*' => 'nullable|numeric|min:0',
         ]);
 
         if ($request->max) {

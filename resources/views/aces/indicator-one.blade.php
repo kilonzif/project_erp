@@ -86,7 +86,7 @@
                               }
                             @endphp
 
-                            <div class="card" id="action-card">
+                            <div class="card" id="card_{{$key}}">
                                 <div class="card-header">
                                     <h4 class="card-title">{{$key}}</h4>
                                     <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
@@ -146,7 +146,7 @@
                                                 @if($labels[$key]['file2'])
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_two[]')? 'form-control-warning':'' }}">
-                                                            @if($key=="PROCEDURES MANUALS")<label>Procedure Manual<span class="required">*</span></label>@else<label>File 2 Upload<span class="required">*</span></label>@endif
+                                                            @if($key=="PROCEDURES MANUALS")<label>Procurement Manual<span class="required">*</span></label>@else<label>File 2 Upload<span class="required">*</span></label>@endif
 
                                                                <input type="file" class="form-control" required id="file_two[]"
                                                                    @if($labels[$key]['file2']['required']) required @endif
@@ -201,7 +201,7 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <button class="btn btn-secondary square" type="submit"><i class="ft-save mr-1"></i>
+                                                        <button class="btn btn-secondary square" href="#card_{{$key}}" type="submit"><i class="ft-save mr-1"></i>
                                                             Save</button>
                                                     </div>
                                                 </div>
