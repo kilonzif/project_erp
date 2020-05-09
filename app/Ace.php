@@ -20,8 +20,12 @@ class Ace extends Model implements Auditable {
 		return $this->hasMany('App\User');
 	}
 
-	public function currency() {
-		return $this->belongsTo('App\Currency');
+	public function currency_1() {
+		return $this->belongsTo('App\Currency','currency1_id');
+	}
+
+	public function currency_2() {
+		return $this->belongsTo('App\Currency','currency2_id');
 	}
 
 	public function reports() {

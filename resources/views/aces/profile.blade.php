@@ -241,6 +241,20 @@
 
             @if($ace_dlrs->count() > 0)
                 @foreach($ace_dlrs as $ace_dlr)
+                    @php
+                        $dlr_currency_id = null;
+                        if ($ace_dlr->set_max_dlr) {
+                            if (array_key_exists($ace_dlr->id,$dlr_currency)) {
+                                $dlr_currency_id = $dlr_currency[$ace_dlr->id];
+                            }
+                        }
+                        elseif (array_key_exists($ace_dlr->parent_id,$dlr_currency)) {
+                            $dlr_currency_id = $dlr_currency[$ace_dlr->parent_id];
+                        }
+                    @endphp
+                    @if(!$ace_dlr->set_max_dlr && !$dlr_currency_id)
+                        @continue
+                    @endif
                     <div class="col-md-6">
                         <div class="card">
                             <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
@@ -257,30 +271,47 @@
                                     <form action="{{route('settings.save_dlr_indicators_cost',[$ace->id])}}" method="post">
                                         @csrf
                                         <input type="hidden" name="parent_id" value="{{$ace_dlr->id}}">
+                                        @if($ace_dlr->set_max_dlr)
                                         <div class="row">
-                                            <label class="col-md-7" style="padding-top: 0.9rem;">Maximum SDR per DLR</label>
-                                            <div class="col-md-5">
-                                                <fieldset class="form-group position-relative has-icon-left">
-                                                    <input type="number" class="form-control" name="max"
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="currency">Currency <span class="required">*</span></label>
+                                                    <select name="currency" required id="currency" class="form-control">
+                                                        <option value="">Select</option>
+                                                        @if(isset($currency1))
+                                                        <option value="{{$currency1->id}}"
+                                                                {{($currency1->id == $dlr_currency_id)?"selected":''}}>
+                                                            {{$currency1->code}}
+                                                        </option>
+                                                        @endif
+                                                        @if(isset($currency2))
+                                                        <option value="{{$currency2->id}}"
+                                                                {{($currency2->id == $dlr_currency_id)?"selected":''}}>
+                                                            {{$currency2->code}}
+                                                        </option>
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="max">Maximum Cost <span class="required">*</span></label>
+                                                    <input type="number" step="0.01" class="form-control text-right" name="max"
                                                            value="{{isset($dlr_max_costs[$ace_dlr->id])?$dlr_max_costs[$ace_dlr->id]:0}}">
-                                                </fieldset>
+                                                </div>
                                             </div>
                                         </div>
-                                        {{--                            @if($unit > $max)--}}
-                                        {{--<p class="text-right">--}}
-                                        {{--<small class="danger text-muted">The Unit Cost is more than the Maximum</small>--}}
-                                        {{--</p>--}}
-                                        {{--@endif--}}
+                                        @endif
 
-                                        @if($ace_dlr->indicators->count() > 0)
+                                        @if($ace_dlr->indicators->where('is_parent','=',0)->count() > 0)
                                             <table class="table table-striped table-bordered">
                                                 <tr>
                                                     <th>DLR Indicators</th>
-                                                    <th style="width: 200px;">Cost per Unit (SDR)</th>
+                                                    <th style="width: 200px;">Cost per Unit</th>
                                                     {{--<th style="width: 200px;">Maximum SDR per DLR</th>--}}
                                                 </tr>
                                                 @php
-                                                    $sub_indicators = $ace_dlr->indicators->where('status','=',1);
+                                                    $sub_indicators = $ace_dlr->indicators->where('status','=',1)->where('is_parent','=',0);
                                                 @endphp
                                                 @foreach($sub_indicators as $sub_indicator)
                                                     @php
@@ -293,7 +324,7 @@
                                                         <td>{{$sub_indicator->indicator_title}}</td>
                                                         <td>
                                                             <fieldset class="form-group position-relative has-icon-left mb-0">
-                                                                <input type="number" class="form-control" id="single_{{$sub_indicator->id}}"
+                                                                <input type="number" step="0.01" class="form-control text-right" id="single_{{$sub_indicator->id}}"
                                                                        value="{{$unit}}" name="single[{{$sub_indicator->id}}]">
                                                                 {{--<div class="form-control-position">--}}
                                                                     {{--<span class="symbol">{{$ace->currency->symbol}}</span>--}}

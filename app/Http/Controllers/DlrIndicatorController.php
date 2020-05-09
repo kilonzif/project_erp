@@ -72,6 +72,13 @@ class DlrIndicatorController extends Controller
             $indicator->save();
             notify(new ToastNotification('Successful!', 'DLR Indicator Activated', 'success'));
         }
+        $check_parent = new AceDlrIndicator();
+        if ($check_parent->isParentIndicator($request->parent_id)) {
+            $status = 1;
+        }
+        AceDlrIndicator::where('id','=', $request->parent_id)->update([
+            'is_parent' => $status
+        ]);
         return back();
     }
 
@@ -96,6 +103,7 @@ class DlrIndicatorController extends Controller
      * Add New Main Indicator
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function save_indicator(Request $request)
     {
@@ -107,6 +115,10 @@ class DlrIndicatorController extends Controller
             'set_max_dlr' => 'nullable|numeric|min:0|max:1'
         ]);
 
+        $set_parent = 0;
+        if ($request->parent_id < 0) {
+            $set_parent = 1;
+        }
         AceDlrIndicator::updateOrCreate([
             'indicator_title' => $request->title,
         ],[
@@ -114,7 +126,7 @@ class DlrIndicatorController extends Controller
             'parent_id' => $request->parent_id,
             'set_max_dlr' => $request->set_max_dlr,
             'status' => 1,
-            'is_parent' => 1
+            'is_parent' => $set_parent
         ]);
         notify(new ToastNotification('Successful!', 'DLR Indicator Added!', 'success'));
         return back();
@@ -124,6 +136,7 @@ class DlrIndicatorController extends Controller
      * Update Main Indicator
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update_indicator(Request $request)
     {
@@ -134,7 +147,6 @@ class DlrIndicatorController extends Controller
             'parent_id' => 'nullable|numeric|min:0',
             'set_max_dlr' => 'nullable|numeric|min:0|max:1'
         ]);
-//        dd($request->all());
 
         AceDlrIndicator::where('id','=', $request->id)->update([
             'indicator_title' => $request->title,
@@ -142,6 +154,17 @@ class DlrIndicatorController extends Controller
             'order' => $request->order,
             'set_max_dlr' => $request->set_max_dlr,
         ]);
+
+        if ($request->parent_id > 0) {
+            $status = 0;
+            $check_parent = new AceDlrIndicator();
+            if ($check_parent->isParentIndicator($request->parent_id)) {
+                $status = 1;
+            }
+            AceDlrIndicator::where('id','=', $request->parent_id)->update([
+                'is_parent' => $status
+            ]);
+        }
 
         notify(new ToastNotification('Successful!', 'DLR Indicator Updated!', 'success'));
         return back();
@@ -163,6 +186,7 @@ class DlrIndicatorController extends Controller
      * Add Sub Indicator
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function save_sub_indicator(Request $request){
 
@@ -173,6 +197,7 @@ class DlrIndicatorController extends Controller
         ]);
         try{
             $parent = AceDlrIndicator::find($request->indicator);
+            $parent->update(['is_parent'=>1]);
 
             AceDlrIndicator::updateOrCreate([
                 'indicator_title' => $request->title],
@@ -207,6 +232,7 @@ class DlrIndicatorController extends Controller
      * Update Sub-Indicator details
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function update_sub_indicator(Request $request)
     {
@@ -216,28 +242,39 @@ class DlrIndicatorController extends Controller
             'order' => 'required|numeric|min:1',
         ]);
 
-        AceDlrIndicator::where('id','=', $request->id)->update([
+        $ind = AceDlrIndicator::where('id','=', $request->id)->update([
             'indicator_title' => $request->title,
             'order' => $request->order,
         ]);
+
         notify(new ToastNotification('Successful!', 'Sub-Indicator Updated!', 'success'));
         return back();
     }
 
+    /**
+     * Save DLR Costs
+     * @param Request $request
+     * @param $ace_id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function save_dlr_costs(Request $request,  $ace_id)
     {
         $this->validate($request,[
             'single' => 'nullable|array|min:1',
-            'max' => 'required|integer|min:0',
+            'max' => 'nullable|integer|min:0',
             'single.*' => 'nullable|integer|min:0',
         ]);
 
-        AceDlrIndicatorCost::updateOrCreate([
-            'ace_id' => $ace_id,
-            'ace_dlr_indicator_id' => $request->parent_id,
-        ],[
-            'max_cost' => $request->max,
-        ]);
+        if ($request->max) {
+            AceDlrIndicatorCost::updateOrCreate([
+                'ace_id' => $ace_id,
+                'ace_dlr_indicator_id' => $request->parent_id,
+            ], [
+                'max_cost' => $request->max,
+                'currency_id' => $request->currency,
+            ]);
+        }
 
         if ($request->single) {
             foreach ($request->single as $indicator => $value) {

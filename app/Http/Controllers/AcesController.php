@@ -417,8 +417,12 @@ class AcesController extends Controller {
 
         $ace = Ace::find($id);
         $dlr_unit_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('unit_cost','ace_dlr_indicator_id');
+        $dlr_currency = AceDlrIndicatorCost::where('ace_id', '=', $id)
+            ->where('currency_id', '!=', null)
+            ->pluck('currency_id','ace_dlr_indicator_id')->toArray();
+//        dd($dlr_currency);
         $dlr_max_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('max_cost','ace_dlr_indicator_id');
-        $ace_dlrs = AceDlrIndicator::where('parent_id', '=', 0)->orderBy('order', 'asc')->get();
+        $ace_dlrs = AceDlrIndicator::where('is_parent', '=', 1)->orderBy('order', 'asc')->get();
 
         $target_years = $ace->target_years;
         $aceemails= $this->getContactGroup($id);
@@ -429,11 +433,12 @@ class AcesController extends Controller {
 
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
+//        dd($currency1);
 
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
         return view('aces.profile', compact('ace','workplans','roles','currency1','currency2','dlr_unit_costs', 'target_years',
-            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements'));
+            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements','dlr_currency'));
     }
 
     public function getContactGroup($ace_id){
