@@ -38,18 +38,17 @@
                 <div class="mb-3 row pull-right">
                     @ability('webmaster|super-admin','set-report-mode')
                     <div class="col-md-4 text-right">
-
-                        @if($report->editable == 0)
+                        @if(!$report->editable)
                             <button type="button" class="btn btn-secondary dropdown-toggle square" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false"><span id="note">In Review Mode</span></button>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" data-toggle="tooltip" data-placement="top" title="Set to Edit Mode"
                                    href="{{route('report_submission.report_edit_mode', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}">
-                                    <i class="fa-unlock-alt"></i>
+                                    <i class="fa fa-unlock-alt"></i>
                                     {{__('Set to Edit Mode')}}
                                 </a>
                             </div>
-                        @elseif($report->editable == 1)
+                        @else
                             <button type="button" class="btn btn-primary dropdown-toggle square" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false"><span id="note">In Edit Mode </span></button>
                             <div class="dropdown-menu">

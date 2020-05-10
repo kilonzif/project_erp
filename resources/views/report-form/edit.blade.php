@@ -157,7 +157,9 @@
                                     </h5>
                                     @if($indicators->indicators->count() > 0)
                                         @php
-                                            $sub_indicators = $indicators->indicators->where('parent_id','=',$indicators->id);
+                                            $sub_indicators = $indicators->indicators
+                                            ->where('parent_id','=',$indicators->id)
+                                            ->where('status','=',1);
 
                                             $pdo_indicator_1 = config('app.indicator_3');
                                              $pdo_indicator_2 = config('app.indicator_2');

@@ -65,7 +65,6 @@ class ReportFormController extends Controller
         return $ace_reports;
     }
 
-
     /**
      *Shows all the reports (Archives)
      */
@@ -73,7 +72,6 @@ class ReportFormController extends Controller
     {
 
     }
-
 
     /**
      *Add new report form
@@ -653,10 +651,7 @@ class ReportFormController extends Controller
                     'indicators' => 'required|array|min:1',
                     'indicators.*' => 'required|numeric|min:0',
                 ]);
-
-
                 $report_id = Crypt::decrypt($request->report_id);
-
                 $report = Report::find($report_id);
                 $report->reporting_period_id = $request->reporting_period;
 
@@ -665,12 +660,11 @@ class ReportFormController extends Controller
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
                     $report->user_id = Crypt::decrypt($request->ace_officer);
                     $report->ace_id = $ace_id;
+                    $report->editable = false;
                 } else {
                     $report->user_id = Auth::id();
                 }
-
                 $report->save();
-
 
                 foreach ($request->indicators as $indicator => $value) {
 
@@ -713,10 +707,7 @@ class ReportFormController extends Controller
                         $message->to($emails)
                             ->subject("Report Submitted");
                     });
-
-
-
-                notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
+               notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
             });
             return redirect()->route('report_submission.reports');
         }
@@ -729,6 +720,7 @@ class ReportFormController extends Controller
                 $report = Report::find($report_id);
                 $report->reporting_period_id = $request->reporting_period;
                 $report->status = 99;
+                $report->editable = true;
                 if (isset($request->ace_officer)) {
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
                     $report->user_id = Crypt::decrypt($request->ace_officer);
@@ -804,7 +796,6 @@ class ReportFormController extends Controller
      */
     function report_review($id)
     {
-
         $report = Report::find($id);
         if ($report->editable == 1) {
             $report->editable = false;
@@ -1504,7 +1495,7 @@ class ReportFormController extends Controller
             });
 
         $pdo_1_values["pdo_indicator_1d"]["female_total"] = $female->count();
-        $pdo_1_values["pdo_indicator_1d"]["female_phd_total"] = $phd_regional->count() + $phd_national_female->count();
+        $pdo_1_values["pdo_indicator_1d"]["female_phd_total"] = $phd_regional_female->count() + $phd_national_female->count();
         $pdo_1_values["pdo_indicator_1d"]["female_phd_regional"] = $phd_regional_female->count();
         $pdo_1_values["pdo_indicator_1d"]["female_masters_total"] = $masters_regional_female->count() + $masters_national_female->count();
         $pdo_1_values["pdo_indicator_1d"]["female_masters_regional"] = $masters_regional_female->count();
@@ -2055,15 +2046,15 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "Self%");
             })->count();
 
-        $course = DB::connection('mongodb')
-            ->collection('indicator_4.1')
-            ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "New Course")
-                    ->orWhere('typeofaccreditation', '=', "new course")
-                    ->orWhere('typeofaccreditation', 'like', "new%")
-                    ->orWhere('typeofaccreditation', 'like', "New%");
-            })->count();
+//        $course = DB::connection('mongodb')
+//            ->collection('indicator_4.1')
+//            ->where('report_id', '=', $report_id)
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "New Course")
+//                    ->orWhere('typeofaccreditation', '=', "new course")
+//                    ->orWhere('typeofaccreditation', 'like', "new%")
+//                    ->orWhere('typeofaccreditation', 'like', "New%");
+//            })->count();
 
         if ($report->ace->ace_type == 'emerging') {
             $emerging = DB::connection('mongodb')
@@ -2085,7 +2076,7 @@ class ReportFormController extends Controller
         $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
         $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
-        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+//        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
         $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
 
@@ -2095,8 +2086,7 @@ class ReportFormController extends Controller
     public function generateAggregatedIndicator41Results_fr($report_id)
     {
         $indicator_4_1_values = array();
-
-
+        $report = Report::find($report_id);
         $national = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id', '=', $report_id)
@@ -2147,22 +2137,41 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "Self%");
             })->count();
 
-        $course = DB::connection('mongodb')
-            ->collection('indicator_4.1')
-            ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "New Course")
-                    ->orWhere('typeofaccreditation', '=', "new course")
-                    ->orWhere('typeofaccreditation', 'like', "new%")
-                    ->orWhere('typeofaccreditation', 'like', "New%");
-            })->count();
+//        $course = DB::connection('mongodb')
+//            ->collection('indicator_4.1')
+//            ->where('report_id', '=', $report_id)
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "New Course")
+//                    ->orWhere('typeofaccreditation', '=', "new course")
+//                    ->orWhere('typeofaccreditation', 'like', "new%")
+//                    ->orWhere('typeofaccreditation', 'like', "New%");
+//            })->count();
+        $masters = config('app.filters_fr.masters_text');
+        $bachelors = config('app.filters_fr.bachelors_text');
+
+        if ($report->ace->ace_type == 'emerging') {
+            $emerging = DB::connection('mongodb')
+                ->collection('indicator_4.1')
+                ->where('report_id', '=', $report_id)
+                ->where('newly_accredited_programme', '=', 'Oui')
+                ->where(function ($query) use($bachelors,$masters) {
+                    $query->where('level', '=', "$masters")
+                        ->orWhere('level', '=', "$bachelors")
+                        ->orWhere('level', 'like', "Ba%");
+                })
+                ->where(function ($query) {
+                    $query->where('typeofaccreditation', 'like', "Reg%")
+                        ->orWhere('typeofaccreditation', 'like', "Nat%");
+                })->count();
+        }
 
         $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
         $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
         $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
         $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
-        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+//        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
 
         return $indicator_4_1_values;
@@ -2266,15 +2275,10 @@ class ReportFormController extends Controller
         return $full_period;
     }
 
-
     public function setEditMode($id)
     {
         $report_id = Crypt::decrypt($id);
         $report = Report::find($report_id);
-
-        $status_tracker = ReportStatusTracker::find($report_id);
-
-        $status = $status_tracker->status_code;
 
         if ($report->editable != 1) {
             $report->status = 99;
@@ -2286,21 +2290,5 @@ class ReportFormController extends Controller
         }
         return back();
 
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
