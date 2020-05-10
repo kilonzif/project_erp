@@ -103,7 +103,7 @@
                                                                     <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                                        class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
                                                                        title="Delete Report"><i class="ft-trash-2"></i></a>
-                                                                @elseif($report->editable != 1 && $report->status == 99 && \Auth::user()->hasRole('ace-officer'))
+                                                                @elseif($report->editable == 1 && $report->status == 99 && \Auth::user()->hasRole('ace-officer'))
                                                                     <a href="{{route('report_submission.reports.delete',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                                        class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this report?');"
                                                                        title="Delete Report"><i class="ft-trash-2"></i></a>

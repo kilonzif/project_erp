@@ -139,7 +139,7 @@ class ReportFormController extends Controller
         $report_exists = Report::where('ace_id', $ace_id)->where('reporting_period_id', $request->reporting_period)
            ->join('indicators','indicator_id','=','indicators.id')
             ->where('indicator_id', '=', $dlr_id)
-            ->where('language', '=', $request->language)
+//            ->where('language', '=', $request->language)
             ->where(function ($query) {
                 $query->where('indicators.identifier', '!=', '4.1')
                     ->orWhere('indicators.identifier', '!=', '5.1')
@@ -152,7 +152,7 @@ class ReportFormController extends Controller
 //            if ($report_exists->status != 1) {
 //                notify(new ToastNotification('Error!', 'You have a pending report on this DLR and period- Go and submit!', 'error'));
 //            }
-            notify(new ToastNotification('Error!', 'A report by this DLR this Period has already been created and submitted!', 'error'));
+            notify(new ToastNotification('Error!', 'A report with similar DLR & Reporting period has already been created!', 'error'));
             return back()->withInput();
         }
         $report = new Report();
