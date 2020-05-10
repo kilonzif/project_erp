@@ -27,7 +27,7 @@
             <div class="col-12">
                 <h5 class="pb-1 pt-1 mt-1 text-danger text-uppercase">All fields marked * are required</h5>
                 @if($project->indicators->count() > 0)
-                    <form action="{{route('report_submission.update_report')}}" id="indicators-form" method="post">
+                    <form @if($report->editable) action="{{route('report_submission.update_report')}}" @endif id="indicators-form" method="post">
                         @csrf
                         <input type="hidden" name="report_id" value="{{\Illuminate\Support\Facades\Crypt::encrypt($report->id)}}">
                         <div class="card mb-1">
@@ -118,6 +118,7 @@
                         </div>
 
                         <div style="margin-right:10px;">
+                            @if($report->editable)
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                class="btn btn-secondary mb-2">
                                 @if($the_indicator->upload)
@@ -126,6 +127,7 @@
                                     <i class="ft-edit"></i> Add Record
                                 @endif
                             </a>
+                            @endif
                             @if($the_indicator->upload && isset($report->report_upload->file_name))
                             <a href="{{route('report_submission.report.download_file', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                class="btn btn-link mb-2 text-right">
@@ -309,12 +311,9 @@
                                         @endforeach
 
                                     @endif
-
-
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="row">
                             <div class="col-lg-12">
@@ -330,22 +329,25 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
-                                <button type="submit" name="continue" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
-                                <button type="submit" name="save" value="save" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Save</button>
-                            </div>
-                            <div class="col-md-1">
 
+                        @if($report->editable)
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary mb-2"> <i class="ft-arrow-left"></i> Go Back</a>
+                                    <button type="submit" name="continue" value="continue" id="save-button" class="btn btn-light mb-2"> <i class="ft-save"></i> Save and continue later</button>
+                                    <button type="submit" name="save" value="save" class="btn btn-info mb-2"> <i class="ft-upload-cloud"></i> Save</button>
+                                </div>
+                                <div class="col-md-1">
+
+                                </div>
+                                <div class="col-md-3 text-right">
+                                    <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"
+                                       onclick="return show_confirm();">
+                                        <i class="ft-check-circle"></i> Submit DLR
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-3 text-right">
-                                <button type="submit" name="submit" value="complete" class="btn btn-success mb-2"
-                                   onclick="return show_confirm();">
-                                    <i class="ft-check-circle"></i> Submit DLR
-                                </button>
-                            </div>
-                        </div>
+                        @endif
                     </form>
                 @else
                     <h2 class="center">No Indicators available</h2>

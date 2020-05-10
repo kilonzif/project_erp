@@ -580,8 +580,12 @@ class ReportFormController extends Controller
     public function edit_report($id)
     {
         $id = Crypt::decrypt($id);
-        $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
         $report = Report::find($id);
+        if ($report->editable == 0) {
+            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
+            return redirect()->route('report_submission.reports');
+        }
+        $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 
         $get_form = IndicatorDetails::query()
             ->where('report_id', '=', $id)
@@ -591,17 +595,10 @@ class ReportFormController extends Controller
 
         $reporting_period = ReportingPeriod::find($report->reporting_period_id);
         $reporting_periods = ReportingPeriod::all();
-
-        if ($report->editable == 0 && Auth::user()->hasRole('ace-officer')) {
-            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
-            return redirect()->route('report_submission.reports');
-        }
         $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
-
 
         $indicators = Indicator::where('id', '=', $report->indicator_id)->orderBy('identifier', 'asc')->first();
         $the_indicator = $indicators;
-
 
         $comment = AceComment::where('report_id', $id)->first();
 
@@ -2257,7 +2254,6 @@ class ReportFormController extends Controller
         return $indicator_4_2_values;
     }
 
-
     public static function getReportingName($id)
     {
         $period = ReportingPeriod::find($id);
@@ -2281,7 +2277,7 @@ class ReportFormController extends Controller
         $report = Report::find($report_id);
 
         if ($report->editable != 1) {
-            $report->status = 99;
+//            $report->status = 99;
             $report->editable = true;
             $report->save();
             notify(new ToastNotification('Success!', 'The report submission has been reopened for edit!', 'success'));
