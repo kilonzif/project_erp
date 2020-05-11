@@ -1,7 +1,7 @@
 @extends('report-form.webforms.webform')
 @section('web-form')
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card">
             <h5 class="card-header p-1 card-head-inverse bg-teal">
                 {{$indicator_info->identifier}} : {{$indicator_info->title}}
@@ -75,9 +75,9 @@
                                             <div class="input-group">
                                                 <input type="text" name="datereceived" class="form-control form-control datepicker"
                                                        data-date-format="D-M-YYYY" id="datereceived">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
-                                                </div>
+                                                {{--<span class="input-group-append">--}}
+                                                    {{--<span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>--}}
+                                                {{--</span>--}}
                                             </div>
                                         </fieldset>
                                     </div>
@@ -131,84 +131,54 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <h5 class="card-header p-1 card-head-inverse bg-secondary" style="border-radius:0">
-                {{$lang['Upload DLR data in Bulk']}}
-            </h5>
-            <div class="card-content">
-                <div class="card-body table-responsive">
-                    <form action="{{route('report_submission.upload_webform',[$indicator_info->id])}}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <input type="hidden" name="report_id" value="{{$d_report_id}}">
-                        <input type="hidden" name="indicator_id" value="{{$indicator_info->id}}">
-                        <fieldset class="form-group">
-                            <label for="upload_file">{{$lang['Browse File']}} <span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span></label>
-                            <input type="file" style="padding: 8px;" required class="form-control" name="upload_file" id="upload_file">
-                            @if ($errors->has('upload_file'))
-                                <p class="text-right mb-0">
-                                    <small class="danger text-muted" id="file-error">{{ $errors->first('upload_file') }}</small>
-                                </p>
-                            @endif
-                        </fieldset>
-                        <button style="margin-top: 2rem;" type="submit" class="btn btn-primary"
-                                id="uploadData">
-                            <i class="ft-upload mr-1"></i> {{$lang['Upload DLR']}}
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="col-md-12">
         <div class="card">
-            <h6 class="card-header p-1 card-head-inverse bg-primary">
-                Saved Records
-            </h6>
-            <div class="card-content">
-                <div class="card-body table-responsive">
-                    <table class="table table-scrollable table-striped table-bordered">
-                        <tr>
-                            <th style="min-width: 30px">#</th>
-                            <th style="min-width: 120px">{{$lang['Amount (USD)']}}</th>
-                            <th style="min-width: 120px">{{$lang['Original Amount']}}</th>
-                            <th style="min-width: 120px">{{$lang['Original Amount Currency']}}</th>
-                            <th style="min-width: 250px">{{$lang['Source']}}</th>
-                            <th style="min-width: 120px">{{$lang['Date of Receipt']}}</th>
-                            <th style="min-width: 250px">{{$lang['Account Details']}}</th>
-                            <th style="min-width: 120px">{{$lang['Region']}}</th>
-                            <th style="min-width: 250px">{{$lang['Purpose of Funds']}}</th>
-                            <th style="min-width: 180px">{{$lang['Action']}}</th>
-                        </tr>
-                        @php $counter=0; @endphp
-                        @foreach($data as $datum)
-                            @php $counter++; @endphp
+                <h6 class="card-header p-1 card-head-inverse bg-primary">
+                    Saved Records
+                </h6>
+                <div class="card-content">
+                    <div class="card-body table-responsive">
+                        <table class="table table-scrollable table-striped table-bordered">
                             <tr>
-                                <td>{{$counter}}</td>
-                                <td>{{number_format($datum->amountindollars,2)}}</td>
-                                <td>{{number_format($datum->originalamount,2)}}</td>
-                                <td>{{$datum->currency}}</td>
-                                <td>{{$datum->source}}</td>
-                                <td>{{date("d/m/Y", strtotime($datum->datereceived))}}</td>
-                                <td>{{$datum->bankdetails}}</td>
-                                <td>{{$datum->region}}</td>
-                                <td>{{$datum->fundingreason}}</td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                    <a href="#form-card" onclick="editRecord('{{$indicator_info->id}}','{{$datum->id}}')" class="btn btn-s btn-secondary">
-                                        {{__('Edit')}}</a>
-                                    <a href="{{route('report_submission.web_form_remove_record',[\Illuminate\Support\Facades\Crypt::encrypt($indicator_info->id),$datum->id])}}"
-                                       class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this record?');"
-                                       title="Delete Record"><i class="ft-trash-2"></i></a>
-                                    </div>
-                                </td>
+                                <th style="min-width: 30px">#</th>
+                                <th style="min-width: 120px">{{$lang['Amount (USD)']}}</th>
+                                <th style="min-width: 120px">{{$lang['Original Amount']}}</th>
+                                <th style="min-width: 120px">{{$lang['Original Amount Currency']}}</th>
+                                <th style="min-width: 250px">{{$lang['Source']}}</th>
+                                <th style="min-width: 120px">{{$lang['Date of Receipt']}}</th>
+                                <th style="min-width: 250px">{{$lang['Account Details']}}</th>
+                                <th style="min-width: 120px">{{$lang['Region']}}</th>
+                                <th style="min-width: 250px">{{$lang['Purpose of Funds']}}</th>
+                                <th style="min-width: 180px">{{$lang['Action']}}</th>
                             </tr>
-                        @endforeach
-                    </table>
+                            @php $counter=0; @endphp
+                            @foreach($data as $datum)
+                                @php $counter++; @endphp
+                                <tr>
+                                    <td>{{$counter}}</td>
+                                    <td>{{number_format($datum->amountindollars,2)}}</td>
+                                    <td>{{number_format($datum->originalamount,2)}}</td>
+                                    <td>{{$datum->currency}}</td>
+                                    <td>{{$datum->source}}</td>
+                                    <td>{{date("d/m/Y", strtotime($datum->datereceived))}}</td>
+                                    <td>{{$datum->bankdetails}}</td>
+                                    <td>{{$datum->region}}</td>
+                                    <td>{{$datum->fundingreason}}</td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                        <a href="#form-card" onclick="editRecord('{{$indicator_info->id}}','{{$datum->id}}')" class="btn btn-s btn-secondary">
+                                            {{__('Edit')}}</a>
+                                        <a href="{{route('report_submission.web_form_remove_record',[\Illuminate\Support\Facades\Crypt::encrypt($indicator_info->id),$datum->id])}}"
+                                           class="btn btn-s btn-danger" data-toggle="tooltip" data-placement="top" onclick="return confirm('Are you sure you want to delete this record?');"
+                                           title="Delete Record"><i class="ft-trash-2"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 

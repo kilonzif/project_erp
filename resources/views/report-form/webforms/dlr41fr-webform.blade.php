@@ -91,10 +91,10 @@
                                                     <label for="basicInputFile">Niveau<span class="required">*</span></label>
                                                     <select name="level" required class="form-control" id="level">
                                                         <option value="">sélectionnez</option>
-                                                        <option  {{($the_record['level'] == 'MASTERS')  ? "selected":""}} value="MASTERS">Masters</option>
-                                                        <option  {{($the_record['level'] == 'PHD')  ? "selected":""}} value="PHD">Doctorat</option>
-                                                        <option  {{($the_record['level'] == 'bachelors')  ? "selected":""}} value="bachelors">Premier Cycle</option>
-                                                        <option  {{($the_record['level'] == 'professional_course')  ? "selected":""}} value="professional_course">Programme de courte durée</option>
+                                                        <option  value="MASTERS">Masters</option>
+                                                        <option  value="PHD">Doctorat</option>
+                                                        <option  value="bachelors">Premier Cycle</option>
+                                                        <option  value="professional_course">Programme de courte durée</option>
                                                     </select>
                                                 </fieldset>
                                             </div>
@@ -103,12 +103,12 @@
                                                     <label for="basicInputFile">Type d'accreditation <span class="required">*</span></label>
                                                     <select name="typeofaccreditation" required class="form-control" id="language">
                                                         <option value="">sélectionnez</option>
-                                                        <option {{($the_record['typeofaccreditation'] == 'National')  ? "selected":""}} value="National">Nationale</option>
-                                                        <option {{($the_record['typeofaccreditation'] == 'Regional')  ? "selected":""}} value="Regional">Régionale</option>
-                                                        <option {{($the_record['typeofaccreditation'] == 'International')  ? "selected":""}} value="International">Internationale</option>
-                                                        <option {{($the_record['typeofaccreditation'] == 'Gap Assessment')  ? "selected":""}} value="Gap Assessment">
+                                                        <option  value="National">Nationale</option>
+                                                        <option  value="Regional">Régionale</option>
+                                                        <option value="International">Internationale</option>
+                                                        <option  value="Gap Assessment">
                                                             Évaluation des lacunes</option>
-                                                        <option {{($the_record['typeofaccreditation'] == 'Self-Evaluation')  ? "selected":""}} value="Self-Evaluation">
+                                                        <option value="Self-Evaluation">
                                                             Auto-évaluation</option>
                                                     </select>
 
@@ -149,7 +149,7 @@
                                                     <label for="basicInputFile">Date d'accréditation <span class="required">*</span></label>
                                                     <div class="input-group">
                                                         <input type="text" required name="dateofaccreditation" class="form-control form-control datepicker"
-                                                               data-date-format="D-M-YYYY"   value="{{ (old('dateofaccreditation')) ? old('dateofaccreditation') : $the_record['dateofaccreditation'] }}">   <div class="input-group-append">
+                                                               data-date-format="D-M-YYYY">     <div class="input-group-append">
                                                             <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
                                                         </div>
                                                     </div>
@@ -160,7 +160,7 @@
                                                     <label for="basicInputFile">Date d'expiration de l'accréditation<span class="required">*</span></label>
                                                     <div class="input-group">
                                                         <input type="text" required name="exp_accreditationdate" class="form-control form-control datepicker"
-                                                               data-date-format="D-M-YYYY"   value="{{ (old('dateofaccreditation')) ? old('dateofaccreditation') : $the_record['dateofaccreditation'] }}">   <div class="input-group-append">
+                                                               data-date-format="D-M-YYYY" >   <div class="input-group-append">
                                                             <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
                                                         </div>
                                                     </div>

@@ -122,7 +122,7 @@
                                                 @if($labels[$key]['file1'])
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_one[]')? 'form-control-warning':'' }}">
-                                                            @if($key=="PROCUREMENT MANUAL")<label>Financial Management Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Implementation Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
+                                                            @if($key=="PROCEDURES MANUAL")<label>Financial Management Manual<span class="required">*</span></label>@elseif($key=="IMPLEMENTATION PLAN")<label>Implementation Plan<span class="required">*</span></label>@else<label>File 1 Upload<span class="required">*</span></label> @endif
                                                             <input type="file" class="form-control" name="file_one[]" required  id="filename{{$key[0]}}"
                                                                    @if($labels[$key]['file1']['required']) required @endif
                                                                    value="{{old('file_one',empty($values[0]['file_one'])?"":$values[0]['file_one'])}}">
@@ -146,7 +146,7 @@
                                                 @if($labels[$key]['file2'])
                                                     <div class="col-md-6">
                                                         <div class="form-group {{ $errors->has('file_two[]')? 'form-control-warning':'' }}">
-                                                            @if($key=="PROCEDURES MANUALS")<label>Procurement Manual<span class="required">*</span></label>@else<label>File 2 Upload<span class="required">*</span></label>@endif
+                                                            @if($key=="PROCEDURES MANUAL")<label>Procurement Manual<span class="required">*</span></label>@else<label>File 2 Upload<span class="required">*</span></label>@endif
 
                                                                <input type="file" class="form-control" required id="file_two[]"
                                                                    @if($labels[$key]['file2']['required']) required @endif

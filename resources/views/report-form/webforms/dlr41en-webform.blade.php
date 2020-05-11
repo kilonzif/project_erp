@@ -148,9 +148,10 @@
                                                     <label for="basicInputFile">Date of Accreditation <span class="required">*</span></label>
                                                     <div class="input-group">
                                                         <input type="text" required name="dateofaccreditation" class="form-control form-control datepicker"
-                                                               data-date-format="D-M-YYYY" >   <div class="input-group-append">
-                                                            <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
-                                                        </div>
+                                                               data-date-format="D-M-YYYY" >
+                                                        {{--<div class="input-group-append">--}}
+                                                            {{--<span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>--}}
+                                                        {{--</div>--}}
                                                     </div>
                                                 </fieldset>
                                             </div>

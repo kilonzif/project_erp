@@ -93,9 +93,9 @@
                 <div class="input-group">
                     <input type="text" required name="dateofaccreditation" class="form-control form-control datepicker"
                            data-date-format="D-M-YYYY" value="{{ (old('dateofaccreditation')) ? old('dateofaccreditation') : $the_record['dateofaccreditation'] }}">
-                    <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
-                    </div>
+                    {{--<div class="input-group-append">--}}
+                        {{--<span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>--}}
+                    {{--</div>--}}
                 </div>
             </fieldset>
         </div>
@@ -107,9 +107,9 @@
                 <div class="input-group">
                     <input type="text" required name="exp_accreditationdate" class="form-control form-control datepicker"
                            data-date-format="D-M-YYYY"  value="{{ (old('exp_accreditationdate')) ? old('exp_accreditationdate') : $the_record['exp_accreditationdate'] }}">
-                    <div class="input-group-append">
-                        <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
-                    </div>
+                    {{--<div class="input-group-append">--}}
+                        {{--<span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>--}}
+                    {{--</div>--}}
                 </div>
             </fieldset>
         </div>
