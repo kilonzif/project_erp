@@ -134,7 +134,7 @@
     <div class="col-md-4">
         <div class="card">
             <h5 class="card-header p-1 card-head-inverse bg-secondary" style="border-radius:0">
-                Upload DLR data in Bulk
+                {{$lang['Upload DLR data in Bulk']}}
             </h5>
             <div class="card-content">
                 <div class="card-body table-responsive">
@@ -143,7 +143,7 @@
                         <input type="hidden" name="report_id" value="{{$d_report_id}}">
                         <input type="hidden" name="indicator_id" value="{{$indicator_info->id}}">
                         <fieldset class="form-group">
-                            <label for="upload_file">Browse File <span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span></label>
+                            <label for="upload_file">{{$lang['Browse File']}} <span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span></label>
                             <input type="file" style="padding: 8px;" required class="form-control" name="upload_file" id="upload_file">
                             @if ($errors->has('upload_file'))
                                 <p class="text-right mb-0">
@@ -153,7 +153,7 @@
                         </fieldset>
                         <button style="margin-top: 2rem;" type="submit" class="btn btn-primary"
                                 id="uploadData">
-                            <i class="ft-upload mr-1"></i> Upload DLR
+                            <i class="ft-upload mr-1"></i> {{$lang['Upload DLR']}}
                         </button>
                     </form>
                 </div>

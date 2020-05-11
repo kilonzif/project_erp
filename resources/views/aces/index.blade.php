@@ -225,8 +225,8 @@
                                             <label for="impact_no">ACE Impact No. <span class="required">*</span></label>
                                             <select class="form-control" required name="impact_no" id="impact_no">
                                                 <option value="">Select</option>
-                                                <option {{(old('impact_no') == 1)? 'selected':''}} value="1">1</option>
-                                                <option {{(old('impact_no') == 2)? 'selected':''}} value="2">2</option>
+                                                <option {{(old('impact_no') == 1)? 'selected':''}} value="1">1st ACE impact</option>
+                                                <option {{(old('impact_no') == 2)? 'selected':''}} value="2">2nd ACE impact</option>
                                             </select>
                                             @if ($errors->has('impact_no'))
                                                 <p class="text-right">
