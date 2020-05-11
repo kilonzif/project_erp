@@ -1912,7 +1912,42 @@ class ReportFormController extends Controller
      * @param $report_id
      * @return array
      */
+
     public function generateAggregatedIndicator51Results($report_id)
+    {
+        $indicator_5_1_values = array();
+
+        $data =  DB::table('indicator_5_1')
+            ->where('report_id', '=', $report_id)
+//            ->select('amountindollars')
+            ->get();
+
+        $total_revenue = $data->sum('amountindollars');
+
+
+        $national_sources = DB::table('indicator_5_1')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('source', 'like', "Nat%")
+                    ->orWhere('source', 'like', "nat%");
+            })->sum('amountindollars');
+
+        $regional_sources = DB::table('indicator_5_1')
+            ->where('report_id', '=', $report_id)
+            ->where(function ($query) {
+                $query->where('source', 'like', "Reg%")
+                    ->orWhere('source', 'like', "reg%");
+            })->sum('amountindollars');
+//        dd($regional_sources);
+
+        $indicator_5_1_values["ir_indicator_4"]["total_revenue"] = money_format($total_revenue,2);
+        $indicator_5_1_values["ir_indicator_4"]["national_sources"] = money_format($national_sources,2);
+        $indicator_5_1_values["ir_indicator_4"]["regional_sources"] = money_format($regional_sources,2);
+
+
+        return $indicator_5_1_values;
+    }
+    public function generateAggregatedIndicator51Results_old($report_id)
     {
         $indicator_5_1_values = array();
 

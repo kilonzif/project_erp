@@ -318,7 +318,6 @@ class GenerateReportController extends Controller {
                 ->groupBy('indicator_id')
                 ->get();
         }
-//        dd($report_values);
 
         if ($request->query->get('export')) {
 			return $this->generalspreadsheet($report_values, $baseline_values, $target_values, $reports, $project);

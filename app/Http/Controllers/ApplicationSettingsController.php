@@ -256,6 +256,7 @@ class ApplicationSettingsController extends Controller
             $new_period = new ReportingPeriod();
             $new_period->period_start = $start->format('Y-m-d');
             $new_period->period_end = $end->format('Y-m-d');
+            $new_period->reporting_year = $start->format('Y');
             $new_period->active_period = true;
             $saved = $new_period->save();
 
@@ -322,11 +323,12 @@ class ApplicationSettingsController extends Controller
 
         $record = ReportingPeriod::where('period_start', $start->format('Y-m-d'))
             ->where('period_end', $end->format('Y-m-d'))->first();
-        if (empty($record)) {
+        if (!empty($record)) {
             $updatePeriod = ReportingPeriod::find($update_id);
             $updated = $updatePeriod->update([
                 'period_start' => $start->format('Y-m-d'),
                 'period_end' => $end->format('Y-m-d'),
+                'reporting_year' => $start->format('Y'),
                 'active_period' => true,
             ]);
             if ($updated) {

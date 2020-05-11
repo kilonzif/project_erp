@@ -176,7 +176,7 @@
                                             @php
                                                 $indicator_identifier = (string)$sub_indicator->identifier;
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
-                                              $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->get();
+                                              $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->where('status','=',1)->get();
 
 
                                             @endphp
@@ -252,6 +252,7 @@
 
 
                                                                 @elseif($sub_indicator->parent_id == 14)
+{{--                                                                    {{dd($pdo_2)}}--}}
                                                                     {{--accreditation 7.3 --}}
                                                                     <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
                                                                          style="margin-bottom: 0;">

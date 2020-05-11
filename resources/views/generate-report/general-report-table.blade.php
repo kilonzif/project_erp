@@ -6,6 +6,12 @@
     {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
 @endpush
 @push('other-styles')
+    <style>
+        table#generalReporting td{
+            font-size: 0.9rem;
+            padding: 0.4rem 0.75rem;
+        }
+    </style>
     {{--    <link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 @endpush
 @section('content')
@@ -27,9 +33,10 @@
 
     <div class="content-body">
         <a href="{{\Illuminate\Support\Facades\URL::previous()}}" class="btn btn-secondary square mb-1">Go Back</a>
+        @if(false)
         <a href="{{route('report_generation.general_report_table',array_merge(['export'=>true], request()->only(['start', 'end','filter','aces'])))}}"
          class="btn btn-primary square mb-1">
-            <i class="fa fa-file-excel-o"></i> Excel</a>
+            <i class="fa fa-file-excel-o"></i> Excel</a>@endif
         <div class="row">
             <div class="col-12">
                 <div class="card mb-1">
@@ -37,24 +44,26 @@
                         Generated Report
                     </h6>
                     <div class="card-content collapse show">
-                        <div class="card-body table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <tr>
+                        <div class="card-body">
+                            <div class="table-responsive" style="padding: 0 1.2rem;">
+                                <table class="table table-bordered table-striped">
+                                    <tr>
 
-                                    <th style="width: 150px;">Reporting Period</th>
-                                    <td>
-                                        @foreach($years as $key=>$year)
-                                            {{"$year | "}}
-                                        @endforeach
-                                    </td>
+                                        <th style="width: 150px;">Reporting Period</th>
+                                        <td>
+                                            @foreach($years as $key=>$year)
+                                                {{"$year | "}}
+                                            @endforeach
+                                        </td>
 
-                                </tr>
-                            </table>
-                            @if(sizeof($report_values) > 0)
-                                @include('generate-report.gtable')
-                            @else
-                                <h2 class="text-center danger mt-3 mb-3">No Report can be generated within the specified range</h2>
-                            @endif
+                                    </tr>
+                                </table>
+                                @if(sizeof($report_values) > 0)
+                                    @include('generate-report.gtable')
+                                @else
+                                    <h2 class="text-center danger mt-3 mb-3">No Report can be generated within the specified range</h2>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

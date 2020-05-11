@@ -1,30 +1,28 @@
-<table class="table table-bordered table-striped" i="generalReport">
+<table class="table table-bordered table-striped" id="generalReporting">
     {{--<tr>--}}
     @php
         $indicators = \App\Indicator::where('is_parent','=',1)
                 ->where('status','=',1)
-                //->where('parent_id','<>',0)
                 ->where('show_on_report','=',1)
                ->orderBy('order_on_report','asc')->get();
-            //$indicators = $project->indicators->where('is_parent','=',1)->where('status','=',1)
-            //->where('show_on_report','=',1);
+        $year_number = ['2019'=>1,'2020'=>2,'2021'=>3,'2022'=>4,'2023'=>5]
     @endphp
     <thead>
     <tr>
-        <th style="width: 300px" rowspan="2" width="300px" >ACE Level Results Indicators</th>
+        <th style="width: 300px" rowspan="2" >ACE Level Results Indicators</th>
         <th style="width: 15px" rowspan="2">Core</th>
-        <th style="width: 200px" rowspan="2">Unit of Measure</th>
-        <th style="width: 200px" rowspan="2">Specifics</th>
-        <th style="width: 50px" rowspan="2">Baseline</th>
-        <th style="width: 50px" colspan="{{sizeof($years)}}">Annual Target Values</th>
+        <th style="min-width: 300px" rowspan="2">Unit of Measure</th>
+        <th style="min-width: 250px;" rowspan="2">Specifics</th>
+        <th style="width: 50px;text-align: right;" rowspan="2">Baseline</th>
+        <th style="width: 50px;text-align: center;" colspan="{{sizeof($years)}}">Annual Target Values</th>
         @for($a = 1; $a <= sizeof($years); $a++)
-        <th style="width: 50px" rowspan="2">{{$years[$a-1]}} Results</th>
+        <th style="width: 50px;text-align: right;" rowspan="2">{{$years[$a-1]}} Results</th>
         @endfor
-        <th style="width: 50px" rowspan="2">Total Results</th>
+        <th style="width: 50px;text-align: right;" rowspan="2">Total Results</th>
     </tr>
     <tr>
         @for($a = 1; $a <= sizeof($years); $a++)
-        <th style="width: 50px">{{"Year $a"}}</th>
+        <th style="width: 50px;text-align: right;">{{"Year ".$year_number[$years[$a-1]]}}</th>
         @endfor
     </tr>
     </thead>
@@ -37,7 +35,7 @@
 
             <tr>
                 <td @if($counter > 0) rowspan="{{$counter}}" @endif>
-                    <strong>{{"Indicator ".$indicator->identifier}}:</strong> {{$indicator->title}}
+                    <strong>{{$indicator->identifier}}:</strong> {{$indicator->title}}
                 </td>
                 <td @if($counter > 0) rowspan="{{$counter}}" @endif></td>
                 <td @if($counter > 0) rowspan="{{$counter}}" @endif>

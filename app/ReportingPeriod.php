@@ -10,7 +10,7 @@ class ReportingPeriod extends Model
 {
     use SoftDeletes;
     protected $table = "reporting_period";
-    protected $fillable = ['period_start', 'period_end'];
+    protected $fillable = ['period_start', 'period_end', 'reporting_year'];
 
     protected $dates = ['deleted_at'];
 

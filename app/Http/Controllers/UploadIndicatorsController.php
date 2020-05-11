@@ -91,11 +91,11 @@ class UploadIndicatorsController extends Controller
                         ,'indicator_info','ace_programmes'));
 
                 }
-                else if($report->language=="english" && $indicators->identifier =='5.1'){
-                    return view('report-form.webforms.dlr51en-webform', compact('indicators',
-                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
-                }
+//                else if($report->language=="english" && $indicators->identifier =='5.1'){
+//                    return view('report-form.webforms.dlr51en-webform', compact('indicators',
+//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+//                        ,'indicator_info'));
+//                }
                 else if($report->language=="english" && $indicators->identifier =='7.3'){
                     return view('report-form.webforms.dlr73en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
@@ -346,12 +346,9 @@ class UploadIndicatorsController extends Controller
     public function saveWebForm(Request $request,$dlr_id){
 
         $this_dlr = Indicator::find($request->indicator_id);
-        $table_name = Str::snake("indicator_".$this_dlr->identifier);
-
-
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
-        $data = Arr::except($request->all(), ['_token']);
+//        $data = Arr::except($request->all(), ['_token']);
 
         switch ($this_dlr->identifier) {
             case "4.1":
@@ -371,12 +368,12 @@ class UploadIndicatorsController extends Controller
                 break;
             case "5.1":
                 $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['indicator_id'] = $request->indicator_id;
+//                $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['amountindollars'] = $request->amountindollars;
                 $indicator_details['originalamount'] = $request->originalamount;
                 $indicator_details['currency'] = $request->currency;
                 $indicator_details['source'] = $request->source;
-                $indicator_details['datereceived'] = $request->datereceived;
+                $indicator_details['datereceived'] = date('Y-m-d',strtotime($request->datereceived));
                 $indicator_details['bankdetails'] = $request->bankdetails;
                 $indicator_details['region'] = $request->region;
                 $indicator_details['fundingreason'] = $request->fundingreason;
@@ -387,7 +384,6 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
                 $indicator_details['efa_period'] = $request->efa_period;
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
-                $table_name = $this_dlr->webForm->table_name;
                 break;
             case "6.2":
                 dd($request->all());
@@ -427,8 +423,10 @@ class UploadIndicatorsController extends Controller
         }
 
         if (isset($this_dlr->web_form_id)) {
+            $table_name = $this_dlr->webForm->table_name;
             $saved= DB::table("$table_name")->insert($indicator_details);
         } else {
+            $table_name = Str::snake("indicator_".$this_dlr->identifier);
             $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
         }
 
