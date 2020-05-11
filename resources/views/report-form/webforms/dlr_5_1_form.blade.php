@@ -18,7 +18,7 @@
                                     <input type="hidden" name="indicator_id" value="{{$indicator_info->id}}">
                                     <div class="col-md-4">
                                         <fieldset class="form-group{{ $errors->has('amountindollars') ? ' form-control-warning' : '' }}">
-                                            <label for="amountindollars">Amount (USD)<span class="required">*</span></label>
+                                            <label for="amountindollars">{{$lang['Amount (USD)']}}<span class="required">*</span></label>
                                             <input type="number" class="form-control text-right"  min="0" step="0.01"
                                                    required name="amountindollars" id="amountindollars">
                                             @if ($errors->has('amountindollars'))
@@ -31,9 +31,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <fieldset class="form-group{{ $errors->has('originalamount') ? ' form-control-warning' : '' }}">
-                                            <label for="originalamount">Original Amount<span class="required">*</span></label>
+                                            <label for="originalamount">{{$lang['Original Amount']}}<span class="required">*</span></label>
                                             <input type="number" class="form-control text-right"  min="0" step="0.01"
-                                                   required name="originalamount"id="originalamount">
+                                                   required name="originalamount" id="originalamount">
                                             @if ($errors->has('originalamount'))
                                                 <p class="text-right mb-0">
                                                     <small class="warning text-muted">{{ $errors->first('originalamount') }}</small>
@@ -43,9 +43,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <fieldset class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
-                                            <label for="currency">Original Amount Currency<span class="required">*</span></label>
+                                            <label for="currency">{{$lang['Original Amount Currency']}}<span class="required">*</span></label>
                                             <select class="form-control" required name="currency" id="currency">
-                                                <option value="">Select One</option>
+                                                <option value="">{{$lang['Select One']}}</option>
                                                 <option value="USD">US Dollar</option>
                                                 <option value="EURO">Euro</option>
                                                 <option value="SDR">SDR</option>
@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <fieldset class="form-group{{ $errors->has('source') ? ' form-control-warning' : '' }}">
-                                            <label for="source">Source<span class="required">*</span></label>
+                                            <label for="source">{{$lang['Source']}}<span class="required">*</span></label>
                                             <input type="text" class="form-control" id="source" min="0" required name="source">
                                             @if ($errors->has('source'))
                                                 <p class="text-right mb-0">
@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <fieldset>
-                                            <label for="datereceived">Date of Receipt<span class="required">*</span></label>
+                                            <label for="datereceived">{{$lang['Date of Receipt']}}<span class="required">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" name="datereceived" class="form-control form-control datepicker"
                                                        data-date-format="D-M-YYYY" id="datereceived">
@@ -83,7 +83,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <fieldset class="form-group{{ $errors->has('region') ? ' form-control-warning' : '' }}">
-                                            <label for="region">Region<span class="required">*</span></label>
+                                            <label for="region">{{$lang['Region']}}<span class="required">*</span></label>
                                             <input type="text" class="form-control" required name="region" id="region">
                                             @if ($errors->has('region'))
                                                 <p class="text-right mb-0">
@@ -95,7 +95,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <fieldset class="form-group{{ $errors->has('bankdetails') ? ' form-control-warning' : '' }}">
-                                            <label for="bankdetails">Account Details<span class="required">*</span></label>
+                                            <label for="bankdetails">{{$lang['Account Details']}}<span class="required">*</span></label>
                                             <input type="text" class="form-control"  min="0" required name="bankdetails"
                                             id="bankdetails">
                                             @if ($errors->has('bankdetails'))
@@ -108,7 +108,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <fieldset class="form-group{{ $errors->has('fundingreason') ? ' form-control-warning' : '' }}">
-                                            <label for="fundingreason">Purpose of Funds<span class="required">*</span></label>
+                                            <label for="fundingreason">{{$lang['Purpose of Funds']}}<span class="required">*</span></label>
                                             <input type="text" class="form-control"  required name="fundingreason" id="fundingreason">
                                             @if ($errors->has('fundingreason'))
                                                 <p class="text-right mb-0">
@@ -170,16 +170,16 @@
                 <div class="card-body table-responsive">
                     <table class="table table-scrollable table-striped table-bordered">
                         <tr>
-                            <th style="min-width: 30px">No.</th>
-                            <th style="min-width: 120px">Amount (USD)</th>
-                            <th style="min-width: 120px">Original Amount</th>
-                            <th style="min-width: 120px">Original Amount Currency</th>
-                            <th style="min-width: 250px">Source</th>
-                            <th style="min-width: 120px">Date of Receipt</th>
-                            <th style="min-width: 250px">Bank Details</th>
-                            <th style="min-width: 120px">Region</th>
-                            <th style="min-width: 250px">Purpose of Funds</th>
-                            <th style="min-width: 180px">Action</th>
+                            <th style="min-width: 30px">#</th>
+                            <th style="min-width: 120px">{{$lang['Amount (USD)']}}</th>
+                            <th style="min-width: 120px">{{$lang['Original Amount']}}</th>
+                            <th style="min-width: 120px">{{$lang['Original Amount Currency']}}</th>
+                            <th style="min-width: 250px">{{$lang['Source']}}</th>
+                            <th style="min-width: 120px">{{$lang['Date of Receipt']}}</th>
+                            <th style="min-width: 250px">{{$lang['Account Details']}}</th>
+                            <th style="min-width: 120px">{{$lang['Region']}}</th>
+                            <th style="min-width: 250px">{{$lang['Purpose of Funds']}}</th>
+                            <th style="min-width: 180px">{{$lang['Action']}}</th>
                         </tr>
                         @php $counter=0; @endphp
                         @foreach($data as $datum)

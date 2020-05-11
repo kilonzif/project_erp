@@ -79,12 +79,12 @@ class UploadIndicatorsController extends Controller
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
                     ,'indicator_info','ace_programmes'));
                 }
-                else if($report->language=="french" && $indicators->identifier =='5.1'){
-                    return view('report-form.webforms.dlr51fr-webform', compact('indicators',
-                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
-
-                }
+//                else if($report->language=="french" && $indicators->identifier =='5.1'){
+//                    return view('report-form.webforms.dlr51fr-webform', compact('indicators',
+//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+//                        ,'indicator_info'));
+//
+//                }
                 else if($report->language=="english" && $indicators->identifier =='4.1'){
                     return view('report-form.webforms.dlr41en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
@@ -545,9 +545,11 @@ class UploadIndicatorsController extends Controller
                 ->first();
         }
 
-        $report = Report::find($the_record['report_id']);
+        $report = Report::find($the_record->report_id);
         $ace = $report->ace;
         $ace_programmes = explode(';',$ace->programmes);
+        $select_language = new CommonFunctions();
+        $lang = $select_language->webFormLang($report->language);
 
         if($report->language=="english" && $this_indicator->identifier =='4.1' ){
             $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id',
@@ -557,14 +559,14 @@ class UploadIndicatorsController extends Controller
             $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id',
                 'this_indicator','ace_programmes'))->render();
         }
-        elseif($report->language=="english" && $this_indicator->identifier =='5.1' ){
-            $view = view ('report-form.webforms.edit_dlr51en',compact('the_record','record_id',
-                'this_indicator'))->render();
-        }
-        elseif($report->language=="french" && $this_indicator->identifier =='5.1' ){
-            $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id',
-                'this_indicator'))->render();
-        }
+//        elseif($report->language=="english" && $this_indicator->identifier =='5.1' ){
+//            $view = view ('report-form.webforms.edit_dlr51en',compact('the_record','record_id',
+//                'this_indicator'))->render();
+//        }
+//        elseif($report->language=="french" && $this_indicator->identifier =='5.1' ){
+//            $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id',
+//                'this_indicator'))->render();
+//        }
         elseif($report->language=="english" && $this_indicator->identifier =='7.3' ){
             $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id',
                 'this_indicator'))->render();
@@ -576,7 +578,7 @@ class UploadIndicatorsController extends Controller
         elseif (isset($this_indicator->web_form_id)) {
             $view_name = $this_indicator->webForm->view_name;
             $view = view ("report-form.webforms.edit_$view_name",compact('the_record','record_id',
-                'this_indicator'))->render();
+                'this_indicator','lang'))->render();
         }
         return response()->json(['theView' => $view]);
     }
@@ -613,7 +615,7 @@ class UploadIndicatorsController extends Controller
                 break;
             case "5.1":
                 $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['indicator_id'] = $request->indicator_id;
+//                $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['amountindollars'] = $request->amountindollars;
                 $indicator_details['originalamount'] = $request->originalamount;
                 $indicator_details['currency'] = $request->currency;

@@ -344,6 +344,7 @@ class CommonFunctions {
         return [
             'Edit'                                          =>  'Edit',
             'Save'                                          =>  'Save',
+            'Update'                                        =>  'Update',
             'File'                                          =>  'File',
             'Action'                                        =>  'Action',
             'Period covered by IFR'                         =>  'Period covered by IFR',
@@ -351,6 +352,15 @@ class CommonFunctions {
             'File Upload'                                   =>  'File upload',
             'Date of Submission'                            =>  'Date of Submission',
             'Submission Date'                               =>  'Submission Date',
+            'Amount (USD)'                                  =>  'Amount (USD)',
+            'Purpose of Funds'                              =>  'Purpose of Funds',
+            'Region'                                        =>  'Region',
+            'Account Details'                               =>  'Account Details',
+            'Date of Receipt'                               =>  'Date of Receipt',
+            'Source'                                        =>  'Source',
+            'Select One'                                    =>  'Select One',
+            'Original Amount Currency'                      =>  'Original Amount Currency',
+            'Original Amount'                               =>  'Original Amount',
         ];
     }
 
@@ -362,6 +372,7 @@ class CommonFunctions {
         return [
             'Edit'                                          =>  'Éditer',
             'Save'                                          =>  'Sauver',
+            'Update'                                        =>  'Mise à jour',
             'File'                                          =>  'Fichier',
             'Action'                                        =>  'Action',
             'Period covered by IFR'                         =>  'Période couverte par IFR',
@@ -369,6 +380,15 @@ class CommonFunctions {
             'File Upload'                                   =>  'Téléchargement de fichiers',
             'Date of Submission'                            =>  'Date de Soumission',
             'Submission Date'                               =>  'Date de Soumission',
+            'Amount (USD)'                                  =>  'Montant (USD)',
+            'Purpose of Funds'                              =>  'Objet des fonds',
+            'Account Details'                               =>  'Détails du compte',
+            'Region'                                        =>  'Région',
+            'Date of Receipt'                               =>  'Date de réception',
+            'Source'                                        =>  'La source',
+            'Select One'                                    =>  'Sélectionnez un',
+            'Original Amount Currency'                      =>  'Devise du montant d\'origine',
+            'Original Amount'                               =>  'Montant original',
         ];
     }
 }
