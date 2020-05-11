@@ -257,7 +257,7 @@ class CommonFunctions {
                 'comments' => FALSE,
                 'url' => FALSE
             ],
-            'PROCUREMENT MANUAL'=>[
+            'PROCEDURES MANUAL'=>[
                 'submission_date' => [
                     'show'  =>  true,
                     'required'  =>  true,
