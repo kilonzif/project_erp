@@ -75,9 +75,9 @@
                                             <div class="input-group">
                                                 <input type="text" name="datereceived" class="form-control form-control datepicker"
                                                        data-date-format="D-M-YYYY" id="datereceived">
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
-                                                </div>
+                                                {{--<span class="input-group-append">--}}
+                                                    {{--<span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>--}}
+                                                {{--</span>--}}
                                             </div>
                                         </fieldset>
                                     </div>
