@@ -484,23 +484,6 @@ class ReportFormController extends Controller
             }
         }
 
-//        if (in_array('french', collect($get_form)->toArray())) {
-//            $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
-//            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
-//            $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
-//            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
-//            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
-//            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
-//
-//
-//        }
-//        $pdo_1 = $this->generateAggregatedIndicator3Results($id);
-//        $pdo_2 = $this->generateAggregatedIndicator73Results($id);
-//        $pdo_52 = $this->generateAggregatedIndicator52Results($id);
-//        $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-//        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
-//        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
-
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
@@ -510,11 +493,6 @@ class ReportFormController extends Controller
         return view('report-form.view', compact('project', 'language', 'reporting_period',
             'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
-
-//        return view('report-form.view', compact('project', 'language', 'reporting_period',
-//            'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-//            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
-
     }
 
     /**
@@ -724,8 +702,6 @@ class ReportFormController extends Controller
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
-//        return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-//            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
     }
 
     /**
@@ -2040,15 +2016,15 @@ class ReportFormController extends Controller
         $national_sources = DB::table('indicator_5_1')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "Nat%")
-                    ->orWhere('source', 'like', "nat%");
+                $query->where('region', 'like', "Nat%")
+                    ->orWhere('region', 'like', "nat%");
             })->sum('amountindollars');
 
         $regional_sources = DB::table('indicator_5_1')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "Reg%")
-                    ->orWhere('source', 'like', "reg%");
+                $query->where('region', 'like', "Reg%")
+                    ->orWhere('region', 'like', "reg%");
             })->sum('amountindollars');
 
         if ($submit) {
@@ -2059,11 +2035,9 @@ class ReportFormController extends Controller
             }
             return $message;
         }
-
         $indicator_5_1_values["ir_indicator_4"]["total_revenue"] = money_format($total_revenue,2);
         $indicator_5_1_values["ir_indicator_4"]["national_sources"] = money_format($national_sources,2);
         $indicator_5_1_values["ir_indicator_4"]["regional_sources"] = money_format($regional_sources,2);
-
 
         return $indicator_5_1_values;
     }
@@ -2081,14 +2055,14 @@ class ReportFormController extends Controller
         $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
             ->where('report_id', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "N%")
-                    ->orWhere('source', 'like', "n%");
+                $query->where('region', 'like', "N%")
+                    ->orWhere('region', 'like', "n%");
             })->sum('amountindollars');
         $regional_sources = DB::connection('mongodb')->collection('indicator_5.1')
             ->where('report_id', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "R%")
-                    ->orWhere('source', 'like', "r%");
+                $query->where('region', 'like', "R%")
+                    ->orWhere('region', 'like', "r%");
             })->sum('amountindollars');
 
         if ($submit) {

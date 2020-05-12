@@ -364,6 +364,8 @@ class CommonFunctions {
             'Select One'                                    =>  'Select One',
             'Original Amount Currency'                      =>  'Original Amount Currency',
             'Original Amount'                               =>  'Original Amount',
+            'National'                                      =>  'National',
+            'Regional'                                      =>  'Regional',
         ];
     }
 
@@ -395,6 +397,8 @@ class CommonFunctions {
             'Select One'                                    =>  'Sélectionnez un',
             'Original Amount Currency'                      =>  'Devise du montant d\'origine',
             'Original Amount'                               =>  'Montant original',
+            'National'                                      =>  'National',
+            'Regional'                                      =>  'Régional',
         ];
     }
 }

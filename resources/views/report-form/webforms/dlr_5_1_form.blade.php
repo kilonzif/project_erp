@@ -85,7 +85,11 @@
                                     <div class="col-md-4">
                                         <fieldset class="form-group{{ $errors->has('region') ? ' form-control-warning' : '' }}">
                                             <label for="region">{{$lang['Region']}}<span class="required">*</span></label>
-                                            <input type="text" class="form-control" required name="region" id="region">
+                                            <select name="region" id="region" class="form-control" required>
+                                                <option value="">{{$lang['Select One']}}</option>
+                                                <option value="{{$lang['National']}}">{{$lang['National']}}</option>
+                                                <option value="{{$lang['Regional']}}">{{$lang['Regional']}}</option>
+                                            </select>
                                             @if ($errors->has('region'))
                                                 <p class="text-right mb-0">
                                                     <small class="warning text-muted">{{ $errors->first('region') }}</small>
