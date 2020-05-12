@@ -134,6 +134,11 @@
                                 <i class="ft-download"></i> Download uploaded data
                             </a>
                             @endif
+                                @if (session('message'))
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ session('message') }}
+                                    </div>
+                                @endif
                             <br>
                             <p class="text-danger text-uppercase">
                                 Scroll down this page to submit the report
