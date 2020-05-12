@@ -53,7 +53,10 @@ class Ace extends Model implements Auditable {
 		return $this->belongsToMany('App\Course', 'ace_courses');
 	}
 	public function emails() {
-		return $this->hasMany('App\Aceemail');
+//		return $this->hasMany('App\Aceemail');
+	}
+	public function contactsEmail() {
+		return $this->hasManyThrough('App\Contacts','App\AceContact');
 	}
 
 	public function verificationLetters() {

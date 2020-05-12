@@ -6,6 +6,7 @@ use App\Notifications\CommentCreatedNotification;
 use App\User;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 use Laravelista\Comments\Events\CommentCreated;
 
 class CommentCreatedListener
@@ -26,10 +27,11 @@ class CommentCreatedListener
      * @param CommentCreated $comment
      * @return void
      */
-    public function handle(CommentCreated $commentCreated)
-    {
-//        dd($commentCreated->comment->commenter_id);
-        User::find($commentCreated->comment->commenter_id)->notify(new CommentCreatedNotification($commentCreated->comment));
-    //   App\User::find(1)->notify(new App\Notifications\CommentCreatedNotification(Laravelista\Comments\Comment::find(8)));
+    public function handle(\App\Events\CommentCreated $commentCreated) {
+        try {
+            User::find($commentCreated->comment->commenter_id)->notify(new CommentCreatedNotification($commentCreated->comment));
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravelista\Comments\Commenter;
 use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable

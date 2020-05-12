@@ -81,10 +81,10 @@ Route::get('/send-mail', function () {
 
 );
 
-Route::post('comments', 'CommentController@store');
-Route::delete('comments/{comment}', 'CommentController@destroy');
-Route::put('comments/{comment}', 'CommentController@update');
-Route::post('comments/{comment}', 'CommentController@reply');
+Route::post('comments', 'CommentController@store')->name('comments.store');
+Route::delete('comments/{comment}', 'CommentController@destroy')->name('comments.destroy');
+Route::put('comments/{comment}', 'CommentController@update')->name('comments.update');
+Route::post('comments/{comment}', 'CommentController@reply')->name('comments.reply');
 
 Route::get('/commenttest/{id}', 'CommentController@index')->name('comment');
 

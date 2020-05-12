@@ -31,7 +31,6 @@
             </div>
         </div>
     </div>
-
     <div class="content-body">
         <div class="row">
             <div class="col-md-12">
@@ -109,6 +108,26 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div style="margin-right:10px;">
+                        @if($report->editable)
+                            <a href="{{route('report_submission.edit', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                               class="btn btn-secondary mb-2">
+                                    <i class="ft-edit"></i> Edit Report
+                            </a>
+                        @elseif(isset($indicators->web_form_id))
+                            <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                               class="btn btn-secondary mb-2">
+                                    <i class="ft-eye"></i> View Data
+                            </a>
+                        @endif
+                        @if($the_indicator->upload && isset($report->report_upload->file_name))
+                            <a href="{{route('report_submission.report.download_file', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
+                               class="btn btn-link mb-2 text-right">
+                                <i class="ft-download"></i> Download uploaded data
+                            </a>
+                        @endif
                     </div>
                     {{--indicators3--}}
                     <div class="card mb-1">
@@ -304,8 +323,17 @@
             </div>
         </div>
     </div>
-
-
+    @push('side-drawer')
+        <div class="customizer border-left-blue-grey border-left-lighten-4 d-none d-xl-block">
+            <a class="customizer-close" href="#"><i class="ft-x font-medium-3"></i></a>
+            <a class="customizer-toggle bg-danger" href="#"  style=" top:12%">
+                <i class="font-medium-3 fa fa-comments white"></i>
+            </a>
+            <div class="customizer-content p-2 ps-container chat-application">
+                @comments(['model' =>$report])
+            </div>
+        </div>
+    @endpush
 @endsection
 @push('vendor-script')
 

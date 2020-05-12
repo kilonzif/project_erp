@@ -42,9 +42,6 @@ class CommentController extends Controller
     
     }
 
-
-
- 
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -55,40 +52,25 @@ class CommentController extends Controller
 
         $model = $request->commentable_type::findOrFail($request->commentable_id);
 
-        $comment_ob = new Comment;
+        $comment_ob = new Comment();
         $comment_ob->commenter()->associate(auth()->user());
         $comment_ob->commentable()->associate($model);
         $comment_ob->comment = $request->message;
-        $comment_ob->save();
+        if ($comment_ob->save()) {
+            notify(new ToastNotification('Successful!', 'Comment added!', 'success'));
+        } else {
+            notify(new ToastNotification('Sorry!', 'Please try again', 'warning'));
+        }
+        return back();
 
-        $comment = Comment::find($comment_ob->id);
-
-      //  $view = $new_comment->id." => ".$new_comment->commenter->name;
-        $view= view('vendor.comments._comment',compact('comment'))->render();
-        return response()->json(['view'=> $view]);
-
-        //echo"  <p> dgdg </p> ";
-
-
-
-
-
-
-
-
-
-
-
-        
-        //notify(new ToastNotification('Successful!', 'Comment Added!', 'success'));
-       //echo "We got here";
-        //return redirect()->to(url()->previous() . '#comment-' . $comment->id);
+//        $view= view('vendor.comments._comment',compact('comment'))->render();
+//        return response()->json(['view'=> $view]);
     }
 
     /**
      * Updates the message of the comment.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, \Laravelista\Comments\Comment $comment)
     {
         $this->authorize('edit-comment', $comment);
 
@@ -107,7 +89,7 @@ class CommentController extends Controller
     /**
      * Deletes a comment.
      */
-    public function destroy(Comment $comment)
+    public function destroy(\Laravelista\Comments\Comment $comment)
     {
         $this->authorize('delete-comment', $comment);
 
@@ -120,7 +102,7 @@ class CommentController extends Controller
     /**
      * Creates a reply "comment" to a comment.
      */
-    public function reply(Request $request, Comment $comment)
+    public function reply(Request $request, \Laravelista\Comments\Comment $comment)
     {
         $this->authorize('reply-to-comment', $comment);
 

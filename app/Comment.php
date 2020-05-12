@@ -31,7 +31,8 @@ class Comment extends Model
      */
     public function commenter()
     {
-        return $this->belongsTo(config('comments.commenter'));
+        return $this->belongsTo('App\User','commenter_id');
+//        return $this->belongsTo(config('comments.commenter'));
     }
 
     /**

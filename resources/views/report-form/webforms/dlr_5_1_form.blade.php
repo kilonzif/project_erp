@@ -1,6 +1,7 @@
 @extends('report-form.webforms.webform')
 @section('web-form')
 <div class="row">
+    @if($report->editable)
     <div class="col-md-12">
         <div class="card">
             <h5 class="card-header p-1 card-head-inverse bg-teal">
@@ -131,6 +132,7 @@
             </div>
         </div>
     </div>
+    @endif
     <div class="col-md-12">
         <div class="card">
                 <h6 class="card-header p-1 card-head-inverse bg-primary">
@@ -149,7 +151,9 @@
                                 <th style="min-width: 250px">{{$lang['Account Details']}}</th>
                                 <th style="min-width: 120px">{{$lang['Region']}}</th>
                                 <th style="min-width: 250px">{{$lang['Purpose of Funds']}}</th>
+                                @if($report->editable)
                                 <th style="min-width: 180px">{{$lang['Action']}}</th>
+                                @endif
                             </tr>
                             @php $counter=0; @endphp
                             @foreach($data as $datum)
@@ -164,6 +168,7 @@
                                     <td>{{$datum->bankdetails}}</td>
                                     <td>{{$datum->region}}</td>
                                     <td>{{$datum->fundingreason}}</td>
+                                    @if($report->editable)
                                     <td>
                                         <div class="btn-group" role="group">
                                         <a href="#form-card" onclick="editRecord('{{$indicator_info->id}}','{{$datum->id}}')" class="btn btn-s btn-secondary">
@@ -173,6 +178,7 @@
                                            title="Delete Record"><i class="ft-trash-2"></i></a>
                                         </div>
                                     </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </table>

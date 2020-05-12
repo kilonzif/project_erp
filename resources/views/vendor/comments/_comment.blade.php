@@ -1,118 +1,82 @@
-
-
-
-
-
-
-
-
-
-
 @inject('markdown', 'Parsedown')
+@php($markdown->setSafeMode(true))
 
 @if(isset($reply) && $reply === true)
-  <div id="comment-{{ $comment->id }}" >
+  <div id="comment-{{ $comment->getKey() }}" class="media">
 @else
-  <dt id=" comment-{{ $comment->id }}" style=" font-weight: 400;">
+  <li id="comment-{{ $comment->getKey() }}" class="media">
 @endif
-    {{-- <img class="mr-3" src="https://www.gravatar.com/avatar/{{ md5($comment->commenter->email) }}.jpg?s=64" alt="{{ $comment->commenter->name }} Avatar"> --}}
-
-    {{-- <img class="mr-3" src="{{asset('images/portrait/small/avatar-s-1.png')}}"   height="50px" width="50px"   alt="{{ $comment->commenter->name }} Avatar"> --}}
-    
-
     <div class="media-body">
-        @if($comment->updated_at!=$comment->created_at)
-        <h5 class="mt-0 mb-1">{{ $comment->commenter->name }} <small class="text-muted">{{ $comment->updated_at->diffForHumans() }}</small></h5>
-        @else
-         <h5 class="mt-0 mb-1">{{ $comment->commenter->name }} <small class="text-muted">{{ $comment->created_at->diffForHumans() }}</small></h5>
-        @endif
-
+        <h5 class="mt-0 mb-1">
+            {{ $comment->commenter->name ?? $comment->guest_name }}
+            <small class="text-muted">- {{ $comment->created_at->diffForHumans() }}</small>
+        </h5>
         <div style="white-space: pre-wrap;">{!! $markdown->line($comment->comment) !!}</div>
 
-
-
-        <p>
+        <div>
             @can('reply-to-comment', $comment)
-                <button data-toggle="modal" data-target="#reply-modal-{{ $comment->id }}" class="btn btn-sm btn-link text-uppercase">Reply</button>
+                <button data-toggle="modal" data-target="#reply-modal-{{ $comment->getKey() }}"
+                        class="btn btn-sm btn-outline-primary text-uppercase">Reply</button>
             @endcan
             @can('edit-comment', $comment)
-                <button data-toggle="modal" data-target="#comment-modal-{{ $comment->id }}" class="btn btn-sm btn-link text-uppercase">Edit</button>
+                <button data-toggle="modal" data-target="#comment-modal-{{ $comment->getKey() }}"
+                        class="btn btn-sm btn-outline-secondary text-uppercase">Edit</button>
             @endcan
             @can('delete-comment', $comment)
-                <a href="{{ url('comments/' . $comment->id) }}" onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->id }}').submit();" class="btn btn-sm btn-link text-danger text-uppercase">Delete</a>
-                <form id="comment-delete-form-{{ $comment->id }}" action="{{ url('comments/' . $comment->id) }}" method="POST" style="display: none;">
+                <a href="{{ route('comments.destroy', $comment->getKey()) }}"
+                   onclick="event.preventDefault();document.getElementById('comment-delete-form-{{ $comment->getKey() }}').submit();"
+                   class="btn btn-sm btn-outline-danger text-uppercase">Delete</a>
+                <form id="comment-delete-form-{{ $comment->getKey() }}" action="{{ route('comments.destroy', $comment->getKey()) }}" method="POST" style="display: none;">
                     @method('DELETE')
                     @csrf
                 </form>
-
             @endcan
-            <hr>
-        </p>
+        </div>
 
-        
-
-
-
-
-       @can('edit-comment', $comment)
-            <div class="modal fade" id="comment-modal-{{ $comment->id }}" tabindex="-1" role="dialog">
+        @can('edit-comment', $comment)
+            <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form method="POST" action="{{ url('comments/' . $comment->id) }}">
+                        <form method="POST" action="{{ route('comments.update', $comment->getKey()) }}">
                             @method('PUT')
                             @csrf
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit Comment</h5>
+                            <div class="modal-body" style="padding: 2rem;">
                                 <button type="button" class="close" data-dismiss="modal">
-                                <span>&times;</span>
+                                    <span>&times;</span>
                                 </button>
-                            </div>
-                            <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="message">Update your message here:</label>
-                                    <textarea required class="form-control" name="message" rows="3">{{ $comment->comment }}</textarea>
-                                    
+                                    <label for="message">Update your comment</label>
+                                    <textarea required class="form-control" name="message" rows="4">{{ $comment->comment }}</textarea>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-sm btn-outline-success text-uppercase">Update</button>
+                                <div class="">
+                                    <button type="button" class="btn btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-outline-success text-uppercase">Update</button>
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         @endcan
-
-
-
-
-
-
-
 
         @can('reply-to-comment', $comment)
-            <div class="modal fade" id="reply-modal-{{ $comment->id }}" tabindex="-1" role="dialog">
+            <div class="modal fade" id="reply-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <form method="POST" action="{{ url('comments/' . $comment->id) }}">
+                        <form method="POST" action="{{ route('comments.reply', $comment->getKey()) }}">
                             @csrf
-                            <div class="modal-header">
-                                <h5 class="modal-title">Reply to Comment</h5>
-                                <button type="button" class="close" data-dismiss="modal">
-                                <span>&times;</span>
-                                </button>
-                            </div>
                             <div class="modal-body">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span>&times;</span>
+                                </button>
                                 <div class="form-group">
-                                    <label for="message">Enter your message here:</label>
-                                    <textarea required class="form-control" name="message" rows="3"></textarea>
-                                    
+                                    <label for="message">Reply to Comment</label>
+                                    <textarea required class="form-control" name="message" rows="4"></textarea>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-sm btn-outline-success text-uppercase">Reply</button>
+                                <div class="">
+                                    <button type="button" class="btn btn-outline-secondary text-uppercase" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-outline-success text-uppercase">Reply</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -120,19 +84,21 @@
             </div>
         @endcan
 
-        {{-- Margin bottom --}}
+        <br />{{-- Margin bottom --}}
 
-        @foreach($comment->children as $child)
-            @include('comments::_comment', [
-                'comment' => $child,
-                'reply' => true
-            ])
-        @endforeach
+         {{--Recursion for children--}}
+        @if($grouped_comments->has($comment->getKey()))
+            @foreach($grouped_comments[$comment->getKey()] as $child)
+                @include('comments::_comment', [
+                    'comment' => $child,
+                    'reply' => true,
+                    'grouped_comments' => $grouped_comments
+                ])
+            @endforeach
+        @endif
     </div>
-
-    
 @if(isset($reply) && $reply === true)
   </div>
 @else
-  </dt>
+  </li>
 @endif

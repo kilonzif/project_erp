@@ -15,7 +15,6 @@ class CommentCreatedNotification extends Notification {
 	use Queueable;
 
 	private $comment;
-	//private $report;
 	/**
 	 * Create a new notification instance.
 	 *
@@ -23,7 +22,6 @@ class CommentCreatedNotification extends Notification {
 	 */
 	public function __construct($comment) {
 		$this->comment = $comment;
-		//	$this->report = $report;
 	}
 
 	/**
@@ -44,32 +42,14 @@ class CommentCreatedNotification extends Notification {
 	 */
 	public function toMail($notifiable) {
 		try {
-
 			$report = Report::find($this->comment->commentable_id);
-			// $user = Report::find($this->report->user->name);
-			$emails = ($report->ace->emails->pluck('email')->toArray());
-			//dd($this->comment->comment);
-			// $this->report->user_id
-			// $data = array('name' => 'user', "body" => $this->comment->comment, 'commentername' => $this->comment->commenter->name, 'createdat' => $this->comment->created_at->diffForHumans());
-
-			// Mail::send('emails.mail', $data, function ($message) use ($emails) {
-			// 	// dd($message);
-			// 	$message->to('edem.gbeku@makeduconsult.com', 'makeduconsult')
-			// 		->cc($emails)
-			// 		->subject('A Comment  Has Been Added');
-			// 	$message->from('info@aau.org', 'AAU-MEL');
-			// });
-
-//////////////////
-
+			$emails = ($report->ace->contactsEmail->pluck('email')->toArray());
 		} catch (\Exception $e) {
-
 			$emails = [];
 			Log::error($e->getMessage());
 		}
 
 		return (new MailMessage)
-
 			->line('A Comment  Has Been Added To Your Report By ' . $this->comment->commenter->name)
 			//->line(" at " . $this->comment->created_at)
 			->line('Comment: ' . '"' . $this->comment->comment . '"')
@@ -78,7 +58,6 @@ class CommentCreatedNotification extends Notification {
 			->cc($emails)
 			->subject('Report Review')
 			->line('Thank you for using our application!');
-
 	}
 
 	/**
