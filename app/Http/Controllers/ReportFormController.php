@@ -873,6 +873,9 @@ class ReportFormController extends Controller
         $all_students = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id);
+
+
+
         $total_students = $all_students->count();
 
         /**
@@ -951,18 +954,18 @@ class ReportFormController extends Controller
         $phd_regional = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
-            ->where("level", "=", $phd)
+            ->where("niveau", "=", $phd)
             ->where(function ($query) {
-                $query->where('regional-status', '=', "Regional")
-                    ->orWhere('regional-status', '=', "regional")
-                    ->orWhere('regional-status', 'like', "r%")
-                    ->orWhere('regional-status', 'like', "R%");
+                $query->where('regionalite', '=', "Regional")
+                    ->orWhere('regionalite', '=', "regional")
+                    ->orWhere('regionalite', 'like', "r%")
+                    ->orWhere('regionalite', 'like', "R%");
             });
 
         $phd_regional_female = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
-            ->where("level", "=", $phd)
+            ->where("niveau", "like", $phd)
             ->where(function ($query) {
                 $query->where('regional-status', '=', "Regional")
                     ->orWhere('regional-status', '=', "regional")
@@ -970,16 +973,16 @@ class ReportFormController extends Controller
                     ->orWhere('regional-status', 'like', "R%");
             })
             ->where(function ($query) {
-                $query->where('gender', '=', "Female")
-                    ->orWhere('gender', '=', "female")
-                    ->orWhere('gender', 'like', "f%")
-                    ->orWhere('gender', 'like', "F%");
+                $query->where('genre', '=', "Female")
+                    ->orWhere('genre', '=', "female")
+                    ->orWhere('genre', 'like', "f%")
+                    ->orWhere('genre', 'like', "F%");
             });
 
         $phd_national = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
-            ->where("level", "=", $phd)
+            ->where('niveau','=',$phd)
             ->where(function ($query) {
                 $query->where('regional-status', '=', "National")
                     ->orWhere('regional-status', '=', "national")
@@ -990,13 +993,13 @@ class ReportFormController extends Controller
         $phd_national_female = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
+            ->where("niveau", "=", $phd)
             ->where(function ($query) {
                 $query->where('regional-status', '=', "National")
                     ->orWhere('regional-status', '=', "national")
                     ->orWhere('regional-status', 'like', "n%")
                     ->orWhere('regional-status', 'like', "N%");
             })
-            ->where("level", "=", $phd)
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
@@ -1096,7 +1099,7 @@ class ReportFormController extends Controller
                     ->orWhere('regional-status', 'like', "r%")
                     ->orWhere('regional-status', 'like', "R%");
             })
-            ->where("level", "=", $bachelors);
+            ->where("niveau", "=", "%$bachelors%");
 
         $bachelors_regional_female = DB::connection('mongodb')
             ->collection('indicator_3')
@@ -1107,7 +1110,7 @@ class ReportFormController extends Controller
                     ->orWhere('regional-status', 'like', "r%")
                     ->orWhere('regional-status', 'like', "R%");
             })
-            ->where("level", "=", $bachelors)
+            ->where("niveau", "like", "%$bachelors%")
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
@@ -1123,7 +1126,7 @@ class ReportFormController extends Controller
                     ->orWhere('regional-status', 'like', "r%")
                     ->orWhere('regional-status', 'like', "R%");
             })
-            ->where("level", 'like', "%$course%");
+            ->where("niveau", 'like', "%$course%");
 //        dd($course_regional);
 
         $course_regional_female = DB::connection('mongodb')
@@ -1135,7 +1138,7 @@ class ReportFormController extends Controller
                     ->orWhere('regional-status', 'like', "r%")
                     ->orWhere('regional-status', 'like', "R%");
             })
-            ->where("level", 'like', "%$course%")
+            ->where("niveau", 'like', "%$course%")
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
@@ -1169,7 +1172,7 @@ class ReportFormController extends Controller
         $bachelors_female = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
-            ->where("level", "=", $bachelors)
+            ->where("niveau", "like", "%$bachelors%")
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
@@ -1180,7 +1183,7 @@ class ReportFormController extends Controller
         $course_female = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
-            ->where("level", 'like', "%$course%")
+            ->where("niveau", 'like', "%$course%")
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
@@ -1204,7 +1207,7 @@ class ReportFormController extends Controller
         $course_national = DB::connection('mongodb')
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
-            ->where("level", 'like', "%$course%")
+            ->where("niveau", 'like', "%$course%")
             ->where(function ($query) {
                 $query->where('regional-status', '=', "National")
                     ->orWhere('regional-status', '=', "national")
@@ -1221,7 +1224,7 @@ class ReportFormController extends Controller
                     ->orWhere('regional-status', 'like', "n%")
                     ->orWhere('regional-status', 'like', "N%");
             })
-            ->where("level", 'like', "%$course%")
+            ->where("niveau", 'like', "%$course%")
             ->where(function ($query) {
                 $query->where('gender', '=', "Female")
                     ->orWhere('gender', '=', "female")
@@ -1241,8 +1244,8 @@ class ReportFormController extends Controller
                 ->collection('indicator_3')
                 ->where('report_id', '=', $report_id)
                 ->where(function ($query) use($masters,$bachelors) {
-                    $query->where("level", 'like', "%$masters%")
-                        ->orWhere("level", 'like', "%$bachelors%");
+                    $query->where("niveau", 'like', "%$masters%")
+                        ->orWhere("niveau", 'like', "%$bachelors%");
                 })->count();
         }
 
@@ -2161,7 +2164,6 @@ class ReportFormController extends Controller
                 return [$message];
             }
         }
-
 
         $pdo_7_3_values["pdo_indicator_2"]["total_accreditations"] = $total_accreditations;
         $pdo_7_3_values["pdo_indicator_2"]["international_accreditation"] = $international_accreditation->count();

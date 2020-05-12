@@ -36,9 +36,9 @@
                 <label for="currency">{{$lang['Original Amount Currency']}}<span class="required">*</span></label>
                 <select class="form-control" required name="currency" id="currency">
                     <option value="">{{$lang['Select One']}}</option>
-                    <option {{($the_record->currency == 'USD')  ? "selected":""}} value="USD">US Dollar</option>
-                    <option {{($the_record->currency == 'EURO')  ? "selected":""}} value="EURO">Euro</option>
-                    <option {{($the_record->currency == 'SDR')  ? "selected":""}} value="SDR">SDR</option>
+                    @foreach($currency_list as $currency)
+                        <option {{($the_record->currency == $currency->id)  ? "selected":""}} value="{{$currency->id}}">{{$currency->value}}</option>
+                    @endforeach
                 </select>
                 @if ($errors->has('currency'))
                     <p class="text-right mb-0">

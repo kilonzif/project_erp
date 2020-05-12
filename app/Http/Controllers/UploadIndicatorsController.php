@@ -38,6 +38,8 @@ class UploadIndicatorsController extends Controller
         $select_language = new CommonFunctions();
         $lang = $select_language->webFormLang($report->language);
 
+        $currency_list = DB::table('currency_list')->get();
+
         if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
             notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
             return back();
@@ -107,7 +109,7 @@ class UploadIndicatorsController extends Controller
                         ,'indicator_info'));
                 }
                 else {
-                    return view("report-form.webforms.$view_name", compact('indicator_type','lang',
+                    return view("report-form.webforms.$view_name", compact('indicator_type','currency_list','lang',
                         'data','d_report_id','report_id','indicator_details','report','ace','indicator_info'));
                 }
             }
@@ -405,6 +407,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['institutionname'] = $request->institutionname;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+                $indicator_details['accreditationagency'] = $request->accreditationagency;
                 $indicator_details['accreditationreference'] = $request->accreditationreference;
                 $indicator_details['contactname'] = $request->contactname;
                 $indicator_details['contactemail'] = $request->contactemail;
@@ -546,6 +549,7 @@ class UploadIndicatorsController extends Controller
         }
 
         $report = Report::find($the_record->report_id);
+        $currency_list = DB::table('currency_list')->get();
         $ace = $report->ace;
         $ace_programmes = explode(';',$ace->programmes);
         $select_language = new CommonFunctions();
@@ -577,7 +581,7 @@ class UploadIndicatorsController extends Controller
         }
         elseif (isset($this_indicator->web_form_id)) {
             $view_name = $this_indicator->webForm->view_name;
-            $view = view ("report-form.webforms.edit_$view_name",compact('the_record','record_id',
+            $view = view ("report-form.webforms.edit_$view_name",compact('the_record','currency_list','record_id',
                 'this_indicator','lang'))->render();
         }
         return response()->json(['theView' => $view]);
@@ -653,6 +657,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['institutionname'] = $request->institutionname;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
                 $indicator_details['accreditationreference'] = $request->accreditationreference;
+                $indicator_details['accreditationagency'] = $request->accreditationagency;
                 $indicator_details['contactname'] = $request->contactname;
                 $indicator_details['contactemail'] = $request->contactemail;
                 $indicator_details['contactphone'] = $request->contactphone;
