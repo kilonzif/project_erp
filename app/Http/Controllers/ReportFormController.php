@@ -426,6 +426,8 @@ class ReportFormController extends Controller
 
         $indicators = Indicator::where('id', '=', $report->indicator_id)->orderBy('identifier', 'asc')->first();
 
+        $select_language = new CommonFunctions();
+        $lang = $select_language->webFormLang($report->language);
 
         $comment = AceComment::where('report_id', $id)->first();
 
@@ -447,7 +449,7 @@ class ReportFormController extends Controller
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
-                $pdo_indicator = config('app.indicator_51');
+                $pdo_indicators = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
@@ -492,7 +494,7 @@ class ReportFormController extends Controller
 
         return view('report-form.view', compact('project', 'language', 'reporting_period',
             'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
+            'indicators', 'the_indicator', 'pdo_values','pdo_indicators','lang'));
     }
 
     /**
@@ -638,6 +640,9 @@ class ReportFormController extends Controller
 
         $comment = AceComment::where('report_id', $id)->first();
 
+        $select_language = new CommonFunctions();
+        $lang = $select_language->webFormLang($report->language);
+
         $language = collect($get_form)->toArray();
         $pdo_values = $pdo_indicators =[];
 
@@ -658,7 +663,7 @@ class ReportFormController extends Controller
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
-                $pdo_indicator = config('app.indicator_51');
+                $pdo_indicators = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
@@ -701,7 +706,7 @@ class ReportFormController extends Controller
         $aces = Ace::where('active', '=', 1)->get();
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
+            'indicators', 'the_indicator', 'pdo_values','pdo_indicators','lang'));
     }
 
     /**

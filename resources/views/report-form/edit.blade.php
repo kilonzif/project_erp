@@ -120,16 +120,16 @@
                             <a href="{{route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                class="btn btn-secondary mb-2">
                                 @if($the_indicator->upload)
-                                    <i class="ft-upload"></i> Upload Indicator
+                                    <i class="ft-upload"></i> {{$lang['Upload Indicator']}}
                                 @else
-                                    <i class="ft-edit"></i> Add Record
+                                    <i class="ft-edit"></i> {{$lang['Add Record']}}
                                 @endif
                             </a>
                             @endif
                             @if($the_indicator->upload && isset($report->report_upload->file_name))
                             <a href="{{route('report_submission.report.download_file', [\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                class="btn btn-link mb-2 text-right">
-                                <i class="ft-download"></i> Download uploaded data
+                                <i class="ft-download"></i> {{$lang['Download uploaded data']}}
                             </a>
                             @endif
                                 @if (session('message'))
@@ -139,13 +139,23 @@
                                 @endif
                             <br>
                             <p class="text-danger text-uppercase">
-                                Scroll down this page to submit the report
+                                {{$lang['Scroll down this page to submit the report']}}
                             </p>
                         </div>
                         {{--indicators3--}}
                         <div class="card mb-1">
                             <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
-                                {{$indicators->title}}
+                                @php
+                                    $the_indicator_title = $the_indicator->title;
+                                    $the_indicator_unit_measure = $the_indicator->unit_measure;
+                                    if ($report->language == 'french' && isset($the_indicator->french)) {
+                                        $$the_indicator_title = $the_indicator->french;
+                                        if (isset($the_indicator->unit_measure_french)) {
+                                            $the_indicator_unit_measure = $the_indicator->unit_measure_french;
+                                        }
+                                    }
+                                @endphp
+                                {{$the_indicator_title}}
                                 <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                                 <div class="heading-elements">
                                     <ul class="list-inline mb-0">
@@ -157,7 +167,7 @@
                                 <div class="card-body table-responsive">
                                     <h5>
                                         <small>
-                                            <span class="text-secondary text-bold-500">Unit of Measure: {{$indicators->unit_measure}}</span>
+                                            <span class="text-secondary text-bold-500">{{$lang['Unit of Measure']}}: {{$the_indicator_unit_measure}}</span>
                                         </small>
                                     </h5>
                                     @if($indicators->indicators->count() > 0)
@@ -170,6 +180,10 @@
                                         @endphp
                                         @foreach($sub_indicators as $sub_indicator)
                                             @php
+                                                $sub_indicator_title = $sub_indicator->identifier.": ".$sub_indicator->title;
+                                                if ($report->language == 'french' && isset($sub_indicator->french)) {
+                                                    $sub_indicator_title = $sub_indicator->french;
+                                                }
                                                 $indicator_identifier = (string)$sub_indicator->identifier;
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
                                                 $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->where('status','=',1)->get();
@@ -181,12 +195,18 @@
                                                     @if($sub_indicator->status == 0) @continue @endif
 
                                                     <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
-                                                        <strong>{{$sub_indicator->identifier}}:</strong> {{$sub_indicator->title}}
+                                                        {{$sub_indicator_title}}
                                                     </h6>
                                                     @php $counter = 0;@endphp
                                                     @foreach($child_dlr as $child)
+                                                        @php
+                                                            $child_title = $child->title;
+                                                            if ($report->language == 'french' && isset($child->french)) {
+                                                                $child_title = $child->french;
+                                                            }
+                                                        @endphp
                                                         <tr>
-                                                            <td>{{$child->title}} <span class="required">*</span>
+                                                            <td>{{$child_title}} <span class="required">*</span>
                                                             </td>
                                                             <td style="width: 200px">
                                                                 <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
@@ -204,7 +224,7 @@
                                             @else
                                                 <table class="table table-bordered table-striped">
                                                     <tr>
-                                                        <td>{{$sub_indicator->title}} <span class="required">*</span>
+                                                        <td>{{$sub_indicator_title}} <span class="required">*</span>
                                                         </td>
                                                         <td style="width: 200px">
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
@@ -229,7 +249,7 @@
                             <div class="col-lg-12">
                                 <div class="card mb-1">
                                     <div class="card-header p-1 card-head-inverse bg-grey-blue">
-                                        <strong>Challenges faced / Additional Comments</strong>
+                                        <strong>{{$lang['Challenges faced']}} / {{$lang['Additional Comments']}}</strong>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group">
