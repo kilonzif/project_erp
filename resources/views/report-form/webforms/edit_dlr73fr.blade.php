@@ -30,9 +30,8 @@
         </div>
         <div class="col-md-4">
             <fieldset class="form-group">
-                <label for="basicInputFile">
-                    Référence d'accréditation <span class="required">*</span></label>
-                <input type="text" name="accreditationreference"  required class="form-control"
+                <label for="basicInputFile"> Référence d'accréditation </label>
+                <input type="text" name="accreditationreference" class="form-control"
                        value="{{ (old('accreditationreference')) ? old('accreditationreference') : $the_record['accreditationreference'] }}">
             </fieldset>
         </div>
