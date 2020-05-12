@@ -85,7 +85,12 @@
                                                         <option value="International">International</option>
                                                         <option value="Gap Assessment">Gap Assessment</option>
                                                     </select>
-
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <fieldset class="form-group">
+                                                    <label for="basicInputFile">Accreditation Agency <span class="required">*</span></label>
+                                                    <input type="text" class="form-control" name="accreditationagency">
                                                 </fieldset>
                                             </div>
                                             <div class="col-md-4">
@@ -162,6 +167,7 @@
                                     <tr>
                                         <th>Institution Name</th>
                                         <th>Type of Accreditation</th>
+                                        <th>Accreditation Agency</th>
                                         <th>Accreditation Reference</th>
                                         <th>Name of Contact Person In the Accreditation Agency</th>
                                         <th>Email of Contact Person In the Accreditation Agency</th>
@@ -179,6 +185,7 @@
                                             <td>{{$d->institutionname}}</td>
                                             <td>{{$d->typeofaccreditation}}</td>
                                             <td>{{$d->accreditationreference}}</td>
+                                            <td>{{$d->accreditationagency}}</td>
                                             <td>{{$d->contactname}}</td>
                                             <td>{{$d->contactemail}}</td>
                                             <td>{{$d->contactphone}}</td>

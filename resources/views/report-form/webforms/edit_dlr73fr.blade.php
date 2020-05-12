@@ -28,6 +28,14 @@
 
             </fieldset>
         </div>
+
+        <div class="col-md-4">
+            <fieldset class="form-group">
+                <label for="basicInputFile">Accreditation Agency <span class="required">*</span></label>
+                <input type="text" class="form-control" name="accreditationagency"
+                       value="{{ (old('accreditationagency')) ? old('accreditationagency') : $the_record['accreditationagency'] }}">
+            </fieldset>
+        </div>
         <div class="col-md-4">
             <fieldset class="form-group">
                 <label for="basicInputFile"> Référence d'accréditation </label>

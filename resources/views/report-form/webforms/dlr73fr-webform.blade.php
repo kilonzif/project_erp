@@ -89,6 +89,12 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <fieldset class="form-group">
+                                                    <label for="basicInputFile">Accreditation Agency <span class="required">*</span></label>
+                                                    <input type="text" class="form-control" name="accreditationagency">
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <fieldset class="form-group">
                                                     <label for="basicInputFile">Référence d'accréditation</label>
                                                     <input type="text" name="accreditationreference" class="form-control">
                                                 </fieldset>
@@ -161,6 +167,7 @@
                                     <tr>
                                         <th>Nom de l'institution </th>
                                         <th>Type d'accréditation</th>
+                                        <th>Accreditation Agency</th>
                                         <th>Référence d'accréditation</th>
                                         <th>Nom de la personne de contact</th>
                                         <th>Courriel de la personne de contact </th>
@@ -178,6 +185,7 @@
                                             <td>{{$d->institutionname}}</td>
                                             <td>{{$d->typeofaccreditation}}</td>
                                             <td>{{$d->accreditationreference}}</td>
+                                            <td>{{$td->accreditationagency}}</td>
                                             <td>{{$d->contactname}}</td>
                                             <td>{{$d->contactemail}}</td>
                                             <td>{{$d->contactphone}}</td>

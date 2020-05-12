@@ -405,6 +405,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['institutionname'] = $request->institutionname;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
+                $indicator_details['accreditationagency'] = $request->accreditationagency;
                 $indicator_details['accreditationreference'] = $request->accreditationreference;
                 $indicator_details['contactname'] = $request->contactname;
                 $indicator_details['contactemail'] = $request->contactemail;
@@ -653,6 +654,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['institutionname'] = $request->institutionname;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
                 $indicator_details['accreditationreference'] = $request->accreditationreference;
+                $indicator_details['accreditationagency'] = $request->accreditationagency;
                 $indicator_details['contactname'] = $request->contactname;
                 $indicator_details['contactemail'] = $request->contactemail;
                 $indicator_details['contactphone'] = $request->contactphone;
