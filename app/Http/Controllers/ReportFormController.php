@@ -1823,31 +1823,31 @@ class ReportFormController extends Controller
     {
         $indicator_4_2_values = array();
 
-
-        $total_publications = DB::connection('mongodb')
+        $all_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
-            ->count();
+            ->get()->toArray();
 
-        $regional_publications =  DB::connection('mongodb')
-            ->collection('indicator_4.2')
-            ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('collaboration', 'LIKE', "%Regional")
-                    ->where('collaboration', 'LIKE', "regional")
-                    ->orWhere('collaboration','like', "r%")
-                    ->orWhere('collaboration','like', "R%");
-            })->count();
+        $regional_publications = 0; $national_publications = 0; $total_publications = 0;
+        foreach ($all_publications as $key=>$publication) {
+            $total_publications +=1;
+            if (isset($publication['ace-country'])) {
+                $ace_country = $publication['ace-country'];
 
-        $national_publications = DB::connection('mongodb')
-            ->collection('indicator_4.2')
-            ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('collaboration', 'LIKE', "%National")
-                    ->where('collaboration', 'LIKE', "%National")
-                    ->orWhere('collaboration','like', "n%")
-                    ->orWhere('collaboration','like', "N%");
-            })->count();
+                if (isset($publication['ace-country-of-partner-institutions'])) {
+                    $partner_country = $publication['ace-country-of-partner-institutions'];
+
+                    if($ace_country != $partner_country) {
+                        $regional_publications += 1;
+                    }
+                    elseif($ace_country == $partner_country) {
+                        $national_publications += 1;
+                    }
+                } else {
+                    $national_publications += 1;
+                }
+            }
+        }
 
         if ($submit) {
             $message = null;
@@ -1869,30 +1869,31 @@ class ReportFormController extends Controller
     {
         $indicator_4_2_values = array();
 
-        $total_publications = DB::connection('mongodb')
+        $all_publications = DB::connection('mongodb')
             ->collection('indicator_4.2')
             ->where('report_id', '=', $report_id)
-            ->count();
+            ->get()->toArray();
 
-        $regional_publications =  DB::connection('mongodb')
-            ->collection('indicator_4.2')
-            ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('collaboration', 'LIKE', "%Regional")
-                    ->where('collaboration', 'LIKE', "regional")
-                    ->orWhere('collaboration','like', "r%")
-                    ->orWhere('collaboration','like', "R%");
-            })->count();
+        $regional_publications = 0; $national_publications = 0; $total_publications = 0;
+        foreach ($all_publications as $key=>$publication) {
+            $total_publications +=1;
+            if (isset($publication['pays-du-cea'])) {
+                $ace_country = $publication['pays-du-cea'];
 
-        $national_publications = DB::connection('mongodb')
-            ->collection('indicator_4.2')
-            ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('collaboration', 'LIKE', "%National")
-                    ->where('collaboration', 'LIKE', "%National")
-                    ->orWhere('collaboration','like', "n%")
-                    ->orWhere('collaboration','like', "N%");
-            })->count();
+                if (isset($publication['pays-des-institutions-partenaires'])) {
+                    $partner_country = $publication['pays-des-institutions-partenaires'];
+
+                    if($ace_country != $partner_country) {
+                        $regional_publications += 1;
+                    }
+                    elseif($ace_country == $partner_country) {
+                        $national_publications += 1;
+                    }
+                } else {
+                    $national_publications += 1;
+                }
+            }
+        }
 
         if ($submit) {
             $message = null;
