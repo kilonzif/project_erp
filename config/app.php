@@ -311,9 +311,11 @@ return [
             'gap_assessment','self_evaluation'
 
         ],
-        'ir_indicator_7'
+        'ir_indicator_3'=>[
+            'total_new_masters_phd','regional_new_masters_phd','national_new_masters_phd'
+        ],
+        'ir_indicator_7',
     ],
-
 
     'indicator_52' => [
         'pdo_indicator_5' => [
@@ -331,7 +333,7 @@ return [
     'indicator_41' => [
         'pdo_indicator_41' => [
             'national','regional','international',
-            'self_evaluation','gap_assessment','emerging'
+            'self_evaluation','gap_assessment','emerging','new_master_phd'
         ]
 
     ],

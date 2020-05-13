@@ -1759,36 +1759,42 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "Self%");
             })->count();
 
-//        $course = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id', '=', $report_id)
-//            ->where(function ($query) {
-//                $query->where('typeofaccreditation', '=', "New Course")
-//                    ->orWhere('typeofaccreditation', '=', "new course")
-//                    ->orWhere('typeofaccreditation', 'like', "new%")
-//                    ->orWhere('typeofaccreditation', 'like', "New%");
-//            })->count();
-
         if ($report->ace->ace_type == 'emerging') {
             $emerging = DB::connection('mongodb')
                 ->collection('indicator_4.1')
                 ->where('report_id', '=', $report_id)
                 ->where('newly_accredited_programme', '=', 'Yes')
                 ->where(function ($query) {
-                    $query->where('level', 'like', "Master%")
-                        ->orWhere('level', 'like', "Bachelor%");
+                    $query->where('level', '=', "Master")
+                        ->orWhere('level', '=', "Bachelors");
                 })
                 ->where(function ($query) {
                     $query->where('typeofaccreditation', '=', "Regional")
                         ->orWhere('typeofaccreditation', '=', "National");
                 })->count();
         }
-//          $pdo_7_3_values["pdo_indicator_2"]["total_accreditations"] = $total_accreditations;
-//        $pdo_7_3_values["pdo_indicator_2"]["international_accreditation"] = $international_accreditation->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["regional_accreditation"] = $regional_accreditation->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["national_accreditation"] = $national_accreditation->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["gap_assessment"] = $gap_assessment->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["self_evaluation"] = $self_evaluation->count();
+
+        $national_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "National")
+            ->where(function ($query) {
+                $query->where('level', '=', "Masters")
+                    ->orWhere('level', '=', "PhD");
+            })->count();
+
+        $regional_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "Regional")
+            ->where(function ($query) {
+                $query->where('level', '=', "Masters")
+                    ->orWhere('level', '=', "PhD");
+            })->count();
+
+        $total_new_masters_phd = $national_new_masters_phd + $regional_new_masters_phd;
 
         $indicator_4_1_values["pdo_indicator_2a"]["total_accreditations"] = $international+$regional+$national+$gap_assessment+$self_evaluation;
         $indicator_4_1_values["pdo_indicator_2a"]["international_accreditation"] = $international;
@@ -1797,12 +1803,10 @@ class ReportFormController extends Controller
         $indicator_4_1_values["pdo_indicator_2a"]["gap_assessment"] = $gap_assessment;
         $indicator_4_1_values["pdo_indicator_2a"]["self_evaluation"] = $self_evaluation;
 
-//        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
-//        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
-//        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
-//        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
-//        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
-//        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+        $indicator_4_1_values["ir_indicator_3"]['total_new_masters_phd'] = $total_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['regional_new_masters_phd'] = $regional_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['national_new_masters_phd'] = $national_new_masters_phd;
+
         $indicator_4_1_values["ir_indicator_8"] = $emerging;
 
 
@@ -1862,17 +1866,31 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "Self%");
             })->count();
 
-//        $course = DB::connection('mongodb')
-//            ->collection('indicator_4.1')
-//            ->where('report_id', '=', $report_id)
-//            ->where(function ($query) {
-//                $query->where('typeofaccreditation', '=', "New Course")
-//                    ->orWhere('typeofaccreditation', '=', "new course")
-//                    ->orWhere('typeofaccreditation', 'like', "new%")
-//                    ->orWhere('typeofaccreditation', 'like', "New%");
-//            })->count();
         $masters = config('app.filters_fr.masters_text');
         $bachelors = config('app.filters_fr.bachelors_text');
+        $phd = config('app.filters_fr.phd_text');
+
+        $national_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "National")
+            ->where(function ($query) use($phd,$masters){
+                $query->where('level', '=', "$masters")
+                    ->orWhere('level', '=', "$phd");
+            })->count();
+
+        $regional_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "Regional")
+            ->where(function ($query) use($phd,$masters){
+                $query->where('level', '=', "$masters")
+                    ->orWhere('level', '=', "$phd");
+            })->count();
+
+        $total_new_masters_phd = $national_new_masters_phd + $regional_new_masters_phd;
 
         $emerging = 0;
         if ($report->ace->ace_type == 'emerging') {
@@ -1896,9 +1914,12 @@ class ReportFormController extends Controller
         $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
         $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
-//        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
-        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
+        $indicator_4_1_values["ir_indicator_3"]['total_new_masters_phd'] = $total_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['regional_new_masters_phd'] = $regional_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['national_new_masters_phd'] = $national_new_masters_phd;
+
+        $indicator_4_1_values["ir_indicator_8"] = $emerging;
 
         return $indicator_4_1_values;
     }

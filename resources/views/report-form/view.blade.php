@@ -135,10 +135,10 @@
                             @php
                                 $the_indicator_title = $the_indicator->title;
                                 $the_indicator_unit_measure = $the_indicator->unit_measure;
-                                if ($report->language == 'french' && isset($the_indicator->french)) {
+                                if ($report->language == 'french' && $the_indicator->french != '') {
                                     $$the_indicator_title = $the_indicator->french;
-                                    if (isset($the_indicator->unit_measure_french)) {
-                                        $the_indicator_unit_measure = $the_indicator->unit_measure_french;
+                                    if (isset($the_indicator->french_unit_measure)) {
+                                        $the_indicator_unit_measure = $the_indicator->french_unit_measure;
                                     }
                                 }
                             @endphp
@@ -160,19 +160,19 @@
                                 @if($indicators->indicators->count() > 0)
                                     @php
                                         $sub_indicators = $indicators->indicators->where('parent_id','=',$indicators->id)
-                                            ->where('status','=',1);
+                                            ->where('status','=',1)->sortBy('order_on_report');
                                         $counter_one = 0;
                                     @endphp
                                     @foreach($sub_indicators as $sub_indicator)
                                         @php
                                             $sub_indicator_title = $sub_indicator->identifier.": ".$sub_indicator->title;
-                                            if ($report->language == 'french' && isset($sub_indicator->french)) {
+                                            if ($report->language == 'french' && $sub_indicator->french != '') {
                                                 $sub_indicator_title = $sub_indicator->french;
                                             }
                                             $indicator_identifier = (string)$sub_indicator->identifier;
                                             $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
                                             $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)
-                                                ->where('status','=',1)->get();
+                                                ->where('status','=',1)->orderBy('order_no','asc')->get();
                                         @endphp
 
                                         @if($child_dlr->isNotEmpty())
@@ -188,7 +188,7 @@
                                                 @foreach($child_dlr as $child)
                                                     @php
                                                         $child_title = $child->title;
-                                                        if ($report->language == 'french' && isset($child->french)) {
+                                                        if ($report->language == 'french' && $child->french != '') {
                                                             $child_title = $child->french;
                                                         }
                                                     @endphp
@@ -196,59 +196,12 @@
                                                         <td>{{$child_title}} <span class="required">*</span>
                                                         </td>
                                                         <td style="width: 200px">
-
-                                                            {{--@if($the_indicator->identifier === "3")--}}
-                                                                {{--3 New Students--}}
-                                                                <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
-                                                                     style="margin-bottom: 0;">
-                                                                    <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
-                                                                           value="{{!empty($pdo_values) ?$pdo_values[$pdo_indicator][$pdo_indicators[$pdo_indicator][$counter]]:0}}"
-                                                                           class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
-
-                                                                </div>
-
-                                                            {{--@elseif($the_indicator->identifier === "4.1")--}}
-                                                                {{--4.1 programme accreditation--}}
-                                                                {{--<div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">--}}
-                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"--}}
-                                                                           {{--value="{{!empty($pdo_41) ?$pdo_41[$pdo_indicator][$pdo_indicator_41[$pdo_indicator][$counter]]:0}}"--}}
-                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>--}}
-
-                                                            {{--@elseif($the_indicator->identifier === "4.2")--}}
-                                                                {{--4.2 publications--}}
-                                                                {{--<div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">--}}
-                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"--}}
-                                                                           {{--value="{{!empty($pdo_42) ?$pdo_42[$pdo_indicator][$pdo_indicator_42[$pdo_indicator][$counter]]:0}}"--}}
-                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>--}}
-
-                                                            {{--@elseif($the_indicator->identifier === "5.1")--}}
-                                                                {{--5.1 external revenue--}}
-
-                                                                {{--<div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">--}}
-                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"--}}
-                                                                           {{--value="{{!empty($pdo_51) ?$pdo_51[$pdo_indicator][$pdo_indicator_51[$pdo_indicator][$counter]]:0}}"--}}
-                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}"> </div>--}}
-
-
-                                                            {{--@elseif($the_indicator->identifier === "5.2")--}}
-
-                                                                {{--internships 5.2--}}
-                                                                {{--<div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"--}}
-                                                                     {{--style="margin-bottom: 0;">--}}
-                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"--}}
-                                                                           {{--value="{{!empty($pdo_52) ?$pdo_52[$pdo_indicator][$pdo_indicator_52[$pdo_indicator][$counter]]:0}}"--}}
-                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">--}}
-                                                                {{--</div>--}}
-
-                                                            {{--@elseif($the_indicator->identifier === "7.3")--}}
-                                                                {{--Institutional accreditation 7.3 --}}
-                                                                {{--<div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"--}}
-                                                                     {{--style="margin-bottom: 0;">--}}
-                                                                    {{--<input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"--}}
-                                                                           {{--value="{{!empty($pdo_2) ?$pdo_2[$pdo_indicator][$pdo_indicator_2[$pdo_indicator][$counter]]:0}}"--}}
-                                                                           {{--class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">--}}
-                                                                {{--</div>--}}
-                                                            {{--@endif--}}
+                                                            <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}"
+                                                                 style="margin-bottom: 0;">
+                                                                <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$child->id}}]"
+                                                                       value="{{!empty($pdo_values) ?$pdo_values[$pdo_indicator][$pdo_indicators[$pdo_indicator][$counter]]:0}}"
+                                                                       class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     @php

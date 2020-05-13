@@ -148,10 +148,10 @@
                                 @php
                                     $the_indicator_title = $the_indicator->title;
                                     $the_indicator_unit_measure = $the_indicator->unit_measure;
-                                    if ($report->language == 'french' && isset($the_indicator->french)) {
+                                    if ($report->language == 'french' && $the_indicator->french != '') {
                                         $$the_indicator_title = $the_indicator->french;
-                                        if (isset($the_indicator->unit_measure_french)) {
-                                            $the_indicator_unit_measure = $the_indicator->unit_measure_french;
+                                        if (isset($the_indicator->french_unit_measure)) {
+                                            $the_indicator_unit_measure = $the_indicator->french_unit_measure;
                                         }
                                     }
                                 @endphp
@@ -174,19 +174,20 @@
                                         @php
                                             $sub_indicators = $indicators->indicators
                                             ->where('parent_id','=',$indicators->id)
-                                            ->where('status','=',1);
-
+                                            ->where('status','=',1)->sortBy('order_on_report');
                                             $counter_one = 0;
                                         @endphp
                                         @foreach($sub_indicators as $sub_indicator)
                                             @php
                                                 $sub_indicator_title = $sub_indicator->identifier.": ".$sub_indicator->title;
-                                                if ($report->language == 'french' && isset($sub_indicator->french)) {
+                                                if ($report->language == 'french' && $sub_indicator->french != '') {
                                                     $sub_indicator_title = $sub_indicator->french;
                                                 }
                                                 $indicator_identifier = (string)$sub_indicator->identifier;
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
-                                                $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)->where('status','=',1)->get();
+                                                $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)
+                                                ->where('status','=',1)->orderBy('order_no','asc')->get();
+                                                //dd($sub_indicator);
                                             @endphp
 
                                             @if($child_dlr->isNotEmpty())
@@ -201,7 +202,7 @@
                                                     @foreach($child_dlr as $child)
                                                         @php
                                                             $child_title = $child->title;
-                                                            if ($report->language == 'french' && isset($child->french)) {
+                                                            if ($report->language == 'french' && $child->french != '') {
                                                                 $child_title = $child->french;
                                                             }
                                                         @endphp
