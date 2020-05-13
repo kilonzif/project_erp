@@ -651,54 +651,44 @@ class ReportFormController extends Controller
         if (in_array('french', collect($get_form)->toArray())) {
             if ($identifier == "3") {
                 $pdo_values = $this->generateAggregatedIndicator3Results_fr($id);
-                $pdo_indicators = config('app.indicator_3');
             }
             elseif ($identifier == "4.1") {
                 $pdo_values = $this->generateAggregatedIndicator41Results_fr($id);
-                $pdo_indicators = config('app.indicator_2');
             }
             elseif ($identifier == "4.2") {
                 $pdo_values = $this->generateAggregatedIndicator42Results_fr($id);
-                $pdo_indicators = config('app.indicator_42');
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
-                $pdo_indicators = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
-                $pdo_indicators = config('app.indicator_52');
             }
             elseif ($identifier == "7.3") {
                 $pdo_values = $this->generateAggregatedIndicator73Results_fr($id);
-                $pdo_indicators = config('app.indicator_2');
             }
         } else {
             if ($identifier == "3") {
                 $pdo_values = $this->generateAggregatedIndicator3Results($id);
-                $pdo_indicators = config('app.indicator_3');
             }
             elseif ($identifier == "4.1") {
                 $pdo_values = $this->generateAggregatedIndicator41Results($id);
-                $pdo_indicators = config('app.indicator_2');
             }
             elseif ($identifier == "4.2") {
                 $pdo_values = $this->generateAggregatedIndicator42Results($id);
-                $pdo_indicators = config('app.indicator_42');
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results($id);
-                $pdo_indicators = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results($id);
-                $pdo_indicators = config('app.indicator_52');
             }
             elseif ($identifier == "7.3") {
                 $pdo_values = $this->generateAggregatedIndicator73Results($id);
-                $pdo_indicators = config('app.indicator_2');
             }
         }
+
+        $pdo_indicators = config('app.indicators_value_indexes');
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')

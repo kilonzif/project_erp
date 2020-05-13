@@ -271,10 +271,60 @@ return [
     ],
 
 
+    'indicators_value_indexes'  => [
+        'pdo_indicator_1'       =>      [
+            'total_no_students','regional_total','regional_female','national_total','national_female'
+        ],
+        'pdo_indicator_1a'      =>      [
+            'phd_regional_total','phd_regional_female','phd_national_total','phd_national_female'
+        ],
+        'pdo_indicator_1b'      =>      [
+            'masters_regional_total','masters_regional_female','masters_national_total','masters_national_female'
+        ],
+        'pdo_indicator_1c'      =>      [
+            'regional_total','regional_phd_total','regional_phd_female','regional_masters_total','regional_masters_female',
+            'regional_bachelors_total','regional_bachelors_female','regional_short_course_total','regional_short_course_female'
+        ],
+        'pdo_indicator_1d'      =>      [
+            'female_total','female_phd_total','female_phd_regional','female_masters_total','female_masters_regional',
+            'female_bachelors_total','female_bachelors_regional','female_short_course_total','female_short_course_regional'
+        ],
+        'pdo_indicator_1e'      =>      [
+            'sc_regional_total','sc_regional_female','sc_national_total','sc_national_female'
+        ],
+        'pdo_indicator_2'       =>      [
+            'total_accreditations','international_accreditation','regional_accreditation','national_accreditation',
+            'gap_assessment','self_evaluation'
+        ],
+        'pdo_indicator_2a'      =>      [
+            'total_accreditations','international_accreditation','regional_accreditation','national_accreditation',
+            'gap_assessment','self_evaluation'
+        ],
+        'pdo_indicator_2b'      =>      [
+            'total_accreditations','international_accreditation','regional_accreditation',
+            'gap_assessment','self_evaluation'
 
+        ],
+        'pdo_indicator_41'      =>      [
+            'national','regional','international',
+            'self_evaluation','gap_assessment','emerging','new_master_phd'
+        ],
+        'pdo_indicator_5'       =>      [
+            'total_number_of_interns','students','faculty'
+        ],
+        'ir_indicator_2'        =>      [
+            'total_publications','regional_publications','national_publications'
+        ],
+        'ir_indicator_3'        =>      [
+            'total_new_masters_phd','regional_new_masters_phd','national_new_masters_phd'
+        ],
+        'ir_indicator_4'        =>      [
+            'total_revenue','national_sources','regional_sources'
+        ],
+        'ir_indicator_7'
+    ],
 
-
-    'indicator_3'     =>  [
+    'indicator_3'       =>      [
         'pdo_indicator_1'     =>  [
             'total_no_students','regional_total','regional_female','national_total','national_female'
         ],
@@ -297,7 +347,7 @@ return [
         ],
         'ir_indicator_7'
     ],
-    'indicator_2'     =>  [
+    'indicator_2'       =>      [
         'pdo_indicator_2' => [
             'total_accreditations','international_accreditation','regional_accreditation','national_accreditation',
             'gap_assessment','self_evaluation'
@@ -317,27 +367,26 @@ return [
         'ir_indicator_7',
     ],
 
-    'indicator_52' => [
+    'indicator_52'      =>      [
         'pdo_indicator_5' => [
             'total_number_of_interns','students','faculty'
         ]
 
     ],
-    'indicator_51' => [
+    'indicator_51'      =>      [
         'ir_indicator_4' => [
             'total_revenue','national_sources','regional_sources'
-        ]
-
+        ],
     ],
 
-    'indicator_41' => [
+    'indicator_41'      =>      [
         'pdo_indicator_41' => [
             'national','regional','international',
             'self_evaluation','gap_assessment','emerging','new_master_phd'
         ]
 
     ],
-    'indicator_42' => [
+    'indicator_42'      =>      [
         'ir_indicator_2' => [
             'total_publications','regional_publications','national_publications'
         ]
