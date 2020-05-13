@@ -20,8 +20,13 @@ use vendor\project\StatusTest;
 //use Illuminate\Support\Facades\File;
 use File;
 
+
 class ContactsController extends Controller
 {
+    public function __construct() {
+        $this->middleware( 'auth' );
+
+    }
     public function index(){
         $all_contacts =DB::table('contacts')
             ->join('positions','positions.id','=','contacts.position_id')
@@ -410,21 +415,25 @@ class ContactsController extends Controller
             $row_range    = range( 2, $row_limit );
             $column_range = range( 'J', $column_limit );
             $startcount = 2;
+
             foreach ( $row_range as $row ) {
                 $data[] = [
-                    'type_of_contact' => $sheet->getCell( 'A' . $row )->getValue(),
-                    'role' => $sheet->getCell( 'B' . $row )->getValue(),
-                    'ace' => $sheet->getCell( 'C' . $row )->getValue(),
-                    'institution' => $sheet->getCell( 'D' . $row )->getValue(),
-                    'country' => $sheet->getCell( 'E' . $row )->getValue(),
-                    'field' =>$sheet->getCell( 'F' . $row )->getValue(),
-                    'name' => $sheet->getCell( 'G' . $row )->getValue(),
-                    'gender' => $sheet->getCell( 'H' . $row )->getValue(),
-                    'phone' => $sheet->getCell( 'I' . $row )->getValue(),
-                    'email' => $sheet->getCell( 'J' . $row )->getValue()
+                    'position_id' => $sheet->getCell( 'A' . $row )->getValue(),
+                    'second_role_id' => $sheet->getCell( 'B' . $row )->getValue(),
+                    'person_title' => $sheet->getCell( 'C' . $row )->getValue(),
+                    'mailing_name' => $sheet->getCell( 'D' . $row )->getValue(),
+                    'gender' => $sheet->getCell( 'E' . $row )->getValue(),
+                    'mailing_phone' =>$sheet->getCell( 'F' . $row )->getValue(),
+                    'mailing_email' => $sheet->getCell( 'G' . $row )->getValue(),
+                    'institution' => $sheet->getCell( 'H' . $row )->getValue(),
+                    'ace' => $sheet->getCell( 'I' . $row )->getValue(),
+                    'country' => $sheet->getCell( 'J' . $row )->getValue(),
+                    'thematic_field' => $sheet->getCell( 'K' . $row )->getValue(),
+                    'new_contact' => $sheet->getCell( 'L' . $row )->getValue()
                 ];
                 $startcount++;
             }
+            dd($data);
             // Unique data without duplicates
             $unique = array_unique($data, SORT_REGULAR);
 
