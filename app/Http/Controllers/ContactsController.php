@@ -30,12 +30,13 @@ class ContactsController extends Controller
             ->orderBy('positions.rank','ASC')
             ->get();
 
+        $ace_roles = Position::where('position_type','=','ACE level')->get();
 
         $countries = Country::all();
         $aces = Ace::all();
         $roles = Position::all();
         $institutions = Institution::all();
-        return view('contacts.index',compact('all_contacts','roles','countries','institutions','aces'));
+        return view('contacts.index',compact('all_contacts','ace_roles','roles','countries','institutions','aces'));
     }
 
 
@@ -44,6 +45,7 @@ class ContactsController extends Controller
     {
         $this->validate($request,[
             'role' => 'required|string|min:1',
+            'second_role' => 'nullable|integer|min:1',
             'institution' => 'nullable|integer|min:1',
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
@@ -82,6 +84,7 @@ class ContactsController extends Controller
 
 
         $new_contact->position_id =$request->role;
+        $new_contact->second_role_id =$request->second_role;
         $new_contact->person_title =$request->person_title;
         $new_contact->mailing_name = $request->mailing_name;
         $new_contact->gender = $request->gender;
@@ -119,6 +122,7 @@ class ContactsController extends Controller
         return $type;
     }
 
+
     public static function getCountryName($id){
         $country = DB::table('countries')->where('id',$id)->first();
         return $country->country;
@@ -131,10 +135,6 @@ class ContactsController extends Controller
         $ace = DB::table('aces')->where('id',$id)->first();
         return $ace->name;
     }
-
-
-
-
 
     public function edit_view(Request $request){
 
@@ -152,8 +152,9 @@ class ContactsController extends Controller
         $countries = Country::all();
         $aces = Ace::all();
         $roles = Position::all();
+        $ace_roles = Position::where('position_type','=','ACE level')->get();
         $institutions = Institution::all();
-        $view = view('contacts.edit_view', compact('contacts','all_contacts','roles','aces','institutions','countries'))->render();
+        $view = view('contacts.edit_view', compact('contacts','all_contacts','ace_roles','roles','aces','institutions','countries'))->render();
 
         return response()->json(['theView' => $view]);
     }
@@ -164,6 +165,7 @@ class ContactsController extends Controller
 
         $this->validate($request,[
             'role' => 'required|string|min:1',
+            'second_role' => 'nullable|integer|min:1',
             'institution' => 'nullable|integer|min:1',
             'thematic_field' => 'nullable|string|min:1',
             'country' => 'nullable|integer|min:1',
@@ -205,6 +207,7 @@ class ContactsController extends Controller
         $contact_update = $this_contact->Update([
             'position_id' =>$request->role,
             'person_title' =>$request->person_title,
+            'second_role_id'=>$request->second_role,
             'mailing_name' =>$request->mailing_name,
             'gender' => $request->gender,
             'mailing_phone' => $request->mailing_phone,
