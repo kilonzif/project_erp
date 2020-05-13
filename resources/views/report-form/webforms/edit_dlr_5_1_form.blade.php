@@ -68,9 +68,6 @@
                     <input type="text" name="datereceived" class="form-control form-control datepicker"
                            data-date-format="D-M-YYYY" id="datereceived"
                            value="{{ (old('datereceived')) ? old('datereceived') : $the_record->datereceived }}">
-                    {{--<div class="input-group-append">--}}
-                        {{--<span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>--}}
-                    {{--</div>--}}
                 </div>
             </fieldset>
         </div>
@@ -78,8 +75,15 @@
         <div class="col-md-4">
             <fieldset class="form-group{{ $errors->has('region') ? ' form-control-warning' : '' }}">
                 <label for="region">{{$lang['Region']}}<span class="required">*</span></label>
-                <input type="text" class="form-control" required name="region" id="region"
-                       value="{{ (old('region')) ? old('region') : $the_record->region }}">
+                <select name="region" id="region" class="form-control" required>
+                    <option value="">{{$lang['Select One']}}</option>
+                    <option value="{{$lang['National']}}" {{ ($the_record->region == $lang['National']) ? "selected" : "" }}>
+                        {{$lang['National']}}
+                    </option>
+                    <option value="{{$lang['Regional']}}" {{ ($the_record->region == $lang['Regional']) ? "selected" : "" }}>
+                        {{$lang['Regional']}}
+                    </option>
+                </select>
                 @if ($errors->has('region'))
                     <p class="text-right mb-0">
                         <small class="warning text-muted">{{ $errors->first('region') }}</small>

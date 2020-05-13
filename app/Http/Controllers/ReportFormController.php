@@ -426,6 +426,8 @@ class ReportFormController extends Controller
 
         $indicators = Indicator::where('id', '=', $report->indicator_id)->orderBy('identifier', 'asc')->first();
 
+        $select_language = new CommonFunctions();
+        $lang = $select_language->webFormLang($report->language);
 
         $comment = AceComment::where('report_id', $id)->first();
 
@@ -447,7 +449,7 @@ class ReportFormController extends Controller
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
-                $pdo_indicator = config('app.indicator_51');
+                $pdo_indicators = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
@@ -484,23 +486,6 @@ class ReportFormController extends Controller
             }
         }
 
-//        if (in_array('french', collect($get_form)->toArray())) {
-//            $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
-//            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
-//            $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
-//            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
-//            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
-//            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
-//
-//
-//        }
-//        $pdo_1 = $this->generateAggregatedIndicator3Results($id);
-//        $pdo_2 = $this->generateAggregatedIndicator73Results($id);
-//        $pdo_52 = $this->generateAggregatedIndicator52Results($id);
-//        $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-//        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
-//        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
-
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
@@ -509,12 +494,7 @@ class ReportFormController extends Controller
 
         return view('report-form.view', compact('project', 'language', 'reporting_period',
             'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
-
-//        return view('report-form.view', compact('project', 'language', 'reporting_period',
-//            'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-//            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
-
+            'indicators', 'the_indicator', 'pdo_values','pdo_indicators','lang'));
     }
 
     /**
@@ -660,6 +640,9 @@ class ReportFormController extends Controller
 
         $comment = AceComment::where('report_id', $id)->first();
 
+        $select_language = new CommonFunctions();
+        $lang = $select_language->webFormLang($report->language);
+
         $language = collect($get_form)->toArray();
         $pdo_values = $pdo_indicators =[];
 
@@ -668,54 +651,44 @@ class ReportFormController extends Controller
         if (in_array('french', collect($get_form)->toArray())) {
             if ($identifier == "3") {
                 $pdo_values = $this->generateAggregatedIndicator3Results_fr($id);
-                $pdo_indicators = config('app.indicator_3');
             }
             elseif ($identifier == "4.1") {
                 $pdo_values = $this->generateAggregatedIndicator41Results_fr($id);
-                $pdo_indicators = config('app.indicator_2');
             }
             elseif ($identifier == "4.2") {
                 $pdo_values = $this->generateAggregatedIndicator42Results_fr($id);
-                $pdo_indicators = config('app.indicator_42');
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
-                $pdo_indicator = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
-                $pdo_indicators = config('app.indicator_52');
             }
             elseif ($identifier == "7.3") {
                 $pdo_values = $this->generateAggregatedIndicator73Results_fr($id);
-                $pdo_indicators = config('app.indicator_2');
             }
         } else {
             if ($identifier == "3") {
                 $pdo_values = $this->generateAggregatedIndicator3Results($id);
-                $pdo_indicators = config('app.indicator_3');
             }
             elseif ($identifier == "4.1") {
                 $pdo_values = $this->generateAggregatedIndicator41Results($id);
-                $pdo_indicators = config('app.indicator_2');
             }
             elseif ($identifier == "4.2") {
                 $pdo_values = $this->generateAggregatedIndicator42Results($id);
-                $pdo_indicators = config('app.indicator_42');
             }
             elseif ($identifier == "5.1") {
                 $pdo_values = $this->generateAggregatedIndicator51Results($id);
-                $pdo_indicators = config('app.indicator_51');
             }
             elseif ($identifier == "5.2") {
                 $pdo_values = $this->generateAggregatedIndicator52Results($id);
-                $pdo_indicators = config('app.indicator_52');
             }
             elseif ($identifier == "7.3") {
                 $pdo_values = $this->generateAggregatedIndicator73Results($id);
-                $pdo_indicators = config('app.indicator_2');
             }
         }
+
+        $pdo_indicators = config('app.indicators_value_indexes');
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -723,9 +696,7 @@ class ReportFormController extends Controller
         $aces = Ace::where('active', '=', 1)->get();
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
-//        return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-//            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
+            'indicators', 'the_indicator', 'pdo_values','pdo_indicators','lang'));
     }
 
     /**
@@ -1452,8 +1423,8 @@ class ReportFormController extends Controller
             ->collection('indicator_3')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('genre', '=', "F")
-                    ->orWhere('genre', '=', "Femme");
+                $query->where('genre', '=', "Female")
+                    ->orWhere('genre', 'like', "F%");
             })
             ->where(function ($query) {
                 $query->where('regionalite', '=', "National")
@@ -1852,15 +1823,14 @@ class ReportFormController extends Controller
                     ->orWhere('typeofaccreditation', 'like', "Self%");
             })->count();
 
-
         if ($report->ace->ace_type == 'emerging') {
             $emerging = DB::connection('mongodb')
                 ->collection('indicator_4.1')
                 ->where('report_id', '=', $report_id)
                 ->where('newly_accredited_programme', '=', 'Yes')
                 ->where(function ($query) {
-                    $query->where('level', 'like', "Master%")
-                        ->orWhere('level', 'like', "Bachelor%");
+                    $query->where('level', '=', "Master")
+                        ->orWhere('level', '=', "Bachelors");
                 })
                 ->where(function ($query) {
                     $query->where('typeofaccreditation', '=', "Regional")
@@ -1883,6 +1853,29 @@ class ReportFormController extends Controller
 //        $pdo_7_3_values["pdo_indicator_2"]["gap_assessment"] = $gap_assessment->count();
 //        $pdo_7_3_values["pdo_indicator_2"]["self_evaluation"] = $self_evaluation->count();
 
+        $national_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "National")
+            ->where(function ($query) {
+                $query->where('level', '=', "Masters")
+                    ->orWhere('level', '=', "PhD");
+            })->count();
+
+        $regional_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "Regional")
+            ->where(function ($query) {
+                $query->where('level', '=', "Masters")
+                    ->orWhere('level', '=', "PhD");
+            })->count();
+
+        $total_new_masters_phd = $national_new_masters_phd + $regional_new_masters_phd;
+
+
         $indicator_4_1_values["pdo_indicator_2a"]["total_accreditations"] = $international+$regional+$national+$gap_assessment+$self_evaluation;
         $indicator_4_1_values["pdo_indicator_2a"]["international_accreditation"] = $international;
         $indicator_4_1_values["pdo_indicator_2a"]["regional_accreditation"] = $regional;
@@ -1890,12 +1883,10 @@ class ReportFormController extends Controller
         $indicator_4_1_values["pdo_indicator_2a"]["gap_assessment"] = $gap_assessment;
         $indicator_4_1_values["pdo_indicator_2a"]["self_evaluation"] = $self_evaluation;
 
-//        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
-//        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
-//        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
-//        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
-//        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
-//        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+        $indicator_4_1_values["ir_indicator_3"]['total_new_masters_phd'] = $total_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['regional_new_masters_phd'] = $regional_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['national_new_masters_phd'] = $national_new_masters_phd;
+
         $indicator_4_1_values["ir_indicator_8"] = $emerging;
 
 
@@ -1958,6 +1949,29 @@ class ReportFormController extends Controller
 
         $masters = config('app.filters_fr.masters_text');
         $bachelors = config('app.filters_fr.bachelors_text');
+        $phd = config('app.filters_fr.phd_text');
+
+        $national_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "National")
+            ->where(function ($query) use($phd,$masters){
+                $query->where('level', '=', "$masters")
+                    ->orWhere('level', '=', "$phd");
+            })->count();
+
+        $regional_new_masters_phd = DB::connection('mongodb')
+            ->collection('indicator_4.1')
+            ->where('report_id', '=', $report_id)
+            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('typeofaccreditation', '=', "Regional")
+            ->where(function ($query) use($phd,$masters){
+                $query->where('level', '=', "$masters")
+                    ->orWhere('level', '=', "$phd");
+            })->count();
+
+        $total_new_masters_phd = $national_new_masters_phd + $regional_new_masters_phd;
 
         $emerging = 0;
         if ($report->ace->ace_type == 'emerging') {
@@ -1981,8 +1995,14 @@ class ReportFormController extends Controller
         $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
         $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
+
         $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
+        $indicator_4_1_values["ir_indicator_3"]['total_new_masters_phd'] = $total_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['regional_new_masters_phd'] = $regional_new_masters_phd;
+        $indicator_4_1_values["ir_indicator_3"]['national_new_masters_phd'] = $national_new_masters_phd;
+
+        $indicator_4_1_values["ir_indicator_8"] = $emerging;
 
         return $indicator_4_1_values;
     }
@@ -2105,15 +2125,15 @@ class ReportFormController extends Controller
         $national_sources = DB::table('indicator_5_1')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "Nat%")
-                    ->orWhere('source', 'like', "nat%");
+                $query->where('region', 'like', "Nat%")
+                    ->orWhere('region', 'like', "nat%");
             })->sum('amountindollars');
 
         $regional_sources = DB::table('indicator_5_1')
             ->where('report_id', '=', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "Reg%")
-                    ->orWhere('source', 'like', "reg%");
+                $query->where('region', 'like', "Reg%")
+                    ->orWhere('region', 'like', "reg%");
             })->sum('amountindollars');
 
         if ($submit) {
@@ -2124,11 +2144,9 @@ class ReportFormController extends Controller
             }
             return $message;
         }
-
         $indicator_5_1_values["ir_indicator_4"]["total_revenue"] = money_format($total_revenue,2);
         $indicator_5_1_values["ir_indicator_4"]["national_sources"] = money_format($national_sources,2);
         $indicator_5_1_values["ir_indicator_4"]["regional_sources"] = money_format($regional_sources,2);
-
 
         return $indicator_5_1_values;
     }
@@ -2146,14 +2164,14 @@ class ReportFormController extends Controller
         $national_sources = DB::connection('mongodb')->collection('indicator_5.1')
             ->where('report_id', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "N%")
-                    ->orWhere('source', 'like', "n%");
+                $query->where('region', 'like', "N%")
+                    ->orWhere('region', 'like', "n%");
             })->sum('amountindollars');
         $regional_sources = DB::connection('mongodb')->collection('indicator_5.1')
             ->where('report_id', $report_id)
             ->where(function ($query) {
-                $query->where('source', 'like', "R%")
-                    ->orWhere('source', 'like', "r%");
+                $query->where('region', 'like', "R%")
+                    ->orWhere('region', 'like', "r%");
             })->sum('amountindollars');
 
         if ($submit) {
@@ -2462,7 +2480,6 @@ class ReportFormController extends Controller
                         ->orWhere('regional-status', 'like', "n%")
                         ->orWhere('regional-status', 'like', "N%");
                 });
-//                ->where('regional-status','=', "National");
             $national_and_women = DB::connection('mongodb')
                 ->collection('indicator_3')
                 ->where('report_id', '=', $report_id)
@@ -2478,7 +2495,6 @@ class ReportFormController extends Controller
                         ->orWhere('regional-status', 'like', "n%")
                         ->orWhere('regional-status', 'like', "N%");
                 });
-//                ->where('regional-status','=', "National");
             $regional_and_men = DB::connection('mongodb')
                 ->collection('indicator_3')
                 ->where('report_id', '=', $report_id)
@@ -2488,7 +2504,6 @@ class ReportFormController extends Controller
                         ->orWhere('regional-status', 'like', "r%")
                         ->orWhere('regional-status', 'like', "R%");
                 })
-//                ->where('regional-status','=', "Regional")
                 ->where(function ($query) {
                     $query->where('gender', '=', "male")
                         ->orWhere('gender', '=', "Male")
@@ -2504,7 +2519,6 @@ class ReportFormController extends Controller
                         ->orWhere('regional-status', 'like', "r%")
                         ->orWhere('regional-status', 'like', "R%");
                 })
-//                ->where('regional-status','=', "Regional")
                 ->where(function ($query) {
                     $query->where('gender', '=', "Female")
                         ->orWhere('gender', '=', "female")
@@ -2548,7 +2562,6 @@ class ReportFormController extends Controller
         $report = Report::find($report_id);
 
         if ($report->editable != 1) {
-//            $report->status = 99;
             $report->editable = true;
             $report->save();
             notify(new ToastNotification('Success!', 'The report submission has been reopened for edit!', 'success'));
