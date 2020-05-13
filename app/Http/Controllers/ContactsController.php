@@ -24,8 +24,9 @@ class ContactsController extends Controller
 {
     public function index(){
         $all_contacts =DB::table('contacts')
-            ->join('positions','positions.id','contacts.position_id')
-            ->select('contacts.*','positions.*')
+            ->join('positions','positions.id','=','contacts.position_id')
+            ->select ('contacts.id as contact_id')
+            ->select('positions.*','contacts.*')
             ->orderBy('positions.rank','ASC')
             ->get();
 
@@ -136,11 +137,16 @@ class ContactsController extends Controller
 
 
     public function edit_view(Request $request){
+
         $id = Crypt::decrypt($request->id);
-        $contacts = Contacts::find($id);
+
+        $contacts =  Contacts::find($id);
+
+
         $all_contacts =DB::table('contacts')
-            ->join('positions','positions.id','contacts.position_id')
-            ->select('contacts.*','positions.position_title')
+            ->join('positions','positions.id','=','contacts.position_id')
+            ->select ('contacts.id as contact_id')
+            ->select('positions.*','contacts.*')
             ->orderBy('positions.rank','ASC')
             ->get();
         $countries = Country::all();

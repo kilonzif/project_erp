@@ -265,9 +265,7 @@
                                 <th style="width: 100px;">Action</th>
                             </tr>
                             </thead>
-
                             @foreach($all_contacts as $contact)
-
 
                                 <tbody>
                                 <tr>
@@ -276,11 +274,7 @@
                                     <td>{{$contact->mailing_email}}</td>
                                     <td>{{$contact->mailing_phone}}</td>
                                     <td>
-                                        @php
-                                            $title = \App\Position::where('id',$contact->position_id)->first();
-                                        @endphp
-
-                                        {{$title->position_title}}
+                                        {{$contact->position_title}}
                                     </td>
                                     <td>
                                         @php
@@ -319,6 +313,7 @@
                                                 $ace_name =\App\Http\Controllers\ContactsController::getAceName($contact->ace);
                                             @endphp
                                         {{$ace_name}}
+
                                         @else
                                             -
                                         @endisset
@@ -449,6 +444,7 @@
                 type: 'GET',
                 data: {id:key},
                 beforeSend: function(){
+
                     $('#edit_view').block({
                         message: '<div class="ft-loader icon-spin font-large-1"></div>',
                         overlayCSS: {
