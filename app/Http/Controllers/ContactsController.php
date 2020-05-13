@@ -13,6 +13,7 @@ use App\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Null_;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use vendor\project\StatusTest;
@@ -86,8 +87,6 @@ class ContactsController extends Controller
         }
 
         $new_contact = new Contacts();
-
-
         $new_contact->position_id =$request->role;
         $new_contact->second_role_id =$request->second_role;
         $new_contact->person_title =$request->person_title;
@@ -133,7 +132,7 @@ class ContactsController extends Controller
         return $country->country;
     }
     public static function getInstitutionName($id){
-        $institution = DB::table('institution')->where('id',$id)->first();
+        $institution = DB::table('institutions')->where('id',$id)->first();
         return $institution->name;
     }
     public static function getAceName($id){
@@ -204,11 +203,7 @@ class ContactsController extends Controller
         if(isset($ace)){
             $aces = Ace::find($ace)->get();
         }
-
         $this_contact = Contacts::find($id);
-
-
-
         $contact_update = $this_contact->Update([
             'position_id' =>$request->role,
             'person_title' =>$request->person_title,
@@ -369,7 +364,7 @@ class ContactsController extends Controller
 
 
 
-//    bulk uploads usig excel form
+//    bulk uploads using excel form
     /**
      * @param Request $request
      * @param $id
@@ -392,9 +387,9 @@ class ContactsController extends Controller
 
 
         if (isset($file1)) {
-            $dd = $this->extractMembers($file1);
+            $extracted = $this->extractMembers($file1);
 
-            if ($dd) {
+            if ($extracted) {
                 $file1->move($destinationPath, $file1->getClientOriginalName());
                 $thefile_one = $file_one->getClientOriginalName();
                 notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
@@ -416,28 +411,94 @@ class ContactsController extends Controller
             $column_range = range( 'J', $column_limit );
             $startcount = 2;
 
+
             foreach ( $row_range as $row ) {
+                $institution=null;
+                $country = null;
+                $thematic_field = null;
+                $ace = null;
+                $ace_sheet = $sheet->getCell( 'I' . $row )->getValue();
+                $institution_sheet = $sheet->getCell( 'H' . $row )->getValue();
+                $country_sheet = $sheet->getCell( 'J' . $row )->getValue();
+                $theme_sheet = $sheet->getCell( 'K' . $row )->getValue();
+
+                $new_contact = 1;
+                $new =$sheet->getCell( 'L' . $row )->getValue();
+                if($new =='no' || $new = 'No'){
+                    $new_contact = 0;
+                }
+
+                if($ace_sheet !=Null){
+                    $the_ace=DB::table('aces')
+                        ->where('name','=',$ace_sheet)
+                        ->orWhere('acronym','=',$ace_sheet)
+                        ->orWhere('name','like','%$ace_sheet')
+                        ->first();
+                    $ace= $the_ace->id;
+                    $aces_list = Ace::find($ace)->get();
+                }
+                if($institution_sheet !=Null){
+                    $the_institution=DB::table('institutions')
+                        ->where('name','=',$institution_sheet)
+                        ->orWhere('name','like','%$institution_sheet%')
+                        ->orWhere('name','like','%$institution_sheet')
+                        ->first();
+                    $institution=$the_institution->id;
+                    $aces_list= Ace::where('institution_id','=',$institution)->get();
+                }
+                if($country_sheet !=Null){
+                    $the_country=DB::table('countries')
+                        ->where('country','=',$country_sheet)
+                        ->orWhere('country','like','%$country_sheet%')
+                        ->orWhere('country','like','%$country_sheet')
+                        ->first();
+                    $country = $the_country->id;
+                    $aces_list= DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+                        ->join('countries', 'institutions.country_id', '=', 'countries.id')
+                        ->where('institutions.country_id', '=', $country)
+                        ->distinct('countries.id')
+                        ->select('aces.*')
+                        ->get();
+                }
+                if($theme_sheet !=Null){
+                    $aces_list = Ace::where('field','=',$theme_sheet)->get();
+                    $thematic_field=$theme_sheet;
+                }
+                $position_name = $sheet->getCell( 'A' . $row )->getValue();
+
+                $position = DB::table('positions')->where('position_title','=',$position_name)
+                    ->orWhere('position_title','like','%$position_name')
+                    ->orWhere('position_title','like','%$position_name%')
+                    ->orWhere('position_title','like','$position_name%')
+                    ->first();
+
+
+
+
+                $position_id = $position->id;
+
                 $data[] = [
-                    'position_id' => $sheet->getCell( 'A' . $row )->getValue(),
+                    'position_id' =>$position_id,
                     'second_role_id' => $sheet->getCell( 'B' . $row )->getValue(),
                     'person_title' => $sheet->getCell( 'C' . $row )->getValue(),
                     'mailing_name' => $sheet->getCell( 'D' . $row )->getValue(),
                     'gender' => $sheet->getCell( 'E' . $row )->getValue(),
                     'mailing_phone' =>$sheet->getCell( 'F' . $row )->getValue(),
                     'mailing_email' => $sheet->getCell( 'G' . $row )->getValue(),
-                    'institution' => $sheet->getCell( 'H' . $row )->getValue(),
-                    'ace' => $sheet->getCell( 'I' . $row )->getValue(),
-                    'country' => $sheet->getCell( 'J' . $row )->getValue(),
-                    'thematic_field' => $sheet->getCell( 'K' . $row )->getValue(),
-                    'new_contact' => $sheet->getCell( 'L' . $row )->getValue()
+                    'institution' => $institution,
+                    'ace' => $ace,
+                    'country' => $country,
+                    'thematic_field' => $thematic_field,
+                    'new_contact' => $new_contact
                 ];
                 $startcount++;
             }
-            dd($data);
+
             // Unique data without duplicates
             $unique = array_unique($data, SORT_REGULAR);
 
-            DB::table('all_contacts')->insert($unique);
+            DB::table('contacts')->insert($unique);
+
 
         } catch (Exception $e) {
             $error_code = $e->errorInfo[1];
