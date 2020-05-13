@@ -5,7 +5,7 @@
                 ->where('status','=',1)
                 ->where('show_on_report','=',1)
                ->orderBy('order_on_report','asc')->get();
-        $year_number = ['2019'=>1,'2020'=>2,'2021'=>3,'2022'=>4,'2023'=>5]
+        $year_number = ['2019'=>1,'2020'=>2,'2021'=>3,'2022'=>4,'2023'=>5];
     @endphp
     <thead>
     <tr>
@@ -56,7 +56,7 @@
                             {{$sub_indicator->title}}
                         </td>
                         <td class="text-right">
-                            @if(sizeof($baseline_values) > 0)
+                            @if(sizeof($baseline_values) > 0 && array_key_exists($sub_indicator->id,$baseline_values))
                                 {{$baseline_values[$sub_indicator->id]}}
                             @else
                                 0
@@ -66,7 +66,7 @@
                         {{--Set targets--}}
                         @foreach($years as $key=>$year)
                             <td class="text-right">
-                                @if(sizeof($target_values["$year"]) > 0)
+                                @if(sizeof($target_values["$year"]) > 0 && array_key_exists($sub_indicator->id,$target_values["$year"]))
                                     {{$target_values["$year"][$sub_indicator->id]}}
                                 @else
                                     0
@@ -102,7 +102,7 @@
                 @else
                     <td></td>
                     <td class="text-right">
-                        @if(sizeof($baseline_values) > 0)
+                        @if(sizeof($baseline_values) > 0 && array_key_exists($indicator->id,$baseline_values))
                             {{$baseline_values[$indicator->id]}}
                         @else
                             0
@@ -110,7 +110,7 @@
                     </td>
                     @foreach($years as $key=>$year)
                         <td class="text-right">
-                            @if(sizeof($target_values["$year"]) > 0)
+                            @if(sizeof($target_values["$year"]) > 0 && array_key_exists($indicator->id,$target_values["$year"]))
                                 {{$target_values["$year"][$indicator->id]}}
                             @else
                                 0
