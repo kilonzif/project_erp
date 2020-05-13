@@ -431,22 +431,75 @@ class ReportFormController extends Controller
 
         $language = collect($get_form)->toArray();
 
+        $identifier = $report->indicator->identifier;
         if (in_array('french', collect($get_form)->toArray())) {
-            $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
-            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
-            $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
-            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
-            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
-            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
-
-
+            if ($identifier == "3") {
+                $pdo_values = $this->generateAggregatedIndicator3Results_fr($id);
+                $pdo_indicators = config('app.indicator_3');
+            }
+            elseif ($identifier == "4.1") {
+                $pdo_values = $this->generateAggregatedIndicator41Results_fr($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
+            elseif ($identifier == "4.2") {
+                $pdo_values = $this->generateAggregatedIndicator42Results_fr($id);
+                $pdo_indicators = config('app.indicator_42');
+            }
+            elseif ($identifier == "5.1") {
+                $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
+                $pdo_indicator = config('app.indicator_51');
+            }
+            elseif ($identifier == "5.2") {
+                $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
+                $pdo_indicators = config('app.indicator_52');
+            }
+            elseif ($identifier == "7.3") {
+                $pdo_values = $this->generateAggregatedIndicator73Results_fr($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
+        } else {
+            if ($identifier == "3") {
+                $pdo_values = $this->generateAggregatedIndicator3Results($id);
+                $pdo_indicators = config('app.indicator_3');
+            }
+            elseif ($identifier == "4.1") {
+                $pdo_values = $this->generateAggregatedIndicator41Results($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
+            elseif ($identifier == "4.2") {
+                $pdo_values = $this->generateAggregatedIndicator42Results($id);
+                $pdo_indicators = config('app.indicator_42');
+            }
+            elseif ($identifier == "5.1") {
+                $pdo_values = $this->generateAggregatedIndicator51Results($id);
+                $pdo_indicators = config('app.indicator_51');
+            }
+            elseif ($identifier == "5.2") {
+                $pdo_values = $this->generateAggregatedIndicator52Results($id);
+                $pdo_indicators = config('app.indicator_52');
+            }
+            elseif ($identifier == "7.3") {
+                $pdo_values = $this->generateAggregatedIndicator73Results($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
         }
-        $pdo_1 = $this->generateAggregatedIndicator3Results($id);
-        $pdo_2 = $this->generateAggregatedIndicator73Results($id);
-        $pdo_52 = $this->generateAggregatedIndicator52Results($id);
-        $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
-        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
+
+//        if (in_array('french', collect($get_form)->toArray())) {
+//            $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
+//            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
+//            $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
+//            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
+//            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
+//            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
+//
+//
+//        }
+//        $pdo_1 = $this->generateAggregatedIndicator3Results($id);
+//        $pdo_2 = $this->generateAggregatedIndicator73Results($id);
+//        $pdo_52 = $this->generateAggregatedIndicator52Results($id);
+//        $pdo_41 = $this->generateAggregatedIndicator41Results($id);
+//        $pdo_42 = $this->generateAggregatedIndicator42Results($id);
+//        $pdo_51 = $this->generateAggregatedIndicator51Results($id);
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
@@ -456,7 +509,11 @@ class ReportFormController extends Controller
 
         return view('report-form.view', compact('project', 'language', 'reporting_period',
             'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
+            'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
+
+//        return view('report-form.view', compact('project', 'language', 'reporting_period',
+//            'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
+//            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
 
     }
 
@@ -604,23 +661,60 @@ class ReportFormController extends Controller
         $comment = AceComment::where('report_id', $id)->first();
 
         $language = collect($get_form)->toArray();
-        $pdo_41 = $pdo_2 = [];
+        $pdo_values = $pdo_indicators =[];
+
+        $identifier = $report->indicator->identifier;
 
         if (in_array('french', collect($get_form)->toArray())) {
-            $pdo_1 = $this->generateAggregatedIndicator3Results_fr($id);
-            $pdo_2 = $this->generateAggregatedIndicator73Results_fr($id);
-            $pdo_52 = $this->generateAggregatedIndicator52Results_fr($id);
-            $pdo_41 = $this->generateAggregatedIndicator41Results_fr($id);
-            $pdo_42 = $this->generateAggregatedIndicator42Results_fr($id);
-            $pdo_51 = $this->generateAggregatedIndicator51Results_fr($id);
-        }
-        else {
-            $pdo_1 = $this->generateAggregatedIndicator3Results($id);
-            $pdo_2 = $this->generateAggregatedIndicator73Results($id);
-            $pdo_52 = $this->generateAggregatedIndicator52Results($id);
-            $pdo_41 = $this->generateAggregatedIndicator41Results($id);
-            $pdo_42 = $this->generateAggregatedIndicator42Results($id);
-            $pdo_51 = $this->generateAggregatedIndicator51Results($id);
+            if ($identifier == "3") {
+                $pdo_values = $this->generateAggregatedIndicator3Results_fr($id);
+                $pdo_indicators = config('app.indicator_3');
+            }
+            elseif ($identifier == "4.1") {
+                $pdo_values = $this->generateAggregatedIndicator41Results_fr($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
+            elseif ($identifier == "4.2") {
+                $pdo_values = $this->generateAggregatedIndicator42Results_fr($id);
+                $pdo_indicators = config('app.indicator_42');
+            }
+            elseif ($identifier == "5.1") {
+                $pdo_values = $this->generateAggregatedIndicator51Results_fr($id);
+                $pdo_indicator = config('app.indicator_51');
+            }
+            elseif ($identifier == "5.2") {
+                $pdo_values = $this->generateAggregatedIndicator52Results_fr($id);
+                $pdo_indicators = config('app.indicator_52');
+            }
+            elseif ($identifier == "7.3") {
+                $pdo_values = $this->generateAggregatedIndicator73Results_fr($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
+        } else {
+            if ($identifier == "3") {
+                $pdo_values = $this->generateAggregatedIndicator3Results($id);
+                $pdo_indicators = config('app.indicator_3');
+            }
+            elseif ($identifier == "4.1") {
+                $pdo_values = $this->generateAggregatedIndicator41Results($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
+            elseif ($identifier == "4.2") {
+                $pdo_values = $this->generateAggregatedIndicator42Results($id);
+                $pdo_indicators = config('app.indicator_42');
+            }
+            elseif ($identifier == "5.1") {
+                $pdo_values = $this->generateAggregatedIndicator51Results($id);
+                $pdo_indicators = config('app.indicator_51');
+            }
+            elseif ($identifier == "5.2") {
+                $pdo_values = $this->generateAggregatedIndicator52Results($id);
+                $pdo_indicators = config('app.indicator_52');
+            }
+            elseif ($identifier == "7.3") {
+                $pdo_values = $this->generateAggregatedIndicator73Results($id);
+                $pdo_indicators = config('app.indicator_2');
+            }
         }
 
         $ace_officers = User::join('role_user', 'users.id', '=', 'role_user.user_id')
@@ -629,7 +723,9 @@ class ReportFormController extends Controller
         $aces = Ace::where('active', '=', 1)->get();
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
-            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
+            'indicators', 'the_indicator', 'pdo_values','pdo_indicators'));
+//        return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
+//            'indicators', 'the_indicator', 'pdo_1', 'pdo_41', 'pdo_2', 'pdo_52','pdo_42','pdo_51'));
     }
 
     /**
@@ -651,8 +747,6 @@ class ReportFormController extends Controller
             if ($report->language == 'french') {
                 if ($identifier == "3") {
                     $message = $this->generateAggregatedIndicator3Results_fr($report_id,true);
-                    session()->flash('message',$message[0]);
-                    return back();
                 }
                 elseif ($identifier == "4.2") {
                     $message = $this->generateAggregatedIndicator42Results_fr($report_id,true);
@@ -1774,12 +1868,36 @@ class ReportFormController extends Controller
                 })->count();
         }
 
+
         $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
         $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
         $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
         $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
         $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
+
+//          $pdo_7_3_values["pdo_indicator_2"]["total_accreditations"] = $total_accreditations;
+//        $pdo_7_3_values["pdo_indicator_2"]["international_accreditation"] = $international_accreditation->count();
+//        $pdo_7_3_values["pdo_indicator_2"]["regional_accreditation"] = $regional_accreditation->count();
+//        $pdo_7_3_values["pdo_indicator_2"]["national_accreditation"] = $national_accreditation->count();
+//        $pdo_7_3_values["pdo_indicator_2"]["gap_assessment"] = $gap_assessment->count();
+//        $pdo_7_3_values["pdo_indicator_2"]["self_evaluation"] = $self_evaluation->count();
+
+        $indicator_4_1_values["pdo_indicator_2a"]["total_accreditations"] = $international+$regional+$national+$gap_assessment+$self_evaluation;
+        $indicator_4_1_values["pdo_indicator_2a"]["international_accreditation"] = $international;
+        $indicator_4_1_values["pdo_indicator_2a"]["regional_accreditation"] = $regional;
+        $indicator_4_1_values["pdo_indicator_2a"]["national_accreditation"] = $national;
+        $indicator_4_1_values["pdo_indicator_2a"]["gap_assessment"] = $gap_assessment;
+        $indicator_4_1_values["pdo_indicator_2a"]["self_evaluation"] = $self_evaluation;
+
+//        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
+//        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
+//        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
+//        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
+//        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
+//        $indicator_4_1_values["pdo_indicator_41"]["course"] = $course;
+        $indicator_4_1_values["ir_indicator_8"] = $emerging;
+
 
 
         return $indicator_4_1_values;
@@ -1841,6 +1959,7 @@ class ReportFormController extends Controller
         $masters = config('app.filters_fr.masters_text');
         $bachelors = config('app.filters_fr.bachelors_text');
 
+        $emerging = 0;
         if ($report->ace->ace_type == 'emerging') {
             $emerging = DB::connection('mongodb')
                 ->collection('indicator_4.1')

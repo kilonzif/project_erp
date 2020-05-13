@@ -310,8 +310,8 @@ return [
             'total_accreditations','international_accreditation','regional_accreditation',
             'gap_assessment','self_evaluation'
 
-        ]
-
+        ],
+        'ir_indicator_7'
     ],
 
 
