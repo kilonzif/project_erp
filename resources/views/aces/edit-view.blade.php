@@ -82,7 +82,7 @@
                             <select class="form-control" name="currency1" id="currency1" required>
                                 <option value=""  disabled>--Choose--</option>
                                 @foreach($currency as $cc)
-                                    <option {{($cc->id == old('currency1'))?"selected":""}} value="{{$cc->id}}">
+                                    <option {{($cc->id == $ace->currency1_id)?"selected":""}} value="{{$cc->id}}">
                                         {{$cc->name.' - '.$cc->symbol}}
                                     </option>
                                 @endforeach
@@ -107,12 +107,12 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="form-group{{ $errors->has('currency') ? ' form-control-warning' : '' }}">
+                        <div class="form-group{{ $errors->has('currency2') ? ' form-control-warning' : '' }}">
                             <label for="currency2">{{__('Currency 2')}}</label>
                             <select class="form-control"  name="currency2" id="currency2">
-                                <option value="" disabled>--Choose--</option>
+                                <option value="">--Choose--</option>
                                 @foreach($currency as $cc)
-                                    <option {{($cc->id == old('currency2'))?"selected":""}} value="{{$cc->id}}">
+                                    <option {{($cc->id == $ace->currency2_id)?"selected":""}} value="{{$cc->id}}">
                                         {{$cc->name.' - '.$cc->symbol}}
                                     </option>
                                 @endforeach

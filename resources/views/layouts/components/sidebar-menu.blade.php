@@ -90,6 +90,7 @@
                             <span class="menu-title" data-i18n="">{{__('DLR Report')}}</span>
                         </a>
                     </li>
+                    @if(false)
                     <li class="{{isRouteActive('report_generation.indicator_status')}}">
                         <a href="{{route('report_generation.indicator_status')}}">
                             <span class="menu-title" data-i18n="">{{__('Indicator Status Report')}}</span>
@@ -105,6 +106,7 @@
                             <span class="menu-title" data-i18n="">{{__('    Verification Report')}}</span>
                         </a>
                     </li>
+                    @endif
                 </ul>
             </li>
             @endability

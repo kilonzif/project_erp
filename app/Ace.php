@@ -8,7 +8,7 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Ace extends Model implements Auditable {
 	use \OwenIt\Auditing\Auditable;
 
-	protected $fillable = ['name', 'acronym','grant1','currency1','grant2','currency2','institution_id', 'contact',
+	protected $fillable = ['name', 'acronym','grant1','currency1_id','grant2','currency2_id','institution_id', 'contact',
         'email', 'course', 'contact_person', 'person_number', 'person_email', 'position', 'active',
         'ace_type','ace_state','impact_no'];
 
