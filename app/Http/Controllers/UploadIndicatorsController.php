@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Collection;
 use phpDocumentor\Reflection\Types\Integer;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
@@ -352,6 +353,9 @@ class UploadIndicatorsController extends Controller
         $report_id = (integer)($request->report_id);
 //        $data = Arr::except($request->all(), ['_token']);
 
+        $files_array = array();
+
+
         switch ($this_dlr->identifier) {
             case "4.1":
                 $indicator_details['report_id'] = (integer)$report_id;
@@ -381,9 +385,15 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['fundingreason'] = $request->fundingreason;
                 break;
             case "6.1":
+                $file1_name= $request->file_name_1;
+                $file2_name = $request->file_name_2;
+                $files_array['file_one'] =  $request->file('file_name_1');
+                $files_array['file_two'] =  $request->file('file_name_2');
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['ifr_period'] = $request->ifr_period;
+                $indicator_details['file_name_1'] = $file1_name->getClientOriginalName();
                 $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
+                $indicator_details['file_name_2'] = $file2_name->getClientOriginalName();
                 $indicator_details['efa_period'] = $request->efa_period;
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 break;
@@ -432,12 +442,17 @@ class UploadIndicatorsController extends Controller
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
             $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
         }
+        $destinationPath = base_path() . '/public/'.$table_name.'/';
+
 
         if(!$saved){
             $error_msg = "Data hasn't saved. Please try again.";
             notify(new ToastNotification('Sorry', $error_msg, 'warning'));
             return back()->withInput();
         }else{
+            foreach ($files_array as $key=>$value){
+                $value->move($destinationPath, $value->getClientOriginalName());
+            }
             $success = "The data has been saved.";
             notify(new ToastNotification('Successful', $success, 'success'));
             return back();
@@ -600,6 +615,7 @@ class UploadIndicatorsController extends Controller
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
+        $files_array =array();
 
         switch ($this_dlr->identifier) {
             case "4.1":
@@ -630,9 +646,15 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['fundingreason'] = $request->fundingreason;
                 break;
             case "6.1":
+                $file1_name= $request->file_name_1;
+                $file2_name = $request->file_name_2;
+                $files_array['file_one'] =  $request->file('file_name_1');
+                $files_array['file_two'] =  $request->file('file_name_2');
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['ifr_period'] = $request->ifr_period;
+                $indicator_details['file_name_1'] = $file1_name->getClientOriginalName();
                 $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
+                $indicator_details['file_name_2'] = $file2_name->getClientOriginalName();
                 $indicator_details['efa_period'] = $request->efa_period;
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 break;
@@ -683,12 +705,16 @@ class UploadIndicatorsController extends Controller
                 ->where('_id','=',$record_id)
                 ->update($indicator_details);
         }
+        $destinationPath = base_path() . '/public/'.$table_name.'/';
 
         if(!$updated){
             $error_msg = "There was an error updating the data";
             notify(new ToastNotification('error', $error_msg, 'warning'));
             return back()->withInput();
         }else if($updated) {
+            foreach ($files_array as $key=>$value){
+                $value->move($destinationPath, $value->getClientOriginalName());
+            }
             $success = "The Update was successful.";
             notify(new ToastNotification('Successful', $success, 'success'));
             return back();
