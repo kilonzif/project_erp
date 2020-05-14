@@ -392,7 +392,7 @@ class CommonFunctions {
             'Budget Report URL'                             =>   'Budget Report URL',
             'Work Plan URL'                                 =>   'Work Plan URL',
             'Other Files URL'                               =>   'Other Files URL',
-            'Personal File'                                => 'Personal File',
+            'Personnel File'                                => 'Personnel File',
             'Vacancy URL'                                  => 'Vacancy URL',
             'Report Scores File'                           => 'Report Scores File',
         ];
@@ -454,7 +454,7 @@ class CommonFunctions {
             'Budget Report URL'                             =>   'URL du rapport budgétaire',
             'Work Plan URL'                                =>   'URL du plan de travail',
             'Other Files URL'                               =>   'URL d\'autres fichiers',
-            'Personal File'                                => 'Dossier personnel',
+            'Personnel File'                                => 'Dossier personnel',
             'Vacancy URL'                                  => 'URL de poste vacant',
             'Report Scores File'                           => 'Fichier de résultats de rapport',
         ];

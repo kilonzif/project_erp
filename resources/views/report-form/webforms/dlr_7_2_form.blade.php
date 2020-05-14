@@ -12,7 +12,7 @@
         <input type="hidden" name="indicator_id" value="{{$indicator_info->id}}">
         <div class="col-md-4">
             <div class="form-group{{ $errors->has('personnel_file') ? ' form-control-warning' : '' }}">
-                <label for="personnel_file">{{$lang['Personal File']}} 1<span class="required">*</span></label>
+                <label for="personnel_file">{{$lang['Personnel File']}} 1<span class="required">*</span></label>
                 <input type="file" class="form-control" id="personnel_file" name="personnel_file"
                        @if(isset($the_record))
                        value="{{ (old('personnel_file')) ? old('personnel_file') : $the_record->personnel_file }}"

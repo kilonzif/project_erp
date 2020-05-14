@@ -26,10 +26,10 @@
                     <div class="card-body table-responsive">
                         <table class="table table-striped table-bordered">
                             <tr>
-                                <th style="min-width: 250px">{{$lang['Personal File']}} 1</th>
-                                <th style="min-width: 250px">{{$lang['Vacancy URL']}}</th>
-                                <th style="min-width: 250px">{{$lang['Report Scores File']}} </th>
-                                <th style="min-width: 100px">{{$lang['Action']}}</th>
+                                <th style="min-width: 320px">{{$lang['Personnel File']}} 1</th>
+                                <th style="min-width: 320px">{{$lang['Vacancy URL']}}</th>
+                                <th style="min-width: 320px">{{$lang['Report Scores File']}} </th>
+                                <th style="min-width: 200px">{{$lang['Action']}}</th>
                             </tr>
                             @foreach($data as $datum)
                                 <tr>
