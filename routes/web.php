@@ -140,6 +140,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::get('aces/json-view', 'AcesController@edit_view')->name('ace.edit-view');
 
     Route::get('ace/update', 'AcesController@update_ace')->name('ace.update');
+    Route::post('aces/conversions', 'AcesController@conversions')->name('ace.conversions');
     Route::get('aces/{id}', 'AcesController@ace_page')->name('aces.profile');
     Route::get('ace/{id}/baselines', 'AcesController@baselines')->name('ace.baselines');
     Route::get('ace/{id}/indicator_one', 'AcesController@indicator_one')->name('ace.indicator_one');

@@ -439,6 +439,22 @@ class AcesController extends Controller {
         return $contacts;
     }
 
+    public function conversions(Request $request){
+        $this->validate($request,[
+            'sdr_to_usd' => 'nullable|numeric|min:0',
+            'euro_to_usd' => 'nullable|numeric|min:0',
+        ]);
+        $the_ace = Ace::find($request->ace_id);
+        $the_ace->sdr_to_usd = $request->sdr_to_usd;
+        $the_ace->euro_to_usd = $request->sdr_to_usd;
+        if ($the_ace->save()) {
+            notify(new ToastNotification('Successful','Conversion Updated','success'));
+        } else {
+            notify(new ToastNotification('Sorry','Please enter accurate figures','warning'));
+        }
+        return back();
+    }
+
 //    Workplan
     public function saveWorkPlan(Request $request,$ace_id){
         $ace_id = $request->ace_id;
