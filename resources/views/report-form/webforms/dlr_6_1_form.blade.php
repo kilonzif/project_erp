@@ -32,9 +32,9 @@
                 <label for="file_name_1">{{$lang['File Upload']}}<span class="required">*</span></label>
                 <input type="file" class="form-control" id="file_name_1" require name="file_name_1"
                        @if(isset($the_record))
-                       value="{{ (old('file_name_2')) ? old('file_name_2') : $the_record->file_name_2 }}"
+                       value="{{ (old('file_name_1')) ? old('file_name_1') : $the_record->file_name_1 }}"
                        @else
-                       value="{{ (old('file_name_2')) ? old('file_name_2') :'' }}"
+                       value="{{ (old('file_name_1')) ? old('file_name_1') :'' }}"
                         @endif>
                 @if ($errors->has('file_name_1'))
                     <p class="text-right mb-0">
@@ -44,8 +44,10 @@
                 @if(isset($the_record))
                     @if($the_record->file_name_1 !="")
                         <strong>{{$the_record->file_name_1}}</strong>
-                        <a href="{{asset('indicator_6_1/'.$the_record->file_name_1)}}" target="_blank">
-                            <span class="fa fa-file"></span>   Download file
+                        <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->file_name_1])}}"
+                           target="_blank">
+                            <span class="fa fa-file"></span> {{$lang['Download']}}
                         </a>
                         <br>
                     @endif
@@ -106,8 +108,10 @@
                 @if(isset($the_record))
                     @if($the_record->file_name_2 !="")
                         <strong>{{$the_record->file_name_2}}</strong>
-                        <a href="{{asset('indicator_6_1/'.$the_record->file_name_2)}}" target="_blank">
-                            <span class="fa fa-file"></span>   Download file
+                        <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->file_name_2])}}"
+                           target="_blank">
+                            <span class="fa fa-file"></span> {{$lang['Download']}}
                         </a>
                         <br>
                     @endif

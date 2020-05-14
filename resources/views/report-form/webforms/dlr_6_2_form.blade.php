@@ -25,14 +25,15 @@
                 </p>
             @endif
             @if(isset($the_record))
-            @if($the_record->guideline_file !="")
-                @if(is_file(public_path($directory.'/'.$the_record->guideline_file)))
-                    <a href="{{asset($directory.'/'.$the_record->guideline_file)}}" target="_blank">
-                        <span class="fa fa-file"></span>{{$the_record->guideline_file}}
+                @if($the_record->guideline_file !="")
+                    <strong>{{$the_record->guideline_file}}</strong>
+                    <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->guideline_file])}}"
+                       target="_blank">
+                        <span class="fa fa-file"></span> {{$lang['Download']}}
                     </a>
+                    <br>
                 @endif
-                <br>
-            @endif
             @endif
         </div>
     </div>
@@ -51,14 +52,15 @@
                 </p>
             @endif
             @if(isset($the_record))
-            @if($the_record->members_file !="")
-                @if(is_file(public_path($directory.'/'.$the_record->members_file)))
-                    <a href="{{asset($directory.'/'.$the_record->members_file)}}" target="_blank">
-                        <span class="fa fa-file"></span>{{$the_record->members_file}}
+                @if($the_record->members_file !="")
+                    <strong>{{$the_record->members_file}}</strong>
+                    <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->members_file])}}"
+                       target="_blank">
+                        <span class="fa fa-file"></span> {{$lang['Download']}}
                     </a>
+                    <br>
                 @endif
-                <br>
-            @endif
             @endif
         </div>
     </div>
@@ -77,15 +79,16 @@
                 </p>
             @endif
             @if(isset($the_record))
-            @if($the_record->report_file !="")
-                @if(is_file(public_path($directory.'/'.$the_record->report_file)))
-                    <a href="{{asset($directory.'/'.$the_record->report_file)}}" target="_blank">
-                        <span class="fa fa-file"></span>{{$the_record->report_file}}
+                @if($the_record->report_file !="")
+                    <strong>{{$the_record->report_file}}</strong>
+                    <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->report_file])}}"
+                       target="_blank">
+                        <span class="fa fa-file"></span> {{$lang['Download']}}
                     </a>
+                    <br>
                 @endif
-                <br>
             @endif
-                @endif
         </div>
     </div>
     <div class="col-md-6">
@@ -103,15 +106,16 @@
                 </p>
             @endif
             @if(isset($the_record))
-            @if($the_record->audited_account_file !="")
-                @if(is_file(public_path($directory.'/'.$the_record->audited_account_file)))
-                    <a href="{{asset($directory.'/'.$the_record->audited_account_file)}}" target="_blank">
-                        <span class="fa fa-file"></span>{{$the_record->audited_account_file}}
+                @if($the_record->audited_account_file !="")
+                    <strong>{{$the_record->audited_account_file}}</strong>
+                    <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->audited_account_file])}}"
+                       target="_blank">
+                        <span class="fa fa-file"></span> {{$lang['Download']}}
                     </a>
+                    <br>
                 @endif
-                <br>
             @endif
-                @endif
         </div>
     </div>
     <div class="form-group col-12">

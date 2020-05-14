@@ -651,14 +651,6 @@ class UploadIndicatorsController extends Controller
             $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id',
                 'this_indicator','ace_programmes'))->render();
         }
-//        elseif($report->language=="english" && $this_indicator->identifier =='5.1' ){
-//            $view = view ('report-form.webforms.edit_dlr51en',compact('the_record','record_id',
-//                'this_indicator'))->render();
-//        }
-//        elseif($report->language=="french" && $this_indicator->identifier =='5.1' ){
-//            $view = view ('report-form.webforms.edit_dlr51fr',compact('the_record','record_id',
-//                'this_indicator'))->render();
-//        }
         elseif($report->language=="english" && $this_indicator->identifier =='7.3' ){
             $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id',
                 'this_indicator'))->render();
