@@ -445,7 +445,12 @@ class UploadIndicatorsController extends Controller
                 };
                 break;
             case "6.3":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['submission_date'] = $request->submission_date;
+                $indicator_details['financial_report_url'] = $request->financial_report_url;
+                $indicator_details['budget_report_url'] = $request->budget_report_url;
+                $indicator_details['work_plan_url'] = $request->work_plan_url;
+                $indicator_details['other_files_url'] = $request->other_files_url;
                 break;
             case "6.4":
                 $indicator_details['report_id'] = (integer)$report_id;
@@ -763,7 +768,12 @@ class UploadIndicatorsController extends Controller
                 };
                 break;
             case "6.3":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['submission_date'] = $request->submission_date;
+                $indicator_details['financial_report_url'] = $request->financial_report_url;
+                $indicator_details['budget_report_url'] = $request->budget_report_url;
+                $indicator_details['work_plan_url'] = $request->work_plan_url;
+                $indicator_details['other_files_url'] = $request->other_files_url;
                 break;
             case "6.4":
                 $indicator_details['report_id'] = (integer)$report_id;
