@@ -379,6 +379,10 @@ class CommonFunctions {
             'Report File'                                   =>   'Report File',
             'Audited Account File'                          =>   'Audited Account File',
             'Members File'                                  =>   'Members File',
+            'Approved Procurement'                          =>   'Approved Procurement',
+            'ACE Procurement Officer'                       =>   'ACE Procurement Officer',
+            'Procurement Progress Report'                   =>   'Procurement Progress Report',
+            'Contracts Signed'                              =>   'Contracts Signed',
         ];
     }
 
@@ -425,6 +429,10 @@ class CommonFunctions {
             'Report File'                                   =>   'Fichier de rapport',
             'Audited Account File'                          =>   'Fichier de compte vérifié',
             'Members File'                                  =>   'Fichier des membres',
+            'Approved Procurement'                          =>   'Approvisionnement approuvé',
+            'ACE Procurement Officer'                       =>   'Responsable des achats ACE',
+            'Procurement Progress Report'                   =>   'Rapport d\'étape sur l\'approvisionnement',
+            'Contracts Signed'                              =>   'Contrats signés',
         ];
     }
 }
