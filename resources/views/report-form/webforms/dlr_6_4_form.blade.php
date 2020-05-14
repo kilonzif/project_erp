@@ -29,8 +29,10 @@
                 @if(isset($the_record))
                     @if($the_record->approved_procurement_file !="")
                         <strong>{{$the_record->approved_procurement_file}}</strong>
-                        <a href="{{asset('indicator_6_4/'.$the_record->approved_procurement_file)}}" target="_blank">
-                            <span class="fa fa-file"></span>   Download file
+                        <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->approved_procurement_file])}}"
+                           target="_blank">
+                            <span class="fa fa-file"></span> {{$lang['Download']}}
                         </a>
                         <br>
                     @endif
@@ -56,8 +58,10 @@
                 @if(isset($the_record))
                     @if($the_record->officer_file !="")
                         <strong>{{$the_record->officer_file}}</strong>
-                        <a href="{{asset('indicator_6_1/'.$the_record->officer_file)}}" target="_blank">
-                            <span class="fa fa-file"></span>   Download file
+                        <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->officer_file])}}"
+                           target="_blank">
+                            <span class="fa fa-file"></span> {{$lang['Download']}}
                         </a>
                         <br>
                     @endif
@@ -83,8 +87,10 @@
                 @if(isset($the_record))
                     @if($the_record->procurement_progress_report_file !="")
                         <strong>{{$the_record->procurement_progress_report_file}}</strong>
-                        <a href="{{asset('indicator_6_1/'.$the_record->procurement_progress_report_file)}}" target="_blank">
-                            <span class="fa fa-file"></span>   Download file
+                        <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->procurement_progress_report_file])}}"
+                           target="_blank">
+                            <span class="fa fa-file"></span> {{$lang['Download']}}
                         </a>
                         <br>
                     @endif
@@ -110,8 +116,10 @@
                 @if(isset($the_record))
                     @if($the_record->contracts_signed_file !="")
                         <strong>{{$the_record->contracts_signed_file}}</strong>
-                        <a href="{{asset('indicator_6_1/'.$the_record->contracts_signed_file)}}" target="_blank">
-                            <span class="fa fa-file"></span>   Download file
+                        <a href="{{route('report_submission.report.download_dlr_file',
+                        [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$the_record->contracts_signed_file])}}"
+                           target="_blank">
+                            <span class="fa fa-file"></span> {{$lang['Download']}}
                         </a>
                         <br>
                     @endif

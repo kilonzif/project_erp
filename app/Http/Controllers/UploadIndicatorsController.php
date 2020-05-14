@@ -479,8 +479,6 @@ class UploadIndicatorsController extends Controller
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
             $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
         }
-//        $destinationPath = base_path() . '/public/'.$table_name.'/';
-
 
         if(!$saved){
             $error_msg = "Data hasn't saved. Please try again.";
@@ -488,7 +486,7 @@ class UploadIndicatorsController extends Controller
             return back()->withInput();
         }else{
             foreach ($files_array as $key=>$value){
-                Storage::putFile("$directory", $value);
+                Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
             }
             $success = "The data has been saved.";
             notify(new ToastNotification('Successful', $success, 'success'));
@@ -650,7 +648,6 @@ class UploadIndicatorsController extends Controller
         else {
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
         }
-//        $report = Report::find($request->report_id);
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
@@ -778,20 +775,19 @@ class UploadIndicatorsController extends Controller
                 ->where('_id','=',$record_id)
                 ->update($indicator_details);
         }
-//        $destinationPath = base_path() . '/public/'.$table_name.'/';
 
         if(!$updated){
-            $error_msg = "There was an error updating the data";
-            notify(new ToastNotification('error', $error_msg, 'warning'));
+            $error_msg = "No data available to be saved. Please try again.";
+            notify(new ToastNotification('error', $error_msg, 'info'));
             return back()->withInput();
         }else if($updated) {
             foreach ($files_array as $key=>$value){
-                Storage::putFile("$directory", $value);
+                Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
             }
             $success = "The Update was successful.";
             notify(new ToastNotification('Successful', $success, 'success'));
-            return back();
         }
+        return back();
     }
 }
 

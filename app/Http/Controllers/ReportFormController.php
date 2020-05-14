@@ -548,6 +548,22 @@ class ReportFormController extends Controller
     }
 
     /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function downloadReportDlrFile($report_id,$file_name)
+    {
+        $id = Crypt::decrypt($report_id);
+        $report = Report::find($id);
+        $acronym = strtoupper($report->ace->acronym);
+        $reporting_year = $report->reporting_period->first()->reporting_year;
+        $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
+        $directory = "public/reports/$acronym/$reporting_year/$identifier/$file_name";
+
+        return Storage::download($directory);
+    }
+
+    /**
      * @param Request $request
      * @param $report_id
      * @param $indicator_id
