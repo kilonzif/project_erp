@@ -388,6 +388,10 @@ class CommonFunctions {
             'Document 1 Description'                        =>   'Document 1 Description',
             'Document 2 Description'                        =>   'Document 2 Description',
             'Document 3 Description'                        =>   'Document 3 Description',
+            'Financial Report URL'                          =>   'Financial Report URL',
+            'Budget Report URL'                             =>   'Budget Report URL',
+            'Work Plan URL'                                 =>   'Work Plan URL',
+            'Other Files URL'                               =>   'Other Files URL',
         ];
     }
 
@@ -443,6 +447,10 @@ class CommonFunctions {
             'Document 1 Description'                        =>   'Description du document 1',
             'Document 2 Description'                        =>   'Description du document 2',
             'Document 3 Description'                        =>   'Description du document 3',
+            'Financial Report URL'                          =>   'URL du rapport financier',
+            'Budget Report URL'                             =>   'URL du rapport budgétaire',
+            'Work Plan URL'                                =>   'URL du plan de travail',
+            'Other Files URL'                               =>   'URL d\'autres fichiers',
         ];
     }
 }
