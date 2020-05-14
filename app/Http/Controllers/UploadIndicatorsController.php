@@ -38,8 +38,14 @@ class UploadIndicatorsController extends Controller
         $report = Report::find($d_report_id);
         $select_language = new CommonFunctions();
         $lang = $select_language->webFormLang($report->language);
-
         $currency_list = DB::table('currency_list')->get();
+
+        //Gather the file name and directory path
+        $acronym = strtoupper($report->ace->acronym);
+        $reporting_year = $report->reporting_period->first()->reporting_year;
+        $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
+        $directory = "public/reports/$acronym/$reporting_year/$identifier";
+
 
 //        if (!$report->editable && Auth::user()->hasRole('ace-officer')){
 //            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
@@ -80,7 +86,7 @@ class UploadIndicatorsController extends Controller
                 if($report->language=="french" && $indicators->identifier =='4.1' ){
                     return view('report-form.webforms.dlr41fr-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                    ,'indicator_info','ace_programmes'));
+                    ,'indicator_info','ace_programmes','directory'));
                 }
 //                else if($report->language=="french" && $indicators->identifier =='5.1'){
 //                    return view('report-form.webforms.dlr51fr-webform', compact('indicators',
@@ -91,7 +97,7 @@ class UploadIndicatorsController extends Controller
                 else if($report->language=="english" && $indicators->identifier =='4.1'){
                     return view('report-form.webforms.dlr41en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info','ace_programmes'));
+                        ,'indicator_info','ace_programmes','directory'));
 
                 }
 //                else if($report->language=="english" && $indicators->identifier =='5.1'){
@@ -102,16 +108,16 @@ class UploadIndicatorsController extends Controller
                 else if($report->language=="english" && $indicators->identifier =='7.3'){
                     return view('report-form.webforms.dlr73en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
+                        ,'indicator_info','directory'));
                 }
                 else if($report->language=="french" && $indicators->identifier =='7.3'){
                     return view('report-form.webforms.dlr73fr-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
+                        ,'indicator_info','directory'));
                 }
                 else {
                     return view("report-form.webforms.$view_name", compact('indicator_type','currency_list','lang',
-                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info'));
+                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info','directory'));
                 }
             }
         }
@@ -355,8 +361,9 @@ class UploadIndicatorsController extends Controller
         $this_dlr = Indicator::find($request->indicator_id);
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
-
         $files_array = array();
+        $this_report = Report::find($report_id)->first();
+        $ace_id = $this_report->ace_id;
 
         //Gather the file name and directory path
         $report = Report::find($report_id);
@@ -411,7 +418,28 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 break;
             case "6.2":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ace_id'] = (integer)$ace_id;
+                if ($request->file('guideline_file')) {
+                    $guideline_file= $request->guideline_file;
+                    $files_array['guideline_file'] =  $request->file('guideline_file');
+                    $indicator_details['guideline_file'] = $guideline_file->getClientOriginalName();
+                }
+                if ($request->file('members_file')) {
+                    $members_file = $request->members_file;
+                    $files_array['members_file'] =  $request->file('members_file');
+                    $indicator_details['members_file'] = $members_file->getClientOriginalName();
+                };
+                if ($request->file('report_file')) {
+                    $report_file= $request->report_file;
+                    $files_array['report_file'] =  $request->file('report_file');
+                    $indicator_details['report_file'] = $report_file->getClientOriginalName();
+                }
+                if ($request->file('audited_account_file')) {
+                    $audited_account_file = $request->audited_account_file;
+                    $files_array['audited_account_file'] =  $request->file('audited_account_file');
+                    $indicator_details['audited_account_file'] = $audited_account_file->getClientOriginalName();
+                };
                 break;
             case "6.3":
                 dd($request->all());
@@ -451,13 +479,12 @@ class UploadIndicatorsController extends Controller
         if (isset($this_dlr->web_form_id)) {
             $table_name = $this_dlr->webForm->table_name;
             $saved= DB::table("$table_name")->insert($indicator_details);
+
+
         } else {
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
             $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
         }
-//        $destinationPath = base_path() . '/public/'.$table_name.'/';
-
-
         if(!$saved){
             $error_msg = "Data hasn't saved. Please try again.";
             notify(new ToastNotification('Sorry', $error_msg, 'warning'));
@@ -628,6 +655,8 @@ class UploadIndicatorsController extends Controller
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
+        $this_report = Report::find($report_id)->first();
+        $ace_id = $this_report->ace_id;
         $files_array =array();
         $report = Report::find($report_id);
         $acronym = strtoupper($report->ace->acronym);
@@ -683,7 +712,28 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 break;
             case "6.2":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ace_id'] = (integer)$ace_id;
+                if ($request->file('guideline_file')) {
+                    $guideline_file= $request->guideline_file;
+                    $files_array['guideline_file'] =  $request->file('guideline_file');
+                    $indicator_details['guideline_file'] = $guideline_file->getClientOriginalName();
+                }
+                if ($request->file('members_file')) {
+                    $members_file = $request->members_file;
+                    $files_array['members_file'] =  $request->file('members_file');
+                    $indicator_details['members_file'] = $members_file->getClientOriginalName();
+                };
+                if ($request->file('report_file')) {
+                    $report_file= $request->report_file;
+                    $files_array['report_file'] =  $request->file('report_file');
+                    $indicator_details['report_file'] = $report_file->getClientOriginalName();
+                }
+                if ($request->file('audited_account_file')) {
+                    $audited_account_file = $request->audited_account_file;
+                    $files_array['audited_account_file'] =  $request->file('audited_account_file');
+                    $indicator_details['audited_account_file'] = $audited_account_file->getClientOriginalName();
+                };
                 break;
             case "6.3":
                 dd($request->all());

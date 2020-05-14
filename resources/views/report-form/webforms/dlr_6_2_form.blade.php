@@ -89,10 +89,35 @@
                             </tr>
                             @foreach($data as $datum)
                                 <tr>
-                                    <td>{{$datum->guideline_file}}</td>
-                                    <td>{{$datum->members_file}}</td>
-                                    <td>{{$datum->report_file}}</td>
-                                    <td>{{$datum->audited_account_file}}</td>
+                                    <td>
+                                        @if($datum->guideline_file !="")
+                                            <a href="{{asset($directory.'/'.$datum->guideline_file)}}" target="_blank">
+                                                <span class="fa fa-file"></span>{{$datum->guideline_file}}
+                                            </a>
+                                            <br>
+                                        @endif
+                                    <td>
+                                        @if($datum->members_file !="")
+                                            <a href="{{asset($directory.'/'.$datum->members_file)}}" target="_blank">
+                                                <span class="fa fa-file"></span>{{$datum->members_file}}
+                                            </a>
+                                            <br>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($datum->report_file !="")
+                                            <a href="{{asset($directory.'/'.$datum->report_file)}}" target="_blank">
+                                                <span class="fa fa-file"></span>{{$datum->report_file}}
+                                            </a>
+                                            <br>
+                                        @endif
+                                    <td>
+                                        @if($datum->audited_account_file !="")
+                                            <a href="{{asset($directory.'/'.$datum->audited_account_file)}}" target="_blank">
+                                                <span class="fa fa-file"></span>{{$datum->audited_account_file}}
+                                            </a>
+                                            <br>
+                                        @endif
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="#form-card" onclick="editRecord('{{$indicator_info->id}}','{{$datum->id}}')" class="btn btn-s btn-secondary">

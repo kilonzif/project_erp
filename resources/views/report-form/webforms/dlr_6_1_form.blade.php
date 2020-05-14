@@ -123,12 +123,26 @@
                         @foreach($data as $datum)
                             <tr>
                                 <td>{{$datum->ifr_period}}</td>
-                                <td>{{$datum->file_name_1}}</td>
+                                <td>
+                                    @if($datum->file_name_1 !="")
+                                        <a href="{{asset($directory/$datum->file_name_1)}}" target="_blank">
+                                            <span class="fa fa-file"></span>{{$datum->file_name_1}}
+                                        </a>
+                                        <br>
+                                    @endif
+                                </td>
                                 <td>
                                     {{!empty($datum->file_name_1_submission)?date("d/m/Y", strtotime($datum->file_name_1_submission)):"N/A"}}
                                 </td>
                                 <td>{{$datum->efa_period}}</td>
-                                <td>{{$datum->file_name_2}}</td>
+                                <td>
+                                    @if($datum->file_name_2 !="")
+                                        <a href="{{asset($directory/$datum->file_name_2)}}" target="_blank">
+                                            <span class="fa fa-file"></span>{{$datum->file_name_2}}
+                                        </a>
+                                        <br>
+                                    @endif
+                                </td>
                                 <td>
                                     {{!empty($datum->file_name_2_submission)?date("d/m/Y", strtotime($datum->file_name_2_submission)):"N/A"}}
                                 </td>
