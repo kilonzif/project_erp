@@ -355,10 +355,15 @@ class UploadIndicatorsController extends Controller
         $this_dlr = Indicator::find($request->indicator_id);
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
-//        $data = Arr::except($request->all(), ['_token']);
 
         $files_array = array();
 
+        //Gather the file name and directory path
+        $report = Report::find($report_id);
+        $acronym = strtoupper($report->ace->acronym);
+        $reporting_year = $report->reporting_period->first()->reporting_year;
+        $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
+        $directory = "public/reports/$acronym/$reporting_year/$identifier";
 
         switch ($this_dlr->identifier) {
             case "4.1":
@@ -389,15 +394,19 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['fundingreason'] = $request->fundingreason;
                 break;
             case "6.1":
-                $file1_name= $request->file_name_1;
-                $file2_name = $request->file_name_2;
-                $files_array['file_one'] =  $request->file('file_name_1');
-                $files_array['file_two'] =  $request->file('file_name_2');
+                if ($request->file('file_name_1')) {
+                    $file1_name= $request->file_name_1;
+                    $files_array['file_one'] =  $request->file('file_name_1');
+                    $indicator_details['file_name_1'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('file_name_2')) {
+                    $file2_name = $request->file_name_2;
+                    $files_array['file_two'] =  $request->file('file_name_2');
+                    $indicator_details['file_name_2'] = $file2_name->getClientOriginalName();
+                };
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['ifr_period'] = $request->ifr_period;
-                $indicator_details['file_name_1'] = $file1_name->getClientOriginalName();
                 $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
-                $indicator_details['file_name_2'] = $file2_name->getClientOriginalName();
                 $indicator_details['efa_period'] = $request->efa_period;
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 break;
@@ -446,7 +455,7 @@ class UploadIndicatorsController extends Controller
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
             $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
         }
-        $destinationPath = base_path() . '/public/'.$table_name.'/';
+//        $destinationPath = base_path() . '/public/'.$table_name.'/';
 
 
         if(!$saved){
@@ -455,7 +464,7 @@ class UploadIndicatorsController extends Controller
             return back()->withInput();
         }else{
             foreach ($files_array as $key=>$value){
-                $value->move($destinationPath, $value->getClientOriginalName());
+                Storage::putFile("$directory", $value);
             }
             $success = "The data has been saved.";
             notify(new ToastNotification('Successful', $success, 'success'));
@@ -615,11 +624,16 @@ class UploadIndicatorsController extends Controller
         else {
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
         }
-        $report = Report::find($request->report_id);
+//        $report = Report::find($request->report_id);
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
         $files_array =array();
+        $report = Report::find($report_id);
+        $acronym = strtoupper($report->ace->acronym);
+        $reporting_year = $report->reporting_period->first()->reporting_year;
+        $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
+        $directory = "public/reports/$acronym/$reporting_year/$identifier";
 
         switch ($this_dlr->identifier) {
             case "4.1":
@@ -650,15 +664,21 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['fundingreason'] = $request->fundingreason;
                 break;
             case "6.1":
-                $file1_name= $request->file_name_1;
-                $file2_name = $request->file_name_2;
-                $files_array['file_one'] =  $request->file('file_name_1');
-                $files_array['file_two'] =  $request->file('file_name_2');
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['ifr_period'] = $request->ifr_period;
-                $indicator_details['file_name_1'] = $file1_name->getClientOriginalName();
+
+                if ($request->file('file_name_1')) {
+                    $file1_name= $request->file_name_1;
+                    $files_array['file_one'] =  $request->file('file_name_1');
+                    $indicator_details['file_name_1'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('file_name_2')) {
+                    $file2_name = $request->file_name_2;
+                    $files_array['file_two'] =  $request->file('file_name_2');
+                    $indicator_details['file_name_2'] = $file2_name->getClientOriginalName();
+                }
+
                 $indicator_details['file_name_1_submission'] = $request->file_name_1_submission;
-                $indicator_details['file_name_2'] = $file2_name->getClientOriginalName();
                 $indicator_details['efa_period'] = $request->efa_period;
                 $indicator_details['file_name_2_submission'] = $request->file_name_2_submission;
                 break;
@@ -709,7 +729,7 @@ class UploadIndicatorsController extends Controller
                 ->where('_id','=',$record_id)
                 ->update($indicator_details);
         }
-        $destinationPath = base_path() . '/public/'.$table_name.'/';
+//        $destinationPath = base_path() . '/public/'.$table_name.'/';
 
         if(!$updated){
             $error_msg = "There was an error updating the data";
@@ -717,7 +737,7 @@ class UploadIndicatorsController extends Controller
             return back()->withInput();
         }else if($updated) {
             foreach ($files_array as $key=>$value){
-                $value->move($destinationPath, $value->getClientOriginalName());
+                Storage::putFile("$directory", $value);
             }
             $success = "The Update was successful.";
             notify(new ToastNotification('Successful', $success, 'success'));
