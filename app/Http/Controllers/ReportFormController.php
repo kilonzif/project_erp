@@ -417,10 +417,10 @@ class ReportFormController extends Controller
         $reporting_period = ReportingPeriod::find($report->reporting_period_id);
         $reporting_periods = ReportingPeriod::all();
 
-        if ($report->editable == 0 && Auth::user()->hasRole('ace-officer')) {
-            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
-            return redirect()->route('report_submission.reports');
-        }
+//        if ($report->editable == 0 && Auth::user()->hasRole('ace-officer')) {
+//            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
+//            return redirect()->route('report_submission.reports');
+//        }
         $values = ReportValue::where('report_id', '=', $id)->pluck('value', 'indicator_id');
 
 
@@ -619,10 +619,10 @@ class ReportFormController extends Controller
     {
         $id = Crypt::decrypt($id);
         $report = Report::find($id);
-        if ($report->editable == 0) {
-            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
-            return redirect()->route('report_submission.reports');
-        }
+//        if ($report->editable == 0) {
+//            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
+//            return redirect()->route('report_submission.reports');
+//        }
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
 
         $get_form = IndicatorDetails::query()
@@ -765,10 +765,10 @@ class ReportFormController extends Controller
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
                     $report->user_id = Crypt::decrypt($request->ace_officer);
                     $report->ace_id = $ace_id;
-                    $report->editable = false;
                 } else {
                     $report->user_id = Auth::id();
                 }
+                $report->editable = false;
                 $report->save();
 
                 foreach ($request->indicators as $indicator => $value) {
@@ -2159,16 +2159,16 @@ class ReportFormController extends Controller
             ->collection('indicator_5.2')
             ->where('report_id', $report_id)
             ->where(function ($query) {
-                $query->where('studentfaculty', 'like', "Etudiant%")
-                    ->orWhere('studentfaculty', 'like', "E%")
-                    ->orWhere('studentfaculty', 'like', "e%");
+                $query->where('etudiant-professeur', '=', "Etudiant");
+//                    ->orWhere('etudiant-professeur', 'like', "E%")
+//                    ->orWhere('etudiant-professeur', 'like', "e%");
             })->count();
         $faculty = DB::connection('mongodb')->collection('indicator_5.2')
             ->where('report_id', $report_id)
             ->where(function ($query) {
-                $query->where('studentfaculty', 'like', "Professeur%")
-                    ->orWhere('studentfaculty', 'like', "P%")
-                    ->orWhere('studentfaculty', 'like', "p%");
+                $query->where('etudiant-professeur', 'like', "Professeur%");
+//                    ->orWhere('etudiant-professeur', 'like', "P%")
+//                    ->orWhere('etudiant-professeur', 'like', "p%");
             })->count();
 
         if ($submit) {

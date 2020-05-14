@@ -40,10 +40,10 @@ class UploadIndicatorsController extends Controller
 
         $currency_list = DB::table('currency_list')->get();
 
-        if ($report->editable <= 0 && Auth::user()->hasRole('ace-officer')){
-            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
-            return back();
-        }
+//        if (!$report->editable && Auth::user()->hasRole('ace-officer')){
+//            notify(new ToastNotification('Sorry!', 'This report is unavailable for editing!', 'warning'));
+//            return back();
+//        }
         $ace = $report->ace;
         $ace_programmes = explode(';',$ace->programmes);
 
@@ -160,16 +160,20 @@ class UploadIndicatorsController extends Controller
             ->where('indicator','=',(integer)$request->id)
             ->orderBy('order','asc')->get();
 
-
         $maindata = collect($getHeaders)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
         })->pluck('fields')->toArray();
+
+        $start_row = collect($getHeaders)->filter(function ($query) use($request){
+            return in_array($request->language,collect($query)->get('language'));
+        })
+            ->pluck('start_row')->first();
 
         $data=$maindata;
 
 
         $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->where('language','=',$request->language)->first();
-        $theView = view('report-form.field-list', compact('data','excel_upload'))->render();
+        $theView = view('report-form.field-list', compact('data','excel_upload','start_row'))->render();
 
         return response()->json(['theView'=>$theView]);
     }

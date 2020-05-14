@@ -22,6 +22,10 @@ use File;
 
 class ContactsController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth');
+    }
+
     public function index(){
         $all_contacts =DB::table('contacts')
             ->join('positions','positions.id','contacts.position_id')

@@ -1,4 +1,5 @@
 
+<p class="text-danger">NB: <strong>Data will start reading from row number {{$start_row}}</strong></p>
         @if(collect($data)->count() > 0)
             @php
                 for ($a = 0; $a < count($data[0]); $a++){

@@ -47,7 +47,7 @@
                                         <div class="col-md-4">
                                             <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
                                                 <label for="role">{{ __('Role/Position') }}</label>
-                                                <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" value="{{ old('email') }}" required>
+                                                <select id="role" onchange="changeOnRole()" class="form-control{{ $errors->has('role') ? ' is-invalid' : '' }}" name="role" required>
                                                     <option value="">Select Role</option>
                                                     @foreach($roles as $role)
                                                         <option value="{{$role->id}}">{{$role->position_title}}</option>
@@ -121,6 +121,23 @@
                                                 @if ($errors->has('thematic_field'))
                                                     <p class="text-right mb-0">
                                                         <small class="warning text-muted">{{ $errors->first('thematic_field') }}</small>
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4" id="second_role_toggle" style="display: none">
+                                            <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
+                                                <label for="second_role">{{ __('Second Ace Role/Position') }}</label>
+                                                <select id="second_role"  class="form-control{{ $errors->has('second_role') ? ' is-invalid' : '' }}" name="second_role" >
+                                                    <option value="">Select Role (2)</option>
+                                                    @foreach($ace_roles as $role)
+                                                        <option value="{{$role->id}}">{{$role->position_title}}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @if ($errors->has('second_role'))
+                                                    <p class="text-right mb-0">
+                                                        <small class="warning text-muted">{{ $errors->first('second_role') }}</small>
                                                     </p>
                                                 @endif
                                             </div>
@@ -258,6 +275,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Role/Position</th>
+                                <th>Second Role/Position</th>
                                 <th>Status</th>
                                 <th>Country</th>
                                 <th>Institution</th>
@@ -265,9 +283,7 @@
                                 <th style="width: 100px;">Action</th>
                             </tr>
                             </thead>
-
                             @foreach($all_contacts as $contact)
-
 
                                 <tbody>
                                 <tr>
@@ -276,11 +292,19 @@
                                     <td>{{$contact->mailing_email}}</td>
                                     <td>{{$contact->mailing_phone}}</td>
                                     <td>
-                                        @php
-                                            $title = \App\Position::where('id',$contact->position_id)->first();
-                                        @endphp
-
-                                        {{$title->position_title}}
+                                        {{$contact->position_title}}
+                                    </td>
+                                    <td>
+                                        @isset($contact->second_role_id)
+                                            @php
+                                                $second_role =\App\Position::where('id','=',$contact->second_role_id)->first();
+                                               $role_name = $second_role->position_title;
+                                            @endphp
+                                            {{$role_name}}
+                                        @else
+                                            -
+                                        @endisset
+                                        {{$contact->second_role_id}}
                                     </td>
                                     <td>
                                         @php
@@ -319,6 +343,7 @@
                                                 $ace_name =\App\Http\Controllers\ContactsController::getAceName($contact->ace);
                                             @endphp
                                         {{$ace_name}}
+
                                         @else
                                             -
                                         @endisset
@@ -412,22 +437,26 @@
 
             if(data === 'Institutional level'){
                 $('#institution_toggle').css("display", "block");
+                $('#second_role_toggle').css("display","none");
                 $('#thematic_field_toggle').css("display", "none");
                 $('#country_toggle').css("display", "none");
                 $('#aces_toggle').css("display","none");
             }else if(data === 'Country level'){
                 $('#country_toggle').css("display","block");
+                $('#second_role_toggle').css("display","none");
                 $('#institution_toggle').css("display", "none");
                 $('#thematic_field_toggle').css("display", "none");
                 $('#aces_toggle').css("display","none");
             }else if(data === 'Experts level'){
                 $('#thematic_field_toggle').css("display","block");
+                $('#second_role_toggle').css("display","none");
                 $('#institution_toggle').css("display", "none");
                 $('#country_toggle').css("display", "none");
                 $('#aces_toggle').css("display","none");
             }
             else{
                 $('#aces_toggle').css("display","block");
+                $('#second_role_toggle').css("display","block");
                 $('#thematic_field_toggle').css("display","none");
                 $('#institution_toggle').css("display", "none");
                 $('#country_toggle').css("display", "none");
@@ -449,6 +478,7 @@
                 type: 'GET',
                 data: {id:key},
                 beforeSend: function(){
+
                     $('#edit_view').block({
                         message: '<div class="ft-loader icon-spin font-large-1"></div>',
                         overlayCSS: {
