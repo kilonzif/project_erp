@@ -39,7 +39,8 @@
                         @foreach($data as $datum)
                             <tr>
                                 <td>{{$datum->ifr_period}}</td>
-                                <td>{{$datum->file_name_1}}</td>
+                                <td>
+                                    {{$datum->file_name_1}}</td>
                                 <td>
                                     {{!empty($datum->file_name_1_submission)?date("d/m/Y", strtotime($datum->file_name_1_submission)):"N/A"}}
                                 </td>
