@@ -384,6 +384,10 @@ class CommonFunctions {
             'ACE Procurement Officer'                       =>   'ACE Procurement Officer',
             'Procurement Progress Report'                   =>   'Procurement Progress Report',
             'Contracts Signed'                              =>   'Contracts Signed',
+            'Document'                                      =>   'Document',
+            'Document 1 Description'                        =>   'Document 1 Description',
+            'Document 2 Description'                        =>   'Document 2 Description',
+            'Document 3 Description'                        =>   'Document 3 Description',
         ];
     }
 
@@ -435,6 +439,10 @@ class CommonFunctions {
             'ACE Procurement Officer'                       =>   'Responsable des achats ACE',
             'Procurement Progress Report'                   =>   'Rapport d\'étape sur l\'approvisionnement',
             'Contracts Signed'                              =>   'Contrats signés',
+            'Document'                                      =>   'Document',
+            'Document 1 Description'                        =>   'Description du document 1',
+            'Document 2 Description'                        =>   'Description du document 2',
+            'Document 3 Description'                        =>   'Description du document 3',
         ];
     }
 }

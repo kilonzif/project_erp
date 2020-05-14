@@ -474,7 +474,25 @@ class UploadIndicatorsController extends Controller
                 }
                 break;
             case "7.1":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                if ($request->file('upload_1')) {
+                    $file1_name= $request->upload_1;
+                    $files_array['file_one'] =  $request->file('upload_1');
+                    $indicator_details['upload_1'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('upload_2')) {
+                    $file1_name= $request->upload_2;
+                    $files_array['file_two'] =  $request->file('upload_2');
+                    $indicator_details['upload_2'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('upload_3')) {
+                    $file1_name= $request->upload_3;
+                    $files_array['file_three'] =  $request->file('upload_3');
+                    $indicator_details['upload_3'] = $file1_name->getClientOriginalName();
+                }
+                $indicator_details['upload_1_description'] = $request->upload_1_description;
+                $indicator_details['upload_2_description'] = $request->upload_2_description;
+                $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
                 dd($request->all());
@@ -792,7 +810,25 @@ class UploadIndicatorsController extends Controller
                 }
                 break;
             case "7.1":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                if ($request->file('upload_1')) {
+                    $file1_name= $request->upload_1;
+                    $files_array['file_one'] =  $request->file('upload_1');
+                    $indicator_details['upload_1'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('upload_2')) {
+                    $file1_name= $request->upload_2;
+                    $files_array['file_two'] =  $request->file('upload_2');
+                    $indicator_details['upload_2'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('upload_3')) {
+                    $file1_name= $request->upload_3;
+                    $files_array['file_three'] =  $request->file('upload_3');
+                    $indicator_details['upload_3'] = $file1_name->getClientOriginalName();
+                }
+                $indicator_details['upload_1_description'] = $request->upload_1_description;
+                $indicator_details['upload_2_description'] = $request->upload_2_description;
+                $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
                 dd($request->all());
