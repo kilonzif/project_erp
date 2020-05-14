@@ -418,7 +418,30 @@ class UploadIndicatorsController extends Controller
                 dd($request->all());
                 break;
             case "6.4":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ace_id'] = $report->ace->id;
+
+                if ($request->file('approved_procurement_file')) {
+                    $file1_name= $request->approved_procurement_file;
+                    $files_array['file_one'] =  $request->file('approved_procurement_file');
+                    $indicator_details['approved_procurement_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('officer_file')) {
+                    $file2_name = $request->officer_file;
+                    $files_array['file_two'] =  $request->file('officer_file');
+                    $indicator_details['officer_file'] = $file2_name->getClientOriginalName();
+                }
+
+                if ($request->file('procurement_progress_report_file')) {
+                    $file1_name= $request->procurement_progress_report_file;
+                    $files_array['file_three'] =  $request->file('procurement_progress_report_file');
+                    $indicator_details['procurement_progress_report_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('contracts_signed_file')) {
+                    $file2_name = $request->contracts_signed_file;
+                    $files_array['file_four'] =  $request->file('contracts_signed_file');
+                    $indicator_details['contracts_signed_file'] = $file2_name->getClientOriginalName();
+                }
                 break;
             case "7.1":
                 dd($request->all());
@@ -692,7 +715,30 @@ class UploadIndicatorsController extends Controller
                 dd($request->all());
                 break;
             case "6.4":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ace_id'] = $report->ace->id;
+
+                if ($request->file('approved_procurement_file')) {
+                    $file1_name= $request->approved_procurement_file;
+                    $files_array['file_one'] =  $request->file('approved_procurement_file');
+                    $indicator_details['approved_procurement_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('officer_file')) {
+                    $file2_name = $request->officer_file;
+                    $files_array['file_two'] =  $request->file('officer_file');
+                    $indicator_details['officer_file'] = $file2_name->getClientOriginalName();
+                }
+
+                if ($request->file('procurement_progress_report_file')) {
+                    $file1_name= $request->procurement_progress_report_file;
+                    $files_array['file_three'] =  $request->file('procurement_progress_report_file');
+                    $indicator_details['procurement_progress_report_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('contracts_signed_file')) {
+                    $file2_name = $request->contracts_signed_file;
+                    $files_array['file_four'] =  $request->file('contracts_signed_file');
+                    $indicator_details['contracts_signed_file'] = $file2_name->getClientOriginalName();
+                }
                 break;
             case "7.1":
                 dd($request->all());
