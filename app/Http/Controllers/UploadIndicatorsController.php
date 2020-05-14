@@ -500,11 +500,22 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
-                dd($request->all());
+                if ($request->file('personnel_file')) {
+                    $personnel_file= $request->personnel_file;
+                    $files_array['personnel_file'] =  $request->file('personnel_file');
+                    $indicator_details['personnel_file'] = $personnel_file->getClientOriginalName();
+                }
+                if ($request->file('report_scores_file')) {
+                    $report_scores_file= $request->report_scores_file;
+                    $files_array['report_scores_file'] =  $request->file('report_scores_file');
+                    $indicator_details['report_scores_file'] = $report_scores_file->getClientOriginalName();
+                }
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['vacancy_url'] = $request->vacancy_url;
                 break;
             case "7.3":
                 $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['indicator_id'] = $request->indicator_id;
+                $indicator_details['indicator_id'] = (integer)$request->indicator_id;
                 $indicator_details['institutionname'] = $request->institutionname;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
                 $indicator_details['accreditationagency'] = $request->accreditationagency;
@@ -841,7 +852,18 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
-                dd($request->all());
+                if ($request->file('personnel_file')) {
+                    $personnel_file= $request->personnel_file;
+                    $files_array['personnel_file'] =  $request->file('personnel_file');
+                    $indicator_details['personnel_file'] = $personnel_file->getClientOriginalName();
+                }
+                if ($request->file('report_scores_file')) {
+                    $report_scores_file= $request->report_scores_file;
+                    $files_array['report_scores_file'] =  $request->file('report_scores_file');
+                    $indicator_details['report_scores_file'] = $report_scores_file->getClientOriginalName();
+                }
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['vacancy_url'] = $request->vacancy_url;
                 break;
             case "7.3":
                 $indicator_details['report_id'] = (integer)$report_id;

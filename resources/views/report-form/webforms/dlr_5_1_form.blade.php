@@ -165,8 +165,13 @@
 
         </div>
         <div class="form-group col-12">
-            <button type="submit" class="btn btn-secondary square" style="margin-top: 20px">
-                <i class="fa fa-save"></i> {{$lang['Save']}} </button>
+            <button type="submit" class="btn btn-secondary square" style="margin-top: 20px"><i class="fa fa-save"></i>
+                @if(isset($the_record))
+                    {{$lang['Update']}}
+                @else
+                    {{$lang['Save']}}
+                @endif
+            </button>
         </div>
 
     </div>
