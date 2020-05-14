@@ -414,7 +414,8 @@ Route::name('report_submission.')->group(function () {
 
     Route::get('reports-submitted', 'ReportFormController@index')->name('reports');
     Route::get('download/report-file/{report_id}', 'ReportFormController@downloadReportFile')->name('report.download_file');
-    Route::get('reports-submitted/dereport_submission.view\'lete/{id}', 'ReportFormController@delete')->name('reports.delete');
+    Route::get('download/report-dlr-file/{report_id}/{file_name}', 'ReportFormController@downloadReportDlrFile')->name('report.download_dlr_file');
+    Route::get('reports-submitted/delete/{id}', 'ReportFormController@delete')->name('reports.delete');
 
 
     Route::prefix('report-submitted')->group(function () {

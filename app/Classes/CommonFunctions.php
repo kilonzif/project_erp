@@ -350,6 +350,7 @@ class CommonFunctions {
             'View Data'                                     =>  'View Data',
             'Add Record'                                    =>  'Add Record',
             'Download uploaded data'                        =>  'Download uploaded data',
+            'Download'                                      =>  'Download',
             'Action'                                        =>  'Action',
             'Scroll down this page to submit the report'    =>  'Scroll down this page to submit the report',
             'Unit of Measure'                               =>  'Unit of Measure',
@@ -379,6 +380,10 @@ class CommonFunctions {
             'Report File'                                   =>   'Report File',
             'Audited Account File'                          =>   'Audited Account File',
             'Members File'                                  =>   'Members File',
+            'Approved Procurement'                          =>   'Approved Procurement',
+            'ACE Procurement Officer'                       =>   'ACE Procurement Officer',
+            'Procurement Progress Report'                   =>   'Procurement Progress Report',
+            'Contracts Signed'                              =>   'Contracts Signed',
         ];
     }
 
@@ -396,6 +401,7 @@ class CommonFunctions {
             'View Data'                                     =>  'Afficher les données',
             'Add Record'                                    =>  'Ajouter un enregistrement',
             'Download uploaded data'                        =>  'Télécharger les données téléchargées',
+            'Download'                                      =>  'Télécharger',
             'Action'                                        =>  'Action',
             'Scroll down this page to submit the report'    =>  'Faites défiler cette page pour soumettre le rapport',
             'Unit of Measure'                               =>  'Unité de Mésure',
@@ -425,6 +431,10 @@ class CommonFunctions {
             'Report File'                                   =>   'Fichier de rapport',
             'Audited Account File'                          =>   'Fichier de compte vérifié',
             'Members File'                                  =>   'Fichier des membres',
+            'Approved Procurement'                          =>   'Approvisionnement approuvé',
+            'ACE Procurement Officer'                       =>   'Responsable des achats ACE',
+            'Procurement Progress Report'                   =>   'Rapport d\'étape sur l\'approvisionnement',
+            'Contracts Signed'                              =>   'Contrats signés',
         ];
     }
 }

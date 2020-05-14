@@ -448,7 +448,30 @@ class UploadIndicatorsController extends Controller
                 dd($request->all());
                 break;
             case "6.4":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ace_id'] = $report->ace->id;
+
+                if ($request->file('approved_procurement_file')) {
+                    $file1_name= $request->approved_procurement_file;
+                    $files_array['file_one'] =  $request->file('approved_procurement_file');
+                    $indicator_details['approved_procurement_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('officer_file')) {
+                    $file2_name = $request->officer_file;
+                    $files_array['file_two'] =  $request->file('officer_file');
+                    $indicator_details['officer_file'] = $file2_name->getClientOriginalName();
+                }
+
+                if ($request->file('procurement_progress_report_file')) {
+                    $file1_name= $request->procurement_progress_report_file;
+                    $files_array['file_three'] =  $request->file('procurement_progress_report_file');
+                    $indicator_details['procurement_progress_report_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('contracts_signed_file')) {
+                    $file2_name = $request->contracts_signed_file;
+                    $files_array['file_four'] =  $request->file('contracts_signed_file');
+                    $indicator_details['contracts_signed_file'] = $file2_name->getClientOriginalName();
+                }
                 break;
             case "7.1":
                 dd($request->all());
@@ -486,13 +509,14 @@ class UploadIndicatorsController extends Controller
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
             $saved= DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
         }
+
         if(!$saved){
             $error_msg = "Data hasn't saved. Please try again.";
             notify(new ToastNotification('Sorry', $error_msg, 'warning'));
             return back()->withInput();
         }else{
             foreach ($files_array as $key=>$value){
-                Storage::putFile("$directory", $value);
+                Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
             }
             $success = "The data has been saved.";
             notify(new ToastNotification('Successful', $success, 'success'));
@@ -662,8 +686,6 @@ class UploadIndicatorsController extends Controller
         else {
             $table_name = Str::snake("indicator_".$this_dlr->identifier);
         }
-        $this_report = Report::find($report_id)->first();
-        $ace_id = $this_report->ace_id;
 
         $indicator_details = array(); //An array to holds the indicator details
         $report_id = (integer)($request->report_id);
@@ -673,6 +695,9 @@ class UploadIndicatorsController extends Controller
         $reporting_year = $report->reporting_period->first()->reporting_year;
         $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
         $directory = "public/reports/$acronym/$reporting_year/$identifier";
+
+        $this_report = Report::find($report_id)->first();
+        $ace_id = $this_report->ace_id;
 
         switch ($this_dlr->identifier) {
             case "4.1":
@@ -749,7 +774,30 @@ class UploadIndicatorsController extends Controller
                 dd($request->all());
                 break;
             case "6.4":
-                dd($request->all());
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['ace_id'] = $report->ace->id;
+
+                if ($request->file('approved_procurement_file')) {
+                    $file1_name= $request->approved_procurement_file;
+                    $files_array['file_one'] =  $request->file('approved_procurement_file');
+                    $indicator_details['approved_procurement_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('officer_file')) {
+                    $file2_name = $request->officer_file;
+                    $files_array['file_two'] =  $request->file('officer_file');
+                    $indicator_details['officer_file'] = $file2_name->getClientOriginalName();
+                }
+
+                if ($request->file('procurement_progress_report_file')) {
+                    $file1_name= $request->procurement_progress_report_file;
+                    $files_array['file_three'] =  $request->file('procurement_progress_report_file');
+                    $indicator_details['procurement_progress_report_file'] = $file1_name->getClientOriginalName();
+                }
+                if ($request->file('contracts_signed_file')) {
+                    $file2_name = $request->contracts_signed_file;
+                    $files_array['file_four'] =  $request->file('contracts_signed_file');
+                    $indicator_details['contracts_signed_file'] = $file2_name->getClientOriginalName();
+                }
                 break;
             case "7.1":
                 dd($request->all());
@@ -789,20 +837,19 @@ class UploadIndicatorsController extends Controller
                 ->where('_id','=',$record_id)
                 ->update($indicator_details);
         }
-//        $destinationPath = base_path() . '/public/'.$table_name.'/';
 
         if(!$updated){
-            $error_msg = "There was an error updating the data";
-            notify(new ToastNotification('error', $error_msg, 'warning'));
+            $error_msg = "No data available to be saved. Please try again.";
+            notify(new ToastNotification('error', $error_msg, 'info'));
             return back()->withInput();
         }else if($updated) {
             foreach ($files_array as $key=>$value){
-                Storage::putFile("$directory", $value);
+                Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
             }
             $success = "The Update was successful.";
             notify(new ToastNotification('Successful', $success, 'success'));
-            return back();
         }
+        return back();
     }
 }
 
