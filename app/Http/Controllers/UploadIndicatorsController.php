@@ -63,6 +63,7 @@ class UploadIndicatorsController extends Controller
                 ->where('status','=', 1)
                 ->orderBy('identifier','asc')->first();
             $table_name = Str::snake("indicator_".$indicators->identifier);
+            $the_record = null;
 
             $data = DB::connection('mongodb')
                 ->collection("$table_name")
@@ -111,7 +112,7 @@ class UploadIndicatorsController extends Controller
                 }
                 else {
                     return view("report-form.webforms.$view_name", compact('indicator_type','currency_list','lang',
-                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info'));
+                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info','the_record'));
                 }
             }
         }
@@ -608,9 +609,11 @@ class UploadIndicatorsController extends Controller
                 'this_indicator'))->render();
         }
         elseif (isset($this_indicator->web_form_id)) {
+            $indicator_info = $this_indicator;
             $view_name = $this_indicator->webForm->view_name;
-            $view = view ("report-form.webforms.edit_$view_name",compact('the_record','currency_list','record_id',
-                'this_indicator','lang'))->render();
+            $form_view = substr_replace($view_name,'form',strrpos($view_name,'page'));
+            $view = view ("report-form.webforms.$form_view",compact('the_record','currency_list','record_id',
+                'indicator_info','lang','report'))->render();
         }
         return response()->json(['theView' => $view]);
     }
