@@ -86,7 +86,23 @@
                     @endif
                 </div>
             </div>
+            <div class="col-md-4" id="second_role_toggle" style="display: {{isset($contacts->second_role_id) ? 'block': 'none'}}">
+                <div class="form-group{{ $errors->has('role') ? ' form-control-warning' : '' }}">
+                    <label for="second_role">{{ __('Second Ace Role/Position') }}</label>
+                    <select id="second_role"  class="form-control{{ $errors->has('second_role') ? ' is-invalid' : '' }}" name="second_role" >
+                        <option value="">Select Role (2)</option>
+                        @foreach($ace_roles as $role)
+                            <option {{($contacts->second_role_id == $role->id)  ? "selected":""}} value="{{$role->id}}">{{$role->position_title}}</option>
+                        @endforeach
+                    </select>
 
+                    @if ($errors->has('second_role'))
+                        <p class="text-right mb-0">
+                            <small class="warning text-muted">{{ $errors->first('second_role') }}</small>
+                        </p>
+                    @endif
+                </div>
+            </div>
             <div class="col-md-4">
                 <div class="form-group{{ $errors->has('person_title') ? ' form-control-warning' : '' }}">
                     <label for="email">Person Title <span class="required">*</span></label><input type="text" required placeholder="Title eg Mr., Ms, Mrs" min="2" name="person_title" class="form-control" value="{{ (old('person_title')) ? old('person_title') : $contacts->person_title }}" id="person_title">

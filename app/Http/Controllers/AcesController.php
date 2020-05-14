@@ -169,16 +169,6 @@ class AcesController extends Controller {
      */
     public  function indicator_one_save(Request $request, $id)
     {
-
-//        $this->validate($request, [
-//            'file_one.*' => 'nullable|file|mimes:xls,pdf,docx|max:10000',
-//            'file_two.*' => 'nullable|mimes:xls,docx,pdf|max:10000',
-//            'url' => 'sometimes|required',
-//            'submission_date' => 'sometimes|required',
-//            'comments' => 'sometimes|required',
-//        ]);
-
-
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
         $requirement = $request->requirement;

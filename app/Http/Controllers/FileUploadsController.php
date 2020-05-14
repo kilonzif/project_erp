@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\DB;
 
 class FileUploadsController extends Controller
 {
+    public function __construct() {
+        $this->middleware( 'auth' );
+
+    }
     public function index(){
         $aces = Ace::all();
 
