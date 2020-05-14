@@ -61,13 +61,58 @@
                                     <td><strong>Email</strong><br>{{$ace->email}}</td>
                                     <td><strong>Grant Amount1</strong><br>{{$ace->grant1}} - {{$currency1->name}}</td>
                                     <td><strong>Grant Amount2</strong><br>
+                                        @php $currency_2_code = ''; @endphp
                                     @if($currency2)
+                                        @php $currency_code = $currency2->code; @endphp
                                         {{$ace->grant2}} - {{$currency2->name}}
                                     @endif
                                     </td>
                                     <td><strong>Field</strong><br>{{$ace->field}}</td>
                                 </tr>
                             </table>
+                            <form method="post" action="{{route('user-management.ace.conversions')}}"
+                                  enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <input type="hidden" value="{{$ace->id}}" name="ace_id">
+                                    @if ($currency1->code == 'SDR' || $currency_code == 'SDR')
+                                    <div class="col-md-2">
+                                        <div class="form-group{{ $errors->has('sdr_to_usd') ? ' form-control-warning' : '' }}">
+                                            <label for="sdr_to_usd">SDR to USD <span class="required">*</span></label>
+                                            <input type="number" class="form-control" required name="sdr_to_usd"
+                                                   id="sdr_to_usd" value="{{$ace->sdr_to_usd}}" step="0.01">
+                                            @if ($errors->has('sdr_to_usd'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('sdr_to_usd') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if ($currency1->code == 'EUR' || $currency_code == 'EUR')
+                                    <div class="col-md-2">
+                                        <div class="form-group{{ $errors->has('euro_to_usd') ? ' form-control-warning' : '' }}">
+                                            <label for="euro_to_usd">EURO to USD <span class="required">*</span></label>
+                                            <input type="number" class="form-control" name="euro_to_usd" required
+                                                   id="euro_to_usd" value="{{$ace->euro_to_usd}}" step="0.01">
+                                            @if ($errors->has('euro_to_usd'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('euro_to_usd') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @endif
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-secondary square" style="margin-top: 27px;" type="submit">
+                                                <i class="ft-save mr-1"></i> Save</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </form>
 
                             <div class="form-group">
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.indicator_one',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">Institutional Readiness</a>
