@@ -1,4 +1,6 @@
-<form action="{{route('report_submission.web_form_update_record',[\Illuminate\Support\Facades\Crypt::encrypt($this_indicator->id),$record_id])}}" method="post" enctype="multipart/form-data">
+<form action="{{route('report_submission.web_form_update_record',
+[\Illuminate\Support\Facades\Crypt::encrypt($this_indicator->id),$record_id])}}"
+      method="post" enctype="multipart/form-data">
     @csrf
     <div class="row">
         <input type="hidden" name="report_id" value="{{$the_record->report_id}}">

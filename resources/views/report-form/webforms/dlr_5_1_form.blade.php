@@ -1,9 +1,9 @@
 <form
     @if(isset($the_record))
-    action="{{route('report_submission.save_webform',[$indicator_info->id])}}"
-    @else
     action="{{route('report_submission.web_form_update_record',
     [\Illuminate\Support\Facades\Crypt::encrypt($indicator_info->id),$record_id])}}"
+    @else
+    action="{{route('report_submission.save_webform',[$indicator_info->id])}}"
     @endif
     method="post"
       enctype="multipart/form-data">
