@@ -375,6 +375,10 @@ class CommonFunctions {
             'Original Amount'                               =>  'Original Amount',
             'National'                                      =>  'National',
             'Regional'                                      =>  'Regional',
+            'Guideline File'                                =>   'Guideline File',
+            'Report File'                                   =>   'Report File',
+            'Audited Account File'                          =>   'Audited Account File',
+            'Members File'                                  =>   'Members File',
         ];
     }
 
@@ -417,6 +421,10 @@ class CommonFunctions {
             'Original Amount'                               =>  'Montant original',
             'National'                                      =>  'National',
             'Regional'                                      =>  'Régional',
+            'Guideline File'                                =>  'Fichier des lignes directrices',
+            'Report File'                                   =>   'Fichier de rapport',
+            'Audited Account File'                          =>   'Fichier de compte vérifié',
+            'Members File'                                  =>   'Fichier des membres',
         ];
     }
 }
