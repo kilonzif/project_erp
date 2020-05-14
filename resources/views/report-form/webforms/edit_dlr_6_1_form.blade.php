@@ -28,9 +28,8 @@
                     </p>
                 @endif
                 @if($the_record->file_name_1 !="")
-                    <strong>{{$the_record->file_name_1}}</strong>
-                    <a href="{{asset('indicator_6_1/'.$the_record->file_name_1)}}" target="_blank">
-                        <span class="fa fa-file"></span>   Download file
+                    <a href="{{asset($directory/$the_record->file_name_1)}}" target="_blank">
+                        <span class="fa fa-file"></span>{{$the_record->file_name_1}}
                     </a>
                     <br>
                 @endif
@@ -77,9 +76,8 @@
                     </p>
                 @endif
                 @if($the_record->file_name_2 !="")
-                    <strong>{{$the_record->file_name_2}}</strong>
-                    <a href="{{asset('indicator_6_1/'.$the_record->file_name_2)}}" target="_blank">
-                        <span class="fa fa-file"></span>   Download file
+                    <a href="{{asset($directory/$the_record->file_name_2)}}" target="_blank">
+                        <span class="fa fa-file"></span>{{$the_record->file_name_2}}
                     </a>
                     <br>
                 @endif
