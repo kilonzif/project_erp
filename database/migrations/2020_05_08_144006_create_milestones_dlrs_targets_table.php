@@ -13,13 +13,13 @@ class CreateMilestonesDlrsTargetsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('milestones_dlrs_targets');
         Schema::create('milestones_dlrs_targets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('milestones_dlr_id');
             $table->text('target_indicator');
-            $table->date('expected_timeline');
-            $table->double('estimated_cost')->default(0)->unsigned();
-            $table->double('disbursement_estimated_earning')->default(0)->unsigned();
+            $table->boolean('verification_status')->default(false);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

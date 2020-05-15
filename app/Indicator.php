@@ -86,9 +86,17 @@ class Indicator extends Model
         return $query->where('status',1);
     }
 
+    public function scopeMilestones($query){
+        return $query->where('status',1)->where('set_milestone','=',1);
+    }
+
     public function scopeParentIndicator($query,$parent_id){
         return $query->where('parent_id',$parent_id);
     }
 
+    public function getMilestones()
+    {
+        return $this->hasMany('App\MilestonesDlrs');
+    }
 
 }

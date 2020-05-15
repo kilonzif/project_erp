@@ -131,7 +131,7 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <div class="d-inline-block custom-control custom-checkbox mr-1">
-                                                <input type="checkbox" class="custom-control-input" checked value="1" name="set_milestone" id="set_milestone">
+                                                <input type="checkbox" class="custom-control-input" value="1" name="set_milestone" id="set_milestone">
                                                 <label class="custom-control-label" for="set_milestone">Has Milestones</label>
                                             </div>
                                         </div>

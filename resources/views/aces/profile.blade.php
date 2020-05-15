@@ -117,6 +117,7 @@
                             <div class="form-group">
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.indicator_one',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">Institutional Readiness</a>
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" role="button">Indicator Baselines</a>
+                                <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.milestones',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" role="button">Milestone</a>
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1"href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}"> <i class="ft-plus-circle"></i> New Targets</a>
                                 @if($target_years->isNotEmpty())
                                 <div class="btn-group mr-1 mb-1">

@@ -143,6 +143,11 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('aces/conversions', 'AcesController@conversions')->name('ace.conversions');
     Route::get('aces/{id}', 'AcesController@ace_page')->name('aces.profile');
     Route::get('ace/{id}/baselines', 'AcesController@baselines')->name('ace.baselines');
+    Route::get('ace/{id}/milestones', 'AcesController@milestones')->name('ace.milestones');
+    Route::post('ace/{id}/milestone', 'AcesController@add_milestone')->name('ace.milestone');
+    Route::put('ace/{id}/milestone/{milestone_id}', 'AcesController@update_milestone')->name('ace.milestone.update');
+    Route::get('ace/{id}/milestone/{milestone_id}/edit', 'AcesController@edit_milestone')->name('ace.milestone.edit');
+    Route::post('ace/{id}/milestone/{milestone_id}/target', 'AcesController@target_save')->name('ace.milestone.target');
     Route::get('ace/{id}/indicator_one', 'AcesController@indicator_one')->name('ace.indicator_one');
     Route::get('ace/{id}/targets/{year_id?}', 'AcesController@target_values')->name('ace.targets');
     Route::post('ace/{id}/baselines/save', 'AcesController@baselines_save')->name('ace.baselines.save');

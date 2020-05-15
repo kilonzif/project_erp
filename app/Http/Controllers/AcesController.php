@@ -16,6 +16,8 @@ use App\Currency;
 use App\Indicator;
 use App\IndicatorOne;
 use App\Institution;
+use App\MilestonesDlrs;
+use App\MilestonesDlrsTarget;
 use App\Position;
 use App\Project;
 use App\SectoralBoard;
@@ -609,6 +611,100 @@ class AcesController extends Controller {
 
             notify(new ToastNotification('Successful', 'Indicator Targets added.', 'success'));
         }
+        return back();
+    }
+
+    public function milestones($hashed_ace_id)
+    {
+        $ace_id = Crypt::decrypt($hashed_ace_id);
+        $ace = Ace::find($ace_id);
+        $dlr_milestone_indicators = Indicator::milestones()->get();
+
+        return view('aces.milestones.index', compact('ace','dlr_milestone_indicators'));
+    }
+
+    public function add_milestone(Request $request,$hashed_ace_id)
+    {
+        $this->validate($request,[
+           'indicator'          =>  'required|numeric',
+           'milestone_no'       =>  'required|numeric|min:1',
+           'description'        =>  'required|string',
+        ]);
+        $ace_id = Crypt::decrypt($hashed_ace_id);
+        $ace = Ace::find($ace_id);
+        $already_exist = MilestonesDlrs::where('ace_id','=', $ace_id)
+            ->where('milestone_no','=', $request->milestone_no)
+            ->where('indicator_id','=', $request->indicator)
+            ->first();
+
+        if ($already_exist) {
+            notify(new ToastNotification('Sorry','This milestone already exists','error'));
+            return back();
+        }
+
+        $milestone_id = DB::table('milestones_dlrs')->insertGetId(
+            [
+                'indicator_id' => $request->indicator,
+                'milestone_no' => $request->milestone_no,
+                'description' => $request->description,
+                'ace_id' => $ace_id,
+            ]
+        );
+        if ($milestone_id) {
+            return redirect()->route('user-management.ace.milestone.edit',
+                [$hashed_ace_id,$milestone_id]);
+        }
+    }
+
+    public function edit_milestone($hashed_ace_id,$milestone_id) {
+        $ace_id = Crypt::decrypt($hashed_ace_id);
+        $ace = Ace::find($ace_id);
+        $dlr_milestone = MilestonesDlrs::find($milestone_id);
+        $indicator = Indicator::find($dlr_milestone->indicator_id);
+
+        return view('aces.milestones.edit', compact('ace','dlr_milestone','indicator'));
+    }
+
+    public function update_milestone(Request $request,$ace_id,$milestone_id) {
+
+        $this->validate($request,[
+            'estimated_cost'                =>  'required|numeric|min:1',
+            'estimated_earning'             =>  'required|numeric|min:1',
+            'start_expected_timeline'       =>  'required|string',
+            'end_expected_timeline'         =>  'required|string',
+        ]);
+        $milestone = MilestonesDlrs::find($milestone_id);
+        $milestone->estimated_cost = $request->estimated_cost;
+        $milestone->estimated_earning = $request->estimated_earning;
+        $milestone->start_expected_timeline = $request->start_expected_timeline;
+        $milestone->end_expected_timeline = $request->end_expected_timeline;
+
+        if ($milestone->save()) {
+            notify(new ToastNotification('Successful','Information has been updated','success'));
+        }
+
+        return back();
+    }
+
+    public function target_save(Request $request,$ace_id,$milestone_id) {
+
+        $this->validate($request,[
+            'target_indicator'  =>  'required|string',
+        ]);
+
+        if (isset($request->target_id)) {
+            $target = MilestonesDlrsTarget::find($request->target_id);
+        } else {
+            $target = new MilestonesDlrsTarget();
+        }
+        $target->target_indicator = $request->target_indicator;
+        $target->milestones_dlr_id = $request->milestone_id;
+        $target->save();
+
+        if ($target->save()) {
+            notify(new ToastNotification('Successful','Information has been updated','success'));
+        }
+
         return back();
     }
 }
