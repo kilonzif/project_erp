@@ -527,10 +527,38 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
                 break;
             case "7.4":
-                dd($request->all());
+                if ($request->file('self_assessment_file')) {
+                    $self_assessment_file= $request->self_assessment_file;
+                    $files_array['self_assessment_file'] =  $request->file('self_assessment_file');
+                    $indicator_details['self_assessment_file'] = $self_assessment_file->getClientOriginalName();
+                }
+                if ($request->file('intervention_plan_file')) {
+                    $intervention_plan_file= $request->intervention_plan_file;
+                    $files_array['intervention_plan_file'] =  $request->file('intervention_plan_file');
+                    $indicator_details['intervention_plan_file'] = $intervention_plan_file->getClientOriginalName();
+                }
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['participated_paset'] = $request->participated_paset;
+                $indicator_details['participated_initiatives'] = $request->participated_initiatives;
+                $indicator_details['benchmarking_year'] = $request->benchmarking_year;
                 break;
             case "7.6":
-                dd($request->all());
+                if ($request->file('connectivity_file')) {
+                    $connectivity_file= $request->connectivity_file;
+                    $files_array['connectivity_file'] =  $request->file('connectivity_file');
+                    $indicator_details['connectivity_file'] = $connectivity_file->getClientOriginalName();
+                }
+                if ($request->file('infrastructure_upgrade_file')) {
+                    $infrastructure_upgrade_file= $request->infrastructure_upgrade_file;
+                    $files_array['infrastructure_upgrade_file'] =  $request->file('infrastructure_upgrade_file');
+                    $indicator_details['infrastructure_upgrade_file'] = $infrastructure_upgrade_file->getClientOriginalName();
+                }
+                if ($request->file('satisfactory_survey_file')) {
+                    $satisfactory_survey_file= $request->satisfactory_survey_file;
+                    $files_array['satisfactory_survey_file'] =  $request->file('satisfactory_survey_file');
+                    $indicator_details['satisfactory_survey_file'] = $satisfactory_survey_file->getClientOriginalName();
+                }
+                $indicator_details['report_id'] = (integer)$report_id;
                 break;
             default:
                 "Nothing";
@@ -879,10 +907,38 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
                 break;
             case "7.4":
-                dd($request->all());
+                if ($request->file('self_assessment_file')) {
+                    $self_assessment_file= $request->self_assessment_file;
+                    $files_array['self_assessment_file'] =  $request->file('self_assessment_file');
+                    $indicator_details['self_assessment_file'] = $self_assessment_file->getClientOriginalName();
+                }
+                if ($request->file('intervention_plan_file')) {
+                    $intervention_plan_file= $request->intervention_plan_file;
+                    $files_array['intervention_plan_file'] =  $request->file('intervention_plan_file');
+                    $indicator_details['intervention_plan_file'] = $intervention_plan_file->getClientOriginalName();
+                }
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['participated_paset'] = $request->participated_paset;
+                $indicator_details['participated_initiatives'] = $request->participated_initiatives;
+                $indicator_details['benchmarking_year'] = $request->benchmarking_year;
                 break;
             case "7.6":
-                dd($request->all());
+                if ($request->file('connectivity_file')) {
+                    $connectivity_file= $request->connectivity_file;
+                    $files_array['connectivity_file'] =  $request->file('connectivity_file');
+                    $indicator_details['connectivity_file'] = $connectivity_file->getClientOriginalName();
+                }
+                if ($request->file('infrastructure_upgrade_file')) {
+                    $infrastructure_upgrade_file= $request->infrastructure_upgrade_file;
+                    $files_array['infrastructure_upgrade_file'] =  $request->file('infrastructure_upgrade_file');
+                    $indicator_details['infrastructure_upgrade_file'] = $infrastructure_upgrade_file->getClientOriginalName();
+                }
+                if ($request->file('satisfactory_survey_file')) {
+                    $satisfactory_survey_file= $request->satisfactory_survey_file;
+                    $files_array['satisfactory_survey_file'] =  $request->file('satisfactory_survey_file');
+                    $indicator_details['satisfactory_survey_file'] = $satisfactory_survey_file->getClientOriginalName();
+                }
+                $indicator_details['report_id'] = (integer)$report_id;
                 break;
             default:
                 "Nothing";
