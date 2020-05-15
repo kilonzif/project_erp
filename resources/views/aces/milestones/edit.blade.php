@@ -1,9 +1,9 @@
 @extends('layouts.app')
-{{--@push('vendor-styles')--}}
+@push('vendor-styles')
     {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">--}}
     {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/icheck.css')}}">--}}
-    {{--<link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/icheck/custom.css')}}">--}}
-{{--@endpush--}}
+    <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/toggle/switchery.min.css')}}">
+@endpush
 {{--@push('other-styles')--}}
     {{--<link rel="stylesheet" type="text/css" href="{{asset('css/plugins/forms/checkboxes-radios.css')}}">--}}
 {{--@endpush--}}
@@ -110,7 +110,7 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div class="card mt-3" id="form-card">
             <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
                 Milestone Indicators
                 <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
@@ -130,8 +130,8 @@
                         <div class="row">
                             <div class="col-md-10">
                                 <div class="form-group">
-                                    <input type="text" name="target_indicator" id="target_indicator" min="0" required
-                                           step="0.01" class="form-control" placeholder="Enter Milestone Target...">
+                                    <input type="text" name="target_indicator" id="target_indicator" required
+                                           class="form-control" placeholder="Enter Milestone Target..." value="">
                                     @if ($errors->has('target_indicator'))
                                         <p class="text-right">
                                             <small class="warning text-muted">{{ $errors->first('target_indicator') }}</small>
@@ -157,16 +157,23 @@
                         <tbody>
                         @php $count = 0; @endphp
                         @foreach($dlr_milestone->targets as $target)
-                            @php $count++; @endphp
+                            @php $count++; $target_indicator = $target->target_indicator@endphp
                             <tr>
                                 <td>{{$count}}</td>
                                 <td>{{$target->target_indicator}}</td>
-                                {{--<td>{{$target->status}}</td>--}}
+                                {{--<td>--}}
+                                    {{--<input onchange="changeStatus({{$count}})" type="checkbox"--}}
+                                           {{--id="active{{$target->id}}" data-toggle="tooltip" data-placement="top"--}}
+                                           {{--title="{{($target->status == 0)?'Activate' : 'Deactivate'}}"--}}
+                                            {{--class="switchery" data-size="xs" @if($target->status == 1) checked @endif/>--}}
+                                {{--</td>--}}
                                 {{--<td>{{$target->verification_status}}</td>--}}
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="#form-card" class="btn btn-s btn-secondary">Edit</a>
-                                        <a href="#" class="btn btn-s btn-danger" data-toggle="tooltip"
+                                        <a href="#form-card" onclick="edit_target(this)"
+                                           class="btn btn-s btn-secondary" data-target_id = {{$target->id}}
+                                           data-indicator="{{$target->target_indicator}}">Edit</a>
+                                        <a href="{{route('user-management.ace.remove_target',[$target->id])}}" class="btn btn-s btn-danger"
                                            data-placement="top" title="Delete Record"
                                            onclick="return confirm('Are you sure you want to delete this record?');">
                                             <i class="ft-trash-2"></i>
@@ -184,18 +191,26 @@
         <!-- Modal -->
     </div>
 @endsection
-{{--@push('vendor-script')--}}
-    {{--<script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>--}}
-    {{--<script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>--}}
-{{--@endpush--}}
-{{--@push('end-script')--}}
-    {{--<script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>--}}
-    {{--<script>--}}
+@push('vendor-script')
+    <script src="{{asset('vendors/js/forms/toggle/switchery.min.js')}}" type="text/javascript"></script>
+@endpush
+@push('end-script')
+    <script src="{{asset('js/scripts/forms/switch.js')}}" type="text/javascript"></script>
+    <script>
 
-        {{--$('.select2').select2({--}}
-            {{--placeholder: "Select Courses",--}}
-            {{--allowClear: true--}}
-        {{--});--}}
+        function changeStatus(key){
+            // alert()
+            document.getElementById('delete-indicator-'+key).submit()
+        }
 
-    {{--</script>--}}
-{{--@endpush--}}
+        // $('.select2').select2({
+        //     placeholder: "Select Courses",
+        //     allowClear: true
+        // });
+        function edit_target(elem) {
+            $('#target_id').val($(elem).data("target_id"));
+            $('#target_indicator').val($(elem).data("indicator"));
+        }
+
+    </script>
+@endpush

@@ -707,4 +707,14 @@ class AcesController extends Controller {
 
         return back();
     }
+
+    public function remove_target($milestone_target_id) {
+
+        if (MilestonesDlrsTarget::destroy($milestone_target_id)) {
+            notify(new ToastNotification('Successful','Information has been deleted','success'));
+        } else {
+            notify(new ToastNotification('Sorry','No information was found','danger'));
+        }
+        return back();
+    }
 }
