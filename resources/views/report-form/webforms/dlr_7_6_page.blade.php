@@ -29,7 +29,7 @@
                                 <th style="min-width: 380px">{{$lang['Connectivity File']}} 1</th>
                                 <th style="min-width: 380px">{{$lang['Infrastructure Upgrade File']}}</th>
                                 <th style="min-width: 380px">{{$lang['Satisfactory Survey File']}} </th>
-                                <th style="min-width: 280px">{{$lang['Action']}}</th>
+
                             </tr>
                             @foreach($data as $datum)
                                 <tr>

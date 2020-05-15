@@ -731,6 +731,8 @@ class ReportFormController extends Controller
             $report->status = 1;
             $identifier = $report->indicator->identifier;
             $message = null;
+
+
             if ($report->language == 'french') {
                 if ($identifier == "3") {
                     $message = $this->generateAggregatedIndicator3Results_fr($report_id,true);
@@ -749,6 +751,7 @@ class ReportFormController extends Controller
                 }
             }
             else {
+
                 if ($identifier == "3") {
                     $message = $this->generateAggregatedIndicator3Results($report_id,true);
                 }
@@ -762,20 +765,26 @@ class ReportFormController extends Controller
                     $message = $this->generateAggregatedIndicator52Results($report_id,true);
                 }
                 elseif ($identifier == "7.3") {
-                    $message = $this->generateAggregatedIndicator73Results($report_id,true);}
+                    $message = $this->generateAggregatedIndicator73Results($report_id,true);
+                }
             }
+
+
 
             if (isset($message)) {
                 session()->flash('message',$message[0]);
                 return back();
             }
 
-            DB::transaction(function () use ($request,$report,$report_id) {
-                $this->validate($request, [
-                    'report_id' => 'required|string|min:100',
-                    'indicators' => 'required|array|min:1',
-                    'indicators.*' => 'required|numeric|min:0',
-                ]);
+
+          //  DB::transaction(function () use ($request,$report,$report_id) {
+//                $this->validate($request, [
+//                    'report_id' => 'required|string|min:100',
+//                    'indicators' => 'required|array|min:1',
+//                    'indicators.*' => 'required|numeric|min:0',
+//                ]);
+
+
 
                 if (isset($request->ace_officer)) {
                     $ace_id = User::find(Crypt::decrypt($request->ace_officer))->ace;
@@ -785,17 +794,23 @@ class ReportFormController extends Controller
                     $report->user_id = Auth::id();
                 }
                 $report->editable = false;
+
+            
                 $report->save();
 
-                foreach ($request->indicators as $indicator => $value) {
 
-                    ReportValue::updateOrCreate([
-                        'report_id' => $report_id,
-                        'indicator_id' => $indicator,
-                    ], [
-                        'value' => $value,
-                    ]);
-                }
+//                foreach ($request->indicators as $indicator => $value) {
+//
+//                    ReportValue::updateOrCreate([
+//                        'report_id' => $report_id,
+//                        'indicator_id' => $indicator,
+//                    ], [
+//                        'value' => $value,
+//                    ]);
+//                }
+
+
+
 
                 ReportIndicatorsStatus::where('report_id', '=', $report_id)->update(['status' => 1]);
                 ReportStatusTracker::where('report_id', '=', $report_id)->update(['status_code' => 1]);
@@ -829,7 +844,7 @@ class ReportFormController extends Controller
                             ->subject("Report Submitted");
                     });
                notify(new ToastNotification('Successful!', 'Report Submitted!', 'success'));
-            });
+            //});
             return redirect()->route('report_submission.reports');
         }
         else {
@@ -851,15 +866,17 @@ class ReportFormController extends Controller
                 }
                 $report->save();
 
-                foreach ($request->indicators as $indicator => $value) {
+//                dd($request->all());
 
-                    ReportValue::updateOrCreate([
-                        'report_id' => $report_id,
-                        'indicator_id' => $indicator,
-                    ], [
-                        'value' => $value,
-                    ]);
-                }
+//                foreach ($request->indicators as $indicator => $value) {
+//
+//                    ReportValue::updateOrCreate([
+//                        'report_id' => $report_id,
+//                        'indicator_id' => $indicator,
+//                    ], [
+//                        'value' => $value,
+//                    ]);
+//                }
                 $parent_indicators = Indicator::where('is_parent', '=', 1)
                     ->where('project_id', '=', 1)
                     ->where('status', '=', 1)
