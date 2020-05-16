@@ -377,6 +377,9 @@ class UploadIndicatorsController extends Controller
 
         switch ($this_dlr->identifier) {
             case "4.1":
+                $validator = $this->validate($request, [ 'dateofaccreditation' => 'required|date',
+                    'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
+
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
@@ -755,6 +758,8 @@ class UploadIndicatorsController extends Controller
 
         switch ($this_dlr->identifier) {
             case "4.1":
+                $validator = $this->validate($request, [ 'dateofaccreditation' => 'required|date',
+                    'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
