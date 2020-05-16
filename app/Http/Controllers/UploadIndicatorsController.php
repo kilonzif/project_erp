@@ -678,6 +678,7 @@ class UploadIndicatorsController extends Controller
     }
 
     public function editRecord(Request $request){
+
         $this_indicator = Indicator::find($request->indicator_id);
         $record_id = $request->record_id;
         if (isset($this_indicator->web_form_id)) {
@@ -685,15 +686,25 @@ class UploadIndicatorsController extends Controller
             $the_record = DB::table("$table_name")
                 ->where('id','=',$record_id)
                 ->first();
+
+            $report = Report::find($the_record->report_id);
         }
         else {
             $table_name = Str::snake("indicator_".$this_indicator->identifier);
+
             $the_record = DB::connection('mongodb')->collection("$table_name")
                 ->where('_id','=',$record_id)
                 ->first();
+
+            $report = Report::find($the_record['report_id']);
+
+
         }
 
-        $report = Report::find($the_record->report_id);
+
+
+
+
         $currency_list = DB::table('currency_list')->get();
         $ace = $report->ace;
         $ace_programmes = explode(';',$ace->programmes);
