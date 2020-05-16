@@ -448,6 +448,12 @@ class UploadIndicatorsController extends Controller
                 };
                 break;
             case "6.3":
+                $request->validate([
+                    'financial_report_url' => 'required|url',
+                    'budget_report_url' => 'required|url',
+                    'work_plan_url' => 'required|url',
+                   'other_files_url' => 'required|url'
+                ]);
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['submission_date'] = $request->submission_date;
                 $indicator_details['financial_report_url'] = $request->financial_report_url;
@@ -503,6 +509,9 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
+                $request->validate([
+                    'vacancy_url' => 'required|url'
+                ]);
                 if ($request->file('personnel_file')) {
                     $personnel_file= $request->personnel_file;
                     $files_array['personnel_file'] =  $request->file('personnel_file');
@@ -841,6 +850,12 @@ class UploadIndicatorsController extends Controller
                 };
                 break;
             case "6.3":
+                $request->validate([
+                    'financial_report_url' => 'required|url',
+                    'budget_report_url' => 'required|url',
+                    'work_plan_url' => 'required|url',
+                    'other_files_url' => 'required|url'
+                ]);
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['submission_date'] = $request->submission_date;
                 $indicator_details['financial_report_url'] = $request->financial_report_url;
@@ -896,6 +911,9 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
+                $request->validate([
+                    'vacancy_url' => 'required|url'
+                ]);
                 if ($request->file('personnel_file')) {
                     $personnel_file= $request->personnel_file;
                     $files_array['personnel_file'] =  $request->file('personnel_file');
