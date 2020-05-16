@@ -380,6 +380,9 @@ class UploadIndicatorsController extends Controller
 
         switch ($this_dlr->identifier) {
             case "4.1":
+                $validator = $this->validate($request, [ 'dateofaccreditation' => 'required|date',
+                    'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
+
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
@@ -468,6 +471,12 @@ class UploadIndicatorsController extends Controller
                 };
                 break;
             case "6.3":
+                $request->validate([
+                    'financial_report_url' => 'required|url',
+                    'budget_report_url' => 'required|url',
+                    'work_plan_url' => 'required|url',
+                   'other_files_url' => 'required|url'
+                ]);
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['submission_date'] = $request->submission_date;
                 $indicator_details['financial_report_url'] = $request->financial_report_url;
@@ -523,6 +532,9 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
+                $request->validate([
+                    'vacancy_url' => 'required|url'
+                ]);
                 if ($request->file('personnel_file')) {
                     $personnel_file= $request->personnel_file;
                     $files_array['personnel_file'] =  $request->file('personnel_file');
@@ -714,6 +726,7 @@ class UploadIndicatorsController extends Controller
     }
 
     public function editRecord(Request $request){
+
         $this_indicator = Indicator::find($request->indicator_id);
         $record_id = $request->record_id;
         if (isset($this_indicator->web_form_id)) {
@@ -721,15 +734,25 @@ class UploadIndicatorsController extends Controller
             $the_record = DB::table("$table_name")
                 ->where('id','=',$record_id)
                 ->first();
+
+            $report = Report::find($the_record->report_id);
         }
         else {
             $table_name = Str::snake("indicator_".$this_indicator->identifier);
+
             $the_record = DB::connection('mongodb')->collection("$table_name")
                 ->where('_id','=',$record_id)
                 ->first();
+
+            $report = Report::find($the_record['report_id']);
+
+
         }
 
-        $report = Report::find($the_record->report_id);
+
+
+
+
         $currency_list = DB::table('currency_list')->get();
         $ace = $report->ace;
         $ace_programmes = explode(';',$ace->programmes);
@@ -794,6 +817,8 @@ class UploadIndicatorsController extends Controller
 
         switch ($this_dlr->identifier) {
             case "4.1":
+                $validator = $this->validate($request, [ 'dateofaccreditation' => 'required|date',
+                    'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
@@ -884,6 +909,12 @@ class UploadIndicatorsController extends Controller
                 };
                 break;
             case "6.3":
+                $request->validate([
+                    'financial_report_url' => 'required|url',
+                    'budget_report_url' => 'required|url',
+                    'work_plan_url' => 'required|url',
+                    'other_files_url' => 'required|url'
+                ]);
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['submission_date'] = $request->submission_date;
                 $indicator_details['financial_report_url'] = $request->financial_report_url;
@@ -939,6 +970,9 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['upload_3_description'] = $request->upload_3_description;
                 break;
             case "7.2":
+                $request->validate([
+                    'vacancy_url' => 'required|url'
+                ]);
                 if ($request->file('personnel_file')) {
                     $personnel_file= $request->personnel_file;
                     $files_array['personnel_file'] =  $request->file('personnel_file');

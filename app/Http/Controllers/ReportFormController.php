@@ -672,6 +672,7 @@ class ReportFormController extends Controller
             }
             elseif ($identifier == "4.1") {
                 $pdo_values = $this->generateAggregatedIndicator41Results_fr($id);
+
             }
             elseif ($identifier == "4.2") {
                 $pdo_values = $this->generateAggregatedIndicator42Results_fr($id);
@@ -712,6 +713,8 @@ class ReportFormController extends Controller
             ->join('roles', 'role_user.role_id', '=', 'roles.id')
             ->where('roles.name', '=', 'ace-officer')->pluck('users.name', 'users.id');
         $aces = Ace::where('active', '=', 1)->get();
+
+        
 
         return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_values','pdo_indicators','lang'));
@@ -797,7 +800,7 @@ class ReportFormController extends Controller
                 }
                 $report->editable = false;
 
-            
+
                 $report->save();
 
 

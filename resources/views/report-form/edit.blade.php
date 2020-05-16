@@ -187,7 +187,7 @@
                                                 $pdo_indicator = str_replace('-','_',\Illuminate\Support\Str::slug(strtolower($indicator_identifier)));
                                                 $child_dlr = \App\Indicator::where('parent_id',$sub_indicator->id)
                                                 ->where('status','=',1)->orderBy('order_no','asc')->get();
-                                                //dd($sub_indicator);
+
                                             @endphp
 
                                             @if($child_dlr->isNotEmpty())
