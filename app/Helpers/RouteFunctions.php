@@ -67,13 +67,13 @@ function milestone_status($id)
             $tag = '<div class="badge badge-glow badge-pill badge-warning" style="margin-top: 10px; padding: 7px 15px">Pending</div>';
             break;
         case 2:
-            $tag = '<div class="badge badge-glow badge-pill badge-primary" style="margin-top: 10px; padding: 7px 15px">Submitted</div>';
+            $tag = '<div class="badge badge-glow badge-pill badge-primary" style="margin-top: 10px; padding: 7px 15px">Submitted for Verification</div>';
             break;
         case 3:
-            $tag = '<div class="badge badge-glow badge-pill badge-success" style="margin-top: 10px; padding: 7px 15px">Approved</div>';
+            $tag = '<div class="badge badge-glow badge-pill badge-success" style="margin-top: 10px; padding: 7px 15px">Approved after Verification</div>';
             break;
         case 4:
-            $tag = '<div class="badge badge-glow badge-pill badge-danger" style="margin-top: 10px; padding: 7px 15px">Not approved</div>';
+            $tag = '<div class="badge badge-glow badge-pill badge-danger" style="margin-top: 10px; padding: 7px 15px">Not approved after Verification</div>';
             break;
         default:
             $tag = '';

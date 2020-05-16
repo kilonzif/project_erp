@@ -409,6 +409,7 @@ class CommonFunctions {
             'Submit for Verification'                       => 'Submit for Verification',
             'Document Proof'                                => 'Document Proof',
             'ULR Proof'                                     => 'ULR Proof',
+            'Provide Documents'                             => 'Provide Documents',
             'I have achieved all the Milestone Targets above and requesting for verification. 
             No further changes shall be done'
             => 'I have achieved all the Milestone Targets above and requesting for verification. 
@@ -488,6 +489,7 @@ class CommonFunctions {
             'Milestones'                                    => 'Jalons',
             'Document Proof'                                => 'Preuve de document',
             'URL Proof'                                     => 'Preuve ULR',
+            'Provide Documents'                             => 'Fournir des documents',
             'I have achieved all the Milestone Targets above and requesting for verification. 
             No further changes shall be done.'
             => 'J\'ai atteint tous les objectifs clés ci-dessus et j\'ai demandé une vérification.

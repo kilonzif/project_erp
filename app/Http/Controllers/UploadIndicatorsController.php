@@ -796,6 +796,7 @@ class UploadIndicatorsController extends Controller
     public function updateRecord(Request $request,$indicator_id,$record_id){
 
         $this_dlr = Indicator::find($request->indicator_id);
+        $canRedirect = null;
         if (isset($this_dlr->web_form_id)) {
             $table_name = $this_dlr->webForm->table_name;
         }
@@ -1064,6 +1065,7 @@ class UploadIndicatorsController extends Controller
             }
             elseif (isset($request->status) && $this_dlr->set_milestone) {
                 $milestone_dlr = MilestonesDlrs::find((integer)$request->milestones_dlr_id);
+
                 if ($milestone_dlr->status <= 1){
                     $milestone_dlr->status = 2;
                     $milestone_dlr->updated_at = date('Y-m-d H:i:s');
@@ -1072,6 +1074,12 @@ class UploadIndicatorsController extends Controller
             }
             $success = "The Update was successful.";
             notify(new ToastNotification('Successful', $success, 'success'));
+        }
+        if (isset($request->status) && $this_dlr->set_milestone) {
+            if ($request->status == 2){
+                return redirect()->route('report_submission.milestone',
+                    [\Illuminate\Support\Facades\Crypt::encrypt((integer)$report_id)]);
+            }
         }
         return back();
     }
