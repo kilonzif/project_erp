@@ -7,7 +7,6 @@ use App\AceComment;
 use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Indicator;
-use App\Indicator3;
 use App\IndicatorDetails;
 use App\Notifications\ReportSubmission;
 use App\Project;
@@ -22,7 +21,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -177,8 +175,12 @@ class ReportFormController extends Controller
             'status_code' => 99,
         ]);
 
-
         notify(new ToastNotification('Successful!', 'Report Saved!', 'success'));
+
+        $indicator = Indicator::find($dlr_id);
+        if ($indicator->set_milestone) {
+            return redirect()->route('report_submission.milestone', [\Illuminate\Support\Facades\Crypt::encrypt($report_id)]);
+        }
 
         return redirect()->route('report_submission.upload_indicator', [\Illuminate\Support\Facades\Crypt::encrypt($report_id)]);
     }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MilestonesDlrs extends Model
 {
     protected $table = 'milestones_dlrs';
-
+    public $timestamps = true;
     protected $fillable = ['indicator_id','milestone_no','description','estimated_cost','estimated_earning',
         'start_expected_timeline','end_expected_timeline','status'];
 

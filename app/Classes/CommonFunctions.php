@@ -395,14 +395,24 @@ class CommonFunctions {
             'Personnel File'                                =>   'Personnel File',
             'Vacancy URL'                                   =>   'Vacancy URL',
             'Report Scores File'                            =>   'Report Scores File',
-            'Participated Paset'                           => 'Participated Paset',
-            'Participated Initiatives'                     => 'Participated Initiatives',
-            'Benchmarking Year'                           => 'Benchmarking Year',
-            'Self Assessment File'                        => 'Self Assessment File',
+            'Participated Paset'                            => 'Participated Paset',
+            'Participated Initiatives'                      => 'Participated Initiatives',
+            'Benchmarking Year'                             => 'Benchmarking Year',
+            'Self Assessment File'                          => 'Self Assessment File',
             'Intervention Plan File'                        => 'Intervention Plan File',
-            'Connectivity File'                           => 'Connectivity File',
-            'Infrastructure Upgrade File'                    => 'Infrastructure Upgrade File',
-            'Satisfactory Survey File'                        => 'Satisfactory Survey File',
+            'Connectivity File'                             => 'Connectivity File',
+            'Infrastructure Upgrade File'                   => 'Infrastructure Upgrade File',
+            'Satisfactory Survey File'                      => 'Satisfactory Survey File',
+            'Milestone Targets'                             => 'Milestone Targets',
+            'Milestone'                                     => 'Milestone',
+            'Milestones'                                    => 'Milestones',
+            'Submit for Verification'                       => 'Submit for Verification',
+            'Document Proof'                                => 'Document Proof',
+            'ULR Proof'                                     => 'ULR Proof',
+            'I have achieved all the Milestone Targets above and requesting for verification. 
+            No further changes shall be done'
+            => 'I have achieved all the Milestone Targets above and requesting for verification. 
+            No further changes should be done',
         ];
     }
 
@@ -460,19 +470,29 @@ class CommonFunctions {
             'Document 3 Description'                        =>   'Description du document 3',
             'Financial Report URL'                          =>   'URL du rapport financier',
             'Budget Report URL'                             =>   'URL du rapport budgétaire',
-            'Work Plan URL'                                =>   'URL du plan de travail',
+            'Work Plan URL'                                 =>   'URL du plan de travail',
             'Other Files URL'                               =>   'URL d\'autres fichiers',
             'Personnel File'                                => 'Dossier personnel',
-            'Vacancy URL'                                  => 'URL de poste vacant',
-            'Report Scores File'                           => 'Fichier de résultats de rapport',
-            'Participated Paset'                           => 'Paset participé',
-            'Participated Initiatives'                     => 'Initiatives participantes',
-            'Benchmarking Year'                           => 'Année de référence',
-            'Self Assessment File'                        => 'Fichier d\'auto-évaluation',
+            'Vacancy URL'                                   => 'URL de poste vacant',
+            'Report Scores File'                            => 'Fichier de résultats de rapport',
+            'Participated Paset'                            => 'Paset participé',
+            'Participated Initiatives'                      => 'Initiatives participantes',
+            'Benchmarking Year'                             => 'Année de référence',
+            'Self Assessment File'                          => 'Fichier d\'auto-évaluation',
             'Intervention Plan File'                        => 'Fichier de plan d\'intervention',
-            'Connectivity File'                           => 'Fichier de connectivité',
-            'Infrastructure Upgrade File'                    => 'Fichier de mise à niveau de l\'infrastructure',
-            'Satisfactory Survey File'                        => 'Fichier d\'enquête satisfaisant',
+            'Connectivity File'                             => 'Fichier de connectivité',
+            'Infrastructure Upgrade File'                   => 'Fichier de mise à niveau de l\'infrastructure',
+            'Satisfactory Survey File'                      => 'Fichier d\'enquête satisfaisant',
+            'Milestone Targets'                             => 'Objectifs clés',
+            'Milestone'                                     => 'Étape importante',
+            'Milestones'                                    => 'Jalons',
+            'Document Proof'                                => 'Preuve de document',
+            'URL Proof'                                     => 'Preuve ULR',
+            'I have achieved all the Milestone Targets above and requesting for verification. 
+            No further changes shall be done.'
+            => 'J\'ai atteint tous les objectifs clés ci-dessus et j\'ai demandé une vérification.
+            Aucune autre modification ne doit être effectuée',
+            'Submit for Verification'                       => 'Soumettre pour vérification',
         ];
 
 

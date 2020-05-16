@@ -452,6 +452,9 @@ Route::name('report_submission.')->group(function () {
         Route::get('indicators-download', 'UploadIndicatorsController@downloadIndicators')->name('downloadIndicators');
         Route::get('indicator-details/read/{id}', 'UploadIndicatorsController@read')->name('view_indicator_details');
         Route::get('indicator-upload/{report_id}/{indicator?}', 'UploadIndicatorsController@index')->name('upload_indicator');
+        Route::get('set-milestone/{report_id}', 'UploadIndicatorsController@milestones')->name('milestone');
+        Route::post('set-milestone/{report_id}/details/save', 'UploadIndicatorsController@milestonesDetailsSave')->name('milestone_details.save');
+        Route::get('set-milestone/{report_id}/details/{milestone_id}', 'UploadIndicatorsController@milestonesDetails')->name('milestone_details');
 
         Route::post('indicator-upload/save', 'UploadIndicatorsController@excelUpload')->name('save_excel_upload');
 

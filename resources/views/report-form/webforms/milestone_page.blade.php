@@ -52,9 +52,33 @@
                 </div>
             @endif
         </div>
-
-        @yield('web-form')
-
+    <div class="card">
+            <h6 class="card-header p-1 card-head-inverse bg-primary">
+                {{$indicator_info->title}}
+            </h6>
+            <div class="card-content">
+                <div class="card-body">
+                    @foreach($indicator_info->getMilestones as $milestone)
+                    <div class="row">
+                        <div class="col-md-9">
+                            <h4>
+                                Milestone {{$milestone->milestone_no}}
+                                <hr>
+                            </h4>
+                            <h5>Description</h5>
+                            <p>{{$milestone->description}}</p>
+                            {!! milestone_status($milestone->status) !!}
+                        </div>
+                        <div class="col-md-3">
+                            <a class="btn btn-primary btn-square" href="{{route('report_submission.milestone_details',
+                            [\Illuminate\Support\Facades\Crypt::encrypt($report->id),$milestone->id])}}">
+                                Provide Documents</a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -73,45 +97,45 @@
         $('.datepicker').datetimepicker();
     });
 
-        function editRecord(indicator,record){
-            var path = "{{route('report_submission.web_form_edit_record')}}";
-            $.ajaxSetup(    {
-                headers: {
-                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
-                }
-            });
-            $.ajax({
-                url: path,
-                type: 'GET',
-                data: {indicator_id:indicator,record_id:record},
-                beforeSend: function(){
-                    $('#form-card').block({
-                        message: '<div class="ft-loader icon-spin font-large-1"></div>',
-                        overlayCSS: {
-                            backgroundColor: '#ccc',
-                            opacity: 0.8,
-                            cursor: 'wait'
-                        },
-                        css: {
-                            border: 0,
-                            padding: 0,
-                            backgroundColor: 'transparent'
-                        }
-                    });
-                },
-                success: function(data){
-                    $('#form-card').empty();
-                    $('#form-card').html(data.theView);
-                },
-                complete:function(){
-                    $('#form-card').unblock();
-                }
-                ,
-                error: function (data) {
-                    console.log(data)
-                }
-            });
+    function editRecord(indicator,record){
+        var path = "{{route('report_submission.web_form_edit_record')}}";
+        $.ajaxSetup(    {
+            headers: {
+                'X-CSRF-Token': $('meta[name=_token]').attr('content')
+            }
+        });
+        $.ajax({
+            url: path,
+            type: 'GET',
+            data: {indicator_id:indicator,record_id:record},
+            beforeSend: function(){
+                $('#form-card').block({
+                    message: '<div class="ft-loader icon-spin font-large-1"></div>',
+                    overlayCSS: {
+                        backgroundColor: '#ccc',
+                        opacity: 0.8,
+                        cursor: 'wait'
+                    },
+                    css: {
+                        border: 0,
+                        padding: 0,
+                        backgroundColor: 'transparent'
+                    }
+                });
+            },
+            success: function(data){
+                $('#form-card').empty();
+                $('#form-card').html(data.theView);
+            },
+            complete:function(){
+                $('#form-card').unblock();
+            }
+            ,
+            error: function (data) {
+                console.log(data)
+            }
+        });
 
-        }
-    </script>
+    }
+</script>
 

@@ -8,6 +8,7 @@ use App\ExcelUpload;
 use App\Indicator;
 use App\IndicatorDetails;
 use App\IndicatorForm;
+use App\MilestonesDlrs;
 use App\Report;
 use App\ReportUpload;
 use Illuminate\Http\Request;
@@ -368,6 +369,8 @@ class UploadIndicatorsController extends Controller
         $this_report = Report::find($report_id)->first();
         $ace_id = $this_report->ace_id;
 
+//        dd($request->all());
+
         //Gather the file name and directory path
         $report = Report::find($report_id);
         $acronym = strtoupper($report->ace->acronym);
@@ -390,6 +393,26 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
                 $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
                 $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
+                break;
+            case "4.3":
+            case "5.3":
+            case "7.5":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
+
+                for ($a=1; $a <= 4; $a++) {
+                    $document = 'document_'.$a;
+                    if ($request->file($document)) {
+                        $guideline_file= $request->$document;
+                        $files_array[$document] =  $request->file($document);
+                        $indicator_details[$document] = $guideline_file->getClientOriginalName();
+                    }
+                }
+
+                for ($a=1; $a <= 3; $a++) {
+                    $url = 'url_'.$a;
+                    $indicator_details[$url] = $request->$url;
+                }
                 break;
             case "5.1":
                 $indicator_details['report_id'] = (integer)$report_id;
@@ -565,6 +588,8 @@ class UploadIndicatorsController extends Controller
         }
 
         if (isset($this_dlr->web_form_id)) {
+            $indicator_details['created_at'] = date('Y-m-d H:i:s');
+            $indicator_details['updated_at'] = date('Y-m-d H:i:s');
             $table_name = $this_dlr->webForm->table_name;
             $saved= DB::table("$table_name")->insert($indicator_details);
         } else {
@@ -579,6 +604,20 @@ class UploadIndicatorsController extends Controller
         }else{
             foreach ($files_array as $key=>$value){
                 Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
+            }
+            if (!isset($request->status) && $this_dlr->set_milestone) {
+                $milestone_dlr = MilestonesDlrs::find((integer)$request->milestones_dlr_id);
+                $milestone_dlr->status = 1;
+                $milestone_dlr->updated_at = date('Y-m-d H:i:s');
+                $milestone_dlr->save();
+            }
+            elseif (isset($request->status) && $this_dlr->set_milestone) {
+                $milestone_dlr = MilestonesDlrs::find((integer)$request->milestones_dlr_id);
+                if ($milestone_dlr->status <= 1){
+                    $milestone_dlr->status = 2;
+                    $milestone_dlr->updated_at = date('Y-m-d H:i:s');
+                    $milestone_dlr->save();
+                }
             }
             $success = "The data has been saved.";
             notify(new ToastNotification('Successful', $success, 'success'));
@@ -769,6 +808,26 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
                 $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
+            case "4.3":
+            case "5.3":
+            case "7.5":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
+
+                for ($a=1; $a <= 4; $a++) {
+                    $document = 'document_'.$a;
+                    if ($request->file($document)) {
+                        $guideline_file= $request->$document;
+                        $files_array[$document] =  $request->file($document);
+                        $indicator_details[$document] = $guideline_file->getClientOriginalName();
+                    }
+                }
+
+                for ($a=1; $a <= 3; $a++) {
+                    $url = 'url_'.$a;
+                    $indicator_details[$url] = $request->$url;
+                }
+                break;
             case "5.1":
                 $indicator_details['report_id'] = (integer)$report_id;
 //                $indicator_details['indicator_id'] = $request->indicator_id;
@@ -945,6 +1004,7 @@ class UploadIndicatorsController extends Controller
         }
 
         if (isset($this_dlr->web_form_id)) {
+            $indicator_details['updated_at'] = date('Y-m-d H:i:s');
             $updated = DB::table("$table_name")
                 ->where('id','=',$record_id)
                 ->update($indicator_details);
@@ -962,10 +1022,52 @@ class UploadIndicatorsController extends Controller
             foreach ($files_array as $key=>$value){
                 Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
             }
+            if (!isset($request->status) && $this_dlr->set_milestone) {
+                $milestone_dlr = MilestonesDlrs::find((integer)$request->milestones_dlr_id);
+                $milestone_dlr->status = 1;
+                $milestone_dlr->updated_at = date('Y-m-d H:i:s');
+                $milestone_dlr->save();
+            }
+            elseif (isset($request->status) && $this_dlr->set_milestone) {
+                $milestone_dlr = MilestonesDlrs::find((integer)$request->milestones_dlr_id);
+                if ($milestone_dlr->status <= 1){
+                    $milestone_dlr->status = 2;
+                    $milestone_dlr->updated_at = date('Y-m-d H:i:s');
+                    $milestone_dlr->save();
+                }
+            }
             $success = "The Update was successful.";
             notify(new ToastNotification('Successful', $success, 'success'));
         }
         return back();
+    }
+
+    public function milestones($report_id)
+    {
+        $report = Report::find(Crypt::decrypt($report_id));
+        $indicator_info = $report->indicator;
+        $ace = $report->ace;
+        $lang = $report->language;
+
+        return view("report-form.webforms.milestone_page", compact('indicator_info','ace','report',
+            'lang'));
+    }
+
+    public function milestonesDetails($report_id,$milestone_id)
+    {
+        $report = Report::find(Crypt::decrypt($report_id));
+        $milestone = MilestonesDlrs::find((integer)$milestone_id);
+        $indicator_info = $report->indicator;
+        $ace = $report->ace;
+        $lang = $report->language;
+        $the_record = null;
+        $table_name = $indicator_info->webForm->table_name;
+        $the_record = DB::table("$table_name")
+            ->where('report_id','=',$report->id)
+            ->first();
+
+        return view("report-form.webforms.milestone_details", compact('indicator_info','ace',
+            'milestone','report','lang','the_record'));
     }
 }
 
