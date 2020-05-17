@@ -90,9 +90,11 @@
                                                         <td>{!! $me->reportStatusTag($report->status) !!}</td>
                                                         <td>
                                                             <div class="btn-group" role="group" aria-label="Basic example">
+                                                                @if(\Auth::user()->hasPermission('view-report'))
                                                                 <a href="{{route('report_submission.view',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                                    class="btn btn-s btn-dark" data-toggle="tooltip" data-placement="top" title="View Report"><i class="ft-eye"></i></a>
-                                                                @if($report->editable == 1)
+                                                                @endif
+                                                                    @if($report->editable == 1 && \Auth::user()->hasPermission('edit-report'))
                                                                     <a href="{{route('report_submission.edit',[\Illuminate\Support\Facades\Crypt::encrypt($report->id)])}}"
                                                                        class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="Edit Report"><i class="ft-edit-3"></i></a>
                                                                 @else

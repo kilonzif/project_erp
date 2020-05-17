@@ -31,6 +31,7 @@
         </div>
     </div>
 
+    @ability('webmaster|admin|super-admin','manage-contacts')
     <div class="row">
         <div class="col-md-8">
             <div class="card">
@@ -256,9 +257,9 @@
             </div>
         </div>
     </div>
+    @endability
 
-
-
+    @ability('webmaster|admin|super-admin','view-contacts-only|manage-contacts')
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -367,12 +368,7 @@
             </div>
             </div>
     </div>
-
-
-
-
-
-
+    @endability
 
 @endsection
 @push('vendor-script')

@@ -20,7 +20,7 @@
             </li>
             @endability
 
-            @ability('webmaster|super-admin|admin', 'admin-dashboard')
+            @ability('webmaster|super-admin|admin', 'analytics')
             <li class="nav-item {{isRouteActive('analytics.index')}}">
                 <a href="{{route('analytics.index')}}"><i class="ft-pie-chart"></i>
                     <span class="menu-title" data-i18n="">{{__('Analytics')}}</span>
@@ -36,7 +36,7 @@
             </li>
             @endability
 
-            @ability('webmaster|super-admin|admin', 'upload-indicator-details')
+            @ability('webmaster|super-admin|admin', 'general-document-uploads')
             <li class="nav-item {{isRouteActive('file-uploads.index')}}">
                 <a href="{{route('file-uploads.index')}}"><i class="ft-files ft-upload-cloud"></i>
                     <span class="menu-title" data-i18n="">{{__('File Uploads')}}</span>
@@ -76,47 +76,64 @@
             </li>
             @endability
 
-            @ability('webmaster', 'generate-report')
+            @ability('webmaster|super-admin', 'generate-report|generate-dlr-amount-report|generate-dlr-report')
             <li class=" nav-item {{isRouteActive('report_generation','false','open')}}"><a href="#">
                     <i class="ft-bar-chart-2"></i><span class="menu-title" data-i18n="">{{__('Report Generation')}}</span></a>
                 <ul class="menu-content">
+                    @ability('webmaster|super-admin', 'generate-report')
                     <li class="{{isRouteActive('report_generation.general')}}">
                         <a href="{{route('report_generation.general')}}">
                             <span class="menu-title" data-i18n="">{{__('General Report')}}</span>
                         </a>
                     </li>
+                    @endability
+
+                    @ability('webmaster|super-admin', 'generate-dlr-amount-report')
                     <li class="{{isRouteActive('report_generation.dlr_amount')}}">
                         <a href="{{route('report_generation.dlr_amount')}}">
                             <span class="menu-title" data-i18n="">{{__('DLR Amount Report')}}</span>
                         </a>
                     </li>
+                    @endability
+
+                    @ability('webmaster|super-admin', 'generate-dlr-report')
                     <li class="{{isRouteActive('report_generation.dlrs')}}">
                         <a href="{{route('report_generation.dlrs')}}">
                             <span class="menu-title" data-i18n="">{{__('DLR Report')}}</span>
                         </a>
                     </li>
+                    @endability
+
                     @if(false)
+                        @ability('webmaster|super-admin', 'indicator-status-report')
                     <li class="{{isRouteActive('report_generation.indicator_status')}}">
                         <a href="{{route('report_generation.indicator_status')}}">
                             <span class="menu-title" data-i18n="">{{__('Indicator Status Report')}}</span>
                         </a>
                     </li>
-                    <li class="{{isRouteActive('report_generation.generate.milestones')}}">
-                        <a href="{{route('report_generation.generate.milestones')}}">
-                            <span class="menu-title" data-i18n="">{{__('DLR 2.8 Report')}}</span>
-                        </a>
-                    </li>
+                        @endability
+
+                        {{--@ability('webmaster|super-admin', 'generate-dlr-report')--}}
+                    {{--<li class="{{isRouteActive('report_generation.generate.milestones')}}">--}}
+                        {{--<a href="{{route('report_generation.generate.milestones')}}">--}}
+                            {{--<span class="menu-title" data-i18n="">{{__('DLR 2.8 Report')}}</span>--}}
+                        {{--</a>--}}
+                    {{--</li>--}}
+                        {{--@endability--}}
+
+                        @ability('webmaster|super-admin', 'verification-report')
                     <li class="{{isRouteActive('report_generation.verificationletter.verificationpage')}}">
                         <a href="{{route('report_generation.verificationletter.verificationpage')}}">
                             <span class="menu-title" data-i18n="">{{__('    Verification Report')}}</span>
                         </a>
                     </li>
+                        @endability
                     @endif
                 </ul>
             </li>
             @endability
 
-            @ability('webmaster|super-admin', 'add-courses|app-settings')
+            @ability('webmaster|super-admin', 'add-dlr-indicators|app-settings|upload-indicators-template')
             <li class=" nav-item {{isRouteActive('indicators','false','open')}} {{isRouteActive('settings','true','open')}}"><a href="#">
                     <i class="ft-settings"></i><span class="menu-title" data-i18n="">{{__('System Settings')}}</span></a>
                 <ul class="menu-content">
@@ -153,7 +170,7 @@
             </li>
             @endability
 
-            @ability('webmaster|super-admin|admin', 'add-user|add-roles|add-institutions|add-aces')
+            @ability('webmaster|super-admin|admin', 'add-user|manage-roles|manage-institutions|manage-ace')
             <li class="nav-item has-sub {{isRouteActive('user-management','true','open')}}">
                 <a href="#"><i class="ft-users"></i>
                     <span class="menu-title" data-i18n="">{{__('User Management')}}</span>
@@ -175,7 +192,7 @@
                     </li>
                     @endrole
 
-                    @ability('webmaster|super-admin', 'add-roles')
+                    @ability('webmaster|super-admin', 'manage-roles')
                     <li class="{{isRouteActive('user-management.roles')}}">
                         <a href="{{route('user-management.roles')}}">
                             <span class="menu-title" data-i18n="">{{__('Roles')}}</span>
@@ -183,7 +200,7 @@
                     </li>
                     @endability
 
-                    @ability('webmaster|super-admin|admin', 'add-institutions')
+                    @ability('webmaster|super-admin|admin', 'manage-institutions')
                     <li class="{{isRouteActive('user-management.institutions')}}">
                         <a href="{{route('user-management.institutions')}}">
                             <span class="menu-title" data-i18n="">{{__('Institutions')}}</span>
@@ -191,13 +208,15 @@
                     </li>
                     @endability
 
-                    @ability('webmaster|super-admin|admin', 'add-aces')
+                    @ability('webmaster|super-admin|admin', 'manage-ace')
                     <li class="{{isRouteActive('user-management.aces')}}">
                         <a href="{{route('user-management.aces')}}">
                             <span class="menu-title" data-i18n="">{{__('ACEs')}}</span>
                         </a>
                     </li>
+                    @endability
 
+                    @ability('webmaster|super-admin|admin', 'manage-contacts|view-contacts-only')
                     <li class="{{isRouteActive('user-management.contacts')}}">
                         <a href="{{route('user-management.contacts')}}">
                             <span class="menu-title" data-i18n="">{{__('Contacts')}}</span>
@@ -211,7 +230,7 @@
             @ability('webmaster|super-admin|admin', 'setup-faq')
             <li class="nav-item {{isRouteActive('faqs')}}">
                 <a href="{{route('faqs')}}"><i class="ft-message-circle"></i>
-                    <span class="menu-title" data-i18n="">{{__('FAQs')}}</span>
+                    <span class="menu-title" data-i18n="">{{__('FAQs Set up')}}</span>
                 </a>
             </li>
             @endability
