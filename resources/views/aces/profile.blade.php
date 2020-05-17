@@ -325,6 +325,37 @@
                                     <form action="{{route('settings.save_dlr_indicators_cost',[$ace->id])}}" method="post">
                                         @csrf
                                         <input type="hidden" name="parent_id" value="{{$ace_dlr->id}}">
+                                        @if($ace_dlr->is_milestone)
+                                            <table class="table table-striped table-bordered">
+                                                <tr>
+                                                    <th>DLR Indicators</th>
+                                                    <th style="width: 200px;">Cost per Unit</th>
+                                                </tr>
+
+                                                @if(array_key_exists($ace_dlr->original_indicator_id,$milestone_dlrs))
+                                                    @for($a=1; $a <= $milestone_dlrs[$ace_dlr->original_indicator_id]; $a++)
+                                                        @php
+                                                            $index = (integer)"$a".$ace_dlr->id."$a";
+                                                            $unit = 0;
+                                                                if(isset($dlr_unit_costs[$index])){
+                                                                    $unit = $dlr_unit_costs[$index];
+                                                                }
+                                                        @endphp
+                                                        <tr>
+                                                            <td>Milestone {{$a}}</td>
+                                                            <td>
+                                                                <fieldset class="form-group position-relative has-icon-left mb-0">
+                                                                    <input type="number" step="0.01" class="form-control
+                                                                    text-right" id="single_{{$index}}"
+                                                                       value="{{$unit}}"
+                                                                           name="single[{{$index}}]">
+                                                                </fieldset>
+                                                            </td>
+                                                        </tr>
+                                                    @endfor
+                                                @endif
+                                            </table>
+                                        @else
                                         @if($ace_dlr->set_max_dlr)
                                         <div class="row">
                                             <div class="col-md-6">
@@ -384,6 +415,7 @@
                                                     </tr>
                                                 @endforeach
                                             </table>
+                                        @endif
                                         @endif
                                         <div class="text-right">
                                             <button type="submit" class="btn btn-secondary square">Save</button>

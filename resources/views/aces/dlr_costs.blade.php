@@ -25,9 +25,9 @@
                         </li>
                         <li class="breadcrumb-item"><a href="{{route('user-management.aces')}}">ACEs</a>
                         </li>
-                        <li class="breadcrumb-item active">
+                        <li class="breadcrumb-item">
                             <a href="{{route('user-management.aces.profile',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">
-                                {{$ace->acronym}}</a>ace_dlr_indicator_values
+                                {{$ace->acronym}}</a>
                         </li>
                         <li class="breadcrumb-item active">DLR COST - {{$year}}
                         </li>
@@ -49,16 +49,12 @@
                     <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="table-responsive" style="padding: 0 1.2rem;">
-                                {{--                                @if(sizeof($report_values) > 0)--}}
-                                @if(true)
-                                    <form action="#">
-                                        @csrf
-                                        @include('aces.dlr-costs-table')
-                                        <button type="submit" class="btn btn-secondary">Save Values</button>
-                                    </form>
-                                @else
-                                    <h2 class="text-center danger mt-3 mb-3">No Report can be generated within the specified range</h2>
-                                @endif
+                                <form action="{{route('user-management.ace.dlr_cost.save',
+                                [\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$year])}}" method="POST">
+                                    @csrf
+                                    @include('aces.dlr-costs-table')
+                                    <button type="submit" class="btn btn-secondary">Save Values</button>
+                                </form>
                             </div>
                         </div>
                     </div>

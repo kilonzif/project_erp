@@ -5,6 +5,7 @@ use App\Ace;
 use App\AceCourse;
 use App\AceDlrIndicator;
 use App\AceDlrIndicatorCost;
+use App\AceDlrIndicatorValue;
 use App\Contacts;
 use App\AceIndicatorsBaseline;
 use App\AceIndicatorsTarget;
@@ -419,6 +420,17 @@ class AcesController extends Controller {
         for ($a = 1; $a <= $project_year_length; $a++) {
             $years[$a] = $project_start_year+$a-1;
         }
+        $ace_milestones_dlrs = AceDlrIndicator::where('status', '=', 1)
+            ->where('is_milestone', '=', 1)
+            ->orderBy('general_order', 'asc')
+            ->pluck('original_indicator_id','id')->toArray();
+
+        //[indicator_id,total_milestone]
+        $milestone_dlrs = MilestonesDlrs::where('ace_id','=',$id)
+            ->select(DB::raw('count(*) as total_milestone, indicator_id'))
+            ->groupBy('indicator_id')
+            ->pluck('total_milestone','indicator_id')
+            ->toArray();
 
         $target_years = $ace->target_years;
         $aceemails= $this->getContactGroup($id);
@@ -432,7 +444,7 @@ class AcesController extends Controller {
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
         return view('aces.profile', compact('ace','workplans','roles','currency1','currency2','dlr_unit_costs', 'target_years',
-            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements','dlr_currency','years'));
+            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements','dlr_currency','years','ace_milestones_dlrs','milestone_dlrs'));
     }
 
     public function save_ace_dlr_indicator_values($aceId,$year) {
@@ -440,16 +452,26 @@ class AcesController extends Controller {
 
         $ace = Ace::find($id);
         $ace_dlrs = AceDlrIndicator::where('status', '=', 1)->orderBy('general_order', 'asc')->get();
+
+        //[id,original_indicator_id]
         $ace_milestones_dlrs = AceDlrIndicator::where('status', '=', 1)
             ->where('is_milestone', '=', 1)
             ->orderBy('general_order', 'asc')
-            ->get();
-        dd($ace_milestones_dlrs);
+            ->pluck('original_indicator_id','id')->toArray();
+
+        //[indicator_id,total_milestone]
+        $milestone_dlrs = MilestonesDlrs::where('ace_id','=',$id)
+            ->select(DB::raw('count(*) as total_milestone, indicator_id'))
+            ->groupBy('indicator_id')
+            ->pluck('total_milestone','indicator_id')
+            ->toArray();
+
 //        $project_start_year = config('app.reporting_year_start');
 //        $project_year_length = config('app.reporting_year_length');
 //        for ($a = 1; $a <= $project_year_length; $a++) {
 //            $years[$a] = $project_start_year+$a-1;
 //        }
+
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
         $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
         $total_currencies = [];
@@ -459,18 +481,59 @@ class AcesController extends Controller {
         if ($currency2) {
             $total_currencies[$currency2->id] = $currency2->code;
         }
+        //[ace_dlr_indicator_id,currency_id]
         $dlr_currencies = AceDlrIndicatorCost::where('ace_id','=', $ace->id)
             ->whereNotNull('currency_id')
             ->orderBy('ace_dlr_indicator_id','asc')
             ->pluck('currency_id','ace_dlr_indicator_id')->toArray();
-//        dd($dlr_currencies);
+
+        //[ace_dlr_indicator_id,max_cost]
+        $dlr_max_cost = AceDlrIndicatorCost::where('ace_id','=', $ace->id)
+            ->whereNotNull('currency_id')
+            ->orderBy('ace_dlr_indicator_id','asc')
+            ->pluck('max_cost','ace_dlr_indicator_id')->toArray();
+
+        $dlr_values = AceDlrIndicatorValue::where('ace_id','=', $ace->id)
+            ->where('reporting_year','=',$year)
+            ->pluck('value','ace_dlr_indicator_id')->toArray();
+
         $parent_indicators = AceDlrIndicator::active()
             ->parent_indicators()
             ->orderBy('order','asc')
             ->get();
 
+        $master_parent_total = AceDlrIndicator::where('set_max_dlr','=',0)
+            ->where('master_parent_id','!=',0)
+            ->select(DB::raw('count(id) as total, master_parent_id'))
+            ->groupBy('master_parent_id')
+            ->orderBy('master_parent_id','asc')
+            ->pluck('total','master_parent_id')
+            ->toArray();
+//        dd($master_parent_total);
+
         return view('aces.dlr_costs', compact('ace','currency1','currency2',
-            'ace_dlrs','parent_indicators','year','total_currencies','dlr_currencies'));
+            'ace_dlrs','parent_indicators','year','total_currencies','dlr_currencies','milestone_dlrs',
+            'ace_milestones_dlrs','dlr_values','dlr_max_cost','master_parent_total'));
+    }
+    public function save_ace_dlr_unit_values(Request $request, $ace_id, $year)
+    {
+//        dd($request->all());
+        $this->validate($request,[
+            'dlr' => 'nullable|array|min:1',
+            'dlr.*' => 'nullable|numeric|min:0',
+        ]);
+
+        foreach ($request->dlr as $indicator => $value) {
+            AceDlrIndicatorValue::updateOrCreate([
+                'ace_id' => Crypt::decrypt($ace_id),
+                'ace_dlr_indicator_id' => $indicator,
+                'reporting_year' => $year,
+            ], [
+                'value' => $value,
+            ]);
+        }
+        notify(new ToastNotification('Successful', 'DLR Indicator Costs Values Saved.', 'success'));
+        return back();
     }
 
     public function getContactGroup($ace_id){

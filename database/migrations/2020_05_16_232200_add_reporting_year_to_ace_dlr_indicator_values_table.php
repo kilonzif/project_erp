@@ -15,7 +15,7 @@ class AddReportingYearToAceDlrIndicatorValuesTable extends Migration
     {
         Schema::table('ace_dlr_indicator_values', function (Blueprint $table) {
             $table->year('reporting_year')->default(2019)->after('ace_dlr_indicator_id');
-            $table->dropColumn(['report_id']);
+            $table->unsignedInteger('ace_id')->after('id');;
         });
     }
 

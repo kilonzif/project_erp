@@ -62,4 +62,9 @@ class AceDlrIndicator extends Model
     {
         return $this->belongsTo('App\AceDlrIndicator', 'master_parent_id');
     }
+
+    public function last_children()
+    {
+        return $this->hasMany('App\AceDlrIndicator', 'master_parent_id');
+    }
 }

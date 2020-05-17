@@ -8,6 +8,7 @@ class AceDlrIndicatorValue extends Model
 {
     //
     protected $table = 'ace_dlr_indicator_values';
+    protected $fillable = ['ace_id','ace_dlr_indicator_id','reporting_year','value'];
 
     public function report()
     {

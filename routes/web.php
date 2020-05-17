@@ -156,6 +156,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('ace/{id}/indicator_one/save', 'AcesController@indicator_one_save')->name('ace.indicator_one.save');
     Route::post('ace/{id}/indicator_one/sectoral_board', 'AcesController@save_sectoral_board')->name('ace.indicator_one.sectoral_board');
     Route::get('ace/{id}/dlr-cost/{year}', 'AcesController@save_ace_dlr_indicator_values')->name('ace.dlr_cost');
+    Route::post('ace/{id}/dlr-cost/{year}', 'AcesController@save_ace_dlr_unit_values')->name('ace.dlr_cost.save');
 
 //    workplan
 
