@@ -11,8 +11,10 @@ use App\Institution;
 use App\Report;
 use Faker\Provider\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class FileUploadsController extends Controller
 {
@@ -22,10 +24,17 @@ class FileUploadsController extends Controller
     }
     public function index(){
         $aces = Ace::all();
+        $is_ace = false;
+        $uploads = FileUploads::where('user_id','=',Auth::id())->get();
+        if (Auth::user()->hasRole(['webmaster', 'admin', 'super-admin'])){
+            $uploads = FileUploads::all();
+        } elseif(Auth::user()->hasRole(['ace-officer'])) {
+            $uploads = FileUploads::where('ace_id','=',Auth::user()->ace)->get();
+            $is_ace = true;
+        }
+        $ace = Ace::find(Auth::user()->ace);
 
-        $uploads = FileUploads::all();
-
-        return view('fileuploads.index',compact('aces','uploads'));
+        return view('fileuploads.index',compact('aces','uploads','is_ace','ace'));
     }
 
     public function getAceName($id){
@@ -35,41 +44,53 @@ class FileUploadsController extends Controller
 
     public function saveUploads(Request $request){
 
-        $ace_id = $request->ace_id;
-        $file1=$request->file_one;
-        $file2=$request->file_two;
-        $destinationPath = base_path() . '/public/AdditionalFiles/';
-        $the_file1 = $request->file('file_one');
-        $the_file2 = $request->file('file_two');
+        if (Auth::user()->ace || isset($request->ace)) {
+            $ace_id = Auth::user()->ace;
+            $acronym = strtoupper(Auth::user()->ace_->acronym);
+        }
+        else {
+            $acronym = Auth::id();
+            $ace_id = $request->ace_id;
+        }
+
+        $directory = "public/additional-files/$acronym";
         $comments = $request->comments;
         $category=$request->file_category;
-        $file2_name=null;
+        $file1_name = $file2_name = $file_one_path = $file_two_path = null;
+        $files_array =[];
 
-
-        if (isset($the_file1)) {
-            $file1->move($destinationPath, $file1->getClientOriginalName());
-            $file1_name= $file1->getClientOriginalName();
-        }
-        if (isset($the_file2)) {
-            $file2->move($destinationPath, $file2->getClientOriginalName());
-            $file2_name=$file2->getClientOriginalName();
+        if ($request->file('file_one')) {
+            $file_one= $request->file_one;
+            $files_array['file_one'] =  $request->file('file_one');
+            $file1_name = $file_one->getClientOriginalName();
+            $file_one_path = "$directory/$file1_name";
         }
 
-//        dd($request->comments);
+        if ($request->file('file_two')) {
+            $satisfactory_survey_file= $request->file_two;
+            $files_array['file_two'] =  $request->file('file_two');
+            $file2_name = $satisfactory_survey_file->getClientOriginalName();
+            $file_two_path = "$directory/$file2_name";
+        }
 
-        $saveUpload = FileUploads::updateOrCreate(
-            ['ace_id' => $ace_id,
+        $saveUpload = FileUploads::create(
+            [   'ace_id' => $ace_id,
+                'user_id' => Auth::id(),
                 'file_one'=>$file1_name,
                 'file_two'=>$file2_name,
-                'comments' =>$request->comments,
+                'comments' =>$comments,
+                'file_one_path' =>$file_one_path,
+                'file_two_path' =>$file_two_path,
                 'status'=>1,
                 'file_category' => $category
             ]
         );
-//        $saveUpload->comments = $request->comments;
 
 
         if (isset($saveUpload)) {
+            foreach ($files_array as $key=>$value){
+                Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
+            }
             notify(new ToastNotification('Successful!', 'Files Added', 'success'));
             return back();
         } else {

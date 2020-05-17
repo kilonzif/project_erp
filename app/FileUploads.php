@@ -16,7 +16,8 @@ class FileUploads extends Model
 {
     protected $table ="files_uploads";
 
-    protected $fillable = ['ace_id','file_one','file_two','comments','file_category','status'];
+    protected $fillable = ['ace_id','file_one','file_two','comments','file_category','status','user_id',
+    'file_one_path','file_two_path'];
 
 
 

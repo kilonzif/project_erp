@@ -494,3 +494,7 @@ Route::group(['prefix' => 'setup', 'middleware' => ['ability:admin|webmaster|sup
 });
 Route::get('faqs', 'FaqsController@faqs')->name('read.faqs');
 Route::get('download/guidelines', 'FaqsController@getDownload')->name('download_guideline');
+
+Route::get('download', function (\Illuminate\Http\Request $request){
+    return \Illuminate\Support\Facades\Storage::download($request->file_path);
+})->name('download-file');

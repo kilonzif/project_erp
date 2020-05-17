@@ -12,18 +12,18 @@
             </li>
             @endability
 
-            @ability('webmaster|super-admin|admin', 'admin-dashboard')
-            <li class="nav-item {{isRouteActive('analytics.index')}}">
-                <a href="{{route('analytics.index')}}"><i class="ft-pie-chart"></i>
-                    <span class="menu-title" data-i18n="">{{__('Analytics')}}</span>
+            @ability('ace-officer','ace_profile')
+            <li class="nav-item {{isRouteActive('ace_profile')}}">
+                <a href="{{route('ace_profile')}}"><i class="ft-home"></i>
+                    <span class="menu-title" data-i18n="">{{__('Ace Profile')}}</span>
                 </a>
             </li>
             @endability
 
             @ability('webmaster|super-admin|admin', 'admin-dashboard')
-            <li class="nav-item {{isRouteActive('file-uploads.index')}}">
-                <a href="{{route('file-uploads.index')}}"><i class="ft-files ft-upload-cloud"></i>
-                    <span class="menu-title" data-i18n="">{{__('File Uploads')}}</span>
+            <li class="nav-item {{isRouteActive('analytics.index')}}">
+                <a href="{{route('analytics.index')}}"><i class="ft-pie-chart"></i>
+                    <span class="menu-title" data-i18n="">{{__('Analytics')}}</span>
                 </a>
             </li>
             @endability
@@ -36,10 +36,10 @@
             </li>
             @endability
 
-            @ability('ace-officer','ace_profile')
-            <li class="nav-item {{isRouteActive('ace_profile')}}">
-                <a href="{{route('ace_profile')}}"><i class="ft-home"></i>
-                    <span class="menu-title" data-i18n="">{{__('Ace Profile')}}</span>
+            @ability('webmaster|super-admin|admin', 'upload-indicator-details')
+            <li class="nav-item {{isRouteActive('file-uploads.index')}}">
+                <a href="{{route('file-uploads.index')}}"><i class="ft-files ft-upload-cloud"></i>
+                    <span class="menu-title" data-i18n="">{{__('File Uploads')}}</span>
                 </a>
             </li>
             @endability
