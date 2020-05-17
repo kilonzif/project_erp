@@ -194,12 +194,17 @@ class DlrIndicatorController extends Controller
         ]);
         try{
             $parent = AceDlrIndicator::find($request->indicator);
+            $master_parent_id = null;
+            if ($parent->parent) {
+                $master_parent_id = $parent->parent->id;
+            }
             $parent->update(['is_parent'=>1]);
 
             AceDlrIndicator::updateOrCreate([
                 'indicator_title' => $request->title],
             [
                 'parent_id' => $parent->id,
+                'master_parent_id' => $master_parent_id,
                 'status' => $parent->status,
                 'order' => $request->order,
             ]);

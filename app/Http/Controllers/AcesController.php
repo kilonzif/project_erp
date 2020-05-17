@@ -414,6 +414,11 @@ class AcesController extends Controller {
             ->pluck('currency_id','ace_dlr_indicator_id')->toArray();
         $dlr_max_costs = AceDlrIndicatorCost::where('ace_id', '=', $id)->pluck('max_cost','ace_dlr_indicator_id');
         $ace_dlrs = AceDlrIndicator::where('is_parent', '=', 1)->orderBy('order', 'asc')->get();
+        $project_start_year = config('app.reporting_year_start');
+        $project_year_length = config('app.reporting_year_length');
+        for ($a = 1; $a <= $project_year_length; $a++) {
+            $years[$a] = $project_start_year+$a-1;
+        }
 
         $target_years = $ace->target_years;
         $aceemails= $this->getContactGroup($id);
@@ -427,7 +432,45 @@ class AcesController extends Controller {
         $requirements=Indicator::activeIndicator()->parentIndicator(1)->pluck('title');
 
         return view('aces.profile', compact('ace','workplans','roles','currency1','currency2','dlr_unit_costs', 'target_years',
-            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements','dlr_currency'));
+            'ace_dlrs', 'aceemails', 'dlr_max_costs','requirements','dlr_currency','years'));
+    }
+
+    public function save_ace_dlr_indicator_values($aceId,$year) {
+        $id = Crypt::decrypt($aceId);
+
+        $ace = Ace::find($id);
+        $ace_dlrs = AceDlrIndicator::where('status', '=', 1)->orderBy('general_order', 'asc')->get();
+        $ace_milestones_dlrs = AceDlrIndicator::where('status', '=', 1)
+            ->where('is_milestone', '=', 1)
+            ->orderBy('general_order', 'asc')
+            ->get();
+        dd($ace_milestones_dlrs);
+//        $project_start_year = config('app.reporting_year_start');
+//        $project_year_length = config('app.reporting_year_length');
+//        for ($a = 1; $a <= $project_year_length; $a++) {
+//            $years[$a] = $project_start_year+$a-1;
+//        }
+        $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
+        $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
+        $total_currencies = [];
+        if ($currency1) {
+            $total_currencies[$currency1->id] = $currency1->code;
+        }
+        if ($currency2) {
+            $total_currencies[$currency2->id] = $currency2->code;
+        }
+        $dlr_currencies = AceDlrIndicatorCost::where('ace_id','=', $ace->id)
+            ->whereNotNull('currency_id')
+            ->orderBy('ace_dlr_indicator_id','asc')
+            ->pluck('currency_id','ace_dlr_indicator_id')->toArray();
+//        dd($dlr_currencies);
+        $parent_indicators = AceDlrIndicator::active()
+            ->parent_indicators()
+            ->orderBy('order','asc')
+            ->get();
+
+        return view('aces.dlr_costs', compact('ace','currency1','currency2',
+            'ace_dlrs','parent_indicators','year','total_currencies','dlr_currencies'));
     }
 
     public function getContactGroup($ace_id){

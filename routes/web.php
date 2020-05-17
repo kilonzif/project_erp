@@ -155,6 +155,7 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::post('ace/{id}/targets/save/{year_id?}', 'AcesController@targets_save')->name('ace.targets.save');
     Route::post('ace/{id}/indicator_one/save', 'AcesController@indicator_one_save')->name('ace.indicator_one.save');
     Route::post('ace/{id}/indicator_one/sectoral_board', 'AcesController@save_sectoral_board')->name('ace.indicator_one.sectoral_board');
+    Route::get('ace/{id}/dlr-cost/{year}', 'AcesController@save_ace_dlr_indicator_values')->name('ace.dlr_cost');
 
 //    workplan
 
@@ -402,7 +403,11 @@ Route::name('report_generation.')->group(function () {
         // Route::post('verificationletter/dummypage/save','VerificationLetterController@dummypagereport')->name('verificationletter.dummypage.report');
         //report-generation
 
-        //generate-report.milestones.generated-result
+        //DLR Amount Report
+        Route::get('dlr-amount', 'GenerateReportController@dlr_amount')->name('dlr_amount');
+        Route::get('dlr-amount/result', 'GenerateReportController@dlr_amount_result')->name('dlr_amount.result');
+//        Route::get('dlr-amount/{id}/milestones', 'GenerateReportController@milestones')->name('report.dlr_amount');
+
 
         //Milestones Routes
         Route::get('report/{id}/milestones', 'GenerateReportController@milestones')->name('report.milestones');

@@ -118,6 +118,18 @@
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.indicator_one',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}">Institutional Readiness</a>
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.baselines',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" role="button">Indicator Baselines</a>
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1" href="{{route('user-management.ace.milestones',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" role="button">Milestone</a>
+                                <div class="btn-group mr-1 mb-1">
+                                    <button type="button" class="btn bg-primary bg-darken-4 btn-min-width dropdown-toggle white" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false"><i class="fa fa-money"></i>  DLR Cost</button>
+                                    <div class="dropdown-menu">
+                                        @foreach($years as $key=>$year)
+                                            <a class="dropdown-item" href="{{route('user-management.ace.dlr_cost',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$year])}}">
+                                                {{$year}}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+
                                 <a class="btn btn-primary btn-min-width mr-1 mb-1"href="{{route('user-management.ace.targets',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}"> <i class="ft-plus-circle"></i> New Targets</a>
                                 @if($target_years->isNotEmpty())
                                 <div class="btn-group mr-1 mb-1">

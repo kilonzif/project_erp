@@ -20,6 +20,14 @@ class AceDlrIndicator extends Model
         return $query->where('parent_id','=',0);
     }
 
+    public function scopeParent_indicators($query){
+        return $query->where('is_parent','=',1);
+    }
+
+    public function scopeActive($query){
+        return $query->where('status','=',1);
+    }
+
     public function isParentIndicator($indicator_id)
     {
         $indicators = AceDlrIndicator::where('parent_id','=',$indicator_id)->get();
@@ -43,5 +51,15 @@ class AceDlrIndicator extends Model
     public function ace_dli()
     {
         return $this->belongsTo('App\AceDli', 'ace_dli_id');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo('App\AceDlrIndicator', 'parent_id');
+    }
+
+    public function master_parent()
+    {
+        return $this->belongsTo('App\AceDlrIndicator', 'master_parent_id');
     }
 }

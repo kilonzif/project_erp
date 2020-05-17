@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Ace;
+use App\AceDlrIndicator;
 use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Country;
@@ -816,4 +817,42 @@ class GenerateReportController extends Controller {
 
 	}
 
+    public function dlr_amount()
+    {
+        $indicators = Indicator::mainIndicators()->get();
+        $aces = Ace::orderBy('aces.name', 'asc')->get();
+//        $countries = DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+//            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+//            ->distinct('countries.id')
+//            ->select('countries.*')
+//            ->get();
+//        $fields = ['Agriculture','Applied Soc. Sc.','Education', 'Health', 'STEM'];
+//        $ace_statuses = ['NEW','RENEWED'];
+//        $ace_types = [
+//            'engineering'=>'Colleges of Engineering',
+//            'emerging'=>'Emerging Centre',
+//            'ACE'=>'ACE',
+//            'Add-on'=>'add-on',
+//        ];
+        return view('generate-report.dlr-amount', compact('indicators', 'aces'));
+	}
+
+    public function dlr_amount_result(Request $request)
+    {
+        $ace = Ace::find($request->ace);
+        $parent_indicators = AceDlrIndicator::active()->parent_indicators()->orderBy('order','asc')->get();
+        $status = SystemOption::where('option_name', '=', 'generation_status')->pluck('option_value')->first();
+        if (!isset($status)){
+            $status = 101;
+        }
+        $reporting_years = ReportingPeriod::whereIn('reporting_year',$request->reporting_year)->pluck('id')->toArray();
+
+        $reports = Report::where('ace_id','=',$request->ace)
+            ->where('status','=',$status)
+            ->whereIn('reporting_period_id',$reporting_years)
+            ->pluck('id')->toArray();
+
+        dd($reports);
+        return view('generate-report.dlr-amount-result', compact('parent_indicators','ace'));
+	}
 }
