@@ -49,7 +49,7 @@
                             <div class="table-responsive" style="padding: 0 1.2rem;">
                                 <table class="table table-bordered table-striped">
                                     <tr>
-                                        <th>Filters here</th>
+                                        <th>@foreach($years as $key=>$year) {{$year}} |  @endforeach</th>
                                     </tr>
                                 </table>
 {{--                                @if(sizeof($report_values) > 0)--}}

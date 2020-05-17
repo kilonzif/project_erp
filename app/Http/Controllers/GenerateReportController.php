@@ -3,14 +3,18 @@ namespace App\Http\Controllers;
 
 use App\Ace;
 use App\AceDlrIndicator;
+use App\AceDlrIndicatorCost;
+use App\AceDlrIndicatorValue;
 use App\Classes\CommonFunctions;
 use App\Classes\ToastNotification;
 use App\Country;
+use App\Currency;
 use App\Exports\ReportsExport;
 use App\Indicator;
 use App\IndicatorDetails;
 use App\IndicatorForm;
 use App\Milestone;
+use App\MilestonesDlrs;
 use App\Project;
 use App\Report;
 use App\ReportingPeriod;
@@ -845,14 +849,86 @@ class GenerateReportController extends Controller {
         if (!isset($status)){
             $status = 101;
         }
-        $reporting_years = ReportingPeriod::whereIn('reporting_year',$request->reporting_year)->pluck('id')->toArray();
 
-        $reports = Report::where('ace_id','=',$request->ace)
-            ->where('status','=',$status)
-            ->whereIn('reporting_period_id',$reporting_years)
-            ->pluck('id')->toArray();
+//        $reporting_years = ReportingPeriod::whereIn('reporting_year',$request->reporting_year)->pluck('id')->toArray();
 
-        dd($reports);
-        return view('generate-report.dlr-amount-result', compact('parent_indicators','ace'));
+//        $reports = Report::where('ace_id','=',$request->ace)
+//            ->where('status','=',$status)
+//            ->whereIn('reporting_period_id',$request->reporting_year)
+//            ->pluck('id')->toArray();
+
+//        $id = Crypt::decrypt($aceId);
+//
+//        $ace = Ace::find($id);
+        $years = $request->reporting_year;
+        $ace_dlrs = AceDlrIndicator::where('status', '=', 1)->orderBy('general_order', 'asc')->get();
+
+        //[id,original_indicator_id]
+        $ace_milestones_dlrs = AceDlrIndicator::where('status', '=', 1)
+            ->where('is_milestone', '=', 1)
+            ->orderBy('general_order', 'asc')
+            ->pluck('original_indicator_id','id')->toArray();
+
+        //[indicator_id,total_milestone]
+        $milestone_dlrs = MilestonesDlrs::where('ace_id','=',$request->ace)
+            ->select(DB::raw('count(*) as total_milestone, indicator_id'))
+            ->groupBy('indicator_id')
+            ->pluck('total_milestone','indicator_id')
+            ->toArray();
+
+//        $project_start_year = config('app.reporting_year_start');
+//        $project_year_length = config('app.reporting_year_length');
+//        for ($a = 1; $a <= $project_year_length; $a++) {
+//            $years[$a] = $project_start_year+$a-1;
+//        }
+
+        $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();
+        $currency2= Currency::where('id','=',$ace->currency2_id)->orderBy('name', 'ASC')->first();
+        $total_currencies = [];
+        if ($currency1) {
+            $total_currencies[$currency1->id] = $currency1->code;
+        }
+        if ($currency2) {
+            $total_currencies[$currency2->id] = $currency2->code;
+        }
+        //[ace_dlr_indicator_id,currency_id]
+        $dlr_currencies = AceDlrIndicatorCost::where('ace_id','=', $ace->id)
+            ->whereNotNull('currency_id')
+            ->orderBy('ace_dlr_indicator_id','asc')
+            ->pluck('currency_id','ace_dlr_indicator_id')->toArray();
+
+        //[ace_dlr_indicator_id,max_cost]
+        $dlr_max_cost = AceDlrIndicatorCost::where('ace_id','=', $ace->id)
+            ->whereNotNull('currency_id')
+            ->orderBy('ace_dlr_indicator_id','asc')
+            ->pluck('max_cost','ace_dlr_indicator_id')->toArray();
+
+        $dlr_values = AceDlrIndicatorValue::where('ace_id','=', $ace->id)
+            ->whereIn('reporting_year',$years)
+            ->select(DB::raw('sum(value) as value, ace_dlr_indicator_id'))
+            ->groupBy('ace_dlr_indicator_id')
+            ->pluck('value','ace_dlr_indicator_id')->toArray();
+//        ->get();
+//        dd($dlr_values);
+
+        $parent_indicators = AceDlrIndicator::active()
+            ->parent_indicators()
+            ->orderBy('order','asc')
+            ->get();
+
+        $master_parent_total = AceDlrIndicator::where('set_max_dlr','=',0)
+            ->where('master_parent_id','!=',0)
+            ->select(DB::raw('count(id) as total, master_parent_id'))
+            ->groupBy('master_parent_id')
+            ->orderBy('master_parent_id','asc')
+            ->pluck('total','master_parent_id')
+            ->toArray();
+//        dd($master_parent_total);
+
+        return view('generate-report.dlr-amount-result', compact('ace','currency1','currency2',
+            'ace_dlrs','parent_indicators','years','total_currencies','dlr_currencies','milestone_dlrs',
+            'ace_milestones_dlrs','dlr_values','dlr_max_cost','master_parent_total'));
+//        dd($reports);
+//        return view('generate-report.dlr-amount-result', compact('parent_indicators','ace'));
 	}
 }
