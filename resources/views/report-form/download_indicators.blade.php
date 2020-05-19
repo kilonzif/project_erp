@@ -43,20 +43,28 @@
                                 <div class="col-md-4">
                                     <label class="label-control">Download All the Templates: <span class="fa fa-file-zip-o"></span></label>
                                 </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <a type="submit" href="{{route('settings.excelupload.downloadall_eng')}}"
-                                       class="btn btn-s btn-outline-secondary mb-2">
-                                        <i class="fa fa-cloud-download"></i> English <span class="flag-icon flag-icon-gb"></span>
-                                    </a>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <a href="{{ url('download?file_path=/public/English_indicatorTemplates.zip') }}"
+                                           class="btn btn-s btn-outline-secondary mb-2">
+                                            <i class="fa fa-cloud-download"></i> English <span class="flag-icon flag-icon-gb"></span>
+                                        </a>
+                                        {{--<a type="submit" href="{{route('settings.excelupload.downloadall_eng')}}"--}}
+                                           {{--class="btn btn-s btn-outline-secondary mb-2">--}}
+                                            {{--<i class="fa fa-cloud-download"></i> English <span class="flag-icon flag-icon-gb"></span>--}}
+                                        {{--</a>--}}
+                                    </div>
                                 </div>
-                            </div>
                                  <div class="col-md-3">
                                      <div class="form-group">
-                                     <a type="submit" href="{{route('settings.excelupload.downloadall_fr')}}"
+                                         <a href="{{ url('download?file_path=/public/French_indicatorTemplates.zip') }}"
                                         class="btn btn-s btn-outline-secondary mb-2">
                                          <i class="fa fa-cloud-download"></i> French <span class="flag-icon flag-icon-fr"></span>
                                      </a>
+                                     {{--<a type="submit" href="{{route('settings.excelupload.downloadall_fr')}}"--}}
+                                        {{--class="btn btn-s btn-outline-secondary mb-2">--}}
+                                         {{--<i class="fa fa-cloud-download"></i> French <span class="flag-icon flag-icon-fr"></span>--}}
+                                     {{--</a>--}}
                                      </div>
                                  </div>
                             </div>

@@ -156,16 +156,16 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header p-1 card-head-inverse bg-primary">
-                        <h2>Program Accreditation</h2>
-                    </div>
+                    <h4 class="card-header p-1 card-head-inverse bg-primary">
+                        Program Accreditation
+                    </h4>
                     <div class="card-content">
                         <div class="card-body">
                             <div class="col-md-12 table-responsive">
 
                                 <table class="table table-striped table-bordered">
                                     <tr>
-                                        <th>Institution Name</th>
+                                        {{--<th>Institution Name</th>--}}
                                         <th>Type of Accreditation</th>
                                         <th>Accreditation Agency</th>
                                         <th>Accreditation Reference</th>
@@ -182,7 +182,7 @@
                                         @endphp
 
                                         <tr>
-                                            <td>{{$d->institutionname}}</td>
+{{--                                            <td>{{$d->institutionname}}</td>--}}
                                             <td>{{$d->typeofaccreditation}}</td>
                                             <td>{{$d->accreditationreference}}</td>
                                             <td>{{$d->accreditationagency}}</td>

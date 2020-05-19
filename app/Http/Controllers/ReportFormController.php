@@ -774,8 +774,6 @@ class ReportFormController extends Controller
                 }
             }
 
-
-
             if (isset($message)) {
                 session()->flash('message',$message[0]);
                 return back();
@@ -871,32 +869,21 @@ class ReportFormController extends Controller
                 }
                 $report->save();
 
-//                dd($request->all());
+//                $parent_indicators = Indicator::where('is_parent', '=', 1)
+//                    ->where('project_id', '=', 1)
+//                    ->where('status', '=', 1)
+//                    ->where('show_on_report', '=', 1)
+//                    ->orderBy('identifier', 'asc')
+//                    ->get();
 
-//                foreach ($request->indicators as $indicator => $value) {
-//
-//                    ReportValue::updateOrCreate([
-//                        'report_id' => $report_id,
-//                        'indicator_id' => $indicator,
-//                    ], [
-//                        'value' => $value,
-//                    ]);
-//                }
-                $parent_indicators = Indicator::where('is_parent', '=', 1)
-                    ->where('project_id', '=', 1)
-                    ->where('status', '=', 1)
-                    ->where('show_on_report', '=', 1)
-                    ->orderBy('identifier', 'asc')
-                    ->get();
-
-                foreach ($parent_indicators as $parent_indicator) {
+//                foreach ($parent_indicators as $parent_indicator) {
                     ReportIndicatorsStatus::updateOrCreate([
                         'report_id' => $report->id,
-                        'indicator_id' => $parent_indicator->id,
+                        'indicator_id' => $report->indicator_id,
                     ], [
                         'status' => 99,
                     ]);
-                }
+//                }
 
                 ReportStatusTracker::updateOrCreate([
                     'report_id' => $report->id,
@@ -1992,7 +1979,7 @@ class ReportFormController extends Controller
         $national_new_masters_phd = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id', '=', $report_id)
-            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('newly_accredited_programme', '=', 'Oui')
             ->where('typeofaccreditation', '=', "National")
             ->where(function ($query) use($phd,$masters){
                 $query->where('level', '=', "$masters")
@@ -2002,7 +1989,7 @@ class ReportFormController extends Controller
         $regional_new_masters_phd = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id', '=', $report_id)
-            ->where('newly_accredited_programme', '=', 'Yes')
+            ->where('newly_accredited_programme', '=', 'Oui')
             ->where('typeofaccreditation', '=', "Regional")
             ->where(function ($query) use($phd,$masters){
                 $query->where('level', '=', "$masters")

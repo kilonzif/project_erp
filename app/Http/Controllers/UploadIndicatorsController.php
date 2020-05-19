@@ -172,15 +172,14 @@ class UploadIndicatorsController extends Controller
 
         $maindata = collect($getHeaders)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
-        })->pluck('fields')->toArray();
+        })->pluck('fields');
 
         $start_row = collect($getHeaders)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
         })
             ->pluck('start_row')->first();
 
-        $data=$maindata;
-
+        $data = collect($maindata[0])->sortBy('order')->toArray();
 
         $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->where('language','=',$request->language)->first();
         $theView = view('report-form.field-list', compact('data','excel_upload','start_row'))->render();
@@ -236,16 +235,25 @@ class UploadIndicatorsController extends Controller
 
         $getHeaders = collect($getIndicator)->filter(function ($query) use($request){
             return in_array($request->language,collect($query)->get('language'));
-        })->pluck('fields')->toArray();
+        })->pluck('fields');
+
+        $getHeaders = collect($getHeaders[0])->sortBy('order')->toArray();
+//        $getHeaders = collect($getIndicator)->filter(function ($query) use($request){
+//            return in_array($request->language,collect($query)->get('language'));
+//        })->pluck('fields')->toArray();
 
         if (sizeof($getHeaders) < 1){
             notify(new ToastNotification('Sorry!','This indicator is not available for uploads yet.','info'));
             return back();
         }
 
-        for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
-            $headers[] = $getHeaders[0][$a]['slug'];
+        foreach ($getHeaders as $key => $datum){
+            $headers[] = $datum['slug'];
         }
+
+//        for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
+//            $headers[] = $getHeaders[0][$a]['slug'];
+//        }
 
         if ($request->file('upload_file')->isValid()) {
 

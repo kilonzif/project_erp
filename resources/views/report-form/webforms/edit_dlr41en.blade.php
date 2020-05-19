@@ -1,6 +1,11 @@
 <form action="{{route('report_submission.web_form_update_record',[\Illuminate\Support\Facades\Crypt::encrypt($this_indicator->id),$record_id])}}" method="post" enctype="multipart/form-data">
     @csrf
     <div class="row">
+        @php
+            $masters = config('app.filters.masters_text');
+            $bachelors = config('app.filters.bachelors_text');
+            $phd = config('app.filters.phd_text');
+        @endphp
         <input type="hidden" name="report_id" value="{{$the_record['report_id']}}">
         <input type="hidden" name="indicator_id" value="{{$this_indicator->id}}">
         <div class="col-md-4">
@@ -28,10 +33,10 @@
                 <label for="basicInputFile">Level<span class="required">*</span></label>
                 <select name="level" required class="form-control" id="language">
                     <option value="">select one</option>
-                    <option  {{($the_record['level'] == 'MASTERS')  ? "selected":""}} value="MASTERS">Masters</option>
-                    <option  {{($the_record['level'] == 'PHD')  ? "selected":""}} value="PHD">PhD</option>
-                    <option  {{($the_record['level'] == 'bachelors')  ? "selected":""}} value="bachelors">Bachelors</option>
-                    <option  {{($the_record['level'] == 'professional_course')  ? "selected":""}} value="professional_course">Professional Short Course</option>
+                    <option  {{($the_record['level'] == $masters)  ? "selected":""}} value="{{$masters}}">{{$masters}}</option>
+                    <option  {{($the_record['level'] == $phd)  ? "selected":""}} value="{{$phd}}">{{$phd}}</option>
+                    <option  {{($the_record['level'] == $bachelors)  ? "selected":""}} value="{{$bachelors}}">{{$bachelors}}</option>
+{{--                    <option  {{($the_record['level'] == 'professional_course')  ? "selected":""}} value="professional_course">Professional Short Course</option>--}}
                 </select>
                 @if ($errors->has('level'))
                     <p class="text-right mb-0">

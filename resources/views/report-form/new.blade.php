@@ -26,6 +26,21 @@
 
     <div class="content-body">
         <div class="row">
+            <div class="col-md-3">
+                <h5 style="margin-top: 10px;">Download All the Templates: <i class="fa fa-file-zip-o"></i></h5>
+            </div>
+            <div class="col-md-8">
+                <a href="{{ url('download?file_path=/public/English_indicatorTemplates.zip') }}"
+                   class="btn btn-s btn-outline-secondary">
+                    <i class="fa fa-cloud-download"></i> English <span class="flag-icon flag-icon-gb"></span>
+                </a>
+                <a href="{{ url('download?file_path=/public/French_indicatorTemplates.zip') }}"
+                   class="btn btn-s btn-outline-secondary">
+                    <i class="fa fa-cloud-download"></i> French <span class="flag-icon flag-icon-fr"></span>
+                </a>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-12">
                 @if($me->isSubmissionOpen())
                     <h5 class="pb-1 pt-1 mt-1 text-danger text-uppercase">All fields marked * are required</h5>
@@ -85,6 +100,8 @@
 
                                             @if (\Auth::user()->hasRole('ace-officer'))
 
+                                                    <input type="hidden" required name="submission_date" class="form-control form-control datepicker"
+                                                           data-date-format="D-M-YYYY" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}">
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="reporting_period">Reporting Period</label>
@@ -103,31 +120,15 @@
                                                     <fieldset>
                                                         <label for="date_submission">Date of Submission <span class="required">*</span></label>
                                                         <div class="input-group">
-                                                            <input type="text" required name="submission_date" class="form-control form-control datepicker"
-                                                                   data-date-format="D-M-YYYY" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}">
+                                                            <input type="text" class="form-control form-control" readonly disabled="disabled"
+                                                                   data-date-format="D-M-YYYY" value="{{date('Y-m-d')}}">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text" id="basic-addon4"><i class="fa fa-calendar"></i></span>
                                                             </div>
                                                         </div>
                                                     </fieldset>
                                                 </div>
-
-
-                                                {{--<div class="col-md-6">--}}
-                                                {{--<div class="form-group">--}}
-                                                {{--<label for="date_submission">Date of Submission <span class="required">*</span></label>--}}
-
-                                                {{--<input type="date" required min="5" value="{{ old('date_submission')? old('date_submission') : date('Y-m-d') }}"--}}
-                                                {{--name="submission_date" class="form-control" id="submission_date" readonly>--}}
-                                                {{--@if ($errors->has('date_submission'))--}}
-                                                {{--<p class="text-right">--}}
-                                                {{--<small class="warning text-muted">{{ $errors->first('date_submission') }}</small>--}}
-                                                {{--</p>--}}
-                                                {{--@endif--}}
-                                                {{--</div>--}}
-                                                {{--</div>--}}
                                             @endif
-
 
                                             <div class="{{(\Auth::user()->hasRole('ace-officer'))?'col-md-6' :'col-md-4'}}">
                                                 <fieldset class="form-group">
@@ -159,8 +160,6 @@
                                                     @endif
                                                 </fieldset>
                                             </div>
-
-
 
                                             @if(\Auth::user()->hasRole('webmaster|super-admin'))
                                                 <div class="col-md-6">

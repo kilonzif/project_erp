@@ -52,6 +52,9 @@
 
                     @php
                         $sub_indicator = \App\Indicator::query()->where('identifier','like','%'.'PDO Indicator 2')->first();
+                        $masters = config('app.filters.masters_text');
+                        $bachelors = config('app.filters.bachelors_text');
+                        $phd = config('app.filters.phd_text');
                     @endphp
 
                     <h4 style="padding:10px">{{$sub_indicator->identifier}} : {{$sub_indicator->title}}</h4>
@@ -91,10 +94,10 @@
                                                     <label for="basicInputFile">Level<span class="required">*</span></label>
                                                     <select name="level" required class="form-control" id="language">
                                                         <option value="">select one</option>
-                                                        <option {{(old('level')=='MASTERS') ? "selected" :" "}} value="MASTERS">Masters</option>
-                                                        <option {{(old('level')=='PHD') ? "selected" :" "}} value="PHD">PhD</option>
-                                                        <option {{(old('level')=='bachelors') ? "selected" :" "}} value="bachelors">Bachelors</option>
-                                                        <option {{(old('level')=='professional_course') ? "selected" :" "}} value="professional_course">Professional Short Course</option>
+                                                        <option {{(old('level')==$masters) ? "selected" :" "}} value="{{$masters}}">{{$masters}}</option>
+                                                        <option {{(old('level')==$phd) ? "selected" :" "}} value="{{$phd}}">{{$phd}}</option>
+                                                        <option {{(old('level')==$bachelors) ? "selected" :" "}} value="{{$bachelors}}">{{$bachelors}}</option>
+{{--                                                        <option {{(old('level')=='professional_course') ? "selected" :" "}} value="professional_course">Professional Short Course</option>--}}
                                                     </select>
                                                     @if ($errors->has('level'))
                                                         <p class="text-right mb-0">

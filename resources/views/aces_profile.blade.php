@@ -125,9 +125,9 @@
                         <table class="table table-bordered table-striped" id="inst_readiness">
                             <tr>
                                 <td><strong>Requirement</strong></td>
-                                <td><strong>Files</strong></td>
-                                <td><strong>URL links</strong></td>
-                                <td><strong>Comments</strong></td>
+                                <td><strong>Files / URL links / Comments</strong></td>
+                                {{--<td><strong>URL links</strong></td>--}}
+                                {{--<td><strong>Comments</strong></td>--}}
                                 <td><strong>Submission Date</strong></td>
 
                             </tr>
@@ -143,28 +143,27 @@
                                             </td>
                                             <td>
                                                 @if($data->file_one !="")
-                                                    <strong>File 1</strong>
+                                                    <strong>File 1</strong> -
                                                     <a href="{{asset('indicator1/'.$data->file_one)}}" target="_blank">
-                                                        <span class="fa fa-file"></span> Download uploaded file
+                                                        <span class="fa fa-file"></span> Download
                                                     </a>
                                                     <br>
                                                 @endif
                                                 @if($data->file_two !="")
-                                                    <strong>File 2</strong>
+                                                    <strong>File 2</strong> -
                                                     <a href="{{asset('indicator1/'.$data->file_two)}}" target="_blank">
-                                                        <span class="fa fa-file"></span> Download uploaded file
+                                                        <span class="fa fa-file"></span> Download
                                                     </a>
+                                                    <br><br>
                                                 @endisset
-                                            </td>
-                                            <td> @isset($data->url)
-                                                    {{$data->url}}
+                                                @isset($data->url)
+                                                    <strong>URL : </strong>{{$data->url}}
+                                                        <br><br>
                                                 @endisset
-                                            </td>
-                                            <td>
                                                 @if(!empty($data->comments))
-                                                    {{$data->comments}}
+                                                    <strong>Comment : </strong><br>
+                                                    {{$data->comments}}<br>
                                                 @endif
-
                                             </td>
                                             <td>
                                                 @isset($data->submission_date)
@@ -183,8 +182,6 @@
                                         </td>
                                         <td> ---</td>
                                         <td> ---</td>
-                                        <td> ---</td>
-                                        <td> ---</td>
                                     </tr>
                                 @endif
                             @endforeach
@@ -200,7 +197,6 @@
                 </div>
             </div>
         </div>
-
 
         <div class="row">
 

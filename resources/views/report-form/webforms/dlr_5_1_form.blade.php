@@ -117,7 +117,9 @@
                 @endphp
                 <select name="region" id="region" class="form-control" required>
                     <option value="">{{$lang['Select One']}}</option>
-                    <option value="{{$lang['National']}}"  {{($value == $lang['National'])?'selected':''}}>
+                    <option value="{{$lang['International']}}"  {{($value == $lang['International'])?'selected':''}}>
+                        {{$lang['International']}}</option>
+                    <option value="{{$lang['National']}}" {{($value == $lang['National'])?'selected':''}}>
                         {{$lang['National']}}</option>
                     <option value="{{$lang['Regional']}}" {{($value == $lang['Regional'])?'selected':''}}>
                         {{$lang['Regional']}}</option>
