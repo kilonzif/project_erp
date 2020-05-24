@@ -23,7 +23,7 @@ class ApplicationSettingsController extends Controller
     {
         $apps = SystemOption::all();
 
-        $periods = ReportingPeriod::all()->sortByDesc('id');
+//        $periods = ReportingPeriod::all()->sortByDesc('id');
         $periods = ReportingPeriod::all()->sortByDesc('id');
         $roles = Position::orderBy('rank','ASC')->get();
         return view('settings.app.settings', compact('apps', 'periods','roles'));
@@ -164,13 +164,12 @@ class ApplicationSettingsController extends Controller
 
         $this->validate($request, [
             'position_title' => 'required|unique:positions,position_title|string',
-            'position_rank' => 'required|unique:positions,rank|string',
+            'position_rank' => 'required|unique:positions,rank|numeric',
             'position_type' =>'required|string'
         ]);
         $position_saved = Position::updateOrCreate(
             [
-                'position_title' => $request->position_title
-            ], [
+                'position_title' => $request->position_title,
                 'position_type' => $request->position_type
             ], [
                 'rank' => $request->position_rank,
@@ -184,7 +183,6 @@ class ApplicationSettingsController extends Controller
         return back();
 
     }
-
 
     public function deletePosition($id)
     {
@@ -200,7 +198,6 @@ class ApplicationSettingsController extends Controller
         return back();
     }
 
-
     public function editPosition(Request $request)
     {
 
@@ -211,7 +208,6 @@ class ApplicationSettingsController extends Controller
         $view = view('settings.app.edit_position', compact('update_this_position'))->render();
         return response()->json(['theView' => $view]);
     }
-
 
     public function updatePosition(Request $request)
     {
@@ -230,11 +226,6 @@ class ApplicationSettingsController extends Controller
             return back()->withInput();
 
     }
-
-
-
-
-
 
     public function saveReportingPeriod(Request $request)
     {
@@ -286,7 +277,6 @@ class ApplicationSettingsController extends Controller
         return back();
     }
 
-
     public function editReportingPeriod(Request $request)
     {
         $id = Crypt::decrypt($request->id);
@@ -302,7 +292,6 @@ class ApplicationSettingsController extends Controller
         $view = view('settings.app.edit_reporting_period_view', compact('update_this_period', 'toupdate_start_period', 'toupdate_end_period'))->render();
         return response()->json(['theView' => $view]);
     }
-
 
     public function updateReportingPeriod(Request $request)
     {

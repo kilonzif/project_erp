@@ -59,12 +59,12 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong><br>{{$ace->email}}</td>
-                                    <td><strong>Grant Amount1</strong><br>{{$ace->grant1}} - {{$currency1->name}}</td>
+                                    <td><strong>Grant Amount1</strong><br>{{$currency1->symbol}} {{money($ace->grant1)}}</td>
                                     <td><strong>Grant Amount2</strong><br>
                                         @php $currency_2_code = ''; @endphp
                                     @if($currency2)
-                                        @php $currency_code = $currency2->code; @endphp
-                                        {{$ace->grant2}} - {{$currency2->name}}
+                                        @php $currency_2_code = $currency2->code; @endphp
+                                            {{$currency2->symbol}} {{money($ace->grant2)}}
                                     @endif
                                     </td>
                                     <td><strong>Field</strong><br>{{$ace->field}}</td>
@@ -75,7 +75,7 @@
                                 @csrf
                                 <div class="row">
                                     <input type="hidden" value="{{$ace->id}}" name="ace_id">
-                                    @if ($currency1->code == 'SDR' || $currency_code == 'SDR')
+                                    @if ($currency1->code == 'SDR' || $currency_2_code == 'SDR')
                                     <div class="col-md-2">
                                         <div class="form-group{{ $errors->has('sdr_to_usd') ? ' form-control-warning' : '' }}">
                                             <label for="sdr_to_usd">SDR to USD <span class="required">*</span></label>
@@ -89,7 +89,7 @@
                                         </div>
                                     </div>
                                     @endif
-                                    @if ($currency1->code == 'EUR' || $currency_code == 'EUR')
+                                    @if ($currency1->code == 'EUR' || $currency_2_code == 'EUR')
                                     <div class="col-md-2">
                                         <div class="form-group{{ $errors->has('euro_to_usd') ? ' form-control-warning' : '' }}">
                                             <label for="euro_to_usd">EURO to USD <span class="required">*</span></label>
@@ -380,7 +380,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="max">Maximum Cost <span class="required">*</span></label>
+                                                    <label for="max">Maximum Earning <span class="required">*</span></label>
                                                     <input type="number" step="0.01" class="form-control text-right" name="max"
                                                            value="{{isset($dlr_max_costs[$ace_dlr->id])?$dlr_max_costs[$ace_dlr->id]:0}}">
                                                 </div>

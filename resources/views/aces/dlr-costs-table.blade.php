@@ -14,7 +14,7 @@
     <tbody>
     <tr>
         <td rowspan="2">DLR Indicators</td>
-        <td colspan="2" class="text-center">UNIT COST</td>
+        <td colspan="{{count($total_currencies)}}" class="text-center">UNIT COST</td>
         @foreach($total_currencies as $key  =>  $currency)
             <td rowspan="2" class="text-center" style="width: 170px;">Maximum  {{$currency}}</td>
         @endforeach
@@ -86,7 +86,7 @@
                     <td rowspan="{{$max_row_span+$master_parent_total[$dlr->id]+1}}" class="text-center" style="width: 170px;">
                         @if(array_key_exists($dlr->id,$dlr_currencies))
                             @if($dlr_currencies[$dlr->id] == $key)
-                                {{money_format($dlr_max_cost[$dlr->id],2)}}
+                                {{money($dlr_max_cost[$dlr->id])}}
                             @endif
                         @endif
                     </td>

@@ -259,6 +259,13 @@ return [
         'masters_text'                  => 'Masters',
         'bachelors_text'                => 'Bachelors',
         'Course_text'                   => 'Prof. Short Course',
+        'national'                      => 'National',
+        'regional'                      => 'Regional',
+        'international'                 => 'International',
+        'gap_assessment'                => 'Gap Assessment',
+        'self_evaluation'               => 'Self-Evaluation',
+        'no'                            => 'No',
+        'yes'                           => 'Yes',
     ],
 
 //    french filters
@@ -268,6 +275,13 @@ return [
     'masters_text'                  => 'Masters',
     'bachelors_text'                => 'Premier Cycle',
     'Course_text'                   => 'Programme de courte durée',
+    'national'                      => 'Nationale',
+    'regional'                      => 'Régionale',
+    'international'                 => 'Internationale',
+    'gap_assessment'                => 'Evaluation des insuffisances',
+    'self_evaluation'               => 'Auto-évaluation',
+    'no'                            => 'Non',
+    'yes'                           => 'Oui',
     ],
 
 

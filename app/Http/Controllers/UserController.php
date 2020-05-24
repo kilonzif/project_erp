@@ -385,6 +385,7 @@ class UserController extends Controller
         }
         $ace= Ace::find($ace_id);
         $contacts = $this->getContactGroup($ace_id);
+//        dd($contacts);
         $positions = Position::orderBy('rank','ASC')->get();
 
         $currency1 =  Currency::where('id','=',$ace->currency1_id)->orderBy('name', 'ASC')->first();

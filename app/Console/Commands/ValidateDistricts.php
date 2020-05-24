@@ -43,13 +43,13 @@ class ValidateDistricts extends Command
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
-        $file_name = 'locations.xlsx';
+        $file_name = 'districts.xlsx';
         try {
             $spreadsheet = IOFactory::load(Storage::path($file_name));
             $worksheet = $spreadsheet->getActiveSheet();
             $bar = $this->output->createProgressBar($worksheet->getHighestDataRow());
             $bar->display();
-            for ($row = 2; $row <= $worksheet->getHighestDataRow(); $row++) {
+            for ($row = 1; $row <= $worksheet->getHighestDataRow(); $row++) {
                 $id = $worksheet->getCell("A$row")->getValue();
                 $location_id = $worksheet->getCell("B$row")->getValue();
                 $name = $worksheet->getCell("D$row")->getValue();
@@ -62,24 +62,29 @@ class ValidateDistricts extends Command
 
                 DB::transaction(function () use ($id, $location_id, $name,$additions) {
                     if (!empty($id) || $id == "NULL") {
-                        $this->updateRecord('directory_platform_locations_copy',$id,
+                        $this->updateRecord('directory_platform_locations',$id,
                             [
                                 'location_id'=>$location_id,
-                                'name'=>$name
+                                'name'=>$name,
+                                'status'=>true
                             ]);
                     } else {
-                        $this->createRecord('directory_platform_locations_copy',
+                        $this->createRecord('directory_platform_locations',
                             [
                                 'location_id'=>$location_id,
-                                'name'=>$name
+                                'name'=>$name,
+                                'status'=>true
                             ]);
                     }
                     if (!empty($additions) || $additions != "") {
-                        $getIds = explode(';',$additions);
+                        $getIds = explode(';',trim($additions));
 //                        dd($getIds);
-                        DB::table('directory_platform_listings_copy')
+                        DB::table('directory_platform_listings')
                             ->whereIn('district_id',$getIds)
                             ->update(['district_id'=>$id,'location_id'=>$location_id]);
+                        DB::table('directory_platform_locations')
+                            ->whereIn('id',$getIds)
+                            ->update(['status'=>false]);
                     }
                 });
                 $bar->advance();

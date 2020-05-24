@@ -204,7 +204,7 @@ class CommonFunctions {
 
     public function getRequirements( $code=null)
     {
-        $requirement = ['THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS','IMPLEMENTATION PLAN','PROCUREMENT MANUAL',
+        $requirement = ['THE OFFICIAL DESIGNATION OF CORE TEAM MEMBERS','IMPLEMENTATION PLAN','PROCEDURES MANUAL',
             'PROJECT MANAGEMENT CERTIFICATION', 'STUDENT HANDBOOK (INCLUDES SCHOLARSHIP AND ANTI-SEXUAL HARASSMENT POLICIES)',
             'PROJECT WEBSITE','SECTORAL ADVISORY BOARD'];
 
@@ -415,6 +415,16 @@ class CommonFunctions {
             No further changes shall be done'
             => 'I have achieved all the Milestone Targets above and requesting for verification. 
             No further changes should be done',
+            'Saved Records'                                 => 'Saved Records',
+            'Type'                                          => 'Type',
+            'Level'                                         => 'Level',
+            'Agency'                                        => 'Agency',
+            'Reference'                                     => 'Reference',
+            'Contact Name'                                  => 'Contact Name',
+            'Email'                                         => 'Email',
+            'Phone Number'                                  => 'Phone Number',
+            'Accreditation Date'                            => 'Accreditation Date',
+            'Accreditation Expiry Date'                     => 'Accreditation Expiry Date',
         ];
     }
 
@@ -497,6 +507,21 @@ class CommonFunctions {
             => 'J\'ai atteint tous les objectifs clés ci-dessus et j\'ai demandé une vérification.
             Aucune autre modification ne doit être effectuée',
             'Submit for Verification'                       => 'Soumettre pour vérification',
+            'Saved Records'                                 => 'Enregistrements enregistréss',
+            'Accreditation Type'                            => 'Type d\'accréditation',
+            'Accreditation Level'                           => 'Niveau d\'accréditation',
+            'Accreditation Agency'                          => 'Agence d\'accréditation',
+            'Accreditation Reference'                       => 'Référence d\'accréditation',
+            'Agency Contact Name'                           => 'Nom du contact de l\'agence',
+            'Agency Contact Email'                          => 'Email du contact de l\'agence',
+            'Agency Contact Phone Number'                   => 'Numéro de téléphone de l\'agence',
+            'Date of Accreditation'                         => 'Date d\'accréditation',
+            'Expiry Date of Accreditation'                   => 'Date d\'expiration de l\'accréditation',
+            'Newly Accredited'                              => 'Nouvellement accrédité',
+            'Newly Accredited Programme?'                   => 'Programme nouvellement accrédité?',
+            'Program Title'                                 => 'Titre du programme',
+            'Are you sure you want to delete this record?'  => 'Voulez-vous vraiment supprimer cet enregistrement?',
+            'Delete Record'                                 => 'Supprimer l\'enregistrement',
         ];
 
 

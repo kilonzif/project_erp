@@ -8,6 +8,11 @@
                         <h2 class="brand-text">ACE IMPACT</h2>
                     </a>
                 </li>
+                {{--<li class="nav-item d-none d-md-block nav-toggle">--}}
+                    {{--<a class="nav-link modern-nav-toggle pr-0" data-toggle="collapse">--}}
+                        {{--<i class="toggle-icon ft-toggle-right font-medium-3 blue-grey darken-3" data-ticon="ft-toggle-right"></i>--}}
+                    {{--</a>--}}
+                {{--</li>--}}
             </ul>
         </div>
         <div class="navbar-container content">

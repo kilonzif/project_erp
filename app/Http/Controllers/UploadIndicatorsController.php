@@ -83,29 +83,30 @@ class UploadIndicatorsController extends Controller
                         ->where('report_id','=', (integer)$d_report_id)->get();
                 }
 
-                if($report->language=="french" && $indicators->identifier =='4.1' ){
-                    return view('report-form.webforms.dlr41fr-webform', compact('indicators',
-                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                    ,'indicator_info','ace_programmes'));
-                }
+//                if($report->language=="french" && $indicators->identifier =='4.1' ){
+//                    return view('report-form.webforms.dlr41fr-webform', compact('indicators',
+//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+//                    ,'indicator_info','ace_programmes'));
+//                }
 //                else if($report->language=="french" && $indicators->identifier =='5.1'){
 //                    return view('report-form.webforms.dlr51fr-webform', compact('indicators',
 //                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
 //                        ,'indicator_info'));
 //
 //                }
-                else if($report->language=="english" && $indicators->identifier =='4.1'){
-                    return view('report-form.webforms.dlr41en-webform', compact('indicators',
-                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info','ace_programmes'));
-
-                }
+//                else if($report->language=="english" && $indicators->identifier =='4.1'){
+//                    return view('report-form.webforms.dlr41en-webform', compact('indicators',
+//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+//                        ,'indicator_info','ace_programmes'));
+//
+//                }
 //                else if($report->language=="english" && $indicators->identifier =='5.1'){
 //                    return view('report-form.webforms.dlr51en-webform', compact('indicators',
 //                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
 //                        ,'indicator_info'));
 //                }
-                else if($report->language=="english" && $indicators->identifier =='7.3'){
+//                else
+                    if($report->language=="english" && $indicators->identifier =='7.3'){
                     return view('report-form.webforms.dlr73en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
                         ,'indicator_info'));
@@ -117,7 +118,8 @@ class UploadIndicatorsController extends Controller
                 }
                 else {
                     return view("report-form.webforms.$view_name", compact('indicator_type','currency_list','lang',
-                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info','the_record','directory'));
+                        'data','d_report_id','report_id','indicator_details','report','ace','indicator_info',
+                        'the_record','directory','ace_programmes'));
                 }
             }
         }
@@ -179,6 +181,7 @@ class UploadIndicatorsController extends Controller
         })
             ->pluck('start_row')->first();
 
+//        dd($maindata);
         $data = collect($maindata[0])->sortBy('order')->toArray();
 
         $excel_upload = ExcelUpload::where('indicator_id','=',(integer)$request->id)->where('language','=',$request->language)->first();
@@ -283,6 +286,8 @@ class UploadIndicatorsController extends Controller
                 $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn); // e.g. 5
                 $highestColumnIndex = (integer)$highestColumnIndex; // e.g. 5
 
+                $row_escape_check = 0;
+
                 //Checks if the total columns equals the total columns required
                 if ($highestColumnIndex < sizeof($headers)){
                     $error = "There is a mismatch in the fields required for this indicator or the total number of fields 
@@ -300,12 +305,22 @@ class UploadIndicatorsController extends Controller
                     echo PHP_EOL;
 
                     for ($col = 1; $col < $highestColumnIndex; $col++) {
+
+                        if ($worksheet->getCellByColumnAndRow(1, $row)->getValue() == "" &&
+                            $worksheet->getCellByColumnAndRow(2, $row)->getValue() == "") {
+                            $row_escape_check++;
+                            break;
+                        }
                         $value = $worksheet->getCellByColumnAndRow($col, $row)->getValue();
 
                         $line = $row - $data_start;
                         $upload_values['data'][$line][$headers[$col-1]] = $value;
                         $indicator_details[$headers[$col-1]] = $value;
                         echo  PHP_EOL;
+                    }
+
+                    if ($row_escape_check == 2) {
+                        break;
                     }
 
                     DB::connection('mongodb')->collection("$table_name")->insert($indicator_details);
@@ -392,7 +407,7 @@ class UploadIndicatorsController extends Controller
                     'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
 
                 $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['indicator_id'] = $request->indicator_id;
+//                $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
                 $indicator_details['level'] = $request->level;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
@@ -401,8 +416,8 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['agencyname'] = $request->agencyname;
                 $indicator_details['agencyemail'] = $request->agencyemail;
                 $indicator_details['agencycontact'] = $request->agencycontact;
-                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
-                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                $indicator_details['dateofaccreditation'] = date('Y-m-d',strtotime($request->dateofaccreditation));
+                $indicator_details['exp_accreditationdate'] = date('Y-m-d',strtotime($request->exp_accreditationdate));
                 $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
             case "4.3":
@@ -757,10 +772,6 @@ class UploadIndicatorsController extends Controller
 
         }
 
-
-
-
-
         $currency_list = DB::table('currency_list')->get();
         $ace = $report->ace;
         $ace_programmes = explode(';',$ace->programmes);
@@ -775,15 +786,16 @@ class UploadIndicatorsController extends Controller
         $identifier = "dlr_".str_replace('.','_',$report->indicator->identifier);
         $directory = "public/reports/$acronym/$reporting_year/$identifier";
 
-        if($report->language=="english" && $this_indicator->identifier =='4.1' ){
-            $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id',
-                'this_indicator','ace_programmes'))->render();
-        }
-        elseif ($report->language=="french" && $this_indicator->identifier =='4.1' ){
-            $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id',
-                'this_indicator','ace_programmes'))->render();
-        }
-        elseif($report->language=="english" && $this_indicator->identifier =='7.3' ){
+//        if($report->language=="english" && $this_indicator->identifier =='4.1' ){
+//            $view = view ('report-form.webforms.edit_dlr41en',compact('the_record','record_id',
+//                'this_indicator','ace_programmes'))->render();
+//        }
+//        elseif ($report->language=="french" && $this_indicator->identifier =='4.1' ){
+//            $view = view ('report-form.webforms.edit_dlr41fr',compact('the_record','record_id',
+//                'this_indicator','ace_programmes'))->render();
+//        }
+//        else
+            if($report->language=="english" && $this_indicator->identifier =='7.3' ){
             $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id',
                 'this_indicator'))->render();
         }
@@ -796,7 +808,7 @@ class UploadIndicatorsController extends Controller
             $view_name = $this_indicator->webForm->view_name;
             $form_view = substr_replace($view_name,'form',strrpos($view_name,'page'));
             $view = view ("report-form.webforms.$form_view",compact('the_record','currency_list','record_id',
-                'indicator_info','lang','report','directory'))->render();
+                'indicator_info','lang','report','directory','ace_programmes'))->render();
         }
         return response()->json(['theView' => $view]);
     }
@@ -829,7 +841,6 @@ class UploadIndicatorsController extends Controller
                 $validator = $this->validate($request, [ 'dateofaccreditation' => 'required|date',
                     'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
                 $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
                 $indicator_details['level'] = $request->level;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
@@ -838,8 +849,8 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['agencyname'] = $request->agencyname;
                 $indicator_details['agencyemail'] = $request->agencyemail;
                 $indicator_details['agencycontact'] = $request->agencycontact;
-                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
-                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                $indicator_details['dateofaccreditation'] = date('Y-m-d', strtotime($request->dateofaccreditation));
+                $indicator_details['exp_accreditationdate'] = date('Y-m-d', strtotime($request->exp_accreditationdate));
                 $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
             case "4.3":

@@ -263,8 +263,8 @@
                                 <div class="col-md-2 form-group{{ $errors->has('position_rank') ? ' form-control-warning' : '' }}">
                                     <label>Position Rank<span class="required">*</span></label>
                                     <div class="input-group">
-                                        <input type='text' name="position_rank" class="form-control" value="{{ old('position_rank') }}" placeholder="Rank e.g 1" required
-                                        />
+                                        <input type='number' name="position_rank" class="form-control" value="{{ old('position_rank') }}" placeholder="Rank e.g 1" required
+                                        min="1"/>
                                     </div>
                                     @if ($errors->has('position_rank'))
                                         <p class="text-right mb-0">

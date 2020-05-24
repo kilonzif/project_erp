@@ -93,3 +93,8 @@ function lang($word,$language=null)
         return $word;
     }
 }
+
+function money($figure)
+{
+    return number_format($figure, 2, '.', ',');
+}

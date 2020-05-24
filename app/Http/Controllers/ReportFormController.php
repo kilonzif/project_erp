@@ -1798,59 +1798,64 @@ class ReportFormController extends Controller
         $report = Report::find($report_id);
         $emerging = 0;
 
-        $national = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $national = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "National")
-                    ->orWhere('typeofaccreditation', '=', "national")
-                    ->orWhere('typeofaccreditation', 'like', "n%")
-                    ->orWhere('typeofaccreditation', 'like', "N%");
-            })->count();
+            ->where('typeofaccreditation', '=', "National")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "National")
+//                    ->orWhere('typeofaccreditation', '=', "national")
+//                    ->orWhere('typeofaccreditation', 'like', "n%")
+//                    ->orWhere('typeofaccreditation', 'like', "N%");
+//            })
+            ->count();
 
-        $regional = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $regional = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Regional")
-                    ->orWhere('typeofaccreditation', '=', "regional")
-                    ->orWhere('typeofaccreditation', 'like', "r%")
-                    ->orWhere('typeofaccreditation', 'like', "R%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Regional")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "Regional")
+//                    ->orWhere('typeofaccreditation', '=', "regional")
+//                    ->orWhere('typeofaccreditation', 'like', "r%")
+//                    ->orWhere('typeofaccreditation', 'like', "R%");
+//            })
+            ->count();
 
-        $international = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $international = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "International")
-                    ->orWhere('typeofaccreditation', '=', "international")
-                    ->orWhere('typeofaccreditation', 'like', "i%")
-                    ->orWhere('typeofaccreditation', 'like', "I%");
-            })->count();
+            ->where('typeofaccreditation', '=', "International")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "International")
+//                    ->orWhere('typeofaccreditation', '=', "international")
+//                    ->orWhere('typeofaccreditation', 'like', "i%")
+//                    ->orWhere('typeofaccreditation', 'like', "I%");
+//            })
+            ->count();
 
-        $gap_assessment = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $gap_assessment = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Gap")
-                    ->orWhere('typeofaccreditation', '=', "gap")
-                    ->orWhere('typeofaccreditation', 'like', "gap%")
-                    ->orWhere('typeofaccreditation', 'like', "Gap%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Gap Assessment")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "Gap Assessment")
+//                    ->orWhere('typeofaccreditation', '=', "gap")
+//                    ->orWhere('typeofaccreditation', 'like', "gap%")
+//                    ->orWhere('typeofaccreditation', 'like', "Gap%");
+//            })
+            ->count();
 
         $self_evaluation = DB::connection('mongodb')
             ->collection('indicator_4.1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Self Fvaluation")
-                    ->orWhere('typeofaccreditation', '=', "self evaluation")
-                    ->orWhere('typeofaccreditation', 'like', "self%")
-                    ->orWhere('typeofaccreditation', 'like', "Self%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Self Evaluation")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "Self Evaluation")
+//                    ->orWhere('typeofaccreditation', '=', "self evaluation")
+//                    ->orWhere('typeofaccreditation', 'like', "self%")
+//                    ->orWhere('typeofaccreditation', 'like', "Self%");
+//            })
+            ->count();
 
         if ($report->ace->ace_type == 'emerging') {
-            $emerging = DB::connection('mongodb')
-                ->collection('indicator_4.1')
+            $emerging = DB::table('indicator_4_1')
                 ->where('report_id', '=', $report_id)
                 ->where('newly_accredited_programme', '=', 'Yes')
                 ->where(function ($query) {
@@ -1871,15 +1876,7 @@ class ReportFormController extends Controller
         $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
         $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
-//          $pdo_7_3_values["pdo_indicator_2"]["total_accreditations"] = $total_accreditations;
-//        $pdo_7_3_values["pdo_indicator_2"]["international_accreditation"] = $international_accreditation->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["regional_accreditation"] = $regional_accreditation->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["national_accreditation"] = $national_accreditation->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["gap_assessment"] = $gap_assessment->count();
-//        $pdo_7_3_values["pdo_indicator_2"]["self_evaluation"] = $self_evaluation->count();
-
-        $national_new_masters_phd = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $national_new_masters_phd = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
             ->where('newly_accredited_programme', '=', 'Yes')
             ->where('typeofaccreditation', '=', "National")
@@ -1888,8 +1885,7 @@ class ReportFormController extends Controller
                     ->orWhere('level', '=', "PhD");
             })->count();
 
-        $regional_new_masters_phd = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $regional_new_masters_phd = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
             ->where('newly_accredited_programme', '=', 'Yes')
             ->where('typeofaccreditation', '=', "Regional")
@@ -1922,75 +1918,77 @@ class ReportFormController extends Controller
     {
         $indicator_4_1_values = array();
         $report = Report::find($report_id);
-        $national = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $national = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "National")
-                    ->orWhere('typeofaccreditation', '=', "national")
-                    ->orWhere('typeofaccreditation', 'like', "n%")
-                    ->orWhere('typeofaccreditation', 'like', "N%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Nationale")
+//            ->where(function ($query) {
+//                    ->orWhere('typeofaccreditation', '=', "national")
+//                    ->orWhere('typeofaccreditation', 'like', "n%")
+//                    ->orWhere('typeofaccreditation', 'like', "N%");
+//            })
+            ->count();
 
-        $regional = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $regional = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Regional")
-                    ->orWhere('typeofaccreditation', '=', "regional")
-                    ->orWhere('typeofaccreditation', 'like', "r%")
-                    ->orWhere('typeofaccreditation', 'like', "R%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Régionale")
+//            ->where(function ($query) {
+//                $query
+//                    ->orWhere('typeofaccreditation', '=', "regional")
+//                    ->orWhere('typeofaccreditation', 'like', "r%")
+//                    ->orWhere('typeofaccreditation', 'like', "R%");
+//            })
+            ->count();
 
-        $international = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $international = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "International")
-                    ->orWhere('typeofaccreditation', '=', "international")
-                    ->orWhere('typeofaccreditation', 'like', "i%")
-                    ->orWhere('typeofaccreditation', 'like', "I%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Internationale")
+//            ->where(function ($query) {
+//                $query
+//                    ->orWhere('typeofaccreditation', '=', "international")
+//                    ->orWhere('typeofaccreditation', 'like', "i%")
+//                    ->orWhere('typeofaccreditation', 'like', "I%");
+//            })
+            ->count();
 
-        $gap_assessment = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $gap_assessment = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Gap")
-                    ->orWhere('typeofaccreditation', '=', "gap")
-                    ->orWhere('typeofaccreditation', 'like', "gap%")
-                    ->orWhere('typeofaccreditation', 'like', "Gap%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Evaluation des insuffisances")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "Self Fvaluation")
+//                    ->orWhere('typeofaccreditation', '=', "gap")
+//                    ->orWhere('typeofaccreditation', 'like', "gap%")
+//                    ->orWhere('typeofaccreditation', 'like', "Gap%");
+//            })
+            ->count();
 
-        $self_evaluation = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $self_evaluation = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
-            ->where(function ($query) {
-                $query->where('typeofaccreditation', '=', "Self Fvaluation")
-                    ->orWhere('typeofaccreditation', '=', "self evaluation")
-                    ->orWhere('typeofaccreditation', 'like', "self%")
-                    ->orWhere('typeofaccreditation', 'like', "Self%");
-            })->count();
+            ->where('typeofaccreditation', '=', "Auto-évaluation")
+//            ->where(function ($query) {
+//                $query->where('typeofaccreditation', '=', "Self Fvaluation")
+//                    ->orWhere('typeofaccreditation', '=', "self evaluation")
+//                    ->orWhere('typeofaccreditation', 'like', "self%")
+//                    ->orWhere('typeofaccreditation', 'like', "Self%");
+//            })
+            ->count();
 
         $masters = config('app.filters_fr.masters_text');
         $bachelors = config('app.filters_fr.bachelors_text');
         $phd = config('app.filters_fr.phd_text');
 
-        $national_new_masters_phd = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $national_new_masters_phd = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
             ->where('newly_accredited_programme', '=', 'Oui')
-            ->where('typeofaccreditation', '=', "National")
+            ->where('typeofaccreditation', '=', "Nationale")
             ->where(function ($query) use($phd,$masters){
                 $query->where('level', '=', "$masters")
                     ->orWhere('level', '=', "$phd");
             })->count();
 
-        $regional_new_masters_phd = DB::connection('mongodb')
-            ->collection('indicator_4.1')
+        $regional_new_masters_phd = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
             ->where('newly_accredited_programme', '=', 'Oui')
-            ->where('typeofaccreditation', '=', "Regional")
+            ->where('typeofaccreditation', '=', "Régionale")
             ->where(function ($query) use($phd,$masters){
                 $query->where('level', '=', "$masters")
                     ->orWhere('level', '=', "$phd");
@@ -2000,8 +1998,7 @@ class ReportFormController extends Controller
 
         $emerging = 0;
         if ($report->ace->ace_type == 'emerging') {
-            $emerging = DB::connection('mongodb')
-                ->collection('indicator_4.1')
+            $emerging = DB::table('indicator_4_1')
                 ->where('report_id', '=', $report_id)
                 ->where('newly_accredited_programme', '=', 'Oui')
                 ->where(function ($query) use($bachelors,$masters) {

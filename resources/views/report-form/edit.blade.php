@@ -212,7 +212,7 @@
                                                             <td style="width: 200px">
                                                                 <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
                                                                     <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                           value="{{!empty($pdo_values) ?$pdo_values[$pdo_indicator][$pdo_indicators[$pdo_indicator][$counter]]:0}}"
+                                                                           value="{{!empty($pdo_values) ?$pdo_values[$pdo_indicator][$pdo_indicators[$pdo_indicator][$counter]]:0}}" step="0.01"
                                                                            class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
                                                                 </div>
                                                             </td>
@@ -230,7 +230,7 @@
                                                         <td style="width: 200px">
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
                                                                 <input type="number" readonly min="0" id="indicator_{{$sub_indicator->id}}" name="indicators[{{$sub_indicator->id}}]"
-                                                                       value="{{$pdo_values[$pdo_indicator]}}"
+                                                                       value="{{$pdo_values[$pdo_indicator]}}" step="0.01"
                                                                        class="form-control frm-control-sm-custom{{ $errors->has('indicators.'.$sub_indicator->id) ? ' is-invalid' : '' }}">
                                                             </div>
                                                         </td>

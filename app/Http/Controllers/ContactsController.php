@@ -385,6 +385,7 @@ class ContactsController extends Controller
 
         $file1 = $request->file('upload_file');
 
+//        dd($file1);
 
         if (isset($file1)) {
             $extracted = $this->extractMembers($file1);
@@ -417,10 +418,11 @@ class ContactsController extends Controller
                 $country = null;
                 $thematic_field = null;
                 $ace = null;
+                $aces_list = null;
                 $ace_sheet = $sheet->getCell( 'I' . $row )->getValue();
                 $institution_sheet = $sheet->getCell( 'H' . $row )->getValue();
                 $country_sheet = $sheet->getCell( 'J' . $row )->getValue();
-                $theme_sheet = $sheet->getCell( 'K' . $row )->getValue();
+                $thematic_sheet = $sheet->getCell( 'K' . $row )->getValue();
 
                 $new_contact = 1;
                 $new =$sheet->getCell( 'L' . $row )->getValue();
@@ -428,41 +430,52 @@ class ContactsController extends Controller
                     $new_contact = 0;
                 }
 
-                if($ace_sheet !=Null){
+                if($ace_sheet != null){
                     $the_ace=DB::table('aces')
                         ->where('name','=',$ace_sheet)
                         ->orWhere('acronym','=',$ace_sheet)
                         ->orWhere('name','like','%$ace_sheet')
                         ->first();
-                    $ace= $the_ace->id;
-                    $aces_list = Ace::find($ace)->get();
+                    if ($the_ace) {
+                        $ace= $the_ace->id;
+                        $aces_list = Ace::find($ace)->get();
+                    }
+
                 }
-                if($institution_sheet !=Null){
+
+                if($institution_sheet != null){
                     $the_institution=DB::table('institutions')
                         ->where('name','=',$institution_sheet)
                         ->orWhere('name','like','%$institution_sheet%')
                         ->orWhere('name','like','%$institution_sheet')
                         ->first();
-                    $institution=$the_institution->id;
-                    $aces_list= Ace::where('institution_id','=',$institution)->get();
+                    if ($the_institution) {
+                        $institution = $the_institution->id;
+                        $aces_list= Ace::where('institution_id','=',$institution)->get();
+                    }
                 }
+
                 if($country_sheet !=Null){
                     $the_country=DB::table('countries')
                         ->where('country','=',$country_sheet)
                         ->orWhere('country','like','%$country_sheet%')
                         ->orWhere('country','like','%$country_sheet')
                         ->first();
-                    $country = $the_country->id;
-                    $aces_list= DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
-                        ->join('countries', 'institutions.country_id', '=', 'countries.id')
-                        ->where('institutions.country_id', '=', $country)
-                        ->distinct('countries.id')
-                        ->select('aces.*')
-                        ->get();
+                    if ($the_country) {
+                        $country = $the_country->id;
+                        $aces_list= DB::table('aces')->join('institutions', 'aces.institution_id', '=', 'institutions.id')
+                            ->join('countries', 'institutions.country_id', '=', 'countries.id')
+                            ->where('institutions.country_id', '=', $country)
+                            ->distinct('countries.id')
+                            ->select('aces.*')
+                            ->get();
+                    }
+
                 }
-                if($theme_sheet !=Null){
-                    $aces_list = Ace::where('field','=',$theme_sheet)->get();
-                    $thematic_field=$theme_sheet;
+
+                if($thematic_sheet !=Null){
+                    $aces_list = Ace::where('field','=',$thematic_sheet)->get();
+                    $thematic_field=$thematic_sheet;
                 }
                 $position_name = $sheet->getCell( 'A' . $row )->getValue();
 
@@ -472,10 +485,11 @@ class ContactsController extends Controller
                     ->orWhere('position_title','like','$position_name%')
                     ->first();
 
-
-
-
-                $position_id = $position->id;
+                if ($position) {
+                    $position_id = $position->id;
+                } else {
+                    continue;
+                }
 
                 $data[] = [
                     'position_id' =>$position_id,
@@ -494,6 +508,10 @@ class ContactsController extends Controller
                 $startcount++;
             }
 
+            if ($startcount <= 2){
+                notify(new ToastNotification('Sorry', 'No data has been uploaded. Please check your data',
+                    'warning'));
+            }
             // Unique data without duplicates
             $unique = array_unique($data, SORT_REGULAR);
 
