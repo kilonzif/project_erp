@@ -661,18 +661,17 @@ class ReportFormController extends Controller
         $select_language = new CommonFunctions();
         $lang = $select_language->webFormLang($report->language);
 
-        $language = collect($get_form)->toArray();
+        $language = $report->language;
         $pdo_values = $pdo_indicators =[];
 
         $identifier = $report->indicator->identifier;
 
-        if (in_array('french', collect($get_form)->toArray())) {
+        if ($language == 'french') {
             if ($identifier == "3") {
                 $pdo_values = $this->generateAggregatedIndicator3Results_fr($id);
             }
             elseif ($identifier == "4.1") {
                 $pdo_values = $this->generateAggregatedIndicator41Results_fr($id);
-
             }
             elseif ($identifier == "4.2") {
                 $pdo_values = $this->generateAggregatedIndicator42Results_fr($id);
@@ -716,7 +715,8 @@ class ReportFormController extends Controller
 
         
 
-        return view('report-form.edit', compact('project', 'language', 'reporting_period', 'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
+        return view('report-form.edit', compact('project', 'language', 'reporting_period',
+            'reporting_periods', 'report', 'aces', 'comment', 'values', 'ace_officers',
             'indicators', 'the_indicator', 'pdo_values','pdo_indicators','lang'));
     }
 
@@ -1869,12 +1869,12 @@ class ReportFormController extends Controller
         }
 
 
-        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
-        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
-        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
-        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
-        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
-        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
+//        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
+//        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
+//        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
+//        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
+//        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
+//        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
 
         $national_new_masters_phd = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
@@ -1938,6 +1938,7 @@ class ReportFormController extends Controller
 //                    ->orWhere('typeofaccreditation', 'like', "R%");
 //            })
             ->count();
+//        dd($regional);
 
         $international = DB::table('indicator_4_1')
             ->where('report_id', '=', $report_id)
@@ -2012,13 +2013,26 @@ class ReportFormController extends Controller
                 })->count();
         }
 
-        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
-        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
-        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
-        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
-        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
+//        $indicator_4_1_values["pdo_indicator_41"]["national"] = $national;
+//        $indicator_4_1_values["pdo_indicator_41"]["regional"] = $regional;
+//        $indicator_4_1_values["pdo_indicator_41"]["international"] = $international;
+//        $indicator_4_1_values["pdo_indicator_41"]["self_evaluation"] = $self_evaluation;
+//        $indicator_4_1_values["pdo_indicator_41"]["gap_assessment"] = $gap_assessment;
+//
+//        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
+//
+//        $indicator_4_1_values["ir_indicator_3"]['total_new_masters_phd'] = $total_new_masters_phd;
+//        $indicator_4_1_values["ir_indicator_3"]['regional_new_masters_phd'] = $regional_new_masters_phd;
+//        $indicator_4_1_values["ir_indicator_3"]['national_new_masters_phd'] = $national_new_masters_phd;
+//
+//        $indicator_4_1_values["ir_indicator_8"] = $emerging;
 
-        $indicator_4_1_values["pdo_indicator_41"]["emerging"] = $emerging;
+        $indicator_4_1_values["pdo_indicator_2a"]["total_accreditations"] = $international+$regional+$national+$gap_assessment+$self_evaluation;
+        $indicator_4_1_values["pdo_indicator_2a"]["international_accreditation"] = $international;
+        $indicator_4_1_values["pdo_indicator_2a"]["regional_accreditation"] = $regional;
+        $indicator_4_1_values["pdo_indicator_2a"]["national_accreditation"] = $national;
+        $indicator_4_1_values["pdo_indicator_2a"]["gap_assessment"] = $gap_assessment;
+        $indicator_4_1_values["pdo_indicator_2a"]["self_evaluation"] = $self_evaluation;
 
         $indicator_4_1_values["ir_indicator_3"]['total_new_masters_phd'] = $total_new_masters_phd;
         $indicator_4_1_values["ir_indicator_3"]['regional_new_masters_phd'] = $regional_new_masters_phd;

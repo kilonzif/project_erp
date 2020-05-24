@@ -131,27 +131,24 @@
                                     <tr>
                                         <th>Indicator</th>
                                         <th style="width: 200px;">Created Date</th>
-                                        <th style="width: 200px;">Modified Date</th>
                                         <th style="width: 50px;">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($indicator_details as $indicator_detail)
                                         <tr>
                                             <td>
-                                                @php
-                                                    $indicator_iden = $indicators->where('id','=',$indicator_detail->indicator_id)->pluck('title')->first();
-                                                @endphp
-                                                {{$indicator_iden}}
+                                                {{$report->indicator->title}}
                                             </td>
-                                            <td>{{$indicator_detail->created_at}}</td>
-                                            <td>{{$indicator_detail->created_at}}</td>
+                                            <td>{{date('d/m/Y', strtotime($report->created_at))}}</td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                                    <a href="{{route('report_submission.view_indicator_details',[$indicator_detail->id])}}" disabled class="btn btn-s btn-secondary" data-toggle="tooltip" data-placement="top" title="View Indicator Details"><i class="ft-eye"></i></a></a>
+                                                    <a href="{{route('report_submission.view_indicator_details',
+                                                    [$report->id])}}" disabled class="btn btn-s btn-secondary"
+                                                       data-toggle="tooltip" data-placement="top"
+                                                       title="View Indicator Details"><i class="ft-eye"></i></a>
                                                 </div>
+                                            </td>
                                         </tr>
-                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -218,7 +215,7 @@
                     toastr['success']('Indicator Uploaded Successfully', 'success','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
                     $('#upload-form').unblock();
                     $('#dlrs-div').remove();
-                    $('#dlr-default').html(result);
+                    $('#dlr-default').html(result.view);
                     return true;
 
                 },

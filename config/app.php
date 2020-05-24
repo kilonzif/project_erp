@@ -330,7 +330,7 @@ return [
             'total_publications','regional_publications','national_publications'
         ],
         'ir_indicator_3'        =>      [
-            'total_new_masters_phd','regional_new_masters_phd','national_new_masters_phd'
+            'total_new_masters_phd','national_new_masters_phd','regional_new_masters_phd'
         ],
         'ir_indicator_4'        =>      [
             'total_revenue','national_sources','regional_sources'

@@ -35,10 +35,21 @@ class UploadIndicatorsController extends Controller
     public function index($report_id)
     {
         $d_report_id = Crypt::decrypt($report_id);
-        $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
+//        $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
+//        dd($indicator_details);
         $report = Report::find($d_report_id);
         $select_language = new CommonFunctions();
         $lang = $select_language->webFormLang($report->language);
+        $table_name = Str::snake("indicator_".$report->indicator->identifier);
+
+        //Loops through the excel sheet to get the values;
+//        DB::connection('mongodb')->collection("$table_name")->where('report_id',$report_id)->delete();
+        $indicator_details = DB::connection('mongodb')
+            ->collection("$table_name")
+            ->where('report_id','=',$d_report_id)
+            ->get();
+
+//        dd($indicator_details);
 
         $currency_list = DB::table('currency_list')->get();
         $ace = $report->ace;
@@ -82,31 +93,7 @@ class UploadIndicatorsController extends Controller
                     $data = DB::table("$table_name")
                         ->where('report_id','=', (integer)$d_report_id)->get();
                 }
-
-//                if($report->language=="french" && $indicators->identifier =='4.1' ){
-//                    return view('report-form.webforms.dlr41fr-webform', compact('indicators',
-//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-//                    ,'indicator_info','ace_programmes'));
-//                }
-//                else if($report->language=="french" && $indicators->identifier =='5.1'){
-//                    return view('report-form.webforms.dlr51fr-webform', compact('indicators',
-//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-//                        ,'indicator_info'));
-//
-//                }
-//                else if($report->language=="english" && $indicators->identifier =='4.1'){
-//                    return view('report-form.webforms.dlr41en-webform', compact('indicators',
-//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-//                        ,'indicator_info','ace_programmes'));
-//
-//                }
-//                else if($report->language=="english" && $indicators->identifier =='5.1'){
-//                    return view('report-form.webforms.dlr51en-webform', compact('indicators',
-//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-//                        ,'indicator_info'));
-//                }
-//                else
-                    if($report->language=="english" && $indicators->identifier =='7.3'){
+                if($report->language=="english" && $indicators->identifier =='7.3'){
                     return view('report-form.webforms.dlr73en-webform', compact('indicators',
                         'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
                         ,'indicator_info'));
@@ -129,9 +116,8 @@ class UploadIndicatorsController extends Controller
             ->where('upload','=', 1)
             ->orderBy('identifier','asc')->get();
 
-
-
-        return view('report-form.uploads', compact('indicators','d_report_id','report_id','indicator_details','report','ace'));
+        return view('report-form.uploads', compact('indicators','d_report_id','report_id',
+            'indicator_details','report','ace'));
     }
 
     public function downloadIndicators()
@@ -144,12 +130,18 @@ class UploadIndicatorsController extends Controller
         return view('report-form.download_indicators', compact('indicators'));
     }
 
-    public function read($detail_id)
+    public function read($report_id)
     {
-        $indicator_details = IndicatorDetails::find($detail_id);
+        $report = Report::find($report_id);
+        $table_name = Str::snake("indicator_".$report->indicator->identifier);
+        $the_record = null;
+
+        $report_details = DB::connection('mongodb')
+            ->collection("$table_name")
+            ->where('report_id','=', (integer)$report_id)->get();
         $getHeaders = DB::connection('mongodb')->collection('indicator_form')
-            ->where('indicator','=',$indicator_details->indicator_id)
-            ->where('language.Text','=',$indicator_details->language)
+            ->where('indicator','=',$report->indicator->id)
+            ->where('language.Text','=',$report->language)
             ->pluck('fields');
 
         $headers = array();
@@ -161,8 +153,8 @@ class UploadIndicatorsController extends Controller
         for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
             $slugs[] = $getHeaders[0][$a]['slug'];
         }
-        $indicator = Indicator::find($indicator_details->indicator_id);
-        return view('report-form.read-details', compact('indicator','indicator_details','headers','slugs'));
+        $indicator = Indicator::find($report->indicator->id);
+        return view('report-form.read-details', compact('indicator','report_details','headers','slugs'));
     }
 
     public function getFields(Request $request)
@@ -241,9 +233,6 @@ class UploadIndicatorsController extends Controller
         })->pluck('fields');
 
         $getHeaders = collect($getHeaders[0])->sortBy('order')->toArray();
-//        $getHeaders = collect($getIndicator)->filter(function ($query) use($request){
-//            return in_array($request->language,collect($query)->get('language'));
-//        })->pluck('fields')->toArray();
 
         if (sizeof($getHeaders) < 1){
             notify(new ToastNotification('Sorry!','This indicator is not available for uploads yet.','info'));
@@ -253,10 +242,6 @@ class UploadIndicatorsController extends Controller
         foreach ($getHeaders as $key => $datum){
             $headers[] = $datum['slug'];
         }
-
-//        for ($a = 0; $a < sizeof($getHeaders[0]); $a++){
-//            $headers[] = $getHeaders[0][$a]['slug'];
-//        }
 
         if ($request->file('upload_file')->isValid()) {
 
@@ -376,10 +361,7 @@ class UploadIndicatorsController extends Controller
             }
         }
 
-        $d_report_id = Crypt::decrypt($request->report_id);
-        $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
-
-        return view ('report-form.uploaded-dlrs',compact('indicator_details'));
+        return view ('report-form.uploaded-dlrs',compact('report'))->render();
     }
 
     public function saveWebForm(Request $request,$dlr_id){
@@ -391,8 +373,6 @@ class UploadIndicatorsController extends Controller
         $files_array = array();
         $this_report = Report::find($report_id)->first();
         $ace_id = $this_report->ace_id;
-
-//        dd($request->all());
 
         //Gather the file name and directory path
         $report = Report::find($report_id);
@@ -407,7 +387,6 @@ class UploadIndicatorsController extends Controller
                     'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
 
                 $indicator_details['report_id'] = (integer)$report_id;
-//                $indicator_details['indicator_id'] = $request->indicator_id;
                 $indicator_details['programmetitle'] = $request->programmetitle;
                 $indicator_details['level'] = $request->level;
                 $indicator_details['typeofaccreditation'] = $request->typeofaccreditation;
