@@ -724,9 +724,9 @@ class AcesController extends Controller {
     {
         $ace_id = Crypt::decrypt($hashed_ace_id);
         $ace = Ace::find($ace_id);
+        $milestones = MilestonesDlrs::where('ace_id','=', $ace_id)->get();
         $dlr_milestone_indicators = Indicator::milestones()->get();
-
-        return view('aces.milestones.index', compact('ace','dlr_milestone_indicators'));
+        return view('aces.milestones.index', compact('ace','milestones','dlr_milestone_indicators'));
     }
 
     public function add_milestone(Request $request,$hashed_ace_id)

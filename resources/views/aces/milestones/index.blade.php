@@ -57,7 +57,12 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($milestone_indicator->getMilestones as $milestone)
+                                @php
+                                    $miles = $milestone_indicator->getMilestones->where('ace_id','=',$ace->id);
+                                @endphp
+
+                                @if($miles->count() > 0)
+                                @foreach($miles as $milestone)
                                     <tr>
                                     <td>{{$milestone->milestone_no}}</td>
                                     <td>{{$milestone->description}}</td>
@@ -75,6 +80,8 @@
                                     </td>
                                     </tr>
                                 @endforeach
+
+                                 @endif
                                 </tbody>
                             </table>
                         </div>
