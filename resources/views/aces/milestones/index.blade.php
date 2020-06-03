@@ -67,7 +67,7 @@
                                             <a href="{{route('user-management.ace.milestone.edit',
                                             [\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$milestone->id])}}"
                                                class="btn btn-s btn-secondary">Edit</a>
-                                            <a href="#" class="btn btn-s btn-danger" data-toggle="tooltip"
+                                            <a href="{{route('user-management.ace.milestone.delete',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$milestone->id])}}" class="btn btn-s btn-danger" data-toggle="tooltip"
                                                data-placement="top" title="Delete Record"
                                                onclick="return confirm('Are you sure you want to delete this record?');">
                                                 <i class="ft-trash-2"></i></a>

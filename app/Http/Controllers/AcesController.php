@@ -798,6 +798,20 @@ class AcesController extends Controller {
 
         return back();
     }
+    public function delete_milestone($ace_id,$milestone_id)
+    {
+        $dlr_milestone = MilestonesDlrs::find($milestone_id);
+
+        $deleted =$dlr_milestone->delete();
+
+
+        if ($deleted) {
+            notify(new ToastNotification('Successful','Information has been deleted','success'));
+        } else {
+            notify(new ToastNotification('Sorry','No information was found','error'));
+        }
+        return back();
+    }
 
     public function target_save(Request $request,$ace_id,$milestone_id) {
 
@@ -826,7 +840,7 @@ class AcesController extends Controller {
         if (MilestonesDlrsTarget::destroy($milestone_target_id)) {
             notify(new ToastNotification('Successful','Information has been deleted','success'));
         } else {
-            notify(new ToastNotification('Sorry','No information was found','danger'));
+            notify(new ToastNotification('Sorry','No information was found','error'));
         }
         return back();
     }
