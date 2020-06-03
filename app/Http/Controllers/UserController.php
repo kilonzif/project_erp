@@ -47,7 +47,7 @@ class UserController extends Controller
         }
 
         //The ACES represent GROUPS
-        $aces = Ace::where('active','=',1)->orderBy('name', 'ASC')->get();
+        $aces = Ace::where('active','=',1)->orderBy('acronym', 'ASC')->get();
         $institutions = Institution::where('active','=',1)->orderBy('name', 'ASC')->get();
 //        dd($institutions);
         return view('users.index', compact('users','roles','institutions','aces'));
@@ -68,7 +68,7 @@ class UserController extends Controller
         }
 
         //The ACES represent GROUPS
-        $aces = Ace::where('active','=',1)->orderBy('name', 'ASC')->get();
+        $aces = Ace::where('active','=',1)->orderBy('acronym', 'ASC')->get();
         $institutions = Institution::where('university','=',0)->where('active','=',1)->orderBy('name', 'ASC')->get();
         return view('users.create', compact('users','roles','institutions','aces'));
     }
@@ -189,7 +189,7 @@ class UserController extends Controller
         }
 
         //The ACES represent GROUPS
-        $aces = Ace::where('active','=',1)->orderBy('name', 'ASC')->get();
+        $aces = Ace::where('active','=',1)->orderBy('acronym', 'ASC')->get();
         $institutions = Institution::where('university','=',0)->where('active','=',1)->orderBy('name', 'ASC')->get();
         $view = view('users.edit-view', compact('user','roles','institutions','aces'))->render();
         return response()->json(['theView'=>$view]);
