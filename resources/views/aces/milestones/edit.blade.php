@@ -46,12 +46,18 @@
             </h6>
             <div class="card-content collapse show">
                 <div class="card-body table-responsive">
-                    <p><strong>Description</strong></p>
-                    <p>{{$dlr_milestone->description}}</p>
                     <form action="{{route('user-management.ace.milestone.update',
                     [\Illuminate\Support\Facades\Crypt::encrypt($ace->id),$dlr_milestone->id])}}"
                           method="post">@csrf @method('PUT')
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="submission_date"><strong>Milestone Description</strong><span class="required">*</span></label>
+                                    <textarea type="text" name="description" id="description" required class="form-control">
+                                        {{ old('description',empty($dlr_milestone['description'])?"":$dlr_milestone['description'])}}
+                                    </textarea>
+                                </div>
+                            </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="estimated_cost">Estimated Cost<span class="required">*</span></label>

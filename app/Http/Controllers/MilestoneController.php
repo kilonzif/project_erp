@@ -33,4 +33,10 @@ class MilestoneController extends Controller {
 		return back();
 	}
 
+
+	public function deleteMilestone(Request $request){
+	    dd($request->all());
+
+    }
+
 }

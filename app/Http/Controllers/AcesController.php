@@ -775,18 +775,25 @@ class AcesController extends Controller {
 
         $this->validate($request,[
             'estimated_cost'                =>  'required|numeric|min:1',
+            'description'                   =>  'required|string',
             'estimated_earning'             =>  'required|numeric|min:1',
             'start_expected_timeline'       =>  'required|string',
             'end_expected_timeline'         =>  'required|string',
         ]);
+
+
+
         $milestone = MilestonesDlrs::find($milestone_id);
+        $milestone->description = $request->description;
         $milestone->estimated_cost = $request->estimated_cost;
         $milestone->estimated_earning = $request->estimated_earning;
         $milestone->start_expected_timeline = $request->start_expected_timeline;
         $milestone->end_expected_timeline = $request->end_expected_timeline;
+        $saved = $milestone->save();
 
-        if ($milestone->save()) {
+        if ($saved) {
             notify(new ToastNotification('Successful','Information has been updated','success'));
+
         }
 
         return back();
