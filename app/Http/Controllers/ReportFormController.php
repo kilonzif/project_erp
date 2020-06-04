@@ -80,7 +80,8 @@ class ReportFormController extends Controller
         $me = new CommonFunctions();
         $project = Project::where('id', '=', 1)->where('status', '=', 1)->first();
         $indicators = Indicator::where('parent_id','=', 0)
-            ->where('is_parent', '=', 1)
+//            ->where('is_parent', '=', 1)
+            ->where('is_dlr', '=', 1)
             ->where('status', '=', 1)
             ->orderBy('identifier','asc')
             ->get();
