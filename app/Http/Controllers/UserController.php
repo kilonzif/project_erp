@@ -143,34 +143,37 @@ class UserController extends Controller
             'phone' => 'required|string|numeric|min:1',
             'institution' => 'nullable|integer|min:1'
         ]);
-            $user = new User();
-            $user->name = $request->name;
-             $user->email = $request->email;
-                $user->password = Hash::make($request->email);
-                $user->phone = $request->phone;
-                $user->status = 1;
-                $user->institution = $request->institution;
-                $user->ace = $request->ace;
-                $user->remember_token = substr(Crypt::encrypt($request->email), 0, 30);
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->email);
+        $user->phone = $request->phone;
+        $user->status = 1;
+        $user->institution = $request->institution;
+        $user->ace = $request->ace;
+        $user->remember_token = substr(Crypt::encrypt($request->email), 0, 30);
 
 
-
-           $saved= $user->save();
-            $user->attachRole($request->role);
-            if($saved) {
-                $user_email = $request->email;
-                Mail::send('mail.email-confirmation', ['email' => $user_email, 'user' => $user],
-                    function ($message) use ($user_email) {
-                        $message->to($user_email)
-                            ->subject("Ace-Impact [ Account Creation ]");
-                    });
+        $saved= $user->save();
+        if ($saved) {
+            $user->roles()->sync($request->role);
+        }
 
 
-            }else{
-                notify(new ToastNotification('Error!', 'Failed to add a user!', 'error'));
-                return back()->withInput();
-            }
-            notify(new ToastNotification('Successful!', 'New user added!', 'success'));
+        if($saved) {
+            $user_email = $request->email;
+            Mail::send('mail.email-confirmation', ['email' => $user_email, 'user' => $user],
+                function ($message) use ($user_email) {
+                    $message->to($user_email)
+                        ->subject("Ace-Impact [ Account Creation ]");
+                });
+
+
+        }else{
+            notify(new ToastNotification('Error!', 'Failed to add a user!', 'error'));
+            return back()->withInput();
+        }
+        notify(new ToastNotification('Successful!', 'New user added!', 'success'));
         return back();
     }
 
