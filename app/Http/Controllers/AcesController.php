@@ -777,7 +777,7 @@ class AcesController extends Controller {
             'estimated_cost'                =>  'required|numeric|min:1',
             'description'                   =>  'required|string',
             'estimated_earning'             =>  'required|numeric|min:1',
-            'start_expected_timeline'       =>  'required|string',
+            'start_expected_timeline'       =>  'nullable',
             'end_expected_timeline'         =>  'required|string',
         ]);
 
@@ -791,12 +791,18 @@ class AcesController extends Controller {
         $milestone->end_expected_timeline = $request->end_expected_timeline;
         $saved = $milestone->save();
 
-        if ($saved) {
-            notify(new ToastNotification('Successful','Information has been updated','success'));
+        if (!$saved) {
+            notify(new ToastNotification('Sorry','Information could not be updated','erroe'));
+            return back();
 
         }
+        notify(new ToastNotification('Successful','Information has been updated','success'));
 
-        return back();
+        return redirect()->route('user-management.ace.milestones',
+            [$ace_id]);
+
+
+
     }
     public function delete_milestone($ace_id,$milestone_id)
     {

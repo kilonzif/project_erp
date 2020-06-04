@@ -1,4 +1,5 @@
 @extends('layouts.user-management')
+@extends('layouts.user-management')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">

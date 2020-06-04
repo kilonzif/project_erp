@@ -85,9 +85,9 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="start_expected_timeline">Start Expected Timeline<span class="required">*</span></label>
+                                    <label for="start_expected_timeline">Start Expected Timeline</label>
                                     <input type="date" name="start_expected_timeline" id="start_expected_timeline"
-                                           min="1" class="form-control" required value="{{$dlr_milestone->start_expected_timeline}}" >
+                                           min="1" class="form-control"  value="{{$dlr_milestone->start_expected_timeline}}" >
                                     @if ($errors->has('start_expected_timeline'))
                                         <p class="text-right">
                                             <small class="warning text-muted">{{ $errors->first('start_expected_timeline') }}</small>
