@@ -1370,8 +1370,8 @@ class ReportFormController extends Controller
                 ->collection('indicator_3')
                 ->where('report_id', '=', $report_id)
                 ->where(function ($query) use($masters,$bachelors) {
-                    $query->where("niveau", 'like', "%$masters%")
-                        ->orWhere("niveau", 'like', "%$bachelors%");
+                    $query->where("level", 'like', "%$masters%")
+                        ->orWhere("level", 'like', "%$bachelors%");
                 })->count();
         }
 
