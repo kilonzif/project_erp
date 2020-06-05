@@ -1,5 +1,4 @@
 @extends('layouts.user-management')
-@extends('layouts.user-management')
 @push('vendor-styles')
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/tables/datatable/datatables.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('vendors/css/forms/selects/select2.min.css')}}">
@@ -116,6 +115,18 @@
                                         </div>
                                     </div>
                                     <div class="col-md-3">
+                                        <div class="form-group{{ $errors->has('sdr_to_usd') ? ' form-control-warning' : '' }}">
+                                            <label for="sdr_to_usd">Conversion Rate 1<small>(sdr to usd)</small></label>
+                                            <input type="number" placeholder="sdr to usd" min="0" name="sdr_to_usd" class="form-control"
+                                                   value="{{ old('sdr_to_usd') }}" id="sdr_to_usd" style="text-align: right;" step="0.01" required>
+                                            @if ($errors->has('sdr_to_usd'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('sdr_to_usd') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
                                         <div class="form-group{{ $errors->has('grant2') ? ' form-control-warning' : '' }}">
                                             <label for="grant2">Grant Amount 2</label>
                                             <input type="number" placeholder="Grant Amount 2" min="0" name="grant2" class="form-control"
@@ -141,6 +152,18 @@
                                             @if ($errors->has('currency2'))
                                                 <p class="text-right">
                                                     <small class="warning text-muted">{{ $errors->first('currency2') }}</small>
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group{{ $errors->has('euro_to_usd') ? ' form-control-warning' : '' }}">
+                                            <label for="sdr_to_usd">Conversion Rate 2 <small>(euro to usd)</small></label>
+                                            <input type="number" placeholder="euro to usd" min="0" name="euro_to_usd" class="form-control"
+                                                   value="{{ old('euro_to_usd') }}" id="euro_to_usd" style="text-align: right;" step="0.01" required>
+                                            @if ($errors->has('euro_to_usd'))
+                                                <p class="text-right">
+                                                    <small class="warning text-muted">{{ $errors->first('euro_to_usd') }}</small>
                                                 </p>
                                             @endif
                                         </div>

@@ -70,14 +70,13 @@ class AcesController extends Controller {
             'currency1' =>'required|numeric',
             'grant2' => 'nullable|numeric',
             'currency2' =>'nullable|numeric',
+            'euro_to_usd' => 'nullable|numeric',
+            'sdr_to_usd' => 'nullable|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
             'ace_state' => 'string|min:2',
             'impact_no' => 'required|numeric|min:1',
         ]);
-
-
-
 
 
         $addAce = new Ace();
@@ -89,6 +88,8 @@ class AcesController extends Controller {
         $addAce->currency2_id = $request->currency2;
         $addAce->grant1 = $request->grant1;
         $addAce->grant2 = $request->grant2;
+        $addAce->sdr_to_usd = $request->sdr_to_usd;
+        $addAce->euro_to_usd = $request->euro_to_usd;
         $addAce->email = $request->email;
         $addAce->institution_id = $request->university;
         $addAce->active = $request->active;
@@ -96,8 +97,6 @@ class AcesController extends Controller {
         $addAce->ace_state = $request->ace_state;
         $addAce->impact_no = $request->impact_no;
         $addAce->save();
-
-
 
         if ($addAce->save()) {
             $this_ace = Ace::find($addAce->id)->first();
@@ -371,6 +370,8 @@ class AcesController extends Controller {
             'grant1' => 'nullable|numeric',
             'currency1' =>'nullable|numeric',
             'grant2' => 'nullable|numeric',
+            'sdr_to_usd' => 'nullable|numeric',
+            'euro_to_usd' => 'nullable|numeric',
             'currency2' =>'nullable|numeric',
             'acronym' => 'required|string|min:2',
             'ace_type' => 'required|string|min:2',
@@ -379,6 +380,7 @@ class AcesController extends Controller {
         ]);
 
         $this_ace = Ace::find($id);
+
         $update_ace = $this_ace->Update([
             'name' => $request->name,
             'acronym' => $request->acronym,
@@ -388,6 +390,8 @@ class AcesController extends Controller {
             'currency2_id' => $request->currency2,
             'grant1' => $request->grant1,
             'grant2' => $request->grant2,
+            'sdr_to_usd' => $request->sdr_to_usd,
+            'euro_to_usd' => $request->euro_to_usd,
             'email' => $request->email,
             'institution_id' => $request->university,
             'active' => $request->active,
