@@ -68,7 +68,7 @@
                         @if(isset($the_record))
                         <input type="hidden" name="record_id" value="{{$the_record->id}}">
                         @endif
-                    {{--@endif--}}
+                    @endif
                         <div class="row">
                             @for($a=1; $a<=4; $a++)
                                 @php

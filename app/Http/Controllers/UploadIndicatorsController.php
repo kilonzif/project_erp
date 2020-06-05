@@ -837,41 +837,7 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
             case "4.3":
-                $indicator_details['report_id'] = (integer)$report_id;
-                $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
-                for ($a=1; $a <= 4; $a++) {
-                    $document = 'document_'.$a;
-                    if ($request->file($document)) {
-                        $guideline_file= $request->$document;
-                        $files_array[$document] =  $request->file($document);
-                        $indicator_details[$document] = $guideline_file->getClientOriginalName();
-                    }
-                }
-
-                for ($a=1; $a <= 3; $a++) {
-                    $url = 'url_'.$a;
-                    $indicator_details[$url] = $request->$url;
-                }
-
-                break;
             case "5.3":
-            $indicator_details['report_id'] = (integer)$report_id;
-            $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
-            for ($a=1; $a <= 4; $a++) {
-                $document = 'document_'.$a;
-                if ($request->file($document)) {
-                    $guideline_file= $request->$document;
-                    $files_array[$document] =  $request->file($document);
-                    $indicator_details[$document] = $guideline_file->getClientOriginalName();
-                }
-            }
-
-            for ($a=1; $a <= 3; $a++) {
-                $url = 'url_'.$a;
-                $indicator_details[$url] = $request->$url;
-            }
-
-            break;
             case "7.5":
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
