@@ -794,6 +794,7 @@ class UploadIndicatorsController extends Controller
 
     public function updateRecord(Request $request,$indicator_id,$record_id){
 
+
         $this_dlr = Indicator::find($request->indicator_id);
         $canRedirect = null;
         if (isset($this_dlr->web_form_id)) {
@@ -816,6 +817,7 @@ class UploadIndicatorsController extends Controller
         $ace_id = $this_report->ace_id;
 
         switch ($this_dlr->identifier) {
+
             case "4.1":
                 $validator = $this->validate($request, [ 'dateofaccreditation' => 'required|date',
                     'exp_accreditationdate' => 'required|date|after_or_equal:dateofaccreditation', ]);
@@ -833,7 +835,41 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['newly_accredited_programme'] = $request->newly_accredited_programme;
                 break;
             case "4.3":
+                $indicator_details['report_id'] = (integer)$report_id;
+                $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
+                for ($a=1; $a <= 4; $a++) {
+                    $document = 'document_'.$a;
+                    if ($request->file($document)) {
+                        $guideline_file= $request->$document;
+                        $files_array[$document] =  $request->file($document);
+                        $indicator_details[$document] = $guideline_file->getClientOriginalName();
+                    }
+                }
+
+                for ($a=1; $a <= 3; $a++) {
+                    $url = 'url_'.$a;
+                    $indicator_details[$url] = $request->$url;
+                }
+
+                break;
             case "5.3":
+            $indicator_details['report_id'] = (integer)$report_id;
+            $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
+            for ($a=1; $a <= 4; $a++) {
+                $document = 'document_'.$a;
+                if ($request->file($document)) {
+                    $guideline_file= $request->$document;
+                    $files_array[$document] =  $request->file($document);
+                    $indicator_details[$document] = $guideline_file->getClientOriginalName();
+                }
+            }
+
+            for ($a=1; $a <= 3; $a++) {
+                $url = 'url_'.$a;
+                $indicator_details[$url] = $request->$url;
+            }
+
+            break;
             case "7.5":
                 $indicator_details['report_id'] = (integer)$report_id;
                 $indicator_details['milestones_dlr_id'] = (integer)$request->milestones_dlr_id;
@@ -1036,8 +1072,11 @@ class UploadIndicatorsController extends Controller
                 "Nothing";
         }
 
+
+
         if (isset($this_dlr->web_form_id)) {
             $indicator_details['updated_at'] = date('Y-m-d H:i:s');
+
             $updated = DB::table("$table_name")
                 ->where('id','=',$record_id)
                 ->update($indicator_details);
@@ -1098,6 +1137,8 @@ class UploadIndicatorsController extends Controller
         $report = Report::find(Crypt::decrypt($report_id));
         $milestone = MilestonesDlrs::find((integer)$milestone_id);
         $indicator_info = $report->indicator;
+
+
         $ace = $report->ace;
         $lang = $report->language;
         $the_record = null;

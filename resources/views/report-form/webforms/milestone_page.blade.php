@@ -28,7 +28,10 @@
                 <h5>{{$ace->name}} ({{$ace->acronym}}) - {{$indicator_info->title}}</h5>
             </div>
         </div>
-            @foreach($indicator_info->getMilestones as $milestone)
+        @php
+             $miles = $indicator_info->getMilestones->where('ace_id','=',$ace->id);
+        @endphp
+            @foreach($miles as $milestone)
             <div class="card mb-2">
                 <div class="card-content">
                     <div class="card-body">
