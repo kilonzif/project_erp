@@ -783,6 +783,7 @@ class AcesController extends Controller {
             'estimated_earning'             =>  'required|numeric|min:1',
             'start_expected_timeline'       =>  'nullable',
             'end_expected_timeline'         =>  'required|string',
+            'status'                        =>  'nullable',
         ]);
 
 
@@ -793,6 +794,7 @@ class AcesController extends Controller {
         $milestone->estimated_earning = $request->estimated_earning;
         $milestone->start_expected_timeline = $request->start_expected_timeline;
         $milestone->end_expected_timeline = $request->end_expected_timeline;
+        $milestone->status = $request->status;
         $saved = $milestone->save();
 
         if (!$saved) {

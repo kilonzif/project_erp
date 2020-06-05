@@ -1060,7 +1060,8 @@ class UploadIndicatorsController extends Controller
             $error_msg = "No data available to be saved. Please try again.";
             notify(new ToastNotification('error', $error_msg, 'info'));
             return back()->withInput();
-        }else if($updated) {
+        }
+        elseif($updated) {
             foreach ($files_array as $key=>$value){
                 Storage::putFileAs("$directory", $value, $value->getClientOriginalName());
             }

@@ -58,9 +58,9 @@
                                     </textarea>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="estimated_cost">Estimated Cost<span class="required">*</span></label>
+                                    <label for="estimated_cost"><strong>Estimated Cost </strong><span class="required">*</span></label>
                                     <input type="number" name="estimated_cost" id="estimated_cost" min="0" required
                                            step="0.01" class="form-control text-right" value="{{$dlr_milestone->estimated_cost}}">
                                     @if ($errors->has('estimated_cost'))
@@ -70,9 +70,9 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="estimated_earning">Estimated Earning<span class="required">*</span></label>
+                                    <label for="estimated_earning"><strong>Estimated Earning </strong><span class="required">*</span></label>
                                     <input type="number" name="estimated_earning" id="estimated_earning" min="0"
                                            step="0.01" class="form-control text-right" required
                                            value="{{$dlr_milestone->estimated_earning}}">
@@ -83,9 +83,9 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="start_expected_timeline">Start Expected Timeline</label>
+                                    <label for="start_expected_timeline"><strong>Start Timeline</strong></label>
                                     <input type="date" name="start_expected_timeline" id="start_expected_timeline"
                                            min="1" class="form-control"  value="{{$dlr_milestone->start_expected_timeline}}" >
                                     @if ($errors->has('start_expected_timeline'))
@@ -95,14 +95,32 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="end_expected_timeline">End Expected Timeline<span class="required">*</span></label>
+                                    <label for="end_expected_timeline"><strong>End Timeline </strong><span class="required">*</span></label>
                                     <input type="date" name="end_expected_timeline" id="end_expected_timeline"
                                            class="form-control" required value="{{$dlr_milestone->end_expected_timeline}}">
                                     @if ($errors->has('end_expected_timeline'))
                                         <p class="text-right">
                                             <small class="warning text-muted">{{ $errors->first('end_expected_timeline') }}</small>
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="status"><strong>Status</strong></label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="0">Select Status</option>
+                                        <option {{($dlr_milestone->status == 1)?"selected":""}} value="1">Pending Submission</option>
+                                        <option {{($dlr_milestone->status == 2)?"selected":""}} value="2">Requesting for Verification</option>
+                                        <option {{($dlr_milestone->status == 3)?"selected":""}} value="3">Approved after Verification</option>
+                                        <option {{($dlr_milestone->status == 4)?"selected":""}} value="4">Not approved after Verification</option>
+                                        <option {{($dlr_milestone->status == 5)?"selected":""}} value="5">Resubmit after Verification</option>
+                                    </select>
+                                    @if ($errors->has('status'))
+                                        <p class="text-right">
+                                            <small class="warning text-muted">{{ $errors->first('status') }}</small>
                                         </p>
                                     @endif
                                 </div>

@@ -64,16 +64,19 @@ function milestone_status($id)
 {
     switch ($id) {
         case 1:
-            $tag = '<div class="badge badge-glow badge-pill badge-warning" style="margin-top: 10px; padding: 7px 15px">Pending</div>';
+            $tag = '<div class="badge badge-glow badge-pill badge-secondary" style="margin-top: 10px; padding: 7px 15px">Pending Submission</div>';
             break;
         case 2:
-            $tag = '<div class="badge badge-glow badge-pill badge-primary" style="margin-top: 10px; padding: 7px 15px">Submitted for Verification</div>';
+            $tag = '<div class="badge badge-glow badge-pill badge-primary" style="margin-top: 10px; padding: 7px 15px">Requesting for Verification</div>';
             break;
         case 3:
             $tag = '<div class="badge badge-glow badge-pill badge-success" style="margin-top: 10px; padding: 7px 15px">Approved after Verification</div>';
             break;
         case 4:
             $tag = '<div class="badge badge-glow badge-pill badge-danger" style="margin-top: 10px; padding: 7px 15px">Not approved after Verification</div>';
+            break;
+        case 5:
+            $tag = '<div class="badge badge-glow badge-pill badge-warning" style="margin-top: 10px; padding: 7px 15px">Resubmit after Verification</div>';
             break;
         default:
             $tag = '';
