@@ -426,9 +426,13 @@ class ContactsController extends Controller
 
                 $new_contact = 1;
                 $new =$sheet->getCell( 'L' . $row )->getValue();
-                if($new =='no' || $new = 'No'){
+
+
+                if($new =='no' || $new == 'No' || $new == 'NO'){
                     $new_contact = 0;
                 }
+
+
 
                 if($ace_sheet != null){
                     $the_ace=DB::table('aces')
@@ -507,13 +511,13 @@ class ContactsController extends Controller
                 ];
                 $startcount++;
             }
-
             if ($startcount <= 2){
                 notify(new ToastNotification('Sorry', 'No data has been uploaded. Please check your data',
                     'warning'));
             }
             // Unique data without duplicates
             $unique = array_unique($data, SORT_REGULAR);
+
 
             DB::table('contacts')->insert($unique);
 

@@ -7,6 +7,7 @@ use App\Classes\CommonFunctions;
 use App\Classes\SystemMail;
 use App\Classes\ToastNotification;
 use App\Contacts;
+use App\Country;
 use App\Currency;
 use App\IndicatorOne;
 use App\Institution;
@@ -409,12 +410,14 @@ class UserController extends Controller
     }
     public function getContactGroup($ace_id){
         $the_ace = Ace::find($ace_id);
-        $contacts = DB::table('contacts')->join('ace_contacts', 'ace_contacts.contact_id', '=', 'contacts.id')
-            ->rightJoin('positions','positions.id','contacts.position_id')
-            ->where('ace_contacts.ace_id','=',$ace_id)
-            ->select('contacts.*','positions.position_title')
+        $inst = Institution::find($the_ace->institution_id);
+        $country = Country::find($inst->country_id);
+        $contacts = DB::table('contacts')
+            ->where('ace','=',$ace_id)
+            ->orWhere('institution','=',$the_ace->institution_id)
+            ->orWhere('country','=',$country->id)
+            ->orWhere('thematic_field','=',$the_ace->field)
             ->get();
-
 
         return $contacts;
     }
