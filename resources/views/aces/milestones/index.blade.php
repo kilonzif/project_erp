@@ -52,7 +52,7 @@
                                 <tr>
                                     <th width="100px">No.</th>
                                     <th>Description</th>
-                                    <th width="150px">Status</th>
+                                    {{--<th width="150px">Status</th>--}}
                                     <th width="150px">Action</th>
                                 </tr>
                                 </thead>
@@ -66,7 +66,7 @@
                                     <tr>
                                     <td>{{$milestone->milestone_no}}</td>
                                     <td>{{$milestone->description}}</td>
-                                    <td>{{$milestone->status}}</td>
+                                    {{--<td>{{$milestone->status}}</td>--}}
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="{{route('user-management.ace.milestone.edit',
