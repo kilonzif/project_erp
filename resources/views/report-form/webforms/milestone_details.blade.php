@@ -44,7 +44,9 @@
                 </div>
             </div>
         </div>
-        @php $editable = true; $disabled = ""; if ($milestone->status > 1) {$editable = false; $disabled = "disabled";}@endphp
+        @php $editable = true; $disabled = "";
+            if ($milestone->status > 1) {$editable = false; $disabled = "disabled";}
+        @endphp
         <div class="card no-shadow mt-2">
             <h6 class="card-header p-1">
                 {{$indicator_info->title}}
@@ -52,7 +54,7 @@
             <div class="card-content">
                 <div class="card-body">
                     @if($editable)
-                        @php $editable = false; @endphp
+                        {{--@php $editable = false; @endphp--}}
                     <form @if(isset($the_record))
                           action="{{route('report_submission.web_form_update_record',
                           [\Illuminate\Support\Facades\Crypt::encrypt($indicator_info->id),$the_record->id])}}"
@@ -74,7 +76,29 @@
                                     $required = "";
                                         if($a==1) {$required = "required";}
                                         $document = "document_$a";
+                                        $document_description = "document_$a"."_description";
                                 @endphp
+                                <div class="col-md-6">
+                                    <div class="form-group{{ $errors->has($document_description) ? ' form-control-warning' : '' }}">
+                                        <label for="{{$document_description}}">
+                                            {{lang('Document Description',$lang)}} {{$a}} @if($a==1)<span class="required">*</span>@endif
+                                        </label>
+                                        @if($editable)
+                                            <input type="text" class="form-control" {{$disabled}} id="{{$document_description}}" name="{{$document_description}}"
+                                                   @if(isset($the_record))
+                                                   value="{{ (old($document_description)) ? old($document_description) : $the_record->$document_description }}"
+                                                   @else
+                                                   {{$required}}
+                                                   value="{{ (old($document_description)) ? old($document_description) :'' }}"
+                                                    @endif>
+                                            @if ($errors->has($document_description))
+                                                <p class="text-right mb-0">
+                                                    <small class="warning text-muted">{{ $errors->first($document_description) }}</small>
+                                                </p>
+                                            @endif
+                                        @endif
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group{{ $errors->has($document) ? ' form-control-warning' : '' }}">
                                         <label for="{{$document}}">

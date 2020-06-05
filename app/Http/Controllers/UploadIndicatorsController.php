@@ -407,11 +407,13 @@ class UploadIndicatorsController extends Controller
 
                 for ($a=1; $a <= 4; $a++) {
                     $document = 'document_'.$a;
+                    $document_description = "document_$a"."_description";
                     if ($request->file($document)) {
                         $guideline_file= $request->$document;
                         $files_array[$document] =  $request->file($document);
                         $indicator_details[$document] = $guideline_file->getClientOriginalName();
                     }
+                    $indicator_details[$document_description] = $request->$document_description;
                 }
 
                 for ($a=1; $a <= 3; $a++) {
@@ -840,11 +842,13 @@ class UploadIndicatorsController extends Controller
 
                 for ($a=1; $a <= 4; $a++) {
                     $document = 'document_'.$a;
+                    $document_description = "document_$a"."_description";
                     if ($request->file($document)) {
                         $guideline_file= $request->$document;
                         $files_array[$document] =  $request->file($document);
                         $indicator_details[$document] = $guideline_file->getClientOriginalName();
                     }
+                    $indicator_details[$document_description] = $request->$document_description;
                 }
 
                 for ($a=1; $a <= 3; $a++) {
@@ -1097,6 +1101,7 @@ class UploadIndicatorsController extends Controller
     {
         $report = Report::find(Crypt::decrypt($report_id));
         $milestone = MilestonesDlrs::find((integer)$milestone_id);
+//        dd($milestone);
         $indicator_info = $report->indicator;
         $ace = $report->ace;
         $lang = $report->language;
