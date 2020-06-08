@@ -270,7 +270,6 @@ class DlrIndicatorController extends Controller
             'max' => 'nullable|numeric|min:0',
             'single.*' => 'nullable|numeric|min:0',
         ]);
-//           dd($request->card_id);
 
         if ($request->max) {
             AceDlrIndicatorCost::updateOrCreate([
@@ -293,12 +292,9 @@ class DlrIndicatorController extends Controller
             }
         }
         notify(new ToastNotification('Successful', 'DLR Indicator Costs Saved.', 'success'));
-        $id = "#".$request->card_id;
+        $card_id = "#".$request->card_id;
+        return Redirect::to(URL::previous().$card_id);
 
-
-        return Redirect::to(URL::previous().$id);
-
-//        return back();
     }
 
 }

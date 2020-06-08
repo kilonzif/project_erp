@@ -27,6 +27,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use vendor\project\StatusTest;
@@ -171,6 +173,8 @@ class AcesController extends Controller {
      */
     public  function indicator_one_save(Request $request, $id)
     {
+
+
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
         $requirement = $request->requirement;
@@ -206,13 +210,14 @@ class AcesController extends Controller {
             );
 
         }
+        $id = "#".$request->card_id;
 
         if (isset($saveIndicatorOne)) {
             notify(new ToastNotification('Successful!', 'Indicator 1 Requirement Added', 'success'));
-            return back();
+            return Redirect::to(URL::previous().$id);
         } else {
             notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-            return back();
+            return back()->withInput();
         }
 
     }
@@ -266,15 +271,16 @@ class AcesController extends Controller {
                 'file_one' => $thefile_one,
                 'file_two' => $thefile_two,]
         );
+        $card_id = "#card_sectoralboard";
 
         if (isset($saveIndicatorOne)) {
             $file1->move($destinationPath, $file1->getClientOriginalName());
 
             notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
-            return back();
+            return Redirect::to(URL::previous().$card_id);
         } else {
             notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-            return back();
+            return Redirect::to(URL::previous().$card_id);
         }
     }
 

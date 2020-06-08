@@ -294,10 +294,7 @@
             </div>
 
             @if($ace_dlrs->count() > 0)
-                @php
 
-                    $card_count = 1;
-                 @endphp
             @foreach($ace_dlrs as $ace_dlr)
                 @php
 
@@ -433,9 +430,6 @@
                             </div>
                         </div>
                     </div>
-                    @php
-                        $card_count += 1;
-                    @endphp
                 @endforeach
             @endif
         </div>
