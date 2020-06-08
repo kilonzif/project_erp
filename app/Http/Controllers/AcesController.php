@@ -210,14 +210,15 @@ class AcesController extends Controller {
             );
 
         }
-        $id = "#".$request->card_id;
+        $card_id = "#".$request->card_id;
 
         if (isset($saveIndicatorOne)) {
             notify(new ToastNotification('Successful!', 'Indicator 1 Requirement Added', 'success'));
-            return Redirect::to(URL::previous().$id);
+            return Redirect::to(URL::previous().$card_id);
         } else {
             notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-            return back()->withInput();
+
+            return Redirect::to(URL::previous().$card_id)->withInput();
         }
 
     }

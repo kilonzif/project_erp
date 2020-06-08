@@ -120,7 +120,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="period_id">
             <div class="card-header bg-dark bgsize-darken-4 white card-header">
                 <h4 class="card-title">Set Reporting Period</h4>
             </div>
@@ -222,7 +222,7 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card" id="positions_card">
             <div class="card-content" style="">
                 <div class="card-header bg-dark bgsize-darken-4 white card-header">
                     <h4 class="card-title">Add Contact Positions</h4>
