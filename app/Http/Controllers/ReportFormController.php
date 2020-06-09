@@ -2262,7 +2262,7 @@ class ReportFormController extends Controller
         if ($submit) {
             $message = null;
             if ($total_number_of_interns != $students + $faculty) {
-                $message = 'Please ensure Students and Faculty types equal the total number of Interns.';
+                $message = 'Please ensure Students and Faculty types totals equal the total number of Interns.';
                 return [$message];
             }
             return $message;
