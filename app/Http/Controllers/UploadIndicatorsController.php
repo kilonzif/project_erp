@@ -35,8 +35,6 @@ class UploadIndicatorsController extends Controller
     public function index($report_id)
     {
         $d_report_id = Crypt::decrypt($report_id);
-//        $indicator_details = IndicatorDetails::where('report_id','=',$d_report_id)->get();
-//        dd($indicator_details);
         $report = Report::find($d_report_id);
         $select_language = new CommonFunctions();
         $lang = $select_language->webFormLang($report->language);
