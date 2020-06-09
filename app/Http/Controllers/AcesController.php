@@ -444,6 +444,7 @@ class AcesController extends Controller {
             ->toArray();
 
         $target_years = $ace->target_years;
+
         $aceemails= $this->getContactGroup($id);
 
         $workplans=WorkPlan::where('ace_id',$ace->id)->get();
@@ -692,7 +693,20 @@ class AcesController extends Controller {
             'reporting_year' => 'required|integer',
             'indicators' => 'required|array',
         ]);
+
         $aceId = Crypt::decrypt($ace_id);
+        $record_exists = AceIndicatorsTargetYear::where('reporting_year','=',$request->reporting_year)
+            ->where('ace_id','=',$request->$aceId)
+            ->get();
+
+        $section_id ="#reporting_year";
+        if($record_exists->isNotEmpty()){
+            notify(new ToastNotification('Sorry','You cannot add more than one record for a this target year','error'));
+            return Redirect::to(URL::previous().$section_id)->withInput();
+        }
+
+        $target_exists =null;
+
         if ($target_year_id != null) {
 
             AceIndicatorsTargetYear::find($target_year_id)->update([
@@ -862,5 +876,19 @@ class AcesController extends Controller {
             notify(new ToastNotification('Sorry','No information was found','error'));
         }
         return back();
+    }
+
+
+    public function findTargetbyYear(Request $request){
+        $status = "true";
+        $ace = Ace::find($request->ace_id);
+        $target_years = $ace->target_years;
+        $target_years = AceIndicatorsTargetYear::where('reporting_year','=',$request->year)
+            ->where('ace_id','=',$request->ace_id)
+            ->get();
+        if($target_years->isNotEmpty()){
+            $status = "false";
+        }
+        return $status;
     }
 }

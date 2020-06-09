@@ -69,12 +69,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="reporting_year">Select Year <span class="required">*</span></label>
-                                                <select name="reporting_year" class="form-control" required id="reporting_year">
+                                                <select name="reporting_year" class="form-control" required id="reporting_year" onchange="checkYear({{$ace->id}})">
                                                     <option value="">Select Year</option>
                                                     @php
                                                         $reporting_year_start = config('app.reporting_year_start');
                                                         $reporting_year_length = config('app.reporting_year_length');
                                                         $year = null;
+
                                                         if(isset($getYear)) {
                                                             $year = $getYear->reporting_year;
                                                         }
@@ -227,6 +228,7 @@
 @push('vendor-script')
     <script src="{{asset('vendors/js/forms/select/select2.full.min.js')}}" type="text/javascript"></script>
     <script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>
+    <script src="{{ asset('vendors/js/extensions/toastr.min.js') }}" type="text/javascript"></script>
 @endpush
 @push('end-script')
     <script src="{{asset('js/scripts/forms/checkbox-radio.js')}}" type="text/javascript"></script>
@@ -236,6 +238,40 @@
             placeholder: "Select Courses",
             allowClear: true
         });
+
+        function  checkYear(ace) {
+            var e = document.getElementById("reporting_year");
+            var year = e.options[e.selectedIndex].value;
+            var path = "{{route('user-management.ace.find_year')}}";
+            $.ajaxSetup(    {
+                headers: {
+                    'X-CSRF-Token': $('meta[name=_token]').attr('content')
+                }
+            });
+            $.ajax({
+                url: path,
+                type: 'GET',
+                data: {ace_id:ace,year:year},
+                success: function(data){
+
+                    if(data ==="false"){
+                        toastr['warning']('You cannot add more than one record for a target year', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                        return false;
+                    }else{
+                        return true;
+                    }
+                },
+                complete:function(){
+
+                }
+                ,
+                error: function (data) {
+                    console.log("error");
+                    console.log(data)
+                }
+            });
+
+        }
 
     </script>
 @endpush

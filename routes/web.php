@@ -159,6 +159,10 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
     Route::get('ace/{id}/dlr-cost/{year}', 'AcesController@save_ace_dlr_indicator_values')->name('ace.dlr_cost');
     Route::post('ace/{id}/dlr-cost/{year}', 'AcesController@save_ace_dlr_unit_values')->name('ace.dlr_cost.save');
 
+    Route::get('ace/targets', 'AcesController@findTargetbyYear')->name('ace.find_year');
+
+
+
 //    workplan
 
     Route::post('ace/{id}/workplan/save','AcesController@saveWorkPlan')->name('ace.workplan.save');
