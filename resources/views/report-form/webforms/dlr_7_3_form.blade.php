@@ -98,7 +98,7 @@
                 <input type="text" name="accreditationreference" id="accreditationreference" class="form-control"
                        placeholder="{{lang('Accreditation Reference',$lang)}}"
                        @if(isset($the_record))
-                       value="{{ (old('accreditationreference')) ? old('accreditationreference') : $the_record->self_assessment_file }}"
+                       value="{{ (old('accreditationreference')) ? old('accreditationreference') : $the_record->accreditationreference }}"
                        @else
                        required
                        value="{{ (old('accreditationreference')) ? old('accreditationreference') :'' }}"

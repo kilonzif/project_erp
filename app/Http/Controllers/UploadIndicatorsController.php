@@ -774,15 +774,16 @@ class UploadIndicatorsController extends Controller
 //                'this_indicator','ace_programmes'))->render();
 //        }
 //        else
-            if($report->language=="english" && $this_indicator->identifier =='7.3' ){
-            $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id',
-                'this_indicator'))->render();
-        }
-        elseif($report->language=="french" && $this_indicator->identifier =='7.3' ){
-            $view = view ('report-form.webforms.edit_dlr73fr',compact('the_record','record_id',
-                'this_indicator'))->render();
-        }
-        elseif (isset($this_indicator->web_form_id)) {
+//            if($report->language=="english" && $this_indicator->identifier =='7.3' ){
+//            $view = view ('report-form.webforms.edit_dlr73en',compact('the_record','record_id',
+//                'this_indicator'))->render();
+//        }
+//        elseif($report->language=="french" && $this_indicator->identifier =='7.3' ){
+//            $view = view ('report-form.webforms.edit_dlr73fr',compact('the_record','record_id',
+//                'this_indicator'))->render();
+//        }
+//        else
+            if (isset($this_indicator->web_form_id)) {
             $indicator_info = $this_indicator;
             $view_name = $this_indicator->webForm->view_name;
             $form_view = substr_replace($view_name,'form',strrpos($view_name,'page'));
