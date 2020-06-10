@@ -224,8 +224,11 @@
                                                 </table>
                                             @else
                                                 <table class="table table-bordered table-striped">
+                                                    <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
+                                                        {{$indicator_identifier}}
+                                                    </h6>
                                                     <tr>
-                                                        <td>{{$sub_indicator_title}} <span class="required">*</span>
+                                                        <td>{{$sub_indicator->title}} <span class="required">*</span>
                                                         </td>
                                                         <td style="width: 200px">
                                                             <div class="form-group{{ $errors->has('indicators.'.$sub_indicator->id) ? ' form-control-warning' : '' }}" style="margin-bottom: 0;">
