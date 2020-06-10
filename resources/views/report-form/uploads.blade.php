@@ -120,6 +120,7 @@
 
         </div>
 
+
         <div id="dlr-default">
             <div class="row" id="dlrs-div">
                 <div class="col-12">
@@ -135,6 +136,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    @if($report->indicator->upload && isset($report->report_upload->file_name))
                                         <tr>
                                             <td>
                                                 {{$report->indicator->title}}
@@ -149,6 +151,7 @@
                                                 </div>
                                             </td>
                                         </tr>
+                                    @endif
                                     </tbody>
                                 </table>
                             </div>

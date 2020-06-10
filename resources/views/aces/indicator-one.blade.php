@@ -102,6 +102,7 @@
                                         <form action="{{route('user-management.ace.indicator_one.save',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post" enctype="multipart/form-data">
                                             @csrf
                                             <input type="hidden" name="requirement[]" value="{{$key}}" >
+                                            <input type="hidden" name="card_id" value="card_{{$key}}">
                                             <div class="row">
 
                                                 @if($labels[$key]['submission_date']['show'])
@@ -227,7 +228,7 @@
                                     </div>
                                 </div>
                                 <div class="card-content collapse show">
-                                    <div class="card-body">
+                                    <div class="card-body" id="card_sectoralboard">
 
                                         <form action="{{route('user-management.ace.indicator_one.sectoral_board',[\Illuminate\Support\Facades\Crypt::encrypt($ace->id)])}}" method="post" enctype="multipart/form-data">
                                             @csrf

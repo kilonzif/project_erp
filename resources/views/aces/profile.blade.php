@@ -294,23 +294,27 @@
             </div>
 
             @if($ace_dlrs->count() > 0)
-                @foreach($ace_dlrs as $ace_dlr)
-                    @php
-                        $dlr_currency_id = null;
-                        if ($ace_dlr->set_max_dlr) {
-                            if (array_key_exists($ace_dlr->id,$dlr_currency)) {
-                                $dlr_currency_id = $dlr_currency[$ace_dlr->id];
-                            }
+
+            @foreach($ace_dlrs as $ace_dlr)
+                @php
+
+                    $card_id = "card_".$ace_dlr->id;
+
+                    $dlr_currency_id = null;
+                    if ($ace_dlr->set_max_dlr) {
+                        if (array_key_exists($ace_dlr->id,$dlr_currency)) {
+                            $dlr_currency_id = $dlr_currency[$ace_dlr->id];
                         }
-                        elseif (array_key_exists($ace_dlr->parent_id,$dlr_currency)) {
-                            $dlr_currency_id = $dlr_currency[$ace_dlr->parent_id];
-                        }
+                    }
+                    elseif (array_key_exists($ace_dlr->parent_id,$dlr_currency)) {
+                        $dlr_currency_id = $dlr_currency[$ace_dlr->parent_id];
+                    }
                     @endphp
                     @if(!$ace_dlr->set_max_dlr && !$dlr_currency_id)
                         @continue
                     @endif
                     <div class="col-md-6">
-                        <div class="card">
+                        <div class="card" id="{{$card_id}}">
                             <h6 class="card-header p-1 card-head-inverse bg-teal" style="border-radius:0">
                                 {{$ace_dlr->indicator_title}}
                                 <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
@@ -325,6 +329,7 @@
                                     <form action="{{route('settings.save_dlr_indicators_cost',[$ace->id])}}" method="post">
                                         @csrf
                                         <input type="hidden" name="parent_id" value="{{$ace_dlr->id}}">
+                                        <input type="hidden" name="card_id" value="{{$card_id}}">
                                         @if($ace_dlr->is_milestone)
                                             <table class="table table-striped table-bordered">
                                                 <tr>

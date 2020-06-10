@@ -27,6 +27,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use vendor\project\StatusTest;
@@ -171,6 +173,8 @@ class AcesController extends Controller {
      */
     public  function indicator_one_save(Request $request, $id)
     {
+
+
         $ace_id = Crypt::decrypt($id);
         $oldIndicator=IndicatorOne::find($ace_id);
         $requirement = $request->requirement;
@@ -206,13 +210,15 @@ class AcesController extends Controller {
             );
 
         }
+        $card_id = "#".$request->card_id;
 
         if (isset($saveIndicatorOne)) {
             notify(new ToastNotification('Successful!', 'Indicator 1 Requirement Added', 'success'));
-            return back();
+            return Redirect::to(URL::previous().$card_id);
         } else {
             notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-            return back();
+
+            return Redirect::to(URL::previous().$card_id)->withInput();
         }
 
     }
@@ -266,15 +272,16 @@ class AcesController extends Controller {
                 'file_one' => $thefile_one,
                 'file_two' => $thefile_two,]
         );
+        $card_id = "#card_sectoralboard";
 
         if (isset($saveIndicatorOne)) {
             $file1->move($destinationPath, $file1->getClientOriginalName());
 
             notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
-            return back();
+            return Redirect::to(URL::previous().$card_id);
         } else {
             notify(new ToastNotification('Notice', 'Something might have happened. Please try again.', 'info'));
-            return back();
+            return Redirect::to(URL::previous().$card_id);
         }
     }
 
@@ -437,6 +444,7 @@ class AcesController extends Controller {
             ->toArray();
 
         $target_years = $ace->target_years;
+
         $aceemails= $this->getContactGroup($id);
 
         $workplans=WorkPlan::where('ace_id',$ace->id)->get();
@@ -685,7 +693,20 @@ class AcesController extends Controller {
             'reporting_year' => 'required|integer',
             'indicators' => 'required|array',
         ]);
+
         $aceId = Crypt::decrypt($ace_id);
+        $record_exists = AceIndicatorsTargetYear::where('reporting_year','=',$request->reporting_year)
+            ->where('ace_id','=',$request->$aceId)
+            ->get();
+
+        $section_id ="#reporting_year";
+        if($record_exists->isNotEmpty()){
+            notify(new ToastNotification('Sorry','You cannot add more than one record for a this target year','error'));
+            return Redirect::to(URL::previous().$section_id)->withInput();
+        }
+
+        $target_exists =null;
+
         if ($target_year_id != null) {
 
             AceIndicatorsTargetYear::find($target_year_id)->update([
@@ -855,5 +876,19 @@ class AcesController extends Controller {
             notify(new ToastNotification('Sorry','No information was found','error'));
         }
         return back();
+    }
+
+
+    public function findTargetbyYear(Request $request){
+        $status = "true";
+        $ace = Ace::find($request->ace_id);
+        $target_years = $ace->target_years;
+        $target_years = AceIndicatorsTargetYear::where('reporting_year','=',$request->year)
+            ->where('ace_id','=',$request->ace_id)
+            ->get();
+        if($target_years->isNotEmpty()){
+            $status = "false";
+        }
+        return $status;
     }
 }

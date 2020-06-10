@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 
 class ApplicationSettingsController extends Controller
 {
@@ -167,6 +169,7 @@ class ApplicationSettingsController extends Controller
             'position_rank' => 'required|unique:positions,rank|numeric',
             'position_type' =>'required|string'
         ]);
+        $card_id = "#positions_card";
         $position_saved = Position::updateOrCreate(
             [
                 'position_title' => $request->position_title,
@@ -180,7 +183,7 @@ class ApplicationSettingsController extends Controller
         } else {
             notify(new ToastNotification('Error', 'Please try again.', 'error'));
         }
-        return back();
+        return Redirect::to(URL::previous().$card_id);
 
     }
 
@@ -188,6 +191,7 @@ class ApplicationSettingsController extends Controller
     {
         $id = Crypt::decrypt($id);
         $position_count = Position::where('id','=',$id)->get();
+        $card_id = "#positions_card";
         if(empty($position_count)){
             notify(new ToastNotification('Sorry!', 'The positions cannot be deleted!', 'warning'));
         }else{
@@ -195,7 +199,7 @@ class ApplicationSettingsController extends Controller
             notify(new ToastNotification('Successful!', 'The Position has been Deleted!', 'success'));
         }
 
-        return back();
+        return Redirect::to(URL::previous().$card_id);
     }
 
     public function editPosition(Request $request)
@@ -218,12 +222,13 @@ class ApplicationSettingsController extends Controller
                 'position_type' => $request->position_type,
                 'rank' => $request->position_rank,
             ]);
+        $card_id = "#positions_card";
             if ($updated) {
                 notify(new ToastNotification('Successful', 'Position updated.', 'success'));
-                return back();
+                return Redirect::to(URL::previous().$card_id);
             }
             notify(new ToastNotification('Error', 'Please try again.', 'error'));
-            return back()->withInput();
+        return Redirect::to(URL::previous().$card_id)->withInput();
 
     }
 
@@ -251,13 +256,15 @@ class ApplicationSettingsController extends Controller
             $new_period->active_period = true;
             $saved = $new_period->save();
 
+            $card_id = "#period_id";
+
             if ($saved) {
                 ReportingPeriod::where('id', '!=', $new_period->id)->update(['active_period' => false]);
                 notify(new ToastNotification('Successful', 'Reporting Period Added.', 'success'));
-                return back();
+                return Redirect::to(URL::previous().$card_id);
             }
             notify(new ToastNotification('Error', 'Please try again.', 'error'));
-            return back()->withInput();
+            return Redirect::to(URL::previous().$card_id)->withInput();
         }
         notify(new ToastNotification('Error', 'This reporting period already exists', 'error'));
         return back()->withInput();
@@ -273,8 +280,9 @@ class ApplicationSettingsController extends Controller
             ReportingPeriod::destroy($id);
             notify(new ToastNotification('Successful!', 'Reporting Period Deleted!', 'success'));
         }
+        $card_id = "#period_id";
 
-        return back();
+        return Redirect::to(URL::previous().$card_id);
     }
 
     public function editReportingPeriod(Request $request)
@@ -312,6 +320,7 @@ class ApplicationSettingsController extends Controller
 
         $record = ReportingPeriod::where('period_start', $start->format('Y-m-d'))
             ->where('period_end', $end->format('Y-m-d'))->first();
+        $card_id = "#period_id";
         if (!empty($record)) {
             $updatePeriod = ReportingPeriod::find($update_id);
             $updated = $updatePeriod->update([
@@ -320,15 +329,16 @@ class ApplicationSettingsController extends Controller
                 'reporting_year' => $start->format('Y'),
                 'active_period' => true,
             ]);
+
             if ($updated) {
                 notify(new ToastNotification('Successful', 'Reporting Period updated.', 'success'));
-                return back();
+                return Redirect::to(URL::previous().$card_id);
             }
             notify(new ToastNotification('Error', 'Please try again.', 'error'));
-            return back()->withInput();
+            return Redirect::to(URL::previous().$card_id)->withInput();
         }
         notify(new ToastNotification('Error', 'This reporting period already exists', 'error'));
-        return back()->withInput();
+        return Redirect::to(URL::previous().$card_id)->withInput();
 
 
 }

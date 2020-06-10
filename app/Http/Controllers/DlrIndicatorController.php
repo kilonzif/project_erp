@@ -12,6 +12,8 @@ use App\UnitMeasure;
 use Complex\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\URL;
 
 class DlrIndicatorController extends Controller
 {
@@ -262,6 +264,7 @@ class DlrIndicatorController extends Controller
      */
     public function save_dlr_costs(Request $request,  $ace_id)
     {
+
         $this->validate($request,[
             'single' => 'nullable|array|min:1',
             'max' => 'nullable|numeric|min:0',
@@ -289,7 +292,9 @@ class DlrIndicatorController extends Controller
             }
         }
         notify(new ToastNotification('Successful', 'DLR Indicator Costs Saved.', 'success'));
-        return back();
+        $card_id = "#".$request->card_id;
+        return Redirect::to(URL::previous().$card_id);
+
     }
 
 }
