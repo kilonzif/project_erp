@@ -93,21 +93,21 @@ class UploadIndicatorsController extends Controller
                     $data = DB::table("$table_name")
                         ->where('report_id','=', (integer)$d_report_id)->get();
                 }
-                if($report->language=="english" && $indicators->identifier =='7.3'){
-                    return view('report-form.webforms.dlr73en-webform', compact('indicators',
-                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
-                }
-                else if($report->language=="french" && $indicators->identifier =='7.3'){
-                    return view('report-form.webforms.dlr73fr-webform', compact('indicators',
-                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
-                        ,'indicator_info'));
-                }
-                else {
+//                if($report->language=="english" && $indicators->identifier =='7.3'){
+//                    return view('report-form.webforms.dlr73en-webform', compact('indicators',
+//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+//                        ,'indicator_info'));
+//                }
+//                else if($report->language=="french" && $indicators->identifier =='7.3'){
+//                    return view('report-form.webforms.dlr73fr-webform', compact('indicators',
+//                        'indicator_type','data','d_report_id','report_id','indicator_details','report','ace'
+//                        ,'indicator_info'));
+//                }
+//                else {
                     return view("report-form.webforms.$view_name", compact('indicator_type','currency_list','lang',
                         'data','d_report_id','report_id','indicator_details','report','ace','indicator_info',
                         'the_record','directory','ace_programmes'));
-                }
+//                }
             }
         }
         $indicators = Indicator::where('is_parent','=', 1)
@@ -562,8 +562,8 @@ class UploadIndicatorsController extends Controller
                 $indicator_details['contactname'] = $request->contactname;
                 $indicator_details['contactemail'] = $request->contactemail;
                 $indicator_details['contactphone'] = $request->contactphone;
-                $indicator_details['dateofaccreditation'] = $request->dateofaccreditation;
-                $indicator_details['exp_accreditationdate'] = $request->exp_accreditationdate;
+                $indicator_details['dateofaccreditation'] = date('Y-m-d',strtotime($request->dateofaccreditation));
+                $indicator_details['exp_accreditationdate'] = date('Y-m-d',strtotime($request->exp_accreditationdate));
                 break;
             case "7.4":
                 if ($request->file('self_assessment_file')) {
