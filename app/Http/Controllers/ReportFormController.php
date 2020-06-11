@@ -739,6 +739,7 @@ class ReportFormController extends Controller
             $message = null;
 
 
+
             if ($report->language == 'french') {
                 if ($identifier == "3") {
                     $message = $this->generateAggregatedIndicator3Results_fr($report_id,true);
@@ -774,6 +775,8 @@ class ReportFormController extends Controller
                     $message = $this->generateAggregatedIndicator73Results($report_id,true);
                 }
             }
+
+            dd($message);
 
             if (isset($message)) {
                 session()->flash('message',$message[0]);

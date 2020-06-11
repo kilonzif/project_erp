@@ -93,7 +93,9 @@
                             </div>
                         </div>
                         @php
-                            $indicators = $project->indicators->where('parent_id','=',0)->where('status','=',1);
+                            $indicators = $project->indicators
+                            ->where('parent_id','=',1)
+                            ->where('status','=',1);
                         @endphp
                         <div class="row">
                         @foreach($indicators as $indicator)
@@ -101,7 +103,8 @@
                                 <div class="card mb-1">
                                     <h6 class="card-header p-1 card-head-inverse bg-amber bg-accent-4 white" style="border-radius:0">
                                         {{--<h6 class="card-title"></h6>--}}
-                                        <strong>{{"Indicator ".$indicator->identifier}}</strong>
+                                        <strong>{{$indicator->identifier." - ".$indicator->title}}</strong>
+
                                         {{--<br>--}}
                                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                                         <div class="heading-elements">
