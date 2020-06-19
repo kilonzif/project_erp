@@ -259,7 +259,7 @@
                 <h7 class="card-header p-2 card-head-inverse bg-secondary" style="border-radius:0">Download Contacts Template</h7>
                 <div class="card-body">
                 <a href="{{route("user-management.contacts.download-template")}}"
-                   class="btn btn-s btn-outline-secondary mb-2" style="width: 50%; margin-left: 20%">
+                   class="btn btn-s btn-outline-secondary mb-2" style="width: 70%; margin-left: 12%">
                     <i class="fa fa-cloud-download"></i> Contacts Template
                 </a>
                 </div>
