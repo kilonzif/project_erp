@@ -10,16 +10,18 @@ use App\Country;
 use App\Institution;
 use App\Position;
 use App\Report;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use phpDocumentor\Reflection\Types\Null_;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception;
 use vendor\project\StatusTest;
 //use Illuminate\Support\Facades\Storage;
 //use Illuminate\Support\Facades\File;
-use File;
+
 
 
 class ContactsController extends Controller
@@ -389,17 +391,29 @@ class ContactsController extends Controller
 
         if (isset($file1)) {
             $extracted = $this->extractMembers($file1);
-
             if ($extracted) {
                 $file1->move($destinationPath, $file1->getClientOriginalName());
                 $thefile_one = $file_one->getClientOriginalName();
-                notify(new ToastNotification('Successful!', 'Sectoral Board Requirement Added', 'success'));
+                notify(new ToastNotification('Successful!', 'Contacts File Added Successfully', 'success'));
                 return back();
             }else{
                 notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
                 return back();
             }
         }
+    }
+
+    public function downloadTemplate(){
+        $destinationPath = base_path() . '/public/Contacts/Template/contacts_templates.xlsx';
+        $downloaded = Response::download($destinationPath);
+
+        if(!$downloaded){
+            notify(new ToastNotification('Sorry!', 'File does not exist!', 'error'));
+        }else {
+            return $downloaded;
+            notify(new ToastNotification('Successful!', 'Download successful!', 'success'));
+        }
+
     }
 
     public function extractMembers($file){

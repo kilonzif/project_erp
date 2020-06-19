@@ -119,6 +119,32 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body table-responsive">
+                            <h6> Upload Contacts' Template</h6>
+                            <span class="warning text-muted">{{__('Please upload only Excel (.xlsx) files')}}</span>
+                            <form action="{{route('user-management.contacts.upload-contacts-template')}}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <fieldset>
+                                    <div class="input-group">
+                                       <input type="file" required class="form-control" name="upload_file" id="upload_file">
+                                        @if ($errors->has('upload_file'))
+                                            <p class="text-right mb-0">
+                                                <small class="danger text-muted" id="file-error">{{ $errors->first('upload_file') }}</small>
+                                            </p>
+                                        @endif
+                                        <div class="input-group-append" id="button-addon2">
+                                            <button class="btn btn-primary square" type="submit"><i class="ft-upload mr-1"></i> Upload Template</button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="card" id="period_id">
             <div class="card-header bg-dark bgsize-darken-4 white card-header">

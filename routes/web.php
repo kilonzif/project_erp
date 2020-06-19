@@ -213,6 +213,11 @@ Route::prefix('user-management')->name('user-management.')->group(function () {
 
   //upload bulk contacts
     Route::post('contacts/upload-contacts', 'ContactsController@save_bulk_contacts')->name('contacts.upload-contacts');
+    //upload template for contacts
+    Route::post('contacts/upload-contacts-template', 'ApplicationSettingsController@save_contacts_template')->name('contacts.upload-contacts-template');
+//Download template for contacts
+    Route::get('contacts/download-template', 'ContactsController@downloadTemplate')->name('contacts.download-template');
+
 
 
 });

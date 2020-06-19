@@ -136,6 +136,32 @@ class ApplicationSettingsController extends Controller
         return response()->json(['key' => $key, 'message' => $message, 'type' => $type]);
     }
 
+//    contacts template
+    public function save_contacts_template(Request $request){
+        $this->validate($request, [
+            'upload_file' => 'required|file|mimes:xls,xlsx',
+        ]);
+
+
+        $file_one=$request->upload_file;
+        $destinationPath = base_path() . '/public/Contacts/Template/';
+        $thefile_one = "";
+
+        $template_file = $request->file('upload_file');
+
+
+        if (isset($template_file)) {
+            $template_file->move($destinationPath, $template_file->getClientOriginalName());
+                $file_one->getClientOriginalName();
+                notify(new ToastNotification('Successful!', 'Contacts Template Uploaded Successfully', 'success'));
+                return back();
+            }else{
+                notify(new ToastNotification('Notice', 'An error occured extracting data- Please check the format and try again.', 'info'));
+                return back();
+            }
+
+    }
+
     public function setDeadline(Request $request)
     {
         $this->validate($request, [
