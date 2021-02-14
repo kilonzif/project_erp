@@ -44,24 +44,24 @@
                     <div class="card-content collapse show">
                         <div class="card-body load-area">
                             {{--<form action="#">--}}
-                                <div class="form-group row">
-                                    <div class="col-12">
-                                        <label for="ace_id">Select Ace <span class="required">*</span></label>
-                                        <div class="input-group {{ $errors->has('ace_id') ? ' form-control-warning' : '' }}">
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <label for="ace_id">Select Ace <span class="required">*</span></label>
+                                    <div class="input-group {{ $errors->has('ace_id') ? ' form-control-warning' : '' }}">
                                         <select  multiple="multiple" name="ace_id[]"  class="form-control select2" id="ace_id" required>
                                             @foreach($aces as $this_ace)
                                                 <option {{request()->query->has('ace_id') && in_array($this_ace,request()->query->get('ace_id')) ? "selected": "" }}  value="{{$this_ace->id}}">{{$this_ace->acronym}}</option>
                                             @endforeach
                                         </select>
-                                            @if ($errors->has('ace_id'))
-                                                <p class="text-right">
-                                                    <small class="warning text-muted">{{ $errors->first('ace_id') }}</small>
-                                                </p>
-                                            @endif
-                                        </div>
+                                        @if ($errors->has('ace_id'))
+                                            <p class="text-right">
+                                                <small class="warning text-muted">{{ $errors->first('ace_id') }}</small>
+                                            </p>
+                                        @endif
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="row">
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row">
                                         <div class="col-md-12">
                                             <label for="this_period" style="margin-top: 1.4rem">Select Reporting Period (s)<span class="required">*</span></label><br>
                                         </div>
@@ -92,12 +92,12 @@
                                             </div>
                                         @endforeach
                                     </div>
-                                    </div>
-                                    <div class="col-md-4 offset-4">
-                                        <button class="btn btn-primary block-custom-message" style="margin-top: 25px;"
-                                                onclick="showCumulativePDO()">Generate Report</button>
-                                    </div>
                                 </div>
+                                <div class="col-md-4 offset-4">
+                                    <button class="btn btn-primary block-custom-message" style="margin-top: 25px;"
+                                            onclick="showCumulativePDO()">Generate Report</button>
+                                </div>
+                            </div>
                             {{--</form>--}}
                             <div id="showPDOTable" class="mt-4">
                                 <h1 class="text-center text-bold-400">Please select dates the generate results</h1>
@@ -118,15 +118,15 @@
                         <a class="heading-elements-toggle"><i class="fa fa-ellipsis-v font-medium-3"></i></a>
                         <div class="heading-elements">
                             <ul class="list-inline mb-0">
-                            <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
-                            <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
-                            <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
-                            <li><a data-action="close"><i class="ft-x"></i></a></li>
+                                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                                <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+                                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                                <li><a data-action="close"><i class="ft-x"></i></a></li>
                             </ul>
                         </div>
-                        </div>
+                    </div>
                     @php //dd(request()->query->get('topic_name')); @endphp
-                        <div class="card-content collapse show">
+                    <div class="card-content collapse show">
                         <div class="card-body">
                             <div class="col-lg-12">
                                 <div class="row">
@@ -392,13 +392,13 @@
                             </div>
 
                             {{--<div class="col-lg-12">--}}
-                                <br>
-                                <br>
-                                {{--<div class="row">--}}
-                                    @if(isset($request) && $request->query->has('generate_report'))
-                                        @include('analytics.table')
-                                    @endif
-                                {{--</div>--}}
+                            <br>
+                            <br>
+                            {{--<div class="row">--}}
+                            @if(isset($request) && $request->query->has('generate_report'))
+                                @include('analytics.table')
+                            @endif
+                            {{--</div>--}}
                             {{--</div>--}}
                         </div>
                     </div>
@@ -421,17 +421,17 @@
     <script src="{{asset('vendors/js/forms/icheck/icheck.min.js')}}" type="text/javascript"></script>
 @endpush()
 @push('end-script')
- <script>
+    <script>
 
-     function changeonFields(){
-         var topic_name = $('#topic_name').val();
-         if(topic_name == 'Aggregate Student'){
-             $('#selected_target_field').removeClass("hidden");
-         }else{
-             $('#selected_target_field').addClass("hidden");
-         }
+        function changeonFields(){
+            var topic_name = $('#topic_name').val();
+            if(topic_name == 'Aggregate Student'){
+                $('#selected_target_field').removeClass("hidden");
+            }else{
+                $('#selected_target_field').addClass("hidden");
+            }
 
-     }
+        }
         // Single Date Range Picker
         $('.singledate').daterangepicker({
             singleDatePicker: true,
@@ -443,60 +443,60 @@
             allowClear: true
         });
 
-            function filterselect(target,counter) {
-                if(typeof counter === "undefined" || counter === null){
-                    counter = "";
-                }
-
-                if ($('.' + target).val() != '') {
-                    var filter = $('.' + target).val();
-                    if (filter == 'Field of Study') {
-                        $("#forField"+counter).css('display', 'block');
-                        $("#forCountry"+counter).css('display', 'none');
-                        $("#typeofcentre"+counter).css('display', 'none');
-                        $("#filterbyace"+counter).css('display', 'none');
-
-                    }
-                    if (filter == 'Countries') {
-                        $("#forCountry"+counter).css('display', 'block');
-                        $("#forField"+counter).css('display', 'none');
-                        $("#typeofcentre"+counter).css('display', 'none');
-
-                    }
-                    if (filter == 'Type of Centre') {
-                        $("#typeofcentre"+counter).css('display', 'block');
-                        $("#forField"+counter).css('display', 'none');
-                        $("#forCountry"+counter).css('display', 'none');
-                    }
-                    if (filter == "ACE") {
-                        $("#filterbyace"+counter).css('display', 'block');
-                        $("#forField"+counter).css('display', 'none');
-                        $("#forCountry"+counter).css('display', 'none');
-                        $("#typeofcentre"+counter).css('display', 'none');
-                    }
-
-
-                }
+        function filterselect(target,counter) {
+            if(typeof counter === "undefined" || counter === null){
+                counter = "";
             }
 
-     function addfilter() {
-         if($(".multiple_values option:selected").length == 0){
-             toastr['warning']('Filter first ooh', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
-             return false;
-         }
-             $.ajax({
-                url: "{{route('analytics.add_filter')}}",
-                 type: 'post',
-                 headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
-                 success: function (data) {
-                     $('.new-filter').append(data);
-                 }
-             });
-     }
+            if ($('.' + target).val() != '') {
+                var filter = $('.' + target).val();
+                if (filter == 'Field of Study') {
+                    $("#forField"+counter).css('display', 'block');
+                    $("#forCountry"+counter).css('display', 'none');
+                    $("#typeofcentre"+counter).css('display', 'none');
+                    $("#filterbyace"+counter).css('display', 'none');
 
-     function removefilter(filterid) {
-         $('#'+filterid).remove();
-     }
+                }
+                if (filter == 'Countries') {
+                    $("#forCountry"+counter).css('display', 'block');
+                    $("#forField"+counter).css('display', 'none');
+                    $("#typeofcentre"+counter).css('display', 'none');
+
+                }
+                if (filter == 'Type of Centre') {
+                    $("#typeofcentre"+counter).css('display', 'block');
+                    $("#forField"+counter).css('display', 'none');
+                    $("#forCountry"+counter).css('display', 'none');
+                }
+                if (filter == "ACE") {
+                    $("#filterbyace"+counter).css('display', 'block');
+                    $("#forField"+counter).css('display', 'none');
+                    $("#forCountry"+counter).css('display', 'none');
+                    $("#typeofcentre"+counter).css('display', 'none');
+                }
+
+
+            }
+        }
+
+        function addfilter() {
+            if($(".multiple_values option:selected").length == 0){
+                toastr['warning']('Filter first ooh', 'failed','{positionClass:toast-top-right, "showMethod": "slideDown", "hideMethod": "slideUp", timeOut: 8000}');
+                return false;
+            }
+            $.ajax({
+                url: "{{route('analytics.add_filter')}}",
+                type: 'post',
+                headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                success: function (data) {
+                    $('.new-filter').append(data);
+                }
+            });
+        }
+
+        function removefilter(filterid) {
+            $('#'+filterid).remove();
+        }
         //Script for Cumulative PDO
         function showCumulativePDO() {
             if($("select[name='ace_id[]'] option:selected").length == 0){
